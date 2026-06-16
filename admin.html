@@ -1,0 +1,1480 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Pannello Admin - Immobiliare con Michele</title>
+  
+  <!-- Supabase JS Client library CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    /* --- DESIGN SYSTEM EMBEDDED - 100% OFFLINE & NO HORIZONTAL SCROLL --- */
+    :root {
+      --brand-blue: #0044FF;
+      --brand-yellow: #FFD90F;
+      --bg-slate: #f8fafc;
+      --text-slate: #1e293b;
+      --text-muted: #64748b;
+      --white: #ffffff;
+      --border-color: #e2e8f0;
+      --transition: all 0.2s ease-in-out;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    html, body {
+      background-color: var(--bg-slate);
+      color: var(--text-slate);
+      min-height: 100vh;
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+
+    body {
+      padding-bottom: 3rem;
+    }
+
+    /* --- NAVBAR BLU CON TESTO GIALLO --- */
+    .navbar {
+      background-color: var(--brand-blue);
+      border-bottom: 4px solid var(--brand-yellow);
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 15px rgba(0, 68, 255, 0.15);
+      max-width: 100%;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      min-width: 0;
+    }
+
+    .brand-icon-box {
+      background-color: var(--brand-yellow);
+      padding: 8px;
+      border-radius: 12px;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      flex-shrink: 0;
+    }
+
+    .brand-text {
+      margin-left: 8px;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+      min-width: 0;
+    }
+
+    .brand-title {
+      font-size: 1.1rem;
+      font-weight: 900;
+      color: var(--brand-yellow);
+      letter-spacing: -0.025em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .brand-subtitle {
+      font-size: 9px;
+      font-weight: 900;
+      color: var(--white);
+      letter-spacing: 0.05em;
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    @media (min-width: 375px) {
+      .navbar { padding: 0 1.5rem; }
+      .brand-text { margin-left: 12px; }
+      .brand-title { font-size: 1.25rem; }
+      .brand-subtitle { font-size: 10px; letter-spacing: 0.1em; }
+    }
+
+    .btn-logout {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: var(--white);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      font-weight: bold;
+      font-size: 11px;
+      text-transform: uppercase;
+      padding: 8px 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: var(--transition);
+      flex-shrink: 0;
+    }
+
+    .btn-logout:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+      color: var(--brand-yellow);
+    }
+
+    /* --- SCHERMATA LOGIN --- */
+    .login-container {
+      max-width: 400px;
+      margin: 3rem auto;
+      padding: 0 1rem;
+      width: 100%;
+    }
+
+    .login-card {
+      background-color: var(--white);
+      padding: 2rem 1.5rem;
+      border-radius: 24px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
+      text-align: center;
+      width: 100%;
+    }
+
+    @media (min-width: 400px) {
+      .login-card { padding: 2.5rem 2rem; }
+    }
+
+    .login-icon-box {
+      width: 64px;
+      height: 64px;
+      background-color: rgba(0, 68, 255, 0.05);
+      color: var(--brand-blue);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem auto;
+    }
+
+    .login-title {
+      font-size: 1.35rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+      color: var(--text-slate);
+    }
+
+    .login-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+      margin-bottom: 1.5rem;
+      line-height: 1.4;
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+      text-align: left;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+    }
+
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 12px 14px;
+      background-color: #f1f5f9;
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      font-size: 14px;
+      font-weight: 500;
+      outline: none;
+      transition: var(--transition);
+      color: var(--text-slate);
+      max-width: 100%;
+    }
+
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--brand-blue);
+      background-color: var(--white);
+      box-shadow: 0 0 0 4px rgba(0, 68, 255, 0.1);
+    }
+
+    .btn-submit {
+      width: 100%;
+      background-color: var(--brand-blue);
+      color: var(--brand-yellow);
+      border: none;
+      padding: 14px;
+      border-radius: 16px;
+      font-size: 14px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 68, 255, 0.2);
+      transition: var(--transition);
+    }
+
+    .btn-submit:hover {
+      background-color: #0033CC;
+      transform: translateY(-1px);
+    }
+
+    /* --- DASHBOARD GESTIONALE --- */
+    .dashboard-container {
+      max-width: 1200px;
+      margin: 1.5rem auto;
+      padding: 0 1rem;
+      width: 100%;
+      overflow-x: hidden;
+    }
+
+    @media (min-width: 768px) {
+      .dashboard-container { margin: 3rem auto; padding: 0 1.5rem; }
+    }
+
+    .header-bar {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    @media (min-width: 768px) {
+      .header-bar { flex-direction: row; align-items: center; }
+    }
+
+    .header-title-box h1 {
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: var(--brand-blue);
+      text-transform: uppercase;
+      word-break: break-word;
+    }
+
+    @media (min-width: 640px) {
+      .header-title-box h1 { font-size: 1.85rem; }
+    }
+
+    .header-title-box p {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 4px;
+    }
+
+    .featured-status-box {
+      background-color: #f1f5f9;
+      padding: 0.75rem 1rem;
+      border-radius: 18px;
+      border: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: var(--text-slate);
+      width: 100%;
+    }
+
+    @media (min-width: 768px) {
+      .featured-status-box { width: auto; }
+    }
+
+    .badge-counter {
+      background-color: var(--brand-blue);
+      color: var(--white);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .badge-counter.filled {
+      background-color: #f59e0b;
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      width: 100%;
+    }
+
+    @media (min-width: 1024px) {
+      .main-grid { grid-template-columns: 380px 1fr; gap: 2rem; }
+    }
+
+    .panel-card {
+      background-color: var(--white);
+      padding: 1.25rem;
+      border-radius: 24px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+      width: 100%;
+    }
+
+    @media (min-width: 640px) {
+      .panel-card { padding: 2rem; }
+    }
+
+    .panel-title {
+      font-size: 16px;
+      font-weight: 900;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-slate);
+    }
+
+    .btn-cancel-edit {
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: #ef4444;
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    /* --- UPLOAD FOTO CON ANTEPRIMA --- */
+    .photo-fields-box {
+      background-color: #f8fafc;
+      padding: 1rem;
+      border-radius: 18px;
+      border: 1px solid var(--border-color);
+      margin-bottom: 1rem;
+      width: 100%;
+    }
+
+    .file-upload-row {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+    }
+
+    .file-input-custom {
+      border: 2px dashed var(--border-color);
+      padding: 20px;
+      border-radius: 16px;
+      text-align: center;
+      background-color: var(--white);
+      cursor: pointer;
+      transition: var(--transition);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .file-input-custom:hover {
+      border-color: var(--brand-blue);
+      background-color: rgba(0, 68, 255, 0.02);
+    }
+
+    .preview-thumbs-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .preview-thumb-container {
+      position: relative;
+      aspect-ratio: 4/3;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+    }
+
+    .preview-thumb {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .btn-remove-thumb {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      background-color: rgba(239, 68, 68, 0.9);
+      color: var(--white);
+      border: none;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 10px;
+      font-weight: bold;
+    }
+
+    .checkbox-container {
+      background-color: #f1f5f9;
+      padding: 1rem;
+      border-radius: 18px;
+      border: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .checkbox-row input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--brand-blue);
+      flex-shrink: 0;
+    }
+
+    .checkbox-label {
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    /* --- FILTRI RICERCA AMMINISTRATIVA --- */
+    .filters-card {
+      background-color: var(--white);
+      padding: 1.25rem;
+      border-radius: 24px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+      margin-bottom: 1rem;
+      width: 100%;
+    }
+
+    @media (min-width: 640px) {
+      .filters-card { padding: 1.5rem; margin-bottom: 1.5rem; }
+    }
+
+    .filters-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-top: 10px;
+      width: 100%;
+    }
+
+    @media (min-width: 640px) {
+      .filters-grid { grid-template-columns: 2fr 1fr 1fr; }
+      .span-full { grid-column: span 2; }
+    }
+
+    .btn-reset-filters {
+      background: none;
+      border: none;
+      font-size: 11px;
+      font-weight: 900;
+      color: var(--brand-blue);
+      text-transform: uppercase;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    /* --- TABELLA ARCHIVIO --- */
+    .archive-header {
+      padding: 1.25rem 1rem;
+      border-bottom: 2px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: rgba(0, 68, 255, 0.03);
+      width: 100%;
+    }
+
+    .archive-header h2 {
+      font-size: 14px;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: var(--brand-blue);
+    }
+
+    .archive-badge {
+      background-color: var(--brand-blue);
+      color: var(--brand-yellow);
+      font-size: 11px;
+      font-weight: 900;
+      padding: 4px 10px;
+      border-radius: 20px;
+      flex-shrink: 0;
+    }
+
+    .list-wrapper {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
+
+    .item-row {
+      padding: 1.25rem 1rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      transition: var(--transition);
+      width: 100%;
+    }
+
+    @media (min-width: 640px) {
+      .item-row { padding: 1.5rem; flex-direction: row; align-items: center; justify-content: space-between; }
+    }
+
+    .item-row:hover { background-color: #fafbfc; }
+
+    .item-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      min-width: 0;
+    }
+
+    .item-thumbnail {
+      width: 70px;
+      height: 55px;
+      border-radius: 12px;
+      object-fit: cover;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      border: 1px solid var(--border-color);
+      flex-shrink: 0;
+      background-color: #f1f5f9;
+    }
+
+    .item-texts { min-width: 0; flex: 1; }
+
+    .item-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--text-slate);
+      word-break: break-word;
+    }
+
+    .item-details-text {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-top: 2px;
+      word-break: break-word;
+    }
+
+    .item-badges {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .badge-contract {
+      font-size: 9px;
+      font-weight: 900;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(0,0,0,0.05);
+      white-space: nowrap;
+    }
+
+    .badge-contract.vendita { background-color: rgba(255, 217, 15, 0.2); color: var(--brand-blue); }
+    .badge-contract.affitto { background-color: #f1f5f9; color: var(--text-slate); }
+
+    .badge-star {
+      font-size: 9px;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: #f59e0b;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      white-space: nowrap;
+    }
+
+    .item-actions-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      border-top: 1px solid var(--border-color);
+      padding-top: 1rem;
+      width: 100%;
+    }
+
+    @media (min-width: 640px) {
+      .item-actions-box { justify-content: flex-end; border-top: none; padding-top: 0; width: auto; gap: 1.5rem; }
+    }
+
+    .item-price {
+      font-size: 16px;
+      font-weight: 900;
+      color: var(--text-slate);
+      white-space: nowrap;
+    }
+
+    .action-buttons { display: flex; gap: 6px; flex-shrink: 0; }
+
+    .btn-action {
+      border: none;
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+      flex-shrink: 0;
+    }
+
+    .btn-action.edit { background-color: #fffbeb; color: #d97706; }
+    .btn-action.edit:hover { background-color: #d97706; color: white; }
+    .btn-action.delete { background-color: #fef2f2; color: #ef4444; }
+    .btn-action.delete:hover { background-color: #ef4444; color: white; }
+
+    /* --- LOADING SPINNER ANIMATION --- */
+    .loader-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 2000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      color: var(--white);
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .spinner {
+      border: 4px solid rgba(255, 255, 255, 0.1);
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border-left-color: var(--brand-yellow);
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Modale */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .modal-content {
+      background-color: var(--white);
+      border-radius: 24px;
+      padding: 1.5rem;
+      max-width: 360px;
+      width: 100%;
+      text-align: center;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+    }
+
+    .modal-icon-box {
+      width: 64px;
+      height: 64px;
+      background-color: #fee2e2;
+      color: #ef4444;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem auto;
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: var(--text-slate);
+      margin-bottom: 6px;
+    }
+
+    .modal-text {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+      line-height: 1.4;
+    }
+
+    .modal-actions { display: flex; gap: 10px; }
+
+    .btn-modal {
+      flex: 1;
+      padding: 12px;
+      border-radius: 16px;
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      cursor: pointer;
+      border: none;
+      transition: var(--transition);
+    }
+
+    .btn-modal.cancel { background-color: #f1f5f9; color: var(--text-slate); }
+    .btn-modal.confirm { background-color: #ef4444; color: white; }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <!-- --- SCHERMATA CARICAMENTO --- -->
+  <div id="loader" class="loader-overlay hidden">
+    <div class="spinner"></div>
+    <span id="loader-text">Salvataggio in corso su Supabase...</span>
+  </div>
+
+  <!-- --- NAVBAR --- -->
+  <nav class="navbar">
+    <div class="brand">
+      <div class="brand-icon-box">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <span class="brand-title">MICHELE ERRE</span>
+        <span class="brand-subtitle">Agente immobiliare</span>
+      </div>
+    </div>
+
+    <div id="nav-actions" style="display: none;">
+      <button onclick="logout()" class="btn-logout">Disconnetti</button>
+    </div>
+  </nav>
+
+  <!-- --- LOGIN --- -->
+  <div id="login-screen" class="login-container">
+    <div class="login-card">
+      <div class="login-icon-box">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+        </svg>
+      </div>
+      <h2 class="login-title">Accesso Riservato</h2>
+      <p class="login-subtitle">Inserisci le tue credenziali Supabase per gestire gli annunci.</p>
+      
+      <form onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label class="form-label">Email Amministratore</label>
+          <input type="email" id="login-email" placeholder="Email" class="form-input" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" id="login-password" placeholder="Password" class="form-input" required>
+        </div>
+        <button type="submit" class="btn-submit">Accedi al Pannello 🚀</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- --- DASHBOARD GESTIONALE --- -->
+  <div id="admin-dashboard" class="dashboard-container" style="display: none;">
+    
+    <div class="header-bar">
+      <div class="header-title-box">
+        <h1>Gestionale Post & Immobili</h1>
+        <p>Workspace Privato - Michele Erre 🛠️</p>
+      </div>
+      
+      <div class="featured-status-box">
+        <span>Post in evidenza in Home (Vetrina):</span>
+        <span id="featured-counter" class="badge-counter">0 / 3</span>
+      </div>
+    </div>
+
+    <div class="main-grid">
+      
+      <!-- FORM AGGIUNGI / MODIFICA -->
+      <div class="panel-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+          <h2 id="form-title" class="panel-title" style="margin-bottom: 0;">Nuovo Annuncio</h2>
+          <button id="cancel-edit-btn" onclick="cancelEdit()" class="btn-cancel-edit hidden">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            Annulla
+          </button>
+        </div>
+
+        <form onsubmit="handleFormSubmit(event)" style="display: flex; flex-direction: column; gap: 1rem;">
+          <input type="hidden" id="property-id">
+          
+          <div>
+            <label class="form-label">Titolo Annuncio</label>
+            <input required type="text" id="prop-title" placeholder="es. Bilocale accogliente a Porto Torres" class="form-input">
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div>
+              <label class="form-label">Contratto</label>
+              <select id="prop-status" class="form-select">
+                <option value="Vendita">Vendita</option>
+                <option value="Affitto">Affitto</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">Prezzo (€)</label>
+              <input required type="number" id="prop-price" placeholder="Prezzo" class="form-input">
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div>
+              <label class="form-label">Zona</label>
+              <input required type="text" id="prop-zone" placeholder="es. Porto Torres" class="form-input">
+            </div>
+            <div>
+              <label class="form-label">Tipologia</label>
+              <input required type="text" id="prop-type" placeholder="es. Attico" class="form-input">
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div>
+              <label class="form-label">Stanze</label>
+              <input required type="number" id="prop-rooms" min="1" value="1" class="form-input">
+            </div>
+            <div>
+              <label class="form-label">Bagni</label>
+              <input required type="number" id="prop-bathrooms" min="1" value="1" class="form-input">
+            </div>
+          </div>
+
+          <!-- Upload Foto Reale con ottimizzazione automatica in Canvas -->
+          <div class="photo-fields-box">
+            <label class="form-label">Immagini Immobile (Upload Automatico)</label>
+            <div class="file-upload-row">
+              <label class="file-input-custom">
+                📷 Trascina o tocca per aggiungere foto dal tuo telefono
+                <input type="file" id="file-uploader" accept="image/*" multiple onchange="handleImageSelection(event)" style="display: none;">
+              </label>
+            </div>
+            <div id="preview-grid" class="preview-thumbs-grid"></div>
+          </div>
+
+          <div>
+            <label class="form-label">Descrizione</label>
+            <textarea required id="prop-desc" rows="3" placeholder="Scrivi una descrizione fresca e adatta ai social..." class="form-textarea"></textarea>
+          </div>
+
+          <div class="checkbox-container">
+            <label class="checkbox-row">
+              <input type="checkbox" id="prop-parking">
+              <span class="checkbox-label">Parcheggio auto</span>
+            </label>
+            
+            <label class="checkbox-row">
+              <input type="checkbox" id="prop-featured" onchange="validateFeaturedLimit(this)">
+              <span class="checkbox-label" style="color: var(--brand-blue);">Metti in evidenza (Home)</span>
+            </label>
+          </div>
+
+          <button type="submit" id="submit-btn" class="btn-submit">Pubblica Annuncio 🚀</button>
+        </form>
+      </div>
+
+      <!-- FILTRI + ELENCO ARCHIVIO -->
+      <div class="lg:col-span-2" style="display: flex; flex-direction: column; gap: 1.5rem; width: 100%; min-width: 0;">
+        
+        <div class="filters-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 8px;">
+            <span class="form-label" style="margin-bottom: 0;">Filtra il tuo Archivio</span>
+            <button onclick="resetAdminFilters()" class="btn-reset-filters">
+              <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+              </svg>
+              Azzera Filtri
+            </button>
+          </div>
+          
+          <div class="filters-grid">
+            <input type="text" id="search-title" oninput="applyAdminFilters()" placeholder="Cerca per titolo..." class="form-input" style="padding: 10px;">
+            
+            <select id="search-status" onchange="applyAdminFilters()" class="form-select" style="padding: 10px;">
+              <option value="Tutti">Tutti i contratti</option>
+              <option value="Vendita">Solo Vendita</option>
+              <option value="Affitto">Solo Affitto</option>
+            </select>
+            
+            <select id="search-featured" onchange="applyAdminFilters()" class="form-select" style="padding: 10px;">
+              <option value="Tutti">Stato Vetrina: Tutti</option>
+              <option value="Featured">Solo in Vetrina</option>
+              <option value="NotFeatured">Escludi Vetrina</option>
+            </select>
+            
+            <select id="search-zone" onchange="applyAdminFilters()" class="form-select span-full" style="padding: 10px;">
+              <option value="Tutte">Qualsiasi zona</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="panel-card" style="padding: 0; overflow: hidden; width: 100%;">
+          <div class="archive-header">
+            <h2>Archivio dei Post Online</h2>
+            <span id="total-annunci-badge" class="archive-badge">0 Annunci</span>
+          </div>
+          
+          <div id="properties-list" class="list-wrapper">
+            <!-- Popolato via Javascript -->
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- --- MODALE DI CANCELLAZIONE SICURA --- -->
+  <div id="delete-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-icon-box">
+        <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+        </svg>
+      </div>
+      <h3 class="modal-title">Sei sicuro?</h3>
+      <p class="modal-text">Stai per cancellare definitivamente questo annuncio dal tuo database.</p>
+      <div class="modal-actions">
+        <button onclick="closeDeleteModal()" class="btn-modal cancel">Annulla</button>
+        <button id="confirm-delete-btn" class="btn-modal confirm">Elimina 🗑️</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- --- LOGICA DI COLLEGAMENTO SUPABASE --- -->
+  <script>
+    const SUPABASE_URL = "https://svdfgejkjvkbajmqoqjz.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_aGoAYeXnUtVMe4bIc20wIQ_2EM4LTSG";
+
+    const { createClient } = supabase;
+    const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    let properties = [];
+    let uploadedImageUrls = [];
+    let selectedPropertyToDelete = null;
+
+    // --- AVVIO E MONITORAGGIO SESSIONE ---
+    window.addEventListener('DOMContentLoaded', async () => {
+      showLoader("Verifica sessione di accesso...");
+      try {
+        const { data: { session } } = await _supabase.auth.getSession();
+        if (session) {
+          handleAuthSuccess();
+        } else {
+          hideLoader();
+          logout();
+        }
+      } catch (err) {
+        hideLoader();
+        alert("Errore di connessione a Supabase: " + err.message);
+      }
+
+      _supabase.auth.onAuthStateChange((event, session) => {
+        if (session) {
+          handleAuthSuccess();
+        } else {
+          logout();
+        }
+      });
+    });
+
+    async function handleAuthSuccess() {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('admin-dashboard').style.display = 'block';
+      document.getElementById('nav-actions').style.display = 'block';
+      await loadProperties();
+      hideLoader();
+    }
+
+    // --- CARICAMENTO DATI DA DATABASE ---
+    async function loadProperties() {
+      try {
+        const { data, error } = await _supabase
+          .from('properties')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        properties = data || [];
+        
+        updateZoneDropdown();
+        renderPropertiesList();
+      } catch (err) {
+        alert("Impossibile caricare gli immobili: " + err.message);
+      }
+    }
+
+    // --- AUTHENTICATION ---
+    async function handleLogin(e) {
+      e.preventDefault();
+      showLoader("Accesso in corso...");
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+
+      try {
+        const { data, error } = await _supabase.auth.signInWithPassword({
+          email,
+          password
+        });
+
+        if (error) throw error;
+      } catch (err) {
+        hideLoader();
+        alert("Accesso fallito: " + err.message);
+      }
+    }
+
+    async function logout() {
+      await _supabase.auth.signOut();
+      document.getElementById('login-screen').style.display = 'block';
+      document.getElementById('admin-dashboard').style.display = 'none';
+      document.getElementById('nav-actions').style.display = 'none';
+      properties = [];
+      uploadedImageUrls = [];
+    }
+
+    // --- OTTIMIZZAZIONE IN ANTEPRIMA & CARICAMENTO IMMAGINI ---
+    async function handleImageSelection(e) {
+      const files = e.target.files;
+      if (!files || files.length === 0) return;
+
+      showLoader("Ottimizzazione e caricamento immagini su Supabase...");
+      
+      for (let i = 0; i < files.length; i++) {
+        try {
+          const publicUrl = await compressAndUpload(files[i]);
+          uploadedImageUrls.push(publicUrl);
+        } catch (err) {
+          alert(`Errore nel caricamento del file ${files[i].name}: ${err}`);
+        }
+      }
+
+      renderImagePreviews();
+      hideLoader();
+    }
+
+    function compressAndUpload(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function (event) {
+          const img = new Image();
+          img.src = event.target.result;
+          img.onload = function () {
+            const canvas = document.createElement('canvas');
+            const MAX_WIDTH = 1200;
+            let width = img.width;
+            let height = img.height;
+
+            if (width > MAX_WIDTH) {
+              height = Math.round((height * MAX_WIDTH) / width);
+              width = MAX_WIDTH;
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            canvas.toBlob(async function (blob) {
+              if (!blob) {
+                reject("Errore nella conversione dell'immagine.");
+                return;
+              }
+
+              const fileExt = "jpg";
+              const fileName = `prop_${Date.now()}_${Math.random().toString(36).substring(2, 9)}.${fileExt}`;
+
+              try {
+                const { data, error } = await _supabase.storage
+                  .from('properties-images')
+                  .upload(fileName, blob, {
+                    contentType: 'image/jpeg'
+                  });
+
+                if (error) throw error;
+
+                const { data: { publicUrl } } = _supabase.storage
+                  .from('properties-images')
+                  .getPublicUrl(fileName);
+
+                resolve(publicUrl);
+              } catch (storageErr) {
+                reject(storageErr.message || storageErr);
+              }
+            }, 'image/jpeg', 0.8);
+          };
+          img.onerror = () => reject("Impossibile caricare il file d'origine.");
+        };
+        reader.onerror = () => reject("Lettura del file non riuscita.");
+      });
+    }
+
+    function renderImagePreviews() {
+      const grid = document.getElementById('preview-grid');
+      grid.innerHTML = "";
+      uploadedImageUrls.forEach((url, index) => {
+        const thumbBox = document.createElement('div');
+        thumbBox.className = "preview-thumb-container";
+        thumbBox.innerHTML = `
+          <img src="${url}" class="preview-thumb" alt="anteprima">
+          <button type="button" class="btn-remove-thumb" onclick="removeImage(${index})">✕</button>
+        `;
+        grid.appendChild(thumbBox);
+      });
+    }
+
+    function removeImage(index) {
+      uploadedImageUrls.splice(index, 1);
+      renderImagePreviews();
+    }
+
+    // --- CONTROLLO ED INSERIMENTO DATI (CRUD) ---
+    function getFeaturedCount() {
+      return properties.filter(p => p.is_featured).length;
+    }
+
+    function validateFeaturedLimit(checkbox) {
+      const editId = document.getElementById('property-id').value;
+      const currentlyEditing = properties.find(p => p.id == editId);
+      
+      const wasAlreadyFeatured = currentlyEditing ? currentlyEditing.is_featured : false;
+      const activeCount = getFeaturedCount();
+
+      if (checkbox.checked && activeCount >= 3 && !wasAlreadyFeatured) {
+        alert("⚠️ Attenzione Michele: hai già selezionato 3 immobili in evidenza! Disattiva la stella su un altro immobile nella lista per poterne inserire uno nuovo.");
+        checkbox.checked = false;
+      }
+    }
+
+    async function handleFormSubmit(e) {
+      e.preventDefault();
+      
+      const id = document.getElementById('property-id').value;
+      const title = document.getElementById('prop-title').value.trim();
+      const status = document.getElementById('prop-status').value;
+      const price = Number(document.getElementById('prop-price').value);
+      const zone = document.getElementById('prop-zone').value.trim();
+      const type = document.getElementById('prop-type').value.trim();
+      const rooms = Number(document.getElementById('prop-rooms').value);
+      const bathrooms = Number(document.getElementById('prop-bathrooms').value);
+      const description = document.getElementById('prop-desc').value.trim();
+      const hasParking = document.getElementById('prop-parking').checked;
+      const isFeatured = document.getElementById('prop-featured').checked;
+
+      if (uploadedImageUrls.length === 0) {
+        alert("Inserisci almeno un'immagine per pubblicare l'annuncio!");
+        return;
+      }
+
+      showLoader(id ? "Aggiornamento in corso su Supabase..." : "Salvataggio annuncio su Supabase...");
+
+      const payload = {
+        title,
+        status,
+        price,
+        zone,
+        property_type: type,
+        rooms,
+        bathrooms,
+        description,
+        has_parking: hasParking,
+        is_featured: isFeatured,
+        images: uploadedImageUrls
+      };
+
+      try {
+        if (id) {
+          const { error } = await _supabase
+            .from('properties')
+            .update(payload)
+            .eq('id', id);
+
+          if (error) throw error;
+          cancelEdit();
+        } else {
+          const { error } = await _supabase
+            .from('properties')
+            .insert([payload]);
+
+          if (error) throw error;
+        }
+
+        e.target.reset();
+        uploadedImageUrls = [];
+        renderImagePreviews();
+        await loadProperties();
+      } catch (err) {
+        alert("Errore nel salvataggio: " + err.message);
+      } finally {
+        hideLoader();
+      }
+    }
+
+    // --- MODIFICA ELEMENTI ---
+    function startEditProperty(id) {
+      const p = properties.find(item => item.id == id);
+      if (!p) return;
+
+      document.getElementById('property-id').value = p.id;
+      document.getElementById('prop-title').value = p.title;
+      document.getElementById('prop-status').value = p.status;
+      document.getElementById('prop-price').value = p.price;
+      document.getElementById('prop-zone').value = p.zone;
+      document.getElementById('prop-type').value = p.property_type;
+      document.getElementById('prop-rooms').value = p.rooms;
+      document.getElementById('prop-bathrooms').value = p.bathrooms;
+      document.getElementById('prop-desc').value = p.description;
+      document.getElementById('prop-parking').checked = p.has_parking;
+      document.getElementById('prop-featured').checked = p.is_featured;
+
+      uploadedImageUrls = [...p.images];
+      renderImagePreviews();
+
+      document.getElementById('form-title').innerText = "Modifica Annuncio";
+      document.getElementById('cancel-edit-btn').classList.remove('hidden');
+      document.getElementById('submit-btn').innerText = "Salva Modifiche 💾";
+      document.getElementById('submit-btn').style.backgroundColor = "#f59e0b";
+      document.getElementById('submit-btn').style.color = "#ffffff";
+    }
+
+    function cancelEdit() {
+      document.getElementById('property-id').value = "";
+      document.getElementById('form-title').innerText = "Nuovo Annuncio";
+      document.getElementById('cancel-edit-btn').classList.add('hidden');
+      document.getElementById('submit-btn').innerText = "Pubblica Annuncio 🚀";
+      document.getElementById('submit-btn').style.backgroundColor = "var(--brand-blue)";
+      document.getElementById('submit-btn').style.color = "var(--brand-yellow)";
+      
+      document.querySelector('form').reset();
+      uploadedImageUrls = [];
+      renderImagePreviews();
+    }
+
+    // --- ELIMINAZIONE CONTROLLATA ---
+    function openDeleteModal(id) {
+      selectedPropertyToDelete = id;
+      document.getElementById('delete-modal').style.display = 'flex';
+    }
+
+    function closeDeleteModal() {
+      selectedPropertyToDelete = null;
+      document.getElementById('delete-modal').style.display = 'none';
+    }
+
+    document.getElementById('confirm-delete-btn').onclick = async () => {
+      if (selectedPropertyToDelete) {
+        showLoader("Eliminazione dell'annuncio...");
+        try {
+          const { error } = await _supabase
+            .from('properties')
+            .delete()
+            .eq('id', selectedPropertyToDelete);
+
+          if (error) throw error;
+
+          const currentEditId = document.getElementById('property-id').value;
+          if (currentEditId == selectedPropertyToDelete) {
+            cancelEdit();
+          }
+
+          await loadProperties();
+          closeDeleteModal();
+        } catch (err) {
+          alert("Impossibile eliminare l'elemento: " + err.message);
+        } finally {
+          hideLoader();
+        }
+      }
+    };
+
+    // --- FILTRAGGIO RICERCHE ---
+    function updateZoneDropdown() {
+      const zoneSelect = document.getElementById('search-zone');
+      const currentSelected = zoneSelect.value;
+      const zones = [...new Set(properties.map(p => p.zone.trim()))].filter(z => z !== "");
+      
+      zoneSelect.innerHTML = `<option value="Tutte">Qualsiasi zona</option>`;
+      zones.forEach(zone => {
+        const option = document.createElement('option');
+        option.value = zone;
+        option.innerText = zone;
+        zoneSelect.appendChild(option);
+      });
+
+      if (zones.includes(currentSelected)) {
+        zoneSelect.value = currentSelected;
+      } else {
+        zoneSelect.value = "Tutte";
+      }
+    }
+
+    function getFilteredProperties() {
+      const textQuery = document.getElementById('search-title').value.toLowerCase().trim();
+      const statusQuery = document.getElementById('search-status').value;
+      const featuredQuery = document.getElementById('search-featured').value;
+      const zoneQuery = document.getElementById('search-zone').value;
+
+      return properties.filter(p => {
+        if (textQuery && !p.title.toLowerCase().includes(textQuery)) return false;
+        if (statusQuery !== "Tutti" && p.status !== statusQuery) return false;
+        if (featuredQuery === "Featured" && !p.is_featured) return false;
+        if (featuredQuery === "NotFeatured" && p.is_featured) return false;
+        if (zoneQuery !== "Tutte" && p.zone.trim() !== zoneQuery) return false;
+        return true;
+      });
+    }
+
+    function applyAdminFilters() {
+      renderPropertiesList();
+    }
+
+    function resetAdminFilters() {
+      document.getElementById('search-title').value = "";
+      document.getElementById('search-status').value = "Tutti";
+      document.getElementById('search-featured').value = "Tutti";
+      document.getElementById('search-zone').value = "Tutte";
+      renderPropertiesList();
+    }
+
+    function renderPropertiesList() {
+      const listContainer = document.getElementById('properties-list');
+      const totalBadge = document.getElementById('total-annunci-badge');
+      const featuredCounter = document.getElementById('featured-counter');
+      const filtered = getFilteredProperties();
+      
+      totalBadge.innerText = `${filtered.length} Annunci`;
+      const featuredCount = getFeaturedCount();
+      featuredCounter.innerText = `${featuredCount} / 3`;
+      
+      if (featuredCount === 3) {
+        featuredCounter.className = "badge-counter filled";
+      } else {
+        featuredCounter.className = "badge-counter";
+      }
+
+      listContainer.innerHTML = "";
+
+      if (filtered.length === 0) {
+        listContainer.innerHTML = `
+          <div style="padding: 2rem; text-align: center; color: var(--text-muted); font-weight: 500;">Nessun immobile trovato.</div>
+        `;
+        return;
+      }
+
+      filtered.forEach(p => {
+        const itemRow = document.createElement('div');
+        itemRow.className = "item-row";
+        
+        itemRow.innerHTML = `
+          <div class="item-info">
+            <img src="${p.images[0] || 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=800&q=80'}" alt="Immobile" class="item-thumbnail" />
+            <div class="item-texts">
+              <p class="item-title">${p.title}</p>
+              <p class="item-details-text">${p.zone} • ${p.property_type}</p>
+              <div class="item-badges">
+                <span class="badge-contract ${p.status === 'Vendita' ? 'vendita' : 'affitto'}">
+                  ${p.status}
+                </span>
+                ${p.is_featured ? `
+                  <span class="badge-star">★ Evidenziato</span>
+                ` : ''}
+              </div>
+            </div>
+          </div>
+          
+          <div class="item-actions-box">
+            <span class="item-price">€${p.price.toLocaleString('it-IT')}</span>
+            
+            <div class="action-buttons">
+              <button onclick="startEditProperty('${p.id}')" class="btn-action edit" title="Modifica">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                </svg>
+              </button>
+              <button onclick="openDeleteModal('${p.id}')" class="btn-action delete" title="Elimina">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        `;
+        listContainer.appendChild(itemRow);
+      });
+    }
+
+    function showLoader(text = "Salvataggio in corso su Supabase...") {
+      document.getElementById('loader-text').innerText = text;
+      document.getElementById('loader').classList.remove('hidden');
+    }
+
+    function hideLoader() {
+      document.getElementById('loader').classList.add('hidden');
+    }
+  </script>
+</body>
+</html>

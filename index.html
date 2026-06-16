@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Immobiliare con Michele - Agente Immobiliare</title>
+  
+  <!-- Supabase JS Client CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    /* --- DESIGN SYSTEM - 100% OFFLINE SAFE & NO HORIZONTAL SCROLL --- */
+    :root {
+      --brand-blue: #0044FF;
+      --brand-yellow: #FFD90F;
+      --bg-slate: #f8fafc;
+      --text-slate: #1e293b;
+      --text-muted: #64748b;
+      --white: #ffffff;
+      --border-color: #e2e8f0;
+      --transition: all 0.3s ease-in-out;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      scroll-behavior: smooth;
+    }
+
+    html, body {
+      background-color: var(--bg-slate);
+      color: var(--text-slate);
+      min-height: 100vh;
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+
+    /* --- NAVBAR BLU CON TESTO GIALLO --- */
+    .navbar {
+      background-color: var(--brand-blue);
+      border-bottom: 4px solid var(--brand-yellow);
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 15px rgba(0, 68, 255, 0.15);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      min-width: 0;
+      text-decoration: none;
+    }
+
+    .brand-icon-box {
+      background-color: var(--brand-yellow);
+      padding: 8px;
+      border-radius: 12px;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      flex-shrink: 0;
+    }
+
+    .brand-text {
+      margin-left: 8px;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+      min-width: 0;
+    }
+
+    .brand-title {
+      font-size: 1.1rem;
+      font-weight: 900;
+      color: var(--brand-yellow);
+      letter-spacing: -0.025em;
+    }
+
+    .brand-subtitle {
+      font-size: 9px;
+      font-weight: 900;
+      color: var(--white);
+      letter-spacing: 0.05em;
+      margin-top: 2px;
+    }
+
+    .nav-links {
+      display: none;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .nav-link {
+      color: var(--brand-yellow);
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      transition: var(--transition);
+    }
+
+    .nav-link:hover {
+      color: var(--white);
+    }
+
+    .btn-catalog-nav {
+      background-color: var(--brand-yellow);
+      color: var(--brand-blue);
+      padding: 10px 18px;
+      border-radius: 16px;
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: var(--transition);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+
+    .btn-catalog-nav:hover {
+      background-color: var(--white);
+      color: var(--brand-blue);
+    }
+
+    .menu-toggle {
+      display: flex;
+      background: none;
+      border: none;
+      color: var(--brand-yellow);
+      cursor: pointer;
+    }
+
+    /* Dropdown mobile menu */
+    .mobile-menu {
+      display: none;
+      flex-direction: column;
+      background-color: var(--brand-blue);
+      border-bottom: 2px solid var(--brand-yellow);
+      padding: 1.5rem;
+      position: absolute;
+      top: 80px;
+      left: 0;
+      right: 0;
+      z-index: 99;
+      gap: 1.25rem;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    }
+
+    .mobile-menu.active {
+      display: flex;
+    }
+
+    @media (min-width: 768px) {
+      .navbar { padding: 0 2rem; }
+      .brand-text { margin-left: 12px; }
+      .brand-title { font-size: 1.25rem; }
+      .brand-subtitle { font-size: 10px; }
+      .nav-links { display: flex; }
+      .menu-toggle { display: none; }
+    }
+
+    /* --- HERO SECTION --- */
+    .hero-section {
+      position: relative;
+      min-height: 85vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 4rem 1.5rem;
+      background-size: cover;
+      background-position: center;
+      background-image: url('https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=1920&q=80');
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background-color: rgba(15, 23, 42, 0.75);
+      z-index: 1;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 800px;
+      color: var(--white);
+    }
+
+    .hero-badge {
+      background-color: var(--brand-yellow);
+      color: var(--brand-blue);
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+
+    .hero-title {
+      font-size: 2.25rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    .hero-title span {
+      color: var(--brand-yellow);
+    }
+
+    .hero-subtitle {
+      font-size: 16px;
+      color: #e2e8f0;
+      font-weight: 500;
+      margin-bottom: 2.5rem;
+      line-height: 1.5;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .btn-primary {
+      background-color: var(--brand-blue);
+      color: var(--brand-yellow);
+      padding: 14px 28px;
+      border-radius: 18px;
+      font-size: 14px;
+      font-weight: 900;
+      text-transform: uppercase;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(0, 68, 255, 0.25);
+      transition: var(--transition);
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-primary:hover {
+      background-color: #0033CC;
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: var(--white);
+      border: 2px solid rgba(255,255,255,0.2);
+      padding: 14px 28px;
+      border-radius: 18px;
+      font-size: 14px;
+      font-weight: 900;
+      text-transform: uppercase;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+
+    .btn-outline:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    @media (min-width: 640px) {
+      .hero-title { font-size: 3.5rem; }
+      .hero-subtitle { font-size: 20px; }
+      .hero-actions { flex-direction: row; }
+    }
+
+    /* --- SEZIONI CONTENUTO --- */
+    .section {
+      padding: 5rem 1.5rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-center {
+      text-align: center;
+      margin-bottom: 3.5rem;
+    }
+
+    .section-badge {
+      color: var(--brand-blue);
+      background-color: rgba(0, 68, 255, 0.05);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .section-title {
+      font-size: 24px;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: var(--text-slate);
+      margin-top: 8px;
+    }
+
+    @media (min-width: 640px) {
+      .section-title { font-size: 32px; }
+    }
+
+    /* --- VETRINA GRIGLIA --- */
+    .properties-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      margin-bottom: 3.5rem;
+    }
+
+    @media (min-width: 768px) {
+      .properties-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (min-width: 1024px) {
+      .properties-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    /* Card Immobile */
+    .prop-card {
+      background-color: var(--white);
+      border-radius: 24px;
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: var(--transition);
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(163, 177, 198, 0.12);
+    }
+
+    .prop-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 10px 30px rgba(163, 177, 198, 0.25);
+    }
+
+    .prop-card-media {
+      position: relative;
+      aspect-ratio: 4/3;
+      background-color: #0f172a;
+    }
+
+    .prop-card-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .badge-overlay-contract {
+      position: absolute;
+      bottom: 1rem;
+      left: 1rem;
+      z-index: 10;
+      color: var(--white);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+
+    .badge-overlay-contract.vendita {
+      background-color: var(--brand-yellow);
+      color: var(--brand-blue);
+    }
+
+    .badge-overlay-contract.affitto {
+      background-color: var(--brand-blue);
+    }
+
+    .prop-card-body {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+
+    .prop-card-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text-slate);
+      line-height: 1.2;
+      margin-bottom: 0.5rem;
+      word-break: break-word;
+    }
+
+    .prop-card-location {
+      font-size: 12px;
+      font-weight: 900;
+      color: var(--brand-blue);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 1rem;
+    }
+
+    .prop-card-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      font-weight: 500;
+      margin-bottom: 1.5rem;
+      flex-grow: 1;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .prop-features-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border-color);
+      margin-bottom: 1.25rem;
+    }
+
+    .feature-tag {
+      background-color: #f1f5f9;
+      color: var(--text-slate);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .prop-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .price-box {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .price-label {
+      font-size: 9px;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+    }
+
+    .price-value {
+      font-size: 1.25rem;
+      font-weight: 900;
+      color: var(--text-slate);
+    }
+
+    .btn-card-action {
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: var(--brand-blue);
+      text-decoration: none;
+    }
+
+    /* --- SERVIZI --- */
+    .services-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (min-width: 768px) {
+      .services-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .service-card {
+      background-color: var(--white);
+      padding: 2rem;
+      border-radius: 24px;
+      border: 1px solid var(--border-color);
+      transition: var(--transition);
+    }
+
+    .service-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.02);
+    }
+
+    .service-num {
+      width: 48px;
+      height: 48px;
+      background-color: var(--brand-blue);
+      color: var(--brand-yellow);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 18px;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 10px rgba(0, 68, 255, 0.15);
+    }
+
+    .service-title {
+      font-size: 18px;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: var(--text-slate);
+      margin-bottom: 0.75rem;
+    }
+
+    .service-text {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      font-weight: 500;
+    }
+
+    /* --- CHI SONO --- */
+    .about-container {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+
+    @media (min-width: 1024px) {
+      .about-container { grid-template-columns: 1.2fr 1fr; }
+    }
+
+    .about-texts h2 {
+      font-size: 2.25rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: var(--text-slate);
+      margin-top: 8px;
+      line-height: 1.1;
+    }
+
+    .about-texts h2 span {
+      color: var(--brand-blue);
+    }
+
+    .about-lead {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--brand-blue);
+      margin: 1.5rem 0 1rem 0;
+    }
+
+    .about-p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      font-weight: 500;
+      margin-bottom: 2rem;
+    }
+
+    .about-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .btn-ig {
+      background-color: var(--brand-yellow);
+      color: var(--text-slate);
+      padding: 12px 24px;
+      border-radius: 16px;
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      transition: var(--transition);
+    }
+
+    .btn-ig:hover { transform: translateY(-1px); }
+
+    .btn-wa {
+      background-color: #25d366;
+      color: var(--white);
+      padding: 12px 24px;
+      border-radius: 16px;
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 8px rgba(37, 211, 102, 0.2);
+      transition: var(--transition);
+    }
+
+    .btn-wa:hover { transform: translateY(-1px); }
+
+    .about-media {
+      aspect-ratio: 4/3;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      border: 1px solid var(--border-color);
+    }
+
+    .about-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* --- CONTATTI --- */
+    .contact-card {
+      background-color: var(--brand-blue);
+      border-radius: 32px;
+      padding: 2.5rem 1.5rem;
+      color: var(--white);
+      box-shadow: 0 10px 30px rgba(0, 68, 255, 0.2);
+    }
+
+    @media (min-width: 768px) {
+      .contact-card {
+        padding: 4rem;
+      }
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 3rem;
+    }
+
+    @media (min-width: 1024px) {
+      .contact-grid { grid-template-columns: 1.2fr 1fr; }
+    }
+
+    .contact-info-title {
+      font-size: 2rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: var(--brand-yellow);
+      margin-bottom: 1rem;
+    }
+
+    .contact-info-p {
+      font-size: 15px;
+      color: #cbd5e1;
+      line-height: 1.6;
+      font-weight: 500;
+      margin-bottom: 2rem;
+    }
+
+    .contact-details {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .contact-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--white);
+    }
+
+    .contact-row svg {
+      color: var(--brand-yellow);
+    }
+
+    .form-card {
+      background-color: var(--white);
+      padding: 2rem;
+      border-radius: 24px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      width: 100%;
+    }
+
+    .form-title {
+      font-size: 18px;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: var(--text-slate);
+      margin-bottom: 1.5rem;
+    }
+
+    .form-input-box {
+      width: 100%;
+      padding: 12px 16px;
+      background-color: #f1f5f9;
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      font-size: 14px;
+      font-weight: 500;
+      outline: none;
+      transition: var(--transition);
+      color: var(--text-slate);
+      margin-bottom: 1rem;
+    }
+
+    .form-input-box:focus {
+      border-color: var(--brand-blue);
+      background-color: var(--white);
+    }
+
+    /* --- FOOTER MODALE --- */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(8px);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .modal-card {
+      background-color: var(--white);
+      border-radius: 28px;
+      max-width: 600px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-media {
+      position: relative;
+      aspect-ratio: 4/3;
+      background-color: #0f172a;
+    }
+
+    .modal-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .btn-close-modal {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      z-index: 10;
+      background-color: rgba(15, 23, 42, 0.6);
+      color: var(--white);
+      border: none;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-close-modal:hover {
+      background-color: var(--brand-blue);
+    }
+
+    .modal-carousel-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: rgba(255,255,255,0.9);
+      color: var(--brand-blue);
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      z-index: 5;
+    }
+
+    .modal-carousel-nav.prev { left: 1rem; }
+    .modal-carousel-nav.next { right: 1rem; }
+
+    .modal-carousel-indicator {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      background-color: rgba(15, 23, 42, 0.6);
+      color: var(--brand-yellow);
+      font-size: 11px;
+      font-weight: 900;
+      padding: 4px 10px;
+      border-radius: 20px;
+      z-index: 5;
+    }
+
+    .modal-body {
+      padding: 2rem;
+      overflow-y: auto;
+    }
+
+    .modal-tag {
+      background-color: rgba(0, 68, 255, 0.05);
+      color: var(--brand-blue);
+      font-size: 10px;
+      font-weight: 900;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 10px;
+      display: inline-block;
+    }
+
+    .modal-title {
+      font-size: 1.75rem;
+      font-weight: 900;
+      color: var(--text-slate);
+      margin: 0.5rem 0 1rem 0;
+      line-height: 1.2;
+    }
+
+    .modal-features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      background-color: #f1f5f9;
+      padding: 1rem;
+      border-radius: 18px;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-feature-box {
+      text-align: center;
+    }
+
+    .modal-feature-label {
+      font-size: 9px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 800;
+    }
+
+    .modal-feature-value {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--text-slate);
+      margin-top: 2px;
+    }
+
+    .modal-desc-title {
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+    }
+
+    .modal-desc {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      font-weight: 500;
+      white-space: pre-line;
+    }
+
+    .modal-footer {
+      background-color: #f8fafc;
+      border-top: 1px solid var(--border-color);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    @media (min-width: 640px) {
+      .modal-footer {
+        flex-direction: row;
+      }
+    }
+
+    .modal-actions-btns {
+      display: flex;
+      gap: 8px;
+      width: 100%;
+    }
+
+    @media (min-width: 640px) {
+      .modal-actions-btns {
+        width: auto;
+      }
+    }
+
+    .btn-modal-call {
+      background-color: var(--brand-blue);
+      color: var(--brand-yellow);
+      text-decoration: none;
+      padding: 12px 24px;
+      border-radius: 16px;
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex: 1;
+      justify-content: center;
+    }
+
+    .btn-modal-wa {
+      background-color: #25d366;
+      color: var(--white);
+      text-decoration: none;
+      padding: 12px 24px;
+      border-radius: 16px;
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- --- NAVBAR --- -->
+  <nav class="navbar">
+    <a href="#" class="brand">
+      <div class="brand-icon-box">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <span class="brand-title">MICHELE ERRE</span>
+        <span class="brand-subtitle">Agente immobiliare</span>
+      </div>
+    </a>
+
+    <div class="nav-links">
+      <a href="#vetrina" class="nav-link">Vetrina</a>
+      <a href="#servizi" class="nav-link">Servizi</a>
+      <a href="#chi-sono" class="nav-link">Chi Sono</a>
+      <a href="#contatti" class="nav-link">Contatti</a>
+      <a href="catalogo.html" class="btn-catalog-nav">Esplora Catalogo</a>
+    </div>
+
+    <button onclick="toggleMobileMenu()" class="menu-toggle">
+      <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path>
+      </svg>
+    </button>
+
+    <div id="mobile-menu" class="mobile-menu">
+      <a href="#vetrina" onclick="toggleMobileMenu()" class="nav-link">Vetrina</a>
+      <a href="#servizi" onclick="toggleMobileMenu()" class="nav-link">Servizi</a>
+      <a href="#chi-sono" onclick="toggleMobileMenu()" class="nav-link">Chi Sono</a>
+      <a href="#contatti" onclick="toggleMobileMenu()" class="nav-link">Contatti</a>
+      <a href="catalogo.html" class="btn-catalog-nav" style="text-align: center;">Esplora Catalogo</a>
+    </div>
+  </nav>
+
+  <!-- --- HERO --- -->
+  <header class="hero-section">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-badge">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+        </svg>
+        Oltre 10 Anni di Esperienza
+      </div>
+      <h1 class="hero-title">Niente Giacca e Cravatta.<br><span>Solo Case Fighissime.</span></h1>
+      <p class="hero-subtitle">Ciao! Sono Michele Erre. Ti aiuto a comprare, vendere o affittare casa a Porto Torres e dintorni in modo trasparente, rapido e senza stress.</p>
+      <div class="hero-actions">
+        <a href="catalogo.html" class="btn-primary">Vedi gli Annunci</a>
+        <a href="#contatti" class="btn-outline">Parla con Michele</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- --- VETRINA (DYNAMIC) --- -->
+  <section id="vetrina" class="section">
+    <div class="section-center">
+      <span class="section-badge">Scelte Calde</span>
+      <h2 class="section-title">Post in Evidenza 🔥</h2>
+    </div>
+    
+    <div id="properties-container" class="properties-grid">
+      <!-- Inserito via JS -->
+    </div>
+
+    <div style="text-align: center;">
+      <a href="catalogo.html" class="btn-outline" style="border-color: var(--brand-blue); color: var(--brand-blue);">Sfoglia Tutto il Catalogo</a>
+    </div>
+  </section>
+
+  <!-- --- SERVIZI --- -->
+  <section id="servizi" class="section" style="border-y: 1px solid var(--border-color); background-color: var(--white); max-width: 100%;">
+    <div style="max-width: 1200px; margin: 0 auto;">
+      <div class="section-center">
+        <span class="section-badge">Metodo Semplice</span>
+        <h2 class="section-title">Trattative alla mano 🛠️</h2>
+      </div>
+
+      <div class="services-grid">
+        <div class="service-card">
+          <div class="service-num">1</div>
+          <h3 class="service-title">Valutazioni Trasparenti</h3>
+          <p class="service-text">Nessuna valutazione gonfiata per illuderti. Ti mostro i numeri reali e recenti per concludere al meglio.</p>
+        </div>
+        <div class="service-card">
+          <div class="service-num">2</div>
+          <h3 class="service-title">Strategie Social & Pop</h3>
+          <p class="service-text">Utilizzo i migliori canali digitali e social feed per dare alle case la visibilità che meritano.</p>
+        </div>
+        <div class="service-card">
+          <div class="service-num">3</div>
+          <h3 class="service-title">Burocrazia Zero</h3>
+          <p class="service-text">Gestisco carte, visure e certificazioni spiegandoti ogni passaggio in parole semplici.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- --- CHI SONO --- -->
+  <section id="chi-sono" class="section">
+    <div class="about-container">
+      <div class="about-texts">
+        <span class="section-badge">Il Professionista</span>
+        <h2>Incontra <br><span>Michele Erre</span></h2>
+        <p class="about-lead">Dinamico, qualificato e con oltre dieci anni di successi continuativi nel Nord Sardegna.</p>
+        <p class="about-p">Ho fondato **Immobiliare con Michele** per offrire alle persone un approccio fresco, onesto e privo del classico distacco formale delle vecchie agenzie. Conosco a fondo Porto Torres, Sassari e Alghero, garantendoti un servizio veloce, preciso e piacevole.</p>
+        <div class="about-actions">
+          <a href="https://instagram.com" target="_blank" class="btn-ig">Seguimi su IG</a>
+          <a href="https://wa.me/39345678910" target="_blank" class="btn-wa">Scrivimi su WhatsApp</a>
+        </div>
+      </div>
+      <div class="about-media">
+        <img src="https://images.unsplash.com/photo-1556740758-90de374c12ad?auto=format&fit=crop&w=800&q=80" alt="Michele Erre" class="about-img">
+      </div>
+    </div>
+  </section>
+
+  <!-- --- CONTATTI --- -->
+  <section id="contatti" class="section">
+    <div class="contact-card">
+      <div class="contact-grid">
+        <div>
+          <h2 class="contact-info-title">Ci prendiamo un caffè? ☕</h2>
+          <p class="contact-info-p">Hai in mente un progetto immobiliare o desideri una valutazione onesta? Compila il modulo o contattami sui miei canali privati.</p>
+          <div class="contact-details">
+            <div class="contact-row">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+              </svg>
+              Porto Torres, Sassari, Alghero
+            </div>
+            <div class="contact-row">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+              </svg>
+              +39 345 678910
+            </div>
+          </div>
+        </div>
+
+        <div class="form-card">
+          <h3 class="form-title">Invia un messaggio</h3>
+          <form onsubmit="event.preventDefault(); alert('Grazie! Ti ricontatterò entro pochi minuti. 🚀');">
+            <input required type="text" placeholder="Nome" class="form-input-box">
+            <input required type="text" placeholder="Email o Telefono" class="form-input-box">
+            <textarea required placeholder="Di cosa hai bisogno?" rows="3" class="form-input-box" style="resize: none;"></textarea>
+            <button type="submit" class="btn-submit" style="width: 100%; background: var(--brand-blue); color: var(--brand-yellow); padding: 14px; border: none; border-radius: 16px; font-weight: 900; text-transform: uppercase;">Invia Richiesta 🚀</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- --- MODALE DI DETTAGLIO IMMOBILE --- -->
+  <div id="detail-modal" class="modal-overlay">
+    <div class="modal-card">
+      <button onclick="closeModal()" class="btn-close-modal">✕</button>
+      
+      <div class="modal-media">
+        <span id="modal-carousel-counter" class="modal-carousel-indicator">1 / 1</span>
+        <button id="modal-prev-btn" class="modal-carousel-nav prev">◀</button>
+        <img id="modal-img" src="" alt="Dettaglio Immobile" class="modal-img">
+        <button id="modal-next-btn" class="modal-carousel-nav next">▶</button>
+      </div>
+
+      <div class="modal-body">
+        <span id="modal-type" class="modal-tag">Tipologia</span>
+        <h2 id="modal-title" class="modal-title">Titolo Immobile</h2>
+        
+        <div id="modal-location" class="prop-card-location" style="font-size: 14px; margin-bottom: 1.5rem;">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+          </svg>
+          Sassari
+        </div>
+
+        <div class="modal-features-grid">
+          <div class="modal-feature-box">
+            <div class="modal-feature-label">Locali</div>
+            <div id="modal-rooms" class="modal-feature-value">1 Stanze</div>
+          </div>
+          <div class="modal-feature-box">
+            <div class="modal-feature-label">Bagni</div>
+            <div id="modal-bathrooms" class="modal-feature-value">1 Bagni</div>
+          </div>
+          <div class="modal-feature-box">
+            <div class="modal-feature-label">Parcheggio</div>
+            <div id="modal-parking" class="modal-feature-value">No</div>
+          </div>
+        </div>
+
+        <h4 class="modal-desc-title">Descrizione Completa</h4>
+        <p id="modal-desc" class="modal-desc">Descrizione estesa scritta da Michele.</p>
+      </div>
+
+      <div class="modal-footer">
+        <div class="price-box">
+          <span class="price-label">Prezzo Richiesto</span>
+          <span id="modal-price" class="price-value">€ 0</span>
+        </div>
+        <div class="modal-actions-btns">
+          <a id="modal-call-btn" href="tel:+39345678910" class="btn-modal-call">Chiama Ora 📞</a>
+          <a id="modal-wa-btn" href="https://wa.me/39345678910" target="_blank" class="btn-modal-wa">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.753-1.464L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.725 1.45 5.535 0 10.026-4.48 10.029-10.01.001-2.679-1.03-5.198-2.901-7.072-1.871-1.873-4.364-2.903-7.042-2.904-5.54 0-10.03 4.48-10.033 10.01-.001 1.93.503 3.812 1.461 5.485l-.959 3.507 3.633-.952-.162-.224-.112-.092z"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- --- SCRIPT SUPABASE & DINAMICHE --- -->
+  <script>
+    const SUPABASE_URL = "https://svdfgejkjvkbajmqoqjz.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_aGoAYeXnUtVMe4bIc20wIQ_2EM4LTSG";
+
+    const { createClient } = supabase;
+    const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    let activeProperties = [];
+    let modalImages = [];
+    let modalCurrentImageIndex = 0;
+
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobile-menu');
+      menu.classList.toggle('active');
+    }
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      await loadFeaturedProperties();
+    });
+
+    async function loadFeaturedProperties() {
+      try {
+        const { data, error } = await _supabase
+          .from('properties')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        activeProperties = data || [];
+
+        // Logica Vetrina (Max 3, fallback automatico)
+        const manualFeatured = activeProperties.filter(p => p.is_featured);
+        let featured = [];
+        
+        if (manualFeatured.length >= 3) {
+          featured = manualFeatured.slice(0, 3);
+        } else {
+          const needed = 3 - manualFeatured.length;
+          const nonFeatured = activeProperties.filter(p => !p.is_featured);
+          featured = [...manualFeatured, ...nonFeatured.slice(0, needed)];
+        }
+
+        renderProperties(featured);
+      } catch (err) {
+        console.error("Errore caricamento vetrina: ", err.message);
+      }
+    }
+
+    function renderProperties(list) {
+      const container = document.getElementById('properties-container');
+      container.innerHTML = "";
+
+      if (list.length === 0) {
+        container.innerHTML = `<p style="text-align:center; grid-column: 1/-1; color: var(--text-muted); font-weight: 500;">Nessun immobile disponibile al momento.</p>`;
+        return;
+      }
+
+      list.forEach(p => {
+        const card = document.createElement('div');
+        card.className = "prop-card";
+        card.onclick = () => openModal(p);
+
+        const imgUrl = p.images && p.images.length > 0 ? p.images[0] : 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=800&q=80';
+        const formattedPrice = Number(p.price).toLocaleString('it-IT');
+
+        card.innerHTML = `
+          <div class="prop-card-media">
+            <span class="badge-overlay-contract ${p.status === 'Vendita' ? 'vendita' : 'affitto'}">In ${p.status}</span>
+            <img src="${imgUrl}" alt="Foto Immobile" class="prop-card-img">
+          </div>
+          <div class="prop-card-body">
+            <h3 class="prop-card-title">${p.title}</h3>
+            <div class="prop-card-location">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+              </svg>
+              ${p.zone} | ${p.property_type}
+            </div>
+            <p class="prop-card-desc">${p.description}</p>
+            <div class="prop-features-row">
+              <div class="feature-tag">${p.rooms} Stanze</div>
+              <div class="feature-tag">${p.bathrooms} Bagni</div>
+              ${p.has_parking ? `<div class="feature-tag">Posto Auto</div>` : ''}
+            </div>
+            <div class="prop-card-footer">
+              <div class="price-box">
+                <span class="price-label">Prezzo</span>
+                <span class="price-value">€ ${formattedPrice}${p.status === 'Affitto' ? '<span style="font-size:11px; font-weight:700; color:var(--text-muted);">/mese</span>' : ''}</span>
+              </div>
+              <span class="btn-card-action">Dettagli →</span>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // --- AZIONI MODALE ---
+    function openModal(p) {
+      document.getElementById('modal-type').innerText = p.property_type;
+      document.getElementById('modal-title').innerText = p.title;
+      document.getElementById('modal-location').innerHTML = `
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+        </svg>
+        ${p.zone}
+      `;
+      document.getElementById('modal-rooms').innerText = `${p.rooms} Stanze`;
+      document.getElementById('modal-bathrooms').innerText = `${p.bathrooms} Bagni`;
+      document.getElementById('modal-parking').innerText = p.has_parking ? 'Sì' : 'No';
+      document.getElementById('modal-desc').innerText = p.description;
+      
+      const formattedPrice = Number(p.price).toLocaleString('it-IT');
+      document.getElementById('modal-price').innerHTML = `€ ${formattedPrice}${p.status === 'Affitto' ? '<span style="font-size:12px; font-weight:700; color:var(--text-muted)">/mese</span>' : ''}`;
+
+      // Configurazione Carosello Modale
+      modalImages = p.images && p.images.length > 0 ? p.images : ['https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=800&q=80'];
+      modalCurrentImageIndex = 0;
+      updateModalImage();
+
+      // Configurazione Tasti Azione
+      document.getElementById('modal-call-btn').href = `tel:+39345678910`;
+      document.getElementById('modal-wa-btn').href = `https://wa.me/39345678910?text=${encodeURIComponent('Ciao Michele, sono interessato all\'annuncio: ' + p.title)}`;
+
+      // Mostra modale e blocca scroll body
+      document.getElementById('detail-modal').style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      document.getElementById('detail-modal').style.display = 'none';
+      document.body.style.overflow = '';
+    }
+
+    function updateModalImage() {
+      document.getElementById('modal-img').src = modalImages[modalCurrentImageIndex];
+      document.getElementById('modal-carousel-counter').innerText = `${modalCurrentImageIndex + 1} / ${modalImages.length}`;
+      
+      if (modalImages.length <= 1) {
+        document.getElementById('modal-prev-btn').style.display = 'none';
+        document.getElementById('modal-next-btn').style.display = 'none';
+      } else {
+        document.getElementById('modal-prev-btn').style.display = 'flex';
+        document.getElementById('modal-next-btn').style.display = 'flex';
+      }
+    }
+
+    document.getElementById('modal-prev-btn').onclick = (e) => {
+      e.stopPropagation();
+      modalCurrentImageIndex = (modalCurrentImageIndex - 1 + modalImages.length) % modalImages.length;
+      updateModalImage();
+    };
+
+    document.getElementById('modal-next-btn').onclick = (e) => {
+      e.stopPropagation();
+      modalCurrentImageIndex = (modalCurrentImageIndex + 1) % modalImages.length;
+      updateModalImage();
+    };
+
+    document.getElementById('detail-modal').onclick = function(e) {
+      if (e.target === this) closeModal();
+    };
+  </script>
+</body>
+</html>
