@@ -32,8 +32,18 @@
     .brand-subtitle { font-size: 9px; font-weight: 900; color: var(--white); letter-spacing: 0.05em; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     @media (min-width: 375px) { .navbar { padding: 0 1.5rem; } .brand-text { margin-left: 12px; } .brand-title { font-size: 1.25rem; } .brand-subtitle { font-size: 10px; letter-spacing: 0.1em; } }
     
-    .btn-logout { background-color: rgba(255,255,255,0.1); color: var(--white); border: 1px solid rgba(255,255,255,0.2); font-weight: bold; font-size: 11px; text-transform: uppercase; padding: 8px 12px; border-radius: 12px; cursor: pointer; transition: var(--transition); flex-shrink: 0; z-index: 1001; }
-    .btn-logout:hover { background-color: rgba(255,255,255,0.2); color: var(--brand-yellow); }
+    /* NAV ACTIONS OTTIMIZZATE PER MOBILE */
+    .nav-actions { display: flex; align-items: center; gap: 8px; }
+    .btn-nav-link { background: transparent; color: var(--brand-yellow); text-decoration: none; font-weight: 900; font-size: 11px; text-transform: uppercase; padding: 8px 10px; border-radius: 12px; transition: var(--transition); display: flex; align-items: center; gap: 6px; border: 1px solid rgba(255,217,15,0.3); }
+    .btn-nav-link:hover { background: rgba(255,217,15,0.1); }
+    .btn-logout { background-color: rgba(239,68,68,0.1); color: #fca5a5; border: 1px solid rgba(239,68,68,0.3); font-weight: 900; font-size: 11px; text-transform: uppercase; padding: 8px 12px; border-radius: 12px; cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 6px;}
+    .btn-logout:hover { background-color: #ef4444; color: var(--white); }
+    
+    /* Nasconde il testo dei bottoni su schermi ultra-piccoli per evitare ritagli */
+    @media (max-width: 380px) {
+      .hide-mobile { display: none; }
+      .btn-nav-link { padding: 8px; }
+    }
 
     /* SCHERMATA LOGIN */
     .login-container { max-width: 400px; margin: 3rem auto; padding: 0 1rem; width: 100%; flex: 1; }
@@ -67,11 +77,18 @@
     @media (min-width: 640px) { .panel-card { padding: 2rem; } }
     .panel-title { font-size: 16px; font-weight: 900; text-transform: uppercase; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 8px; color: var(--text-slate); }
     .btn-cancel-edit { font-size: 11px; font-weight: 900; text-transform: uppercase; color: #ef4444; background: none; border: none; cursor: pointer; display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+    
+    /* NUOVO: Griglia Form Responsiva */
+    .form-row { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    @media (min-width: 480px) { .form-row { grid-template-columns: 1fr 1fr; } }
+
     .photo-fields-box { background-color: #f8fafc; padding: 1rem; border-radius: 18px; border: 1px solid var(--border-color); margin-bottom: 1rem; width: 100%; }
     .file-upload-row { display: flex; flex-direction: column; gap: 10px; width: 100%; }
     .file-input-custom { border: 2px dashed var(--border-color); padding: 20px; border-radius: 16px; text-align: center; background-color: var(--white); cursor: pointer; transition: var(--transition); font-size: 12px; font-weight: 700; color: var(--text-muted); }
     .file-input-custom:hover { border-color: var(--brand-blue); background-color: rgba(0,68,255,0.02); }
-    .preview-thumbs-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 10px; }
+    
+    /* NUOVO: Anteprima foto fluida invece di 4 colonne fisse */
+    .preview-thumbs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(65px, 1fr)); gap: 8px; margin-top: 10px; }
     .preview-thumb-container { position: relative; aspect-ratio: 4/3; border-radius: 8px; overflow: hidden; border: 1px solid var(--border-color); }
     .preview-thumb { width: 100%; height: 100%; object-fit: cover; }
     .btn-remove-thumb { position: absolute; top: 2px; right: 2px; background-color: rgba(239,68,68,0.9); color: var(--white); border: none; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 10px; font-weight: bold; }
@@ -157,9 +174,15 @@
       </div>
     </div>
     
-    <div id="nav-actions" style="display: none;">
-      <a href="index.html" class="btn-logout" style="margin-right: 10px; background: transparent; color: var(--brand-yellow); border: none;">Torna al Sito</a>
-      <button onclick="handleLogout()" class="btn-logout">Disconnetti</button>
+    <div id="nav-actions" class="nav-actions" style="display: none;">
+      <a href="index.html" class="btn-nav-link" title="Torna al Sito">
+        <svg style="width: 14px; height: 14px; flex-shrink: 0;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+        <span class="hide-mobile">Sito</span>
+      </a>
+      <button onclick="handleLogout()" class="btn-logout" title="Disconnetti">
+        <svg style="width: 14px; height: 14px; flex-shrink: 0;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+        <span class="hide-mobile">Esci</span>
+      </button>
     </div>
   </nav>
 
@@ -215,7 +238,7 @@
             <input required type="text" id="prop-title" placeholder="es. Bilocale accogliente a Porto Torres" class="form-input">
           </div>
 
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-row">
             <div>
               <label class="form-label">Contratto</label>
               <select id="prop-status" class="form-select">
@@ -229,7 +252,7 @@
             </div>
           </div>
 
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-row">
             <div>
               <label class="form-label">Zona</label>
               <input required type="text" id="prop-zone" placeholder="es. Porto Torres" class="form-input">
@@ -240,7 +263,7 @@
             </div>
           </div>
 
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-row">
             <div>
               <label class="form-label">Stanze</label>
               <input required type="number" id="prop-rooms" min="1" value="1" class="form-input">
@@ -480,7 +503,6 @@
       });
     }
 
-    // AGGIORNATO CON ELIMINAZIONE IMMAGINI SINGOLE DA STORAGE
     async function removeImage(index) {
       const urlToRemove = uploadedImageUrls[index];
       
@@ -586,7 +608,6 @@
     function openDeleteModal(id) { selectedPropertyToDelete = id; document.getElementById('delete-modal').style.display = 'flex'; }
     function closeDeleteModal() { selectedPropertyToDelete = null; document.getElementById('delete-modal').style.display = 'none'; }
 
-    // AGGIORNATO CON ELIMINAZIONE MASSIVA IMMAGINI DA STORAGE
     document.getElementById('confirm-delete-btn').onclick = async () => {
       if (selectedPropertyToDelete) {
         showLoader("Eliminazione in corso...");
