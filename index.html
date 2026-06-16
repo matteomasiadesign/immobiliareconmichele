@@ -22,10 +22,9 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     html, body { background-color: var(--bg-slate); color: var(--text-slate); max-width: 100%; overflow-x: clip; scroll-behavior: smooth; display: flex; flex-direction: column; min-height: 100vh; }
 
-    /* NAVBAR STICKY */
     .navbar { background-color: var(--brand-blue); border-bottom: 4px solid var(--brand-yellow); height: 80px; display: flex; align-items: center; justify-content: space-between; padding: 0 1rem; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(0,68,255,0.15); }
     .brand { display: flex; align-items: center; text-decoration: none; z-index: 1001; }
-    .brand-icon-box { background-color: var(--brand-yellow); padding: 8px; border-radius: 12px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
+    .brand-icon-box { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
     .brand-text { margin-left: 12px; display: flex; flex-direction: column; line-height: 1.1; }
     .brand-title { font-size: 1.25rem; font-weight: 900; color: var(--brand-yellow); letter-spacing: -0.025em; }
     .brand-subtitle { font-size: 10px; font-weight: 900; color: var(--white); letter-spacing: 0.1em; margin-top: 2px; }
@@ -36,7 +35,6 @@
     .nav-link:hover { color: var(--white); }
     .btn-catalog-nav { background-color: var(--brand-yellow); color: var(--brand-blue); padding: 10px 20px; border-radius: 16px; text-decoration: none; font-weight: 900; font-size: 12px; text-transform: uppercase; }
 
-    /* HAMBURGER MENU */
     .mobile-toggle { display: block; background: none; border: none; cursor: pointer; z-index: 1001; }
     @media (min-width: 768px) { .mobile-toggle { display: none; } }
     
@@ -45,11 +43,9 @@
     .mobile-menu .nav-link { font-size: 1.1rem; }
     .mobile-menu .btn-catalog-nav { font-size: 1.1rem; padding: 14px 28px; }
 
-    /* MAIN CONTENT FLEX GROW PER RISOLVERE SCROLL BIANCO */
     .main-content { flex: 1 0 auto; display: flex; flex-direction: column; }
 
-    /* HERO */
-    .hero { position: relative; min-height: 90vh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 0 1rem; background-image: url('https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; }
+    .hero { position: relative; min-height: 90vh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 0 1rem; background-image: url('header.webp'); background-size: cover; background-position: center; }
     .hero-overlay { position: absolute; inset: 0; background-color: rgba(15, 23, 42, 0.7); }
     .hero-content { position: relative; z-index: 10; max-width: 800px; }
     .hero-badge { background-color: var(--brand-yellow); color: var(--brand-blue); font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; padding: 6px 16px; border-radius: 20px; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 1.5rem; }
@@ -63,7 +59,6 @@
     .btn-secondary { background-color: rgba(255,255,255,0.1); color: var(--white); border: 2px solid rgba(255,255,255,0.2); padding: 14px 32px; border-radius: 16px; text-decoration: none; font-weight: 900; font-size: 14px; text-transform: uppercase; backdrop-filter: blur(4px); transition: var(--transition); display: inline-flex; align-items: center; justify-content: center; }
     .btn-primary:hover { background-color: #0033CC; }
 
-    /* SEZIONI */
     .section { padding: 3rem 1rem; max-width: 1200px; margin: 0 auto; width: 100%; }
     @media (min-width: 768px) { .section { padding: 5rem 1.5rem; } }
     .section-header { text-align: center; margin-bottom: 2rem; }
@@ -72,7 +67,6 @@
     .section-title { font-size: 1.8rem; font-weight: 900; color: var(--text-slate); text-transform: uppercase; margin-bottom: 1rem; }
     @media (min-width: 768px) { .section-title { font-size: 3rem; } }
 
-    /* GRID IMMOBILI */
     .properties-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
     @media (min-width: 768px) { .properties-grid { grid-template-columns: repeat(2, 1fr); gap: 2rem; } }
     @media (min-width: 1024px) { .properties-grid { grid-template-columns: repeat(3, 1fr); } }
@@ -83,7 +77,6 @@
     .card-content { padding: 1.25rem; flex: 1; display: flex; flex-direction: column; position: relative; }
     @media (min-width: 768px) { .card-content { padding: 1.5rem; } }
     
-    /* BADGE TAGLIATO CORRETTO (Portato dentro l'immagine e spostato più in basso) */
     .card-badge-contract { position: absolute; top: 12px; left: 12px; font-size: 10px; font-weight: 900; text-transform: uppercase; padding: 6px 16px; border-radius: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.15); z-index: 10; }
     .card-badge-contract.vendita { background-color: var(--brand-yellow); color: var(--brand-blue); border: 2px solid var(--white); }
     .card-badge-contract.affitto { background-color: var(--brand-blue); color: var(--white); border: 2px solid var(--brand-yellow); }
@@ -96,7 +89,6 @@
     .card-price-label { font-size: 10px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 2px; }
     .card-price { font-size: 1.35rem; font-weight: 900; color: var(--text-slate); }
 
-    /* SEZIONE SERVIZI */
     .services-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
     @media (min-width: 768px) { .services-grid { grid-template-columns: repeat(3, 1fr); gap: 2rem; } }
     .service-card { background: var(--white); padding: 2rem 1.5rem; border-radius: 24px; border: 1px solid var(--border-color); text-align: center; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); transition: var(--transition); }
@@ -106,9 +98,8 @@
     .service-title { font-size: 1.2rem; font-weight: 900; color: var(--text-slate); margin-bottom: 0.75rem; text-transform: uppercase; }
     .service-desc { font-size: 0.95rem; color: var(--text-muted); line-height: 1.5; font-weight: 500; }
 
-    /* CTA CONTATTI */
-    .cta-box { background: var(--brand-blue); border-radius: 32px; padding: 2.5rem 1.5rem; text-align: center; color: white; position: relative; overflow: hidden; box-shadow: 0 20px 40px rgba(0,68,255,0.2); margin: 0 1rem; }
-    @media (min-width: 768px) { .cta-box { padding: 4rem 2rem; margin: 0 1.5rem; } }
+    .cta-box { background: var(--brand-blue); border-radius: 32px; padding: 2.5rem 1.5rem; text-align: center; color: white; position: relative; overflow: hidden; box-shadow: 0 20px 40px rgba(0,68,255,0.2); margin: 0; width: 100%; }
+    @media (min-width: 768px) { .cta-box { padding: 4rem 2rem; margin: 0; } }
     .cta-title { font-size: 1.75rem; font-weight: 900; text-transform: uppercase; margin-bottom: 1rem; }
     @media (min-width: 768px) { .cta-title { font-size: 2rem; } }
     .cta-text { font-size: 1rem; color: #e2e8f0; margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto; line-height: 1.5; }
@@ -120,7 +111,6 @@
     .btn-call-large { background-color: var(--white); color: var(--brand-blue); padding: 14px 28px; border-radius: 16px; text-decoration: none; font-weight: 900; font-size: 13px; text-transform: uppercase; display: inline-flex; align-items: center; gap: 8px; transition: var(--transition); width: 100%; justify-content: center; }
     @media (min-width: 640px) { .btn-call-large { width: auto; padding: 16px 32px; font-size: 14px; } }
 
-    /* FLOATING ACTION MENU */
     .fab-container { position: fixed; bottom: 24px; right: 24px; z-index: 900; display: flex; flex-direction: column; align-items: center; gap: 12px; }
     .fab-menu { display: flex; flex-direction: column; gap: 10px; opacity: 0; transform: translateY(20px) scale(0.9); pointer-events: none; transition: var(--transition); transform-origin: bottom center; }
     .fab-menu.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
@@ -136,7 +126,6 @@
     .fab-action::after { content: attr(data-tooltip); position: absolute; right: 60px; background: rgba(15, 23, 42, 0.9); color: white; padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 600; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
     .fab-action:hover::after { opacity: 1; }
 
-    /* MODALE SICURO */
     .modal-overlay { position: fixed; inset: 0; background-color: rgba(15, 23, 42, 0.8); backdrop-filter: blur(5px); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 1rem; }
     .modal-card { background: var(--white); width: 100%; max-width: 600px; max-height: 90vh; border-radius: 24px; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
     
@@ -166,7 +155,6 @@
     .modal-actions { display: flex; gap: 10px; width: 100%; align-items: center; }
     @media (min-width: 640px) { .modal-actions { width: auto; } }
     
-    /* AGGIORNATO: BOTTONI MODALE UNIFORMI E RESPONSIVE */
     .btn-call { flex: 1 1 auto; min-width: 0; height: 50px; background-color: var(--brand-blue); color: var(--white); text-decoration: none; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 13px; border-radius: 16px; transition: var(--transition); text-transform: uppercase; letter-spacing: 0.05em; padding: 0 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .btn-reel { width: 50px; height: 50px; flex-shrink: 0; background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: var(--white); text-decoration: none; display: flex; align-items: center; justify-content: center; border-radius: 16px; transition: var(--transition); }
     .btn-wa { width: 50px; height: 50px; flex-shrink: 0; background-color: #25D366; color: var(--white); text-decoration: none; display: flex; align-items: center; justify-content: center; border-radius: 16px; transition: var(--transition); }
@@ -174,11 +162,10 @@
 </head>
 <body>
 
-  <!-- NAVBAR CON HAMBURGER -->
   <nav class="navbar">
     <a href="index.html" class="brand">
-      <div class="brand-icon-box">
-        <svg style="width: 24px; height: 24px; flex-shrink: 0;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+      <div class="brand-icon-box" style="padding: 0; background: transparent;">
+        <img src="icona.webp" alt="Icona Michele Erre" style="width: 100%; height: 100%; object-fit: contain;">
       </div>
       <div class="brand-text">
         <span class="brand-title">MICHELE ERRE</span>
@@ -189,6 +176,7 @@
     <div class="nav-links">
       <a href="#vetrina" class="nav-link">Vetrina</a>
       <a href="#servizi" class="nav-link">Servizi</a>
+      <a href="#contatti" class="nav-link">Contatti</a>
       <a href="catalogo.html" class="btn-catalog-nav">Sfoglia Catalogo</a>
     </div>
 
@@ -205,7 +193,6 @@
   </div>
 
   <main class="main-content">
-      <!-- HERO -->
       <section class="hero">
         <div class="hero-overlay"></div>
         <div class="hero-content">
@@ -222,7 +209,6 @@
         </div>
       </section>
 
-      <!-- VETRINA -->
       <section id="vetrina" class="section">
         <div class="section-header">
           <span class="section-label">Proposte Top</span>
@@ -236,7 +222,6 @@
         </div>
       </section>
 
-      <!-- SEZIONE SERVIZI -->
       <section id="servizi" class="section">
         <div class="section-header">
           <span class="section-label">Cosa faccio per te</span>
@@ -275,7 +260,6 @@
         </div>
       </section>
 
-      <!-- CALL TO ACTION CONTATTI -->
       <section id="contatti" class="section" style="padding-top: 1rem;">
         <div class="cta-box">
           <h2 class="cta-title">Pronto a trovare casa?</h2>
@@ -294,7 +278,6 @@
       </section>
   </main>
 
-  <!-- INIZIO NUOVO FOOTER COLORATO -->
   <footer style="background-color: var(--brand-blue); padding: 4rem 1rem 3rem 1rem; margin-top: auto; text-align: center; color: var(--white); box-shadow: 0 -10px 20px rgba(0,68,255, 0.1);">
       <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 1rem;">
           <h3 style="color: var(--brand-yellow); margin: 0; font-size: 1.5rem; font-weight: 900; text-transform: uppercase;">Michele Erre</h3>
@@ -320,9 +303,7 @@
           </div>
       </div>
   </footer>
-  <!-- FINE FOOTER -->
 
-  <!-- FLOATING ACTION MENU -->
   <div class="fab-container" id="fab-container">
       <div class="fab-menu" id="fab-menu">
           <a href="https://wa.me/393348576926" target="_blank" class="fab-action fab-wa" data-tooltip="Su WhatsApp">
@@ -336,9 +317,7 @@
           <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
       </button>
   </div>
-  <!-- FINE FLOATING ACTION MENU -->
 
-  <!-- MODALE DETTAGLIO IMMOBILE -->
   <div id="property-modal" class="modal-overlay">
     <div class="modal-card">
       <button onclick="closeModal()" class="btn-close-modal">
@@ -395,13 +374,11 @@
     
     let properties = [];
 
-    // GESTIONE HAMBURGER MENU
     const mobileToggle = document.getElementById('mobile-toggle');
     const mobileMenu = document.getElementById('mobile-menu');
     mobileToggle.addEventListener('click', () => { mobileMenu.classList.toggle('open'); });
     mobileMenu.querySelectorAll('a').forEach(link => { link.addEventListener('click', () => mobileMenu.classList.remove('open')); });
 
-    // GESTIONE FLOATING MENU
     function toggleFab() {
         document.getElementById('fab-menu').classList.toggle('open');
         document.getElementById('fab-container').classList.toggle('active');
