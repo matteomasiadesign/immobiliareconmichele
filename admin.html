@@ -23,29 +23,25 @@
     html { scroll-behavior: smooth; }
     body { background-color: var(--bg-slate); color: var(--text-slate); min-height: 100vh; max-width: 100%; overflow-x: clip; display: flex; flex-direction: column; }
 
-    /* NAVBAR STICKY */
     .navbar { background-color: var(--brand-blue); border-bottom: 4px solid var(--brand-yellow); height: 80px; display: flex; align-items: center; justify-content: space-between; padding: 0 1rem; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(0,68,255,0.15); width: 100%; }
     .brand { display: flex; align-items: center; text-decoration: none; min-width: 0; z-index: 1001; }
-    .brand-icon-box { background-color: var(--brand-yellow); padding: 8px; border-radius: 12px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .brand-icon-box { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .brand-text { margin-left: 8px; display: flex; flex-direction: column; line-height: 1.1; min-width: 0; }
     .brand-title { font-size: 1.1rem; font-weight: 900; color: var(--brand-yellow); letter-spacing: -0.025em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .brand-subtitle { font-size: 9px; font-weight: 900; color: var(--white); letter-spacing: 0.05em; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     @media (min-width: 375px) { .navbar { padding: 0 1.5rem; } .brand-text { margin-left: 12px; } .brand-title { font-size: 1.25rem; } .brand-subtitle { font-size: 10px; letter-spacing: 0.1em; } }
     
-    /* NAV ACTIONS OTTIMIZZATE PER MOBILE */
     .nav-actions { display: flex; align-items: center; gap: 8px; }
     .btn-nav-link { background: transparent; color: var(--brand-yellow); text-decoration: none; font-weight: 900; font-size: 11px; text-transform: uppercase; padding: 8px 10px; border-radius: 12px; transition: var(--transition); display: flex; align-items: center; gap: 6px; border: 1px solid rgba(255,217,15,0.3); }
     .btn-nav-link:hover { background: rgba(255,217,15,0.1); }
     .btn-logout { background-color: rgba(239,68,68,0.1); color: #fca5a5; border: 1px solid rgba(239,68,68,0.3); font-weight: 900; font-size: 11px; text-transform: uppercase; padding: 8px 12px; border-radius: 12px; cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 6px;}
     .btn-logout:hover { background-color: #ef4444; color: var(--white); }
     
-    /* Nasconde il testo dei bottoni su schermi ultra-piccoli per evitare ritagli */
     @media (max-width: 380px) {
       .hide-mobile { display: none; }
       .btn-nav-link { padding: 8px; }
     }
 
-    /* SCHERMATA LOGIN */
     .login-container { max-width: 400px; margin: 3rem auto; padding: 0 1rem; width: 100%; flex: 1; }
     .login-card { background-color: var(--white); padding: 2rem 1.5rem; border-radius: 24px; border: 1px solid var(--border-color); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); text-align: center; width: 100%; }
     @media (min-width: 400px) { .login-card { padding: 2.5rem 2rem; } }
@@ -59,7 +55,6 @@
     .btn-submit { width: 100%; background-color: var(--brand-blue); color: var(--brand-yellow); border: none; padding: 14px; border-radius: 16px; font-size: 14px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; box-shadow: 0 4px 12px rgba(0,68,255,0.2); transition: var(--transition); }
     .btn-submit:hover { background-color: #0033CC; transform: translateY(-1px); }
 
-    /* DASHBOARD GESTIONALE */
     .dashboard-container { max-width: 1200px; margin: 1.5rem auto; padding: 0 1rem; width: 100%; flex: 1; }
     @media (min-width: 768px) { .dashboard-container { margin: 3rem auto; padding: 0 1.5rem; } }
     .header-bar { display: flex; flex-direction: column; justify-content: space-between; gap: 1rem; margin-bottom: 2rem; }
@@ -78,7 +73,6 @@
     .panel-title { font-size: 16px; font-weight: 900; text-transform: uppercase; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 8px; color: var(--text-slate); }
     .btn-cancel-edit { font-size: 11px; font-weight: 900; text-transform: uppercase; color: #ef4444; background: none; border: none; cursor: pointer; display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
     
-    /* NUOVO: Griglia Form Responsiva */
     .form-row { display: grid; grid-template-columns: 1fr; gap: 12px; }
     @media (min-width: 480px) { .form-row { grid-template-columns: 1fr 1fr; } }
 
@@ -87,7 +81,6 @@
     .file-input-custom { border: 2px dashed var(--border-color); padding: 20px; border-radius: 16px; text-align: center; background-color: var(--white); cursor: pointer; transition: var(--transition); font-size: 12px; font-weight: 700; color: var(--text-muted); }
     .file-input-custom:hover { border-color: var(--brand-blue); background-color: rgba(0,68,255,0.02); }
     
-    /* NUOVO: Anteprima foto fluida invece di 4 colonne fisse */
     .preview-thumbs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(65px, 1fr)); gap: 8px; margin-top: 10px; }
     .preview-thumb-container { position: relative; aspect-ratio: 4/3; border-radius: 8px; overflow: hidden; border: 1px solid var(--border-color); }
     .preview-thumb { width: 100%; height: 100%; object-fit: cover; }
@@ -96,6 +89,7 @@
     .checkbox-row { display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
     .checkbox-row input { width: 18px; height: 18px; accent-color: var(--brand-blue); flex-shrink: 0; }
     .checkbox-label { font-size: 13px; font-weight: 700; }
+    
     .filters-card { background-color: var(--white); padding: 1.25rem; border-radius: 24px; border: 1px solid var(--border-color); box-shadow: 0 4px 20px rgba(0,0,0,0.02); margin-bottom: 1rem; width: 100%; }
     @media (min-width: 640px) { .filters-card { padding: 1.5rem; margin-bottom: 1.5rem; } }
     .filters-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 10px; width: 100%; }
@@ -128,12 +122,10 @@
     .btn-action.delete { background-color: #fef2f2; color: #ef4444; }
     .btn-action.delete:hover { background-color: #ef4444; color: white; }
 
-    /* LOADING SPINNER */
     .loader-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(15,23,42,0.7); backdrop-filter: blur(4px); z-index: 2000; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; color: var(--white); font-weight: 700; font-size: 14px; }
     .spinner { border: 4px solid rgba(255,255,255,0.1); width: 48px; height: 48px; border-radius: 50%; border-left-color: var(--brand-yellow); animation: spin 1s linear infinite; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-    /* MODALE ELIMINAZIONE */
     .modal-overlay { position: fixed; inset: 0; background-color: rgba(15,23,42,0.6); backdrop-filter: blur(4px); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 1rem; }
     .modal-content { background-color: var(--white); border-radius: 24px; padding: 1.5rem; max-width: 360px; width: 100%; text-align: center; border: 1px solid var(--border-color); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
     .modal-icon-box { width: 64px; height: 64px; background-color: #fee2e2; color: #ef4444; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem auto; }
@@ -145,7 +137,6 @@
     .btn-modal.confirm { background-color: #ef4444; color: white; }
     .hidden { display: none !important; }
 
-    /* FOOTER */
     .site-footer { background-color: #0f172a; color: #cbd5e1; padding: 4rem 1.5rem 2rem; margin-top: auto; width: 100%; }
     .footer-content { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr; gap: 2.5rem; }
     @media (min-width: 768px) { .footer-content { grid-template-columns: 1fr 1fr; } }
@@ -165,8 +156,8 @@
 
   <nav class="navbar">
     <div class="brand">
-      <div class="brand-icon-box">
-        <svg style="width: 24px; height: 24px; flex-shrink: 0;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+      <div class="brand-icon-box" style="padding: 0; background: transparent;">
+        <img src="icona.webp" alt="Icona Michele Erre" style="width: 100%; height: 100%; object-fit: contain;">
       </div>
       <div class="brand-text">
         <span class="brand-title">MICHELE ERRE</span>
