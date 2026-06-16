@@ -40,7 +40,7 @@
       padding-bottom: 3rem;
     }
 
-    /* --- NAVBAR BLU CON TESTO GIALLO --- */
+    /* --- NAVBAR --- */
     .navbar {
       background-color: var(--brand-blue);
       border-bottom: 4px solid var(--brand-yellow);
@@ -105,10 +105,19 @@
     }
 
     @media (min-width: 375px) {
-      .navbar { padding: 0 1.5rem; }
-      .brand-text { margin-left: 12px; }
-      .brand-title { font-size: 1.25rem; }
-      .brand-subtitle { font-size: 10px; letter-spacing: 0.1em; }
+      .navbar {
+        padding: 0 1.5rem;
+      }
+      .brand-text {
+        margin-left: 12px;
+      }
+      .brand-title {
+        font-size: 1.25rem;
+      }
+      .brand-subtitle {
+        font-size: 10px;
+        letter-spacing: 0.1em;
+      }
     }
 
     .btn-logout {
@@ -149,7 +158,9 @@
     }
 
     @media (min-width: 400px) {
-      .login-card { padding: 2.5rem 2rem; }
+      .login-card {
+        padding: 2.5rem 2rem;
+      }
     }
 
     .login-icon-box {
@@ -246,7 +257,10 @@
     }
 
     @media (min-width: 768px) {
-      .dashboard-container { margin: 3rem auto; padding: 0 1.5rem; }
+      .dashboard-container {
+        margin: 3rem auto;
+        padding: 0 1.5rem;
+      }
     }
 
     .header-bar {
@@ -258,7 +272,10 @@
     }
 
     @media (min-width: 768px) {
-      .header-bar { flex-direction: row; align-items: center; }
+      .header-bar {
+        flex-direction: row;
+        align-items: center;
+      }
     }
 
     .header-title-box h1 {
@@ -270,7 +287,9 @@
     }
 
     @media (min-width: 640px) {
-      .header-title-box h1 { font-size: 1.85rem; }
+      .header-title-box h1 {
+        font-size: 1.85rem;
+      }
     }
 
     .header-title-box p {
@@ -299,7 +318,9 @@
     }
 
     @media (min-width: 768px) {
-      .featured-status-box { width: auto; }
+      .featured-status-box {
+        width: auto;
+      }
     }
 
     .badge-counter {
@@ -323,7 +344,10 @@
     }
 
     @media (min-width: 1024px) {
-      .main-grid { grid-template-columns: 380px 1fr; gap: 2rem; }
+      .main-grid {
+        grid-template-columns: 380px 1fr;
+        gap: 2rem;
+      }
     }
 
     .panel-card {
@@ -336,7 +360,9 @@
     }
 
     @media (min-width: 640px) {
-      .panel-card { padding: 2rem; }
+      .panel-card {
+        padding: 2rem;
+      }
     }
 
     .panel-title {
@@ -481,7 +507,10 @@
     }
 
     @media (min-width: 640px) {
-      .filters-card { padding: 1.5rem; margin-bottom: 1.5rem; }
+      .filters-card {
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
     }
 
     .filters-grid {
@@ -493,8 +522,12 @@
     }
 
     @media (min-width: 640px) {
-      .filters-grid { grid-template-columns: 2fr 1fr 1fr; }
-      .span-full { grid-column: span 2; }
+      .filters-grid {
+        grid-template-columns: 2fr 1fr 1fr;
+      }
+      .span-full {
+        grid-column: span 2;
+      }
     }
 
     .btn-reset-filters {
@@ -556,10 +589,17 @@
     }
 
     @media (min-width: 640px) {
-      .item-row { padding: 1.5rem; flex-direction: row; align-items: center; justify-content: space-between; }
+      .item-row {
+        padding: 1.5rem;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
     }
 
-    .item-row:hover { background-color: #fafbfc; }
+    .item-row:hover {
+      background-color: #fafbfc;
+    }
 
     .item-info {
       display: flex;
@@ -580,7 +620,10 @@
       background-color: #f1f5f9;
     }
 
-    .item-texts { min-width: 0; flex: 1; }
+    .item-texts {
+      min-width: 0;
+      flex: 1;
+    }
 
     .item-title {
       font-size: 14px;
@@ -615,8 +658,15 @@
       white-space: nowrap;
     }
 
-    .badge-contract.vendita { background-color: rgba(255, 217, 15, 0.2); color: var(--brand-blue); }
-    .badge-contract.affitto { background-color: #f1f5f9; color: var(--text-slate); }
+    .badge-contract.vendita {
+      background-color: rgba(255, 217, 15, 0.2);
+      color: var(--brand-blue);
+    }
+
+    .badge-contract.affitto {
+      background-color: #f1f5f9;
+      color: var(--text-slate);
+    }
 
     .badge-star {
       font-size: 9px;
@@ -640,7 +690,13 @@
     }
 
     @media (min-width: 640px) {
-      .item-actions-box { justify-content: flex-end; border-top: none; padding-top: 0; width: auto; gap: 1.5rem; }
+      .item-actions-box {
+        justify-content: flex-end;
+        border-top: none;
+        padding-top: 0;
+        width: auto;
+        gap: 1.5rem;
+      }
     }
 
     .item-price {
@@ -650,7 +706,11 @@
       white-space: nowrap;
     }
 
-    .action-buttons { display: flex; gap: 6px; flex-shrink: 0; }
+    .action-buttons {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
 
     .btn-action {
       border: none;
@@ -665,10 +725,25 @@
       flex-shrink: 0;
     }
 
-    .btn-action.edit { background-color: #fffbeb; color: #d97706; }
-    .btn-action.edit:hover { background-color: #d97706; color: white; }
-    .btn-action.delete { background-color: #fef2f2; color: #ef4444; }
-    .btn-action.delete:hover { background-color: #ef4444; color: white; }
+    .btn-action.edit {
+      background-color: #fffbeb;
+      color: #d97706;
+    }
+
+    .btn-action.edit:hover {
+      background-color: #d97706;
+      color: white;
+    }
+
+    .btn-action.delete {
+      background-color: #fef2f2;
+      color: #ef4444;
+    }
+
+    .btn-action.delete:hover {
+      background-color: #ef4444;
+      color: white;
+    }
 
     /* --- LOADING SPINNER ANIMATION --- */
     .loader-overlay {
@@ -759,7 +834,10 @@
       line-height: 1.4;
     }
 
-    .modal-actions { display: flex; gap: 10px; }
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+    }
 
     .btn-modal {
       flex: 1;
@@ -773,9 +851,19 @@
       transition: var(--transition);
     }
 
-    .btn-modal.cancel { background-color: #f1f5f9; color: var(--text-slate); }
-    .btn-modal.confirm { background-color: #ef4444; color: white; }
-    .hidden { display: none !important; }
+    .btn-modal.cancel {
+      background-color: #f1f5f9;
+      color: var(--text-slate);
+    }
+
+    .btn-modal.confirm {
+      background-color: #ef4444;
+      color: white;
+    }
+
+    .hidden {
+      display: none !important;
+    }
   </style>
 </head>
 <body>
@@ -783,7 +871,7 @@
   <!-- --- SCHERMATA CARICAMENTO --- -->
   <div id="loader" class="loader-overlay hidden">
     <div class="spinner"></div>
-    <span id="loader-text">Salvataggio in corso su Supabase...</span>
+    <span id="loader-text">Salvataggio in corso...</span>
   </div>
 
   <!-- --- NAVBAR --- -->
@@ -801,7 +889,7 @@
     </div>
 
     <div id="nav-actions" style="display: none;">
-      <button onclick="logout()" class="btn-logout">Disconnetti</button>
+      <button onclick="handleLogout()" class="btn-logout">Disconnetti</button>
     </div>
   </nav>
 
@@ -903,7 +991,7 @@
             </div>
           </div>
 
-          <!-- Upload Foto Reale con ottimizzazione automatica in Canvas -->
+          <!-- Upload Foto Reale -->
           <div class="photo-fields-box">
             <label class="form-label">Immagini Immobile (Upload Automatico)</label>
             <div class="file-upload-row">
@@ -956,7 +1044,7 @@
             <select id="search-status" onchange="applyAdminFilters()" class="form-select" style="padding: 10px;">
               <option value="Tutti">Tutti i contratti</option>
               <option value="Vendita">Solo Vendita</option>
-              <option value="Affitto">Solo Affitto</option>
+              <option value="Affitto">Solo Rent / Affitto</option>
             </select>
             
             <select id="search-featured" onchange="applyAdminFilters()" class="form-select" style="padding: 10px;">
@@ -1004,8 +1092,9 @@
     </div>
   </div>
 
-  <!-- --- LOGICA DI COLLEGAMENTO SUPABASE --- -->
+  <!-- --- LOGICA DI COLLEGAMENTO SUPABASE FIXATA (ANTI-CRASH) --- -->
   <script>
+    // --- CREDENZIALI INTEGRATE DI MICHELE ---
     const SUPABASE_URL = "https://svdfgejkjvkbajmqoqjz.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_aGoAYeXnUtVMe4bIc20wIQ_2EM4LTSG";
 
@@ -1013,40 +1102,88 @@
     const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     let properties = [];
-    let uploadedImageUrls = [];
+    let uploadedImageUrls = []; 
     let selectedPropertyToDelete = null;
 
-    // --- AVVIO E MONITORAGGIO SESSIONE ---
+    // --- GESTIONE LOADER SPINNER ---
+    function showLoader(text = "Attendere prego...") {
+      document.getElementById('loader-text').innerText = text;
+      document.getElementById('loader').classList.remove('hidden');
+    }
+    function hideLoader() {
+      document.getElementById('loader').classList.add('hidden');
+    }
+
+    // --- INIZIO: AVVIO E MONITORAGGIO SESSIONE ---
     window.addEventListener('DOMContentLoaded', async () => {
       showLoader("Verifica sessione di accesso...");
+
       try {
+        // Controllo manuale iniziale per vedere se l'utente è già loggato
         const { data: { session } } = await _supabase.auth.getSession();
+        
         if (session) {
           handleAuthSuccess();
         } else {
-          hideLoader();
-          logout();
+          showLoginScreen();
         }
       } catch (err) {
-        hideLoader();
-        alert("Errore di connessione a Supabase: " + err.message);
+        showLoginScreen();
       }
 
+      // Ascolto solo gli eventi specifici per non creare loop infiniti
       _supabase.auth.onAuthStateChange((event, session) => {
-        if (session) {
+        if (event === 'SIGNED_IN') {
           handleAuthSuccess();
-        } else {
-          logout();
+        } else if (event === 'SIGNED_OUT') {
+          showLoginScreen();
         }
       });
     });
 
+    // Separato l'aggiornamento UI per la sicurezza (Evita i Loop)
     async function handleAuthSuccess() {
       document.getElementById('login-screen').style.display = 'none';
       document.getElementById('admin-dashboard').style.display = 'block';
       document.getElementById('nav-actions').style.display = 'block';
       await loadProperties();
       hideLoader();
+    }
+
+    function showLoginScreen() {
+      document.getElementById('login-screen').style.display = 'block';
+      document.getElementById('admin-dashboard').style.display = 'none';
+      document.getElementById('nav-actions').style.display = 'none';
+      hideLoader();
+    }
+
+    // --- AZIONE LOGIN ---
+    async function handleLogin(e) {
+      e.preventDefault();
+      showLoader("Accesso in corso...");
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+
+      try {
+        const { data, error } = await _supabase.auth.signInWithPassword({
+          email,
+          password
+        });
+        if (error) throw error;
+        // Il successo è gestito da onAuthStateChange
+      } catch (err) {
+        hideLoader();
+        alert("Accesso fallito. Verifica email o password: " + err.message);
+      }
+    }
+
+    // --- AZIONE LOGOUT ---
+    async function handleLogout() {
+      showLoader("Disconnessione in corso...");
+      await _supabase.auth.signOut();
+      properties = [];
+      uploadedImageUrls = [];
+      // Il successo del logout è gestito da onAuthStateChange
     }
 
     // --- CARICAMENTO DATI DA DATABASE ---
@@ -1063,57 +1200,29 @@
         updateZoneDropdown();
         renderPropertiesList();
       } catch (err) {
-        alert("Impossibile caricare gli immobili: " + err.message);
+        alert("Impossibile caricare gli immobili dal database: " + err.message);
       }
     }
 
-    // --- AUTHENTICATION ---
-    async function handleLogin(e) {
-      e.preventDefault();
-      showLoader("Accesso in corso...");
-      const email = document.getElementById('login-email').value.trim();
-      const password = document.getElementById('login-password').value;
-
-      try {
-        const { data, error } = await _supabase.auth.signInWithPassword({
-          email,
-          password
-        });
-
-        if (error) throw error;
-      } catch (err) {
-        hideLoader();
-        alert("Accesso fallito: " + err.message);
-      }
-    }
-
-    async function logout() {
-      await _supabase.auth.signOut();
-      document.getElementById('login-screen').style.display = 'block';
-      document.getElementById('admin-dashboard').style.display = 'none';
-      document.getElementById('nav-actions').style.display = 'none';
-      properties = [];
-      uploadedImageUrls = [];
-    }
-
-    // --- OTTIMIZZAZIONE IN ANTEPRIMA & CARICAMENTO IMMAGINI ---
+    // --- OTTIMIZZAZIONE FOTO (CANVAS HTML5) E CARICAMENTO ---
     async function handleImageSelection(e) {
       const files = e.target.files;
       if (!files || files.length === 0) return;
 
-      showLoader("Ottimizzazione e caricamento immagini su Supabase...");
+      showLoader("Compressione e invio immagini...");
       
       for (let i = 0; i < files.length; i++) {
         try {
           const publicUrl = await compressAndUpload(files[i]);
           uploadedImageUrls.push(publicUrl);
         } catch (err) {
-          alert(`Errore nel caricamento del file ${files[i].name}: ${err}`);
+          alert(`Errore foto ${files[i].name}: ${err}`);
         }
       }
 
       renderImagePreviews();
       hideLoader();
+      e.target.value = ""; // Resetta l'input file
     }
 
     function compressAndUpload(file) {
@@ -1125,7 +1234,7 @@
           img.src = event.target.result;
           img.onload = function () {
             const canvas = document.createElement('canvas');
-            const MAX_WIDTH = 1200;
+            const MAX_WIDTH = 1200; 
             let width = img.width;
             let height = img.height;
 
@@ -1141,12 +1250,11 @@
 
             canvas.toBlob(async function (blob) {
               if (!blob) {
-                reject("Errore nella conversione dell'immagine.");
+                reject("Fallita conversione in Blob.");
                 return;
               }
 
-              const fileExt = "jpg";
-              const fileName = `prop_${Date.now()}_${Math.random().toString(36).substring(2, 9)}.${fileExt}`;
+              const fileName = `prop_${Date.now()}_${Math.random().toString(36).substring(2, 9)}.jpg`;
 
               try {
                 const { data, error } = await _supabase.storage
@@ -1165,7 +1273,7 @@
               } catch (storageErr) {
                 reject(storageErr.message || storageErr);
               }
-            }, 'image/jpeg', 0.8);
+            }, 'image/jpeg', 0.8); // Qualità 80%
           };
           img.onerror = () => reject("Impossibile caricare il file d'origine.");
         };
@@ -1205,7 +1313,7 @@
       const activeCount = getFeaturedCount();
 
       if (checkbox.checked && activeCount >= 3 && !wasAlreadyFeatured) {
-        alert("⚠️ Attenzione Michele: hai già selezionato 3 immobili in evidenza! Disattiva la stella su un altro immobile nella lista per poterne inserire uno nuovo.");
+        alert("⚠️ Hai già selezionato 3 immobili in evidenza! Disattiva la stella su un altro immobile prima.");
         checkbox.checked = false;
       }
     }
@@ -1230,7 +1338,7 @@
         return;
       }
 
-      showLoader(id ? "Aggiornamento in corso su Supabase..." : "Salvataggio annuncio su Supabase...");
+      showLoader(id ? "Aggiornamento in corso..." : "Pubblicazione annuncio...");
 
       const payload = {
         title,
@@ -1252,14 +1360,12 @@
             .from('properties')
             .update(payload)
             .eq('id', id);
-
           if (error) throw error;
           cancelEdit();
         } else {
           const { error } = await _supabase
             .from('properties')
             .insert([payload]);
-
           if (error) throw error;
         }
 
@@ -1299,6 +1405,9 @@
       document.getElementById('submit-btn').innerText = "Salva Modifiche 💾";
       document.getElementById('submit-btn').style.backgroundColor = "#f59e0b";
       document.getElementById('submit-btn').style.color = "#ffffff";
+      
+      // Scorri in alto verso il form
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function cancelEdit() {
@@ -1327,7 +1436,7 @@
 
     document.getElementById('confirm-delete-btn').onclick = async () => {
       if (selectedPropertyToDelete) {
-        showLoader("Eliminazione dell'annuncio...");
+        showLoader("Eliminazione in corso...");
         try {
           const { error } = await _supabase
             .from('properties')
@@ -1351,7 +1460,7 @@
       }
     };
 
-    // --- FILTRAGGIO RICERCHE ---
+    // --- FILTRAGGIO E RENDERING LISTA ---
     function updateZoneDropdown() {
       const zoneSelect = document.getElementById('search-zone');
       const currentSelected = zoneSelect.value;
@@ -1420,7 +1529,7 @@
 
       if (filtered.length === 0) {
         listContainer.innerHTML = `
-          <div style="padding: 2rem; text-align: center; color: var(--text-muted); font-weight: 500;">Nessun immobile trovato.</div>
+          <div style="padding: 2rem; text-align: center; color: var(--text-muted); font-weight: 500;">Nessun immobile in archivio con questi filtri.</div>
         `;
         return;
       }
@@ -1431,7 +1540,7 @@
         
         itemRow.innerHTML = `
           <div class="item-info">
-            <img src="${p.images[0] || 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=800&q=80'}" alt="Immobile" class="item-thumbnail" />
+            <img src="${p.images[0] || 'https://via.placeholder.com/80'}" alt="Immobile" class="item-thumbnail" />
             <div class="item-texts">
               <p class="item-title">${p.title}</p>
               <p class="item-details-text">${p.zone} • ${p.property_type}</p>
@@ -1465,15 +1574,6 @@
         `;
         listContainer.appendChild(itemRow);
       });
-    }
-
-    function showLoader(text = "Salvataggio in corso su Supabase...") {
-      document.getElementById('loader-text').innerText = text;
-      document.getElementById('loader').classList.remove('hidden');
-    }
-
-    function hideLoader() {
-      document.getElementById('loader').classList.add('hidden');
     }
   </script>
 </body>
