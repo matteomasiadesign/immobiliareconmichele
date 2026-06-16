@@ -82,20 +82,6 @@
 
     .empty-state { grid-column: 1 / -1; text-align: center; padding: 4rem 1rem; background: var(--white); border-radius: 24px; border: 1px solid var(--border-color); color: var(--text-muted); font-weight: 600; }
 
-    /* FOOTER */
-    .site-footer { background-color: #0f172a; color: #cbd5e1; padding: 3rem 1.5rem 2rem; margin-top: auto; width: 100%; }
-    .footer-content { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr; gap: 2.5rem; }
-    @media (min-width: 768px) { .footer-content { grid-template-columns: 1fr 1fr; } }
-    .footer-brand .f-title { color: var(--white); font-weight: 900; font-size: 1.5rem; margin-bottom: 1rem; text-transform: uppercase; }
-    .footer-brand p { font-size: 0.95rem; line-height: 1.6; max-width: 400px; }
-    .footer-info h4 { color: var(--white); font-weight: 900; text-transform: uppercase; margin-bottom: 1rem; font-size: 1.1rem; }
-    .footer-info p { font-size: 0.95rem; margin-bottom: 0.5rem; }
-    .footer-bottom { max-width: 1200px; margin: 3rem auto 0; padding-top: 1.5rem; border-top: 1px solid #334155; text-align: center; font-size: 0.85rem; }
-
-    /* FLOATING WHATSAPP BUTTON */
-    .floating-wa { position: fixed; bottom: 24px; right: 24px; width: 60px; height: 60px; background-color: #25D366; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4); z-index: 900; transition: transform 0.2s; text-decoration: none; }
-    .floating-wa:hover { transform: scale(1.1); }
-
     /* MODALE SICURO */
     .modal-overlay { position: fixed; inset: 0; background-color: rgba(15, 23, 42, 0.8); backdrop-filter: blur(5px); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 1rem; }
     .modal-card { background: var(--white); width: 100%; max-width: 600px; max-height: 90vh; border-radius: 24px; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
@@ -194,32 +180,25 @@
     </div>
   </div>
 
-  <!-- FOOTER -->
-  <footer class="site-footer">
-    <div class="footer-content">
-      <div class="footer-brand">
-        <div class="f-title">Michele Erre<br>Agente Immobiliare</div>
-        <p>Specializzato nella compravendita e locazione di immobili a Porto Torres e nel Nord Sardegna. Trasparenza e professionalità al tuo servizio.</p>
+  <!-- INIZIO FOOTER (Stile Soft Neumorphism) -->
+  <footer style="background-color: #f8fafc; padding: 3rem 1rem 2rem 1rem; margin-top: auto; border-top: 1px solid #e2e8f0; box-shadow: 0 -10px 20px rgba(226, 232, 240, 0.5); text-align: center; color: #1e293b;">
+      <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 0.75rem;">
+          <h3 style="color: #0044FF; margin: 0; font-size: 1.25rem; font-weight: 700;">Michele Erre Immobiliare</h3>
+          <p style="margin: 0; font-size: 0.95rem;"><strong>Sede:</strong> Porto Torres (SS)</p>
+          <p style="margin: 0; font-size: 0.95rem;"><strong>Telefono:</strong> <a href="tel:+393348576926" style="color: #1e293b; text-decoration: none; font-weight: 600;">+39 334 857 6926</a></p>
+          <p style="margin: 0; font-size: 0.95rem;"><strong>Email:</strong> infoerreimmobili@gmail.com | <strong>PEC:</strong> erremichele12@pec.it</p>
+          <p style="margin: 0.5rem 0 0 0; font-size: 0.8rem; color: #64748b;">P.IVA: 03076110901 | REA: SS - 227691</p>
       </div>
-      <div class="footer-info">
-        <h4>Dati Aziendali</h4>
-        <p>Sede: Porto Torres (SS)</p>
-        <p>Telefono: 334 857 6926</p>
-        <p>Email: infoerreimmobili@gmail.com</p>
-        <p>PEC: erremichele12@pec.it</p>
-        <p>P.IVA: 03076110901</p>
-        <p>REA: SS - 227691</p>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      &copy; 2026 Immobiliare con Michele. Tutti i diritti riservati.
-    </div>
   </footer>
+  <!-- FINE FOOTER -->
 
-  <!-- FLOATING WHATSAPP -->
-  <a href="https://wa.me/393348576926" target="_blank" class="floating-wa" title="Scrivimi su WhatsApp">
-    <svg style="width: 34px; height: 34px; flex-shrink: 0;" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.327.101.148.45.712.96 1.211.66.651 1.221.852 1.369.94.148.087.235.075.321-.025.087-.1.372-.43.473-.578.101-.148.202-.124.336-.075.134.05 .85.4 1.011.477.16.077.268.115.304.177.037.062.037.347-.106.752z"></path></svg>
+  <!-- INIZIO FLOATING WHATSAPP -->
+  <a href="https://wa.me/393348576926" target="_blank" aria-label="Contattaci su WhatsApp" style="position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; background-color: #25D366; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 6px 6px 12px #cbd5e1, -6px -6px 12px #ffffff; z-index: 9999; text-decoration: none; transition: transform 0.2s ease-in-out;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
+      <svg width="32" height="32" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12.031 0C5.385 0 0 5.388 0 12.036c0 2.128.553 4.2 1.605 6.03L.041 24l6.082-1.597c1.768.955 3.75 1.458 5.86 1.458 6.645 0 12.03-5.388 12.03-12.036S18.676 0 12.031 0zm0 21.94c-1.802 0-3.568-.485-5.116-1.404l-.367-.217-3.805 1 .006-3.71-.237-.378c-1.008-1.607-1.54-3.468-1.54-5.394 0-5.568 4.53-10.103 10.103-10.103 5.567 0 10.1 4.535 10.1 10.103s-4.533 10.103-10.1 10.103zm5.553-7.587c-.305-.152-1.805-.892-2.083-.994-.28-.103-.483-.153-.686.153-.203.305-.788.994-.966 1.198-.178.204-.356.23-.66.078-1.544-.768-2.613-1.442-3.626-3.15-.205-.347.202-.32.793-1.498.102-.204.05-.382-.026-.534-.076-.153-.686-1.653-.94-2.264-.246-.593-.497-.512-.686-.522-.178-.01-.382-.01-.586-.01-.204 0-.534.077-.813.382-.28.305-1.067 1.042-1.067 2.54s1.093 2.946 1.246 3.15c.152.203 2.148 3.275 5.203 4.59.726.313 1.292.5 1.735.64.728.232 1.393.2 1.916.12.585-.09 1.805-.738 2.058-1.45.254-.712.254-1.32.178-1.45-.077-.13-.28-.204-.586-.356z"/>
+      </svg>
   </a>
+  <!-- FINE FLOATING WHATSAPP -->
 
   <!-- MODALE DETTAGLIO IMMOBILE -->
   <div id="property-modal" class="modal-overlay">
