@@ -506,7 +506,7 @@
       const rooms = Number(document.getElementById('prop-rooms').value);
       const bathrooms = Number(document.getElementById('prop-bathrooms').value);
       const description = document.getElementById('prop-desc').value.trim();
-      const reel_url = document.getElementById('prop-reel').value.trim(); // <-- LETTURA NUOVO CAMPO
+      const reel_url = document.getElementById('prop-reel').value.trim();
       const hasParking = document.getElementById('prop-parking').checked;
       const isFeatured = document.getElementById('prop-featured').checked;
 
@@ -514,7 +514,6 @@
 
       showLoader(id ? "Aggiornamento in corso..." : "Pubblicazione annuncio...");
 
-      // <-- INSERITO NEL PAYLOAD
       const payload = { title, status, price, zone, property_type: type, rooms, bathrooms, description, reel_url, has_parking: hasParking, is_featured: isFeatured, images: uploadedImageUrls };
 
       try {
@@ -535,7 +534,7 @@
       document.getElementById('prop-rooms').value = p.rooms;
       document.getElementById('prop-bathrooms').value = p.bathrooms;
       document.getElementById('prop-desc').value = p.description;
-      document.getElementById('prop-reel').value = p.reel_url || ''; // <-- CARICAMENTO NUOVO CAMPO
+      document.getElementById('prop-reel').value = p.reel_url || '';
       document.getElementById('prop-parking').checked = p.has_parking;
       document.getElementById('prop-featured').checked = p.is_featured;
 
@@ -561,10 +560,24 @@
     function openDeleteModal(id) { selectedPropertyToDelete = id; document.getElementById('delete-modal').style.display = 'flex'; }
     function closeDeleteModal() { selectedPropertyToDelete = null; document.getElementById('delete-modal').style.display = 'none'; }
 
+    // AGGIORNATO CON ELIMINAZIONE IMMAGINI DA STORAGE
     document.getElementById('confirm-delete-btn').onclick = async () => {
       if (selectedPropertyToDelete) {
         showLoader("Eliminazione in corso...");
         try {
+          const pToDel = properties.find(p => p.id == selectedPropertyToDelete);
+          if (pToDel && pToDel.images && pToDel.images.length > 0) {
+            const filePaths = pToDel.images.map(url => {
+              const urlParts = url.split('/properties-images/');
+              return urlParts.length > 1 ? urlParts[1] : null;
+            }).filter(path => path !== null);
+
+            if (filePaths.length > 0) {
+              const { error: storageErr } = await _supabase.storage.from('properties-images').remove(filePaths);
+              if (storageErr) console.error("Errore cancellazione foto:", storageErr);
+            }
+          }
+
           const { error } = await _supabase.from('properties').delete().eq('id', selectedPropertyToDelete);
           if (error) throw error;
           const currentEditId = document.getElementById('property-id').value;
