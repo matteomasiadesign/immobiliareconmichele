@@ -21,8 +21,7 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     
-    html { scroll-behavior: smooth; }
-    body { background-color: var(--bg-slate); color: var(--text-slate); min-height: 100vh; max-width: 100%; overflow-x: clip; display: flex; flex-direction: column; }
+    html, body { scroll-behavior: smooth; background-color: var(--bg-slate); color: var(--text-slate); min-height: 100vh; max-width: 100%; overflow-x: clip; display: flex; flex-direction: column; }
 
     /* NAVBAR STICKY */
     .navbar { background-color: var(--brand-blue); border-bottom: 4px solid var(--brand-yellow); height: 80px; display: flex; align-items: center; justify-content: space-between; padding: 0 1rem; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(0,68,255,0.15); }
@@ -48,9 +47,11 @@
     .mobile-menu .nav-link { font-size: 1.1rem; }
     .mobile-menu .btn-catalog-nav { font-size: 1.1rem; padding: 14px 28px; }
 
-    /* HEADER & FILTERS */
-    .catalog-container { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem; flex: 1; width: 100%; }
+    /* MAIN CONTENT FLEX GROW PER RISOLVERE SCROLL BIANCO */
+    .catalog-container { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem; flex: 1 0 auto; width: 100%; display: flex; flex-direction: column; }
     @media (min-width: 768px) { .catalog-container { padding: 3rem 1.5rem; } }
+    
+    /* HEADER & FILTERS */
     .catalog-title { font-size: 2.2rem; font-weight: 900; color: var(--brand-blue); text-transform: uppercase; margin-bottom: 0.5rem; }
     .filters-box { background: var(--white); padding: 1.25rem; border-radius: 24px; border: 1px solid var(--border-color); display: grid; grid-template-columns: 1fr; gap: 1rem; margin-top: 1.5rem; margin-bottom: 2rem; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.02); }
     @media (min-width: 768px) { .filters-box { padding: 1.5rem; grid-template-columns: repeat(3, 1fr); margin-top: 2rem; margin-bottom: 3rem; } }
@@ -69,9 +70,12 @@
     .card-img { width: 100%; height: 100%; object-fit: cover; }
     .card-content { padding: 1.25rem; flex: 1; display: flex; flex-direction: column; position: relative; }
     @media (min-width: 768px) { .card-content { padding: 1.5rem; } }
-    .card-badge-contract { position: absolute; top: -16px; left: 1.25rem; font-size: 10px; font-weight: 900; text-transform: uppercase; padding: 6px 16px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-    .card-badge-contract.vendita { background-color: var(--brand-yellow); color: var(--text-slate); }
-    .card-badge-contract.affitto { background-color: var(--brand-blue); color: var(--white); }
+
+    /* BADGE TAGLIATO CORRETTO (Portato dentro l'immagine e spostato più in basso) */
+    .card-badge-contract { position: absolute; top: 12px; left: 12px; font-size: 10px; font-weight: 900; text-transform: uppercase; padding: 6px 16px; border-radius: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.15); z-index: 10; }
+    .card-badge-contract.vendita { background-color: var(--brand-yellow); color: var(--brand-blue); border: 2px solid var(--white); }
+    .card-badge-contract.affitto { background-color: var(--brand-blue); color: var(--white); border: 2px solid var(--brand-yellow); }
+
     .card-title { font-size: 1.2rem; font-weight: 900; color: var(--text-slate); margin-top: 0.5rem; margin-bottom: 0.5rem; line-height: 1.2; }
     .card-zone { color: var(--brand-blue); font-size: 12px; font-weight: 800; display: flex; align-items: center; gap: 4px; margin-bottom: 1rem; }
     .card-features { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color); }
@@ -95,7 +99,6 @@
     .fab-main svg { transition: var(--transition); }
     .fab-container.active .fab-main svg { transform: rotate(45deg); }
     
-    /* Tooltips per FAB */
     .fab-action::after { content: attr(data-tooltip); position: absolute; right: 60px; background: rgba(15, 23, 42, 0.9); color: white; padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 600; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
     .fab-action:hover::after { opacity: 1; }
 
@@ -126,7 +129,7 @@
     @media (min-width: 640px) { .modal-price-box { text-align: left; } }
     .modal-price-label { font-size: 10px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; display: block; margin-bottom: 4px; }
     .modal-price { font-size: 1.75rem; font-weight: 900; color: var(--text-slate); line-height: 1; }
-    .modal-actions { display: flex; gap: 10px; width: 100%; }
+    .modal-actions { display: flex; gap: 10px; width: 100%; align-items: center; }
     @media (min-width: 640px) { .modal-actions { width: auto; } }
     
     .btn-call { flex: 1; background-color: var(--brand-blue); color: var(--white); text-decoration: none; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 13px; padding: 14px 24px; border-radius: 16px; transition: var(--transition); text-transform: uppercase; letter-spacing: 0.05em; }
@@ -147,25 +150,22 @@
       </div>
     </a>
     
-    <!-- Link per Computer -->
     <div class="nav-links">
       <a href="index.html" class="nav-link">Torna alla Home</a>
       <a href="admin.html" class="btn-catalog-nav">Area Privata</a>
     </div>
 
-    <!-- Tasto Hamburger per Telefono -->
     <button id="mobile-toggle" class="mobile-toggle">
       <svg width="28" height="28" fill="none" stroke="var(--brand-yellow)" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path></svg>
     </button>
   </nav>
 
-  <!-- MENU A TENDINA (MOBILE) -->
   <div id="mobile-menu" class="mobile-menu">
     <a href="index.html" class="nav-link">Torna alla Home</a>
     <a href="admin.html" class="btn-catalog-nav">Area Privata</a>
   </div>
 
-  <div class="catalog-container">
+  <main class="catalog-container">
     <h1 class="catalog-title">Tutte le proposte</h1>
     <p style="color: var(--text-muted); font-weight: 500;">Filtra velocemente per trovare la combinazione perfetta per te.</p>
 
@@ -195,28 +195,30 @@
     <div id="properties-grid" class="properties-grid">
       <!-- Popolato da JS -->
     </div>
-  </div>
+  </main>
 
-  <!-- INIZIO FOOTER -->
-  <footer style="background-color: #f8fafc; padding: 3rem 1rem 2rem 1rem; margin-top: auto; border-top: 1px solid #e2e8f0; box-shadow: 0 -10px 20px rgba(226, 232, 240, 0.5); text-align: center; color: #1e293b;">
-      <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 0.75rem;">
-          <h3 style="color: #0044FF; margin: 0; font-size: 1.25rem; font-weight: 700;">Michele Erre Immobiliare</h3>
-          <p style="margin: 0; font-size: 0.95rem;"><strong>Sede:</strong> Porto Torres (SS)</p>
-          <p style="margin: 0; font-size: 0.95rem;"><strong>Telefono:</strong> <a href="tel:+393348576926" style="color: #1e293b; text-decoration: none; font-weight: 600;">+39 334 857 6926</a></p>
-          <p style="margin: 0; font-size: 0.95rem;"><strong>Email:</strong> infoerreimmobili@gmail.com | <strong>PEC:</strong> erremichele12@pec.it</p>
-          <p style="margin: 0.5rem 0 0 0; font-size: 0.8rem; color: #64748b;">P.IVA: 03076110901 | REA: SS - 227691</p>
+  <!-- INIZIO NUOVO FOOTER COLORATO -->
+  <footer style="background-color: var(--brand-blue); padding: 4rem 1rem 3rem 1rem; margin-top: auto; text-align: center; color: var(--white); box-shadow: 0 -10px 20px rgba(0,68,255, 0.1);">
+      <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 1rem;">
+          <h3 style="color: var(--brand-yellow); margin: 0; font-size: 1.5rem; font-weight: 900; text-transform: uppercase;">Michele Erre</h3>
+          <p style="margin: 0; font-size: 1.1rem; font-weight: 700;">Agente Immobiliare nel Nord Sardegna</p>
+          <div style="height: 2px; width: 60px; background-color: var(--brand-yellow); margin: 0.5rem auto;"></div>
           
-          <!-- SOCIAL LINKS -->
+          <p style="margin: 0; font-size: 0.95rem;"><strong>Sede:</strong> Porto Torres (SS)</p>
+          <p style="margin: 0; font-size: 0.95rem;"><strong>Telefono:</strong> <a href="tel:+393348576926" style="color: var(--brand-yellow); text-decoration: none; font-weight: 800;">+39 334 857 6926</a></p>
+          <p style="margin: 0; font-size: 0.95rem;"><strong>Email:</strong> infoerreimmobili@gmail.com | <strong>PEC:</strong> erremichele12@pec.it</p>
+          <p style="margin: 0.5rem 0 0 0; font-size: 0.8rem; color: rgba(255,255,255,0.7);">P.IVA: 03076110901 | REA: SS - 227691</p>
+          
           <div style="display: flex; justify-content: center; gap: 1.5rem; margin-top: 1rem;">
-              <a href="https://www.instagram.com/immobiliareconmichele/" target="_blank" aria-label="Instagram" style="color: #0044FF; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+              <a href="https://www.instagram.com/immobiliareconmichele/" target="_blank" aria-label="Instagram" style="color: var(--brand-yellow); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
                   <svg width="28" height="28" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
               </a>
-              <a href="https://www.facebook.com/profile.php?id=61589075136306" target="_blank" aria-label="Facebook" style="color: #0044FF; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+              <a href="https://www.facebook.com/profile.php?id=61589075136306" target="_blank" aria-label="Facebook" style="color: var(--brand-yellow); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
                   <svg width="28" height="28" fill="currentColor" viewBox="0 0 24 24"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/></svg>
               </a>
           </div>
           
-          <div style="margin-top: 1rem; font-size: 0.85rem; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 1rem;">
+          <div style="margin-top: 1rem; font-size: 0.85rem; color: rgba(255,255,255,0.5); border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem;">
               &copy; 2026 Immobiliare con Michele. Tutti i diritti riservati.
           </div>
       </div>
@@ -281,11 +283,8 @@
           <span class="modal-price-label">Prezzo Richiesto</span>
           <div id="mod-price" class="modal-price"></div>
         </div>
-        <div class="modal-actions">
-          <a href="tel:+393348576926" class="btn-call">CHIAMA ORA</a>
-          <a href="https://wa.me/393348576926" target="_blank" class="btn-wa">
-            <svg style="width: 24px; height: 24px;" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.327.101.148.45.712.96 1.211.66.651 1.221.852 1.369.94.148.087.235.075.321-.025.087-.1.372-.43.473-.578.101-.148.202-.124.336-.075.134.05 .85.4 1.011.477.16.077.268.115.304.177.037.062.037.347-.106.752z"></path></svg>
-          </a>
+        <div class="modal-actions" id="mod-actions-container">
+          <!-- Popolato dinamicamente da JS per includere il tasto REEL -->
         </div>
       </div>
     </div>
@@ -374,7 +373,10 @@
                 <span class="card-price-label">Prezzo</span>
                 <span class="card-price">€${p.price.toLocaleString('it-IT')}</span>
               </div>
-              <span style="font-size:11px; font-weight:900; color:var(--brand-blue); text-transform:uppercase;">Scopri &rarr;</span>
+              <div style="display: flex; gap: 8px; align-items: center;">
+                ${p.reel_url ? `<a href="${p.reel_url}" target="_blank" onclick="event.stopPropagation()" style="background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: white; padding: 6px 12px; border-radius: 12px; font-size: 10px; font-weight: 900; text-transform: uppercase; text-decoration: none; display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 5px rgba(220,39,67,0.3);"><svg width="12" height="12" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg> REEL</a>` : ''}
+                <span style="font-size:11px; font-weight:900; color:var(--brand-blue); text-transform:uppercase;">Scopri &rarr;</span>
+              </div>
             </div>
           </div>
         </div>
@@ -393,6 +395,16 @@
       document.getElementById('mod-parking').innerText = p.has_parking ? "Sì" : "No";
       document.getElementById('mod-desc').innerText = p.description;
       document.getElementById('mod-price').innerText = "€" + p.price.toLocaleString('it-IT') + (p.status === 'Affitto' ? " /mese" : "");
+      
+      const actionsContainer = document.getElementById('mod-actions-container');
+      actionsContainer.innerHTML = `
+        <a href="tel:+393348576926" class="btn-call" style="flex: 1;">CHIAMA ORA</a>
+        ${p.reel_url ? `<a href="${p.reel_url}" target="_blank" class="btn-call" style="background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); padding: 14px;"><svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>` : ''}
+        <a href="https://wa.me/393348576926" target="_blank" class="btn-wa">
+          <svg style="width: 24px; height: 24px;" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.327.101.148.45.712.96 1.211.66.651 1.221.852 1.369.94.148.087.235.075.321-.025.087-.1.372-.43.473-.578.101-.148.202-.124.336-.075.134.05 .85.4 1.011.477.16.077.268.115.304.177.037.062.037.347-.106.752z"></path></svg>
+        </a>
+      `;
+
       document.getElementById('property-modal').style.display = 'flex';
     }
 
