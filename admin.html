@@ -267,6 +267,11 @@
             <textarea required id="prop-desc" rows="3" placeholder="Scrivi una descrizione fresca e adatta ai social..." class="form-textarea"></textarea>
           </div>
 
+          <div>
+            <label class="form-label">Link Instagram Reel (Opzionale)</label>
+            <input type="url" id="prop-reel" placeholder="es. https://www.instagram.com/reel/..." class="form-input">
+          </div>
+
           <div class="checkbox-container">
             <label class="checkbox-row">
               <input type="checkbox" id="prop-parking">
@@ -334,7 +339,6 @@
     </div>
   </div>
 
-  <!-- FOOTER -->
   <footer class="site-footer">
     <div class="footer-content">
       <div class="footer-brand">
@@ -502,6 +506,7 @@
       const rooms = Number(document.getElementById('prop-rooms').value);
       const bathrooms = Number(document.getElementById('prop-bathrooms').value);
       const description = document.getElementById('prop-desc').value.trim();
+      const reel_url = document.getElementById('prop-reel').value.trim(); // <-- LETTURA NUOVO CAMPO
       const hasParking = document.getElementById('prop-parking').checked;
       const isFeatured = document.getElementById('prop-featured').checked;
 
@@ -509,7 +514,8 @@
 
       showLoader(id ? "Aggiornamento in corso..." : "Pubblicazione annuncio...");
 
-      const payload = { title, status, price, zone, property_type: type, rooms, bathrooms, description, has_parking: hasParking, is_featured: isFeatured, images: uploadedImageUrls };
+      // <-- INSERITO NEL PAYLOAD
+      const payload = { title, status, price, zone, property_type: type, rooms, bathrooms, description, reel_url, has_parking: hasParking, is_featured: isFeatured, images: uploadedImageUrls };
 
       try {
         if (id) { const { error } = await _supabase.from('properties').update(payload).eq('id', id); if (error) throw error; cancelEdit(); } 
@@ -529,6 +535,7 @@
       document.getElementById('prop-rooms').value = p.rooms;
       document.getElementById('prop-bathrooms').value = p.bathrooms;
       document.getElementById('prop-desc').value = p.description;
+      document.getElementById('prop-reel').value = p.reel_url || ''; // <-- CARICAMENTO NUOVO CAMPO
       document.getElementById('prop-parking').checked = p.has_parking;
       document.getElementById('prop-featured').checked = p.is_featured;
 
@@ -620,6 +627,7 @@
               <div class="item-badges">
                 <span class="badge-contract ${p.status === 'Vendita' ? 'vendita' : 'affitto'}">${p.status}</span>
                 ${p.is_featured ? `<span class="badge-star">★ Evidenziato</span>` : ''}
+                ${p.reel_url ? `<span class="badge-star" style="color:#e1306c;">📱 Reel Collegato</span>` : ''}
               </div>
             </div>
           </div>
