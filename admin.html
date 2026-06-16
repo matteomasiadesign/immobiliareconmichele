@@ -1234,7 +1234,7 @@
           img.src = event.target.result;
           img.onload = function () {
             const canvas = document.createElement('canvas');
-            const MAX_WIDTH = 1200; 
+            const MAX_WIDTH = 1080; // Ridotto da 1200 a 1080 per alleggerire ulteriormente
             let width = img.width;
             let height = img.height;
 
@@ -1273,7 +1273,7 @@
               } catch (storageErr) {
                 reject(storageErr.message || storageErr);
               }
-            }, 'image/jpeg', 0.8); // Qualità 80%
+            }, 'image/jpeg', 0.7); // Qualità portata dall'80% al 70%
           };
           img.onerror = () => reject("Impossibile caricare il file d'origine.");
         };
