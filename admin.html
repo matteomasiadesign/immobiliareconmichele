@@ -480,7 +480,33 @@
       });
     }
 
-    function removeImage(index) { uploadedImageUrls.splice(index, 1); renderImagePreviews(); }
+    // AGGIORNATO CON ELIMINAZIONE IMMAGINI SINGOLE DA STORAGE
+    async function removeImage(index) {
+      const urlToRemove = uploadedImageUrls[index];
+      
+      uploadedImageUrls.splice(index, 1);
+      renderImagePreviews();
+
+      if (urlToRemove && urlToRemove.includes('/properties-images/')) {
+        const urlParts = urlToRemove.split('/properties-images/');
+        const filePath = urlParts.length > 1 ? urlParts[1] : null;
+
+        if (filePath) {
+          try {
+            showLoader("Rimozione foto dal server...");
+            const { error: storageErr } = await _supabase.storage.from('properties-images').remove([filePath]);
+            
+            if (storageErr) {
+              console.error("Errore cancellazione singola foto:", storageErr);
+            }
+          } catch (err) {
+            console.error("Impossibile eliminare la foto:", err);
+          } finally {
+            hideLoader();
+          }
+        }
+      }
+    }
 
     function getFeaturedCount() { return properties.filter(p => p.is_featured).length; }
 
@@ -560,7 +586,7 @@
     function openDeleteModal(id) { selectedPropertyToDelete = id; document.getElementById('delete-modal').style.display = 'flex'; }
     function closeDeleteModal() { selectedPropertyToDelete = null; document.getElementById('delete-modal').style.display = 'none'; }
 
-    // AGGIORNATO CON ELIMINAZIONE IMMAGINI DA STORAGE
+    // AGGIORNATO CON ELIMINAZIONE MASSIVA IMMAGINI DA STORAGE
     document.getElementById('confirm-delete-btn').onclick = async () => {
       if (selectedPropertyToDelete) {
         showLoader("Eliminazione in corso...");
