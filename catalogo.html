@@ -26,7 +26,7 @@
     /* NAVBAR STICKY */
     .navbar { background-color: var(--brand-blue); border-bottom: 4px solid var(--brand-yellow); height: 80px; display: flex; align-items: center; justify-content: space-between; padding: 0 1rem; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(0,68,255,0.15); }
     .brand { display: flex; align-items: center; text-decoration: none; z-index: 1001; }
-    .brand-icon-box { background-color: var(--brand-yellow); padding: 8px; border-radius: 12px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
+    .brand-icon-box { background-color: transparent; padding: 0; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
     .brand-text { margin-left: 12px; display: flex; flex-direction: column; line-height: 1.1; }
     .brand-title { font-size: 1.25rem; font-weight: 900; color: var(--brand-yellow); letter-spacing: -0.025em; }
     .brand-subtitle { font-size: 10px; font-weight: 900; color: var(--white); letter-spacing: 0.1em; margin-top: 2px; }
@@ -47,17 +47,34 @@
     .mobile-menu .nav-link { font-size: 1.1rem; }
     .mobile-menu .btn-catalog-nav { font-size: 1.1rem; padding: 14px 28px; }
 
-    /* MAIN CONTENT FLEX GROW PER RISOLVERE SCROLL BIANCO */
-    .catalog-container { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem; flex: 1 0 auto; width: 100%; display: flex; flex-direction: column; scroll-margin-top: 100px; }
+    /* MAIN CONTENT */
+    .catalog-container { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem; flex: 1 0 auto; width: 100%; display: flex; flex-direction: column; }
     @media (min-width: 768px) { .catalog-container { padding: 3rem 1.5rem; } }
     
-    /* HEADER & FILTERS */
     .catalog-title { font-size: 2.2rem; font-weight: 900; color: var(--brand-blue); text-transform: uppercase; margin-bottom: 0.5rem; }
-    .filters-box { background: var(--white); padding: 1.25rem; border-radius: 24px; border: 1px solid var(--border-color); display: grid; grid-template-columns: 1fr; gap: 1rem; margin-top: 1.5rem; margin-bottom: 2rem; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.02); }
-    @media (min-width: 768px) { .filters-box { padding: 1.5rem; grid-template-columns: repeat(3, 1fr); margin-top: 2rem; margin-bottom: 3rem; } }
+    
+    /* UNIFIED SEARCH BAR CON DROPDOWN FILTERS */
+    .search-wrapper { position: relative; margin-top: 1.5rem; margin-bottom: 2rem; display: flex; gap: 0.5rem; align-items: center; z-index: 90; }
+    @media (min-width: 768px) { .search-wrapper { margin-top: 2rem; margin-bottom: 3rem; } }
+    
+    .search-input-container { position: relative; flex-grow: 1; }
+    .search-icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none; width: 20px; height: 20px; }
+    .search-input { width: 100%; padding: 16px 16px 16px 3rem; background: var(--white); border: 1px solid var(--border-color); border-radius: 20px; font-size: 15px; font-weight: 600; color: var(--text-slate); outline: none; transition: var(--transition); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.02); }
+    .search-input:focus { border-color: var(--brand-blue); box-shadow: 0 0 0 4px rgba(0,68,255,0.1); }
+    
+    .filter-dropdown-btn { background: var(--white); border: 1px solid var(--border-color); border-radius: 20px; padding: 0 1.25rem; height: 56px; display: flex; align-items: center; gap: 0.5rem; cursor: pointer; transition: var(--transition); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.02); color: var(--text-slate); font-weight: 700; font-size: 13px; text-transform: uppercase; flex-shrink: 0; }
+    .filter-dropdown-btn:hover, .filter-dropdown-btn.active { border-color: var(--brand-blue); color: var(--brand-blue); background-color: #f0f4ff; }
+    .filter-dropdown-btn svg { transition: transform 0.3s ease; }
+    .filter-dropdown-btn.active svg { transform: rotate(180deg); }
+    
+    .filter-dropdown-content { position: absolute; top: 100%; right: 0; margin-top: 0.5rem; background: var(--white); border: 1px solid var(--border-color); border-radius: 20px; padding: 1.5rem; box-shadow: 0 20px 40px -5px rgba(0,0,0,0.1); width: 300px; max-width: calc(100vw - 2rem); opacity: 0; transform: translateY(10px); pointer-events: none; transition: var(--transition); z-index: 95; display: flex; flex-direction: column; gap: 1rem; }
+    .filter-dropdown-content.open { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    
     .filter-label { font-size: 10px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; display: block; margin-bottom: 6px; }
-    .filter-select { width: 100%; padding: 14px 16px; background-color: #f1f5f9; border: 1px solid var(--border-color); border-radius: 16px; font-size: 14px; font-weight: 600; color: var(--text-slate); outline: none; transition: var(--transition); appearance: none; }
+    .filter-select { width: 100%; padding: 12px 14px; background-color: #f1f5f9; border: 1px solid var(--border-color); border-radius: 12px; font-size: 14px; font-weight: 600; color: var(--text-slate); outline: none; transition: var(--transition); appearance: none; cursor: pointer; }
     .filter-select:focus { border-color: var(--brand-blue); background-color: var(--white); }
+    .filter-reset-btn { margin-top: 0.5rem; padding: 10px; text-align: center; font-size: 11px; font-weight: 900; color: var(--brand-blue); text-transform: uppercase; cursor: pointer; background: rgba(0,68,255,0.05); border-radius: 12px; transition: var(--transition); border: none; width: 100%; }
+    .filter-reset-btn:hover { background: rgba(0,68,255,0.1); }
 
     /* GRID IMMOBILI */
     .properties-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
@@ -84,7 +101,7 @@
     .card-price-label { font-size: 10px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 2px; }
     .card-price { font-size: 1.35rem; font-weight: 900; color: var(--text-slate); }
 
-    .empty-state { grid-column: 1 / -1; text-align: center; padding: 4rem 1rem; background: var(--white); border-radius: 24px; border: 1px solid var(--border-color); color: var(--text-muted); font-weight: 600; }
+    .empty-state { grid-column: 1 / -1; text-align: center; padding: 4rem 1rem; background: var(--white); border-radius: 24px; border: 1px solid var(--border-color); color: var(--text-muted); font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 1rem; }
 
     /* FLOATING ACTION MENU */
     .fab-container { position: fixed; bottom: 24px; right: 24px; z-index: 900; display: flex; flex-direction: column; align-items: center; gap: 12px; }
@@ -102,7 +119,7 @@
     .fab-action::after { content: attr(data-tooltip); position: absolute; right: 60px; background: rgba(15, 23, 42, 0.9); color: white; padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 600; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
     .fab-action:hover::after { opacity: 1; }
 
-    /* MODALE SICURO */
+    /* MODALE SICURO E CAROSELLO */
     .modal-overlay { position: fixed; inset: 0; background-color: rgba(15, 23, 42, 0.8); backdrop-filter: blur(5px); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 1rem; }
     .modal-card { background: var(--white); width: 100%; max-width: 600px; max-height: 90vh; border-radius: 24px; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
     
@@ -111,7 +128,6 @@
 
     .modal-scroll { overflow-y: auto; flex: 1; -webkit-overflow-scrolling: touch; }
     
-    /* CAROSELLO MODALE CSS */
     .modal-carousel-container { position: relative; width: 100%; aspect-ratio: 4/3; background: #e2e8f0; overflow: hidden; display: flex; align-items: center; justify-content: center; }
     .modal-img { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.3s ease; }
     .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(15, 23, 42, 0.5); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; backdrop-filter: blur(4px); transition: var(--transition); }
@@ -143,7 +159,6 @@
     .modal-actions { display: flex; gap: 10px; width: 100%; align-items: center; }
     @media (min-width: 640px) { .modal-actions { width: auto; } }
     
-    /* BOTTONI MODALE UNIFORMI E RESPONSIVE */
     .btn-call { flex: 1 1 auto; min-width: 0; height: 50px; background-color: var(--brand-blue); color: var(--white); text-decoration: none; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 13px; border-radius: 16px; transition: var(--transition); text-transform: uppercase; letter-spacing: 0.05em; padding: 0 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .btn-reel { width: 50px; height: 50px; flex-shrink: 0; background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: var(--white); text-decoration: none; display: flex; align-items: center; justify-content: center; border-radius: 16px; transition: var(--transition); }
     .btn-wa { width: 50px; height: 50px; flex-shrink: 0; background-color: #25D366; color: var(--white); text-decoration: none; display: flex; align-items: center; justify-content: center; border-radius: 16px; transition: var(--transition); }
@@ -151,10 +166,9 @@
 </head>
 <body>
 
-  <!-- NAVBAR CON HAMBURGER -->
   <nav class="navbar">
     <a href="index.html" class="brand">
-      <div class="brand-icon-box" style="padding: 0; background: transparent;">
+      <div class="brand-icon-box">
         <img src="icona.webp" alt="Icona Michele Erre" style="width: 100%; height: 100%; object-fit: contain;">
       </div>
       <div class="brand-text">
@@ -181,29 +195,42 @@
   </div>
 
   <main class="catalog-container">
-    <h1 class="catalog-title">Tutte le proposte</h1>
-    <p style="color: var(--text-muted); font-weight: 500;">Filtra velocemente per trovare la combinazione perfetta per te.</p>
+    <h1 class="catalog-title">Il Catalogo</h1>
+    <p style="color: var(--text-muted); font-weight: 500;">Esplora tutte le proposte disponibili. Usa la barra di ricerca o i filtri per trovare la combinazione perfetta per te.</p>
 
-    <div class="filters-box">
-      <div>
-        <label class="filter-label">Tipo Contratto</label>
-        <select id="filter-status" class="filter-select" onchange="renderGrid()">
-          <option value="Tutti">Vendita e Affitto</option>
-          <option value="Vendita">Solo Vendita</option>
-          <option value="Affitto">Solo Affitto</option>
-        </select>
+    <div class="search-wrapper" id="search-wrapper">
+      <div class="search-input-container">
+        <svg class="search-icon" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"></path></svg>
+        <input type="text" id="search-text" class="search-input" placeholder="Cerca per zona, titolo o parole chiave..." oninput="renderGrid()">
       </div>
-      <div>
-        <label class="filter-label">Zona</label>
-        <select id="filter-zone" class="filter-select" onchange="renderGrid()">
-          <option value="Tutte">Qualsiasi zona</option>
-        </select>
-      </div>
-      <div>
-        <label class="filter-label">Tipologia</label>
-        <select id="filter-type" class="filter-select" onchange="renderGrid()">
-          <option value="Tutte">Qualsiasi tipologia</option>
-        </select>
+      
+      <button class="filter-dropdown-btn" id="filter-toggle-btn" onclick="toggleFilterDropdown(event)">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"></path></svg>
+        <span class="hidden sm:inline">Filtri</span>
+      </button>
+
+      <div class="filter-dropdown-content" id="filter-dropdown">
+        <div>
+          <label class="filter-label">Contratto</label>
+          <select id="filter-status" class="filter-select" onchange="renderGrid()">
+            <option value="Tutti">Tutti (Vendita e Affitto)</option>
+            <option value="Vendita">Solo Vendita</option>
+            <option value="Affitto">Solo Affitto</option>
+          </select>
+        </div>
+        <div>
+          <label class="filter-label">Zona</label>
+          <select id="filter-zone" class="filter-select" onchange="renderGrid()">
+            <option value="Tutte">Qualsiasi zona</option>
+          </select>
+        </div>
+        <div>
+          <label class="filter-label">Tipologia Immobile</label>
+          <select id="filter-type" class="filter-select" onchange="renderGrid()">
+            <option value="Tutte">Qualsiasi tipologia</option>
+          </select>
+        </div>
+        <button class="filter-reset-btn" onclick="resetFilters()">Azzera Filtri</button>
       </div>
     </div>
 
@@ -212,7 +239,6 @@
     </div>
   </main>
 
-  <!-- INIZIO NUOVO FOOTER COLORATO -->
   <footer style="background-color: var(--brand-blue); padding: 4rem 1rem 3rem 1rem; margin-top: auto; text-align: center; color: var(--white); box-shadow: 0 -10px 20px rgba(0,68,255, 0.1);">
       <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 1rem;">
           <h3 style="color: var(--brand-yellow); margin: 0; font-size: 1.5rem; font-weight: 900; text-transform: uppercase;">Michele Erre</h3>
@@ -239,7 +265,6 @@
       </div>
   </footer>
 
-  <!-- FLOATING ACTION MENU -->
   <div class="fab-container" id="fab-container">
       <div class="fab-menu" id="fab-menu">
           <a href="https://wa.me/393348576926" target="_blank" class="fab-action fab-wa" data-tooltip="Su WhatsApp">
@@ -335,6 +360,26 @@
         document.getElementById('fab-container').classList.toggle('active');
     }
 
+    // GESTIONE DROPDOWN FILTRI
+    function toggleFilterDropdown(e) {
+      if(e) e.stopPropagation();
+      const btn = document.getElementById('filter-toggle-btn');
+      const dropdown = document.getElementById('filter-dropdown');
+      btn.classList.toggle('active');
+      dropdown.classList.toggle('open');
+    }
+
+    // Chiudi la tendina dei filtri se si clicca fuori
+    document.addEventListener('click', function(event) {
+      const wrapper = document.getElementById('search-wrapper');
+      const dropdown = document.getElementById('filter-dropdown');
+      const btn = document.getElementById('filter-toggle-btn');
+      if (wrapper && !wrapper.contains(event.target) && dropdown.classList.contains('open')) {
+        dropdown.classList.remove('open');
+        btn.classList.remove('active');
+      }
+    });
+
     window.addEventListener('DOMContentLoaded', async () => {
       try {
         const { data, error } = await _supabase.from('properties').select('*').order('created_at', { ascending: false });
@@ -357,15 +402,36 @@
       types.forEach(t => { const opt = document.createElement('option'); opt.value = t; opt.innerText = t; typeSelect.appendChild(opt); });
     }
 
+    function resetFilters() {
+      document.getElementById('search-text').value = '';
+      document.getElementById('filter-status').value = 'Tutti';
+      document.getElementById('filter-zone').value = 'Tutte';
+      document.getElementById('filter-type').value = 'Tutte';
+      renderGrid();
+      // Chiude il dropdown dopo aver azzerato
+      document.getElementById('filter-dropdown').classList.remove('open');
+      document.getElementById('filter-toggle-btn').classList.remove('active');
+    }
+
     function renderGrid() {
+      // Prendo i valori da tutti i filtri (testo + dropdown)
+      const searchQuery = document.getElementById('search-text').value.toLowerCase().trim();
       const statusF = document.getElementById('filter-status').value;
       const zoneF = document.getElementById('filter-zone').value;
       const typeF = document.getElementById('filter-type').value;
 
       const filtered = properties.filter(p => {
+        // Filtro Dropdown
         if(statusF !== "Tutti" && p.status !== statusF) return false;
         if(zoneF !== "Tutte" && p.zone !== zoneF) return false;
         if(typeF !== "Tutte" && p.property_type !== typeF) return false;
+        
+        // Filtro Testuale Libero
+        if(searchQuery !== "") {
+          const combinedString = `${p.title} ${p.description} ${p.zone} ${p.property_type}`.toLowerCase();
+          if(!combinedString.includes(searchQuery)) return false;
+        }
+
         return true;
       });
 
@@ -373,7 +439,11 @@
       if(!grid) return;
       
       if(filtered.length === 0) {
-        grid.innerHTML = `<div class="empty-state">Nessun immobile trovato con questi filtri. Prova a cambiarli!</div>`;
+        grid.innerHTML = `
+          <div class="empty-state">
+            <svg style="width: 48px; height: 48px; color: var(--text-muted); opacity: 0.5;" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+            Nessun immobile trovato con questa ricerca.<br>Prova a cambiare i filtri o la parola chiave!
+          </div>`;
         return;
       }
 
