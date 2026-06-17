@@ -22,9 +22,10 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     html, body { background-color: var(--bg-slate); color: var(--text-slate); max-width: 100%; overflow-x: clip; scroll-behavior: smooth; display: flex; flex-direction: column; min-height: 100vh; }
 
+    /* NAVBAR STICKY */
     .navbar { background-color: var(--brand-blue); border-bottom: 4px solid var(--brand-yellow); height: 80px; display: flex; align-items: center; justify-content: space-between; padding: 0 1rem; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(0,68,255,0.15); }
     .brand { display: flex; align-items: center; text-decoration: none; z-index: 1001; }
-    .brand-icon-box { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; padding: 0; background: transparent; }
+    .brand-icon-box { background-color: var(--brand-yellow); padding: 8px; border-radius: 12px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
     .brand-text { margin-left: 12px; display: flex; flex-direction: column; line-height: 1.1; }
     .brand-title { font-size: 1.25rem; font-weight: 900; color: var(--brand-yellow); letter-spacing: -0.025em; }
     .brand-subtitle { font-size: 10px; font-weight: 900; color: var(--white); letter-spacing: 0.1em; margin-top: 2px; }
@@ -35,6 +36,7 @@
     .nav-link:hover { color: var(--white); }
     .btn-catalog-nav { background-color: var(--brand-yellow); color: var(--brand-blue); padding: 10px 20px; border-radius: 16px; text-decoration: none; font-weight: 900; font-size: 12px; text-transform: uppercase; }
 
+    /* HAMBURGER MENU */
     .mobile-toggle { display: block; background: none; border: none; cursor: pointer; z-index: 1001; }
     @media (min-width: 768px) { .mobile-toggle { display: none; } }
     
@@ -43,8 +45,10 @@
     .mobile-menu .nav-link { font-size: 1.1rem; }
     .mobile-menu .btn-catalog-nav { font-size: 1.1rem; padding: 14px 28px; }
 
+    /* MAIN CONTENT FLEX GROW PER RISOLVERE SCROLL BIANCO */
     .main-content { flex: 1 0 auto; display: flex; flex-direction: column; }
 
+    /* HERO */
     .hero { position: relative; min-height: 90vh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 0 1rem; background-image: url('header.webp'); background-size: cover; background-position: center; }
     .hero-overlay { position: absolute; inset: 0; background-color: rgba(15, 23, 42, 0.7); }
     .hero-content { position: relative; z-index: 10; max-width: 800px; }
@@ -55,11 +59,12 @@
     .hero-text { font-size: 1.1rem; color: #e2e8f0; font-weight: 500; margin-bottom: 2.5rem; line-height: 1.6; }
     .hero-buttons { display: flex; flex-direction: column; gap: 1rem; align-items: center; justify-content: center; }
     @media (min-width: 640px) { .hero-buttons { flex-direction: row; } }
-    .btn-primary { background-color: var(--brand-blue); color: var(--brand-yellow); padding: 16px 32px; border-radius: 16px; text-decoration: none; font-weight: 900; font-size: 14px; text-transform: uppercase; box-shadow: 0 4px 15px rgba(0,68,255,0.3); transition: var(--transition); border: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+    .btn-primary { background-color: var(--brand-blue); color: var(--brand-yellow); padding: 16px 32px; border-radius: 16px; text-decoration: none; font-weight: 900; font-size: 14px; text-transform: uppercase; box-shadow: 0 4px 15px rgba(0,68,255,0.3); transition: var(--transition); border: 3px solid var(--brand-yellow); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
     .btn-secondary { background-color: rgba(255,255,255,0.1); color: var(--white); border: 2px solid rgba(255,255,255,0.2); padding: 14px 32px; border-radius: 16px; text-decoration: none; font-weight: 900; font-size: 14px; text-transform: uppercase; backdrop-filter: blur(4px); transition: var(--transition); display: inline-flex; align-items: center; justify-content: center; }
     .btn-primary:hover { background-color: #0033CC; }
 
-    .section { padding: 3rem 1rem; max-width: 1200px; margin: 0 auto; width: 100%; }
+    /* SEZIONI - AGGIUNTO SCROLL MARGIN TOP */
+    .section { padding: 3rem 1rem; max-width: 1200px; margin: 0 auto; width: 100%; scroll-margin-top: 100px; }
     @media (min-width: 768px) { .section { padding: 5rem 1.5rem; } }
     .section-header { text-align: center; margin-bottom: 2rem; }
     @media (min-width: 768px) { .section-header { margin-bottom: 3rem; } }
@@ -67,6 +72,7 @@
     .section-title { font-size: 1.8rem; font-weight: 900; color: var(--text-slate); text-transform: uppercase; margin-bottom: 1rem; }
     @media (min-width: 768px) { .section-title { font-size: 3rem; } }
 
+    /* GRID IMMOBILI */
     .properties-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
     @media (min-width: 768px) { .properties-grid { grid-template-columns: repeat(2, 1fr); gap: 2rem; } }
     @media (min-width: 1024px) { .properties-grid { grid-template-columns: repeat(3, 1fr); } }
@@ -77,6 +83,7 @@
     .card-content { padding: 1.25rem; flex: 1; display: flex; flex-direction: column; position: relative; }
     @media (min-width: 768px) { .card-content { padding: 1.5rem; } }
     
+    /* BADGE */
     .card-badge-contract { position: absolute; top: 12px; left: 12px; font-size: 10px; font-weight: 900; text-transform: uppercase; padding: 6px 16px; border-radius: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.15); z-index: 10; }
     .card-badge-contract.vendita { background-color: var(--brand-yellow); color: var(--brand-blue); border: 2px solid var(--white); }
     .card-badge-contract.affitto { background-color: var(--brand-blue); color: var(--white); border: 2px solid var(--brand-yellow); }
@@ -89,6 +96,7 @@
     .card-price-label { font-size: 10px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 2px; }
     .card-price { font-size: 1.35rem; font-weight: 900; color: var(--text-slate); }
 
+    /* SEZIONE SERVIZI */
     .services-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
     @media (min-width: 768px) { .services-grid { grid-template-columns: repeat(3, 1fr); gap: 2rem; } }
     .service-card { background: var(--white); padding: 2rem 1.5rem; border-radius: 24px; border: 1px solid var(--border-color); text-align: center; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); transition: var(--transition); }
@@ -98,19 +106,29 @@
     .service-title { font-size: 1.2rem; font-weight: 900; color: var(--text-slate); margin-bottom: 0.75rem; text-transform: uppercase; }
     .service-desc { font-size: 0.95rem; color: var(--text-muted); line-height: 1.5; font-weight: 500; }
 
-    .cta-box { background: var(--brand-blue); border-radius: 32px; padding: 2.5rem 1.5rem; text-align: center; color: white; position: relative; overflow: hidden; box-shadow: 0 20px 40px rgba(0,68,255,0.2); margin: 0; width: 100%; }
-    @media (min-width: 768px) { .cta-box { padding: 4rem 2rem; margin: 0; } }
+    /* CTA CONTATTI - REIMPAGINATA CON IMMAGINE */
+    .cta-box { background: var(--brand-blue); border-radius: 32px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,68,255,0.2); width: 100%; display: flex; flex-direction: column; border: 4px solid var(--brand-yellow); }
+    @media (min-width: 768px) { .cta-box { flex-direction: row; } }
+    .cta-image-container { width: 100%; height: 250px; background-color: #0f172a; }
+    @media (min-width: 768px) { .cta-image-container { width: 40%; height: auto; min-height: 100%; } }
+    .cta-image { width: 100%; height: 100%; object-fit: cover; }
+    .cta-content { padding: 2.5rem 1.5rem; text-align: center; color: white; flex: 1; display: flex; flex-direction: column; justify-content: center; }
+    @media (min-width: 768px) { .cta-content { padding: 4rem 3rem; text-align: left; } }
     .cta-title { font-size: 1.75rem; font-weight: 900; text-transform: uppercase; margin-bottom: 1rem; }
     @media (min-width: 768px) { .cta-title { font-size: 2rem; } }
-    .cta-text { font-size: 1rem; color: #e2e8f0; margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto; line-height: 1.5; }
-    .cta-buttons-wrapper { display: flex; flex-direction: column; gap: 1rem; align-items: center; justify-content: center; }
-    @media (min-width: 640px) { .cta-buttons-wrapper { flex-direction: row; } }
+    .cta-text { font-size: 1rem; color: #e2e8f0; margin-bottom: 2rem; max-width: 600px; line-height: 1.5; }
+    @media (max-width: 767px) { .cta-text { margin-left: auto; margin-right: auto; } }
+    .cta-buttons-wrapper { display: flex; flex-direction: column; gap: 1rem; align-items: center; }
+    @media (min-width: 640px) { .cta-buttons-wrapper { flex-direction: row; justify-content: center; } }
+    @media (min-width: 768px) { .cta-buttons-wrapper { justify-content: flex-start; } }
+    
     .btn-wa-large { background-color: #25D366; color: white; padding: 14px 28px; border-radius: 16px; text-decoration: none; font-weight: 900; font-size: 13px; text-transform: uppercase; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3); transition: var(--transition); width: 100%; justify-content: center; }
     @media (min-width: 640px) { .btn-wa-large { width: auto; padding: 16px 32px; font-size: 14px; } }
     .btn-wa-large:hover { transform: translateY(-2px); background-color: #20BA56; }
     .btn-call-large { background-color: var(--white); color: var(--brand-blue); padding: 14px 28px; border-radius: 16px; text-decoration: none; font-weight: 900; font-size: 13px; text-transform: uppercase; display: inline-flex; align-items: center; gap: 8px; transition: var(--transition); width: 100%; justify-content: center; }
     @media (min-width: 640px) { .btn-call-large { width: auto; padding: 16px 32px; font-size: 14px; } }
 
+    /* FLOATING ACTION MENU */
     .fab-container { position: fixed; bottom: 24px; right: 24px; z-index: 900; display: flex; flex-direction: column; align-items: center; gap: 12px; }
     .fab-menu { display: flex; flex-direction: column; gap: 10px; opacity: 0; transform: translateY(20px) scale(0.9); pointer-events: none; transition: var(--transition); transform-origin: bottom center; }
     .fab-menu.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
@@ -126,6 +144,7 @@
     .fab-action::after { content: attr(data-tooltip); position: absolute; right: 60px; background: rgba(15, 23, 42, 0.9); color: white; padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 600; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
     .fab-action:hover::after { opacity: 1; }
 
+    /* MODALE SICURO */
     .modal-overlay { position: fixed; inset: 0; background-color: rgba(15, 23, 42, 0.8); backdrop-filter: blur(5px); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 1rem; }
     .modal-card { background: var(--white); width: 100%; max-width: 600px; max-height: 90vh; border-radius: 24px; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
     
@@ -134,7 +153,7 @@
 
     .modal-scroll { overflow-y: auto; flex: 1; -webkit-overflow-scrolling: touch; }
     
-    /* MODIFICA CAROSELLO MODALE CSS */
+    /* CAROSELLO MODALE CSS */
     .modal-carousel-container { position: relative; width: 100%; aspect-ratio: 4/3; background: #e2e8f0; overflow: hidden; display: flex; align-items: center; justify-content: center; }
     .modal-img { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.3s ease; }
     .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(15, 23, 42, 0.5); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; backdrop-filter: blur(4px); transition: var(--transition); }
@@ -163,9 +182,11 @@
     @media (min-width: 640px) { .modal-price-box { text-align: left; } }
     .modal-price-label { font-size: 10px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; display: block; margin-bottom: 4px; }
     .modal-price { font-size: 1.75rem; font-weight: 900; color: var(--text-slate); line-height: 1; }
+    
     .modal-actions { display: flex; gap: 10px; width: 100%; align-items: center; }
     @media (min-width: 640px) { .modal-actions { width: auto; } }
     
+    /* BOTTONI MODALE UNIFORMI E RESPONSIVE */
     .btn-call { flex: 1 1 auto; min-width: 0; height: 50px; background-color: var(--brand-blue); color: var(--white); text-decoration: none; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 13px; border-radius: 16px; transition: var(--transition); text-transform: uppercase; letter-spacing: 0.05em; padding: 0 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .btn-reel { width: 50px; height: 50px; flex-shrink: 0; background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: var(--white); text-decoration: none; display: flex; align-items: center; justify-content: center; border-radius: 16px; transition: var(--transition); }
     .btn-wa { width: 50px; height: 50px; flex-shrink: 0; background-color: #25D366; color: var(--white); text-decoration: none; display: flex; align-items: center; justify-content: center; border-radius: 16px; transition: var(--transition); }
@@ -173,6 +194,7 @@
 </head>
 <body>
 
+  <!-- NAVBAR CON HAMBURGER -->
   <nav class="navbar">
     <a href="index.html" class="brand">
       <div class="brand-icon-box" style="padding: 0; background: transparent;">
@@ -204,6 +226,7 @@
   </div>
 
   <main class="main-content">
+      <!-- HERO -->
       <section class="hero">
         <div class="hero-overlay"></div>
         <div class="hero-content">
@@ -211,7 +234,7 @@
             <svg style="width: 14px; height: 14px; flex-shrink: 0;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
             Oltre 10 Anni di Esperienza
           </div>
-          <h1 class="hero-title">Niente Giacca e Cravatta.<br><span>Solo Case Fighissime.</span></h1>
+          <h1 class="hero-title">Niente Giacca e Cravatta.<br><span>Solo Case Giuste.</span></h1>
           <p class="hero-text">Ciao! Sono Michele Erre. Ti aiuto a comprare, vendere o affittare casa a Porto Torres e nel Nord Sardegna in modo trasparente, rapido e senza stress.</p>
           <div class="hero-buttons">
             <a href="catalogo.html" class="btn-primary">Vedi gli Annunci</a>
@@ -220,6 +243,7 @@
         </div>
       </section>
 
+      <!-- VETRINA -->
       <section id="vetrina" class="section">
         <div class="section-header">
           <span class="section-label">Proposte Top</span>
@@ -233,6 +257,7 @@
         </div>
       </section>
 
+      <!-- SEZIONE SERVIZI -->
       <section id="servizi" class="section">
         <div class="section-header">
           <span class="section-label">Cosa faccio per te</span>
@@ -271,24 +296,35 @@
         </div>
       </section>
 
-      <section id="contatti" class="section" style="padding-top: 1rem;">
+      <!-- CALL TO ACTION CONTATTI -->
+      <section id="contatti" class="section">
+        <div class="section-header">
+          <span class="section-label">Parliamone</span>
+          <h2 class="section-title">Contatti</h2>
+        </div>
         <div class="cta-box">
-          <h2 class="cta-title">Pronto a trovare casa?</h2>
-          <p class="cta-text">Evita perdite di tempo e burocrazia. Contattami ora per una consulenza rapida e gratuita.</p>
-          <div class="cta-buttons-wrapper">
-            <a href="tel:+393348576926" class="btn-call-large">
-              <svg style="width: 20px; height: 20px; flex-shrink: 0;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
-              Chiama: 334 857 6926
-            </a>
-            <a href="https://wa.me/393348576926" target="_blank" class="btn-wa-large">
-              <svg style="width: 20px; height: 20px; flex-shrink: 0;" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.327.101.148.45.712.96 1.211.66.651 1.221.852 1.369.94.148.087.235.075.321-.025.087-.1.372-.43.473-.578.101-.148.202-.124.336-.075.134.05 .85.4 1.011.477.16.077.268.115.304.177.037.062.037.347-.106.752z"></path></svg>
-              Scrivimi su WhatsApp
-            </a>
+          <div class="cta-image-container">
+            <img src="contatti.webp" alt="Contatta Michele Erre" class="cta-image" onerror="this.src='https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=800&q=80'">
+          </div>
+          <div class="cta-content">
+            <h2 class="cta-title">Pronto a trovare casa?</h2>
+            <p class="cta-text">Evita perdite di tempo e burocrazia. Contattami ora per una consulenza rapida e gratuita sulla tua prossima casa o per valutare il tuo immobile.</p>
+            <div class="cta-buttons-wrapper">
+              <a href="tel:+393348576926" class="btn-call-large">
+                <svg style="width: 20px; height: 20px; flex-shrink: 0;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                Chiama Ora
+              </a>
+              <a href="https://wa.me/393348576926" target="_blank" class="btn-wa-large">
+                <svg style="width: 20px; height: 20px; flex-shrink: 0;" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.327.101.148.45.712.96 1.211.66.651 1.221.852 1.369.94.148.087.235.075.321-.025.087-.1.372-.43.473-.578.101-.148.202-.124.336-.075.134.05 .85.4 1.011.477.16.077.268.115.304.177.037.062.037.347-.106.752z"></path></svg>
+                WhatsApp
+              </a>
+            </div>
           </div>
         </div>
       </section>
   </main>
 
+  <!-- FOOTER -->
   <footer style="background-color: var(--brand-blue); padding: 4rem 1rem 3rem 1rem; margin-top: auto; text-align: center; color: var(--white); box-shadow: 0 -10px 20px rgba(0,68,255, 0.1);">
       <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 1rem;">
           <h3 style="color: var(--brand-yellow); margin: 0; font-size: 1.5rem; font-weight: 900; text-transform: uppercase;">Michele Erre</h3>
@@ -315,6 +351,7 @@
       </div>
   </footer>
 
+  <!-- FLOATING ACTION MENU -->
   <div class="fab-container" id="fab-container">
       <div class="fab-menu" id="fab-menu">
           <a href="https://wa.me/393348576926" target="_blank" class="fab-action fab-wa" data-tooltip="Su WhatsApp">
@@ -329,6 +366,7 @@
       </button>
   </div>
 
+  <!-- MODALE DETTAGLIO IMMOBILE -->
   <div id="property-modal" class="modal-overlay">
     <div class="modal-card">
       <button onclick="closeModal()" class="btn-close-modal">
@@ -397,11 +435,13 @@
     let currentModalImages = [];
     let currentImageIndex = 0;
 
+    // GESTIONE HAMBURGER MENU
     const mobileToggle = document.getElementById('mobile-toggle');
     const mobileMenu = document.getElementById('mobile-menu');
     mobileToggle.addEventListener('click', () => { mobileMenu.classList.toggle('open'); });
     mobileMenu.querySelectorAll('a').forEach(link => { link.addEventListener('click', () => mobileMenu.classList.remove('open')); });
 
+    // GESTIONE FLOATING MENU
     function toggleFab() {
         document.getElementById('fab-menu').classList.toggle('open');
         document.getElementById('fab-container').classList.toggle('active');
