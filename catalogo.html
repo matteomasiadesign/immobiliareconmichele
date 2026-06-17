@@ -23,19 +23,22 @@
     
     html, body { scroll-behavior: smooth; background-color: var(--bg-slate); color: var(--text-slate); min-height: 100vh; max-width: 100%; overflow-x: clip; display: flex; flex-direction: column; }
 
+    /* NAVBAR STICKY */
     .navbar { background-color: var(--brand-blue); border-bottom: 4px solid var(--brand-yellow); height: 80px; display: flex; align-items: center; justify-content: space-between; padding: 0 1rem; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(0,68,255,0.15); }
     .brand { display: flex; align-items: center; text-decoration: none; z-index: 1001; }
-    .brand-icon-box { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; padding: 0; background: transparent; }
+    .brand-icon-box { background-color: var(--brand-yellow); padding: 8px; border-radius: 12px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
     .brand-text { margin-left: 12px; display: flex; flex-direction: column; line-height: 1.1; }
     .brand-title { font-size: 1.25rem; font-weight: 900; color: var(--brand-yellow); letter-spacing: -0.025em; }
     .brand-subtitle { font-size: 10px; font-weight: 900; color: var(--white); letter-spacing: 0.1em; margin-top: 2px; }
     
+    /* Navigazione Desktop */
     .nav-links { display: none; gap: 1.5rem; align-items: center; }
     @media (min-width: 768px) { .nav-links { display: flex; } .navbar { padding: 0 2rem; } }
     .nav-link { color: var(--brand-yellow); text-decoration: none; font-weight: 900; font-size: 13px; text-transform: uppercase; transition: var(--transition); }
     .nav-link:hover { color: var(--white); }
     .btn-catalog-nav { background-color: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 12px; text-decoration: none; font-weight: bold; font-size: 11px; text-transform: uppercase; }
 
+    /* HAMBURGER MENU (MOBILE) */
     .mobile-toggle { display: block; background: none; border: none; cursor: pointer; z-index: 1001; }
     @media (min-width: 768px) { .mobile-toggle { display: none; } }
     
@@ -44,9 +47,11 @@
     .mobile-menu .nav-link { font-size: 1.1rem; }
     .mobile-menu .btn-catalog-nav { font-size: 1.1rem; padding: 14px 28px; }
 
-    .catalog-container { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem; flex: 1 0 auto; width: 100%; display: flex; flex-direction: column; }
+    /* MAIN CONTENT FLEX GROW PER RISOLVERE SCROLL BIANCO */
+    .catalog-container { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem; flex: 1 0 auto; width: 100%; display: flex; flex-direction: column; scroll-margin-top: 100px; }
     @media (min-width: 768px) { .catalog-container { padding: 3rem 1.5rem; } }
     
+    /* HEADER & FILTERS */
     .catalog-title { font-size: 2.2rem; font-weight: 900; color: var(--brand-blue); text-transform: uppercase; margin-bottom: 0.5rem; }
     .filters-box { background: var(--white); padding: 1.25rem; border-radius: 24px; border: 1px solid var(--border-color); display: grid; grid-template-columns: 1fr; gap: 1rem; margin-top: 1.5rem; margin-bottom: 2rem; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.02); }
     @media (min-width: 768px) { .filters-box { padding: 1.5rem; grid-template-columns: repeat(3, 1fr); margin-top: 2rem; margin-bottom: 3rem; } }
@@ -54,6 +59,7 @@
     .filter-select { width: 100%; padding: 14px 16px; background-color: #f1f5f9; border: 1px solid var(--border-color); border-radius: 16px; font-size: 14px; font-weight: 600; color: var(--text-slate); outline: none; transition: var(--transition); appearance: none; }
     .filter-select:focus { border-color: var(--brand-blue); background-color: var(--white); }
 
+    /* GRID IMMOBILI */
     .properties-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
     @media (min-width: 768px) { .properties-grid { grid-template-columns: repeat(2, 1fr); gap: 2rem; } }
     @media (min-width: 1024px) { .properties-grid { grid-template-columns: repeat(3, 1fr); } }
@@ -65,6 +71,7 @@
     .card-content { padding: 1.25rem; flex: 1; display: flex; flex-direction: column; position: relative; }
     @media (min-width: 768px) { .card-content { padding: 1.5rem; } }
 
+    /* BADGE */
     .card-badge-contract { position: absolute; top: 12px; left: 12px; font-size: 10px; font-weight: 900; text-transform: uppercase; padding: 6px 16px; border-radius: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.15); z-index: 10; }
     .card-badge-contract.vendita { background-color: var(--brand-yellow); color: var(--brand-blue); border: 2px solid var(--white); }
     .card-badge-contract.affitto { background-color: var(--brand-blue); color: var(--white); border: 2px solid var(--brand-yellow); }
@@ -79,6 +86,7 @@
 
     .empty-state { grid-column: 1 / -1; text-align: center; padding: 4rem 1rem; background: var(--white); border-radius: 24px; border: 1px solid var(--border-color); color: var(--text-muted); font-weight: 600; }
 
+    /* FLOATING ACTION MENU */
     .fab-container { position: fixed; bottom: 24px; right: 24px; z-index: 900; display: flex; flex-direction: column; align-items: center; gap: 12px; }
     .fab-menu { display: flex; flex-direction: column; gap: 10px; opacity: 0; transform: translateY(20px) scale(0.9); pointer-events: none; transition: var(--transition); transform-origin: bottom center; }
     .fab-menu.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
@@ -94,6 +102,7 @@
     .fab-action::after { content: attr(data-tooltip); position: absolute; right: 60px; background: rgba(15, 23, 42, 0.9); color: white; padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 600; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
     .fab-action:hover::after { opacity: 1; }
 
+    /* MODALE SICURO */
     .modal-overlay { position: fixed; inset: 0; background-color: rgba(15, 23, 42, 0.8); backdrop-filter: blur(5px); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 1rem; }
     .modal-card { background: var(--white); width: 100%; max-width: 600px; max-height: 90vh; border-radius: 24px; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
     
@@ -102,7 +111,7 @@
 
     .modal-scroll { overflow-y: auto; flex: 1; -webkit-overflow-scrolling: touch; }
     
-    /* MODIFICA CAROSELLO MODALE CSS */
+    /* CAROSELLO MODALE CSS */
     .modal-carousel-container { position: relative; width: 100%; aspect-ratio: 4/3; background: #e2e8f0; overflow: hidden; display: flex; align-items: center; justify-content: center; }
     .modal-img { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.3s ease; }
     .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(15, 23, 42, 0.5); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; backdrop-filter: blur(4px); transition: var(--transition); }
@@ -134,6 +143,7 @@
     .modal-actions { display: flex; gap: 10px; width: 100%; align-items: center; }
     @media (min-width: 640px) { .modal-actions { width: auto; } }
     
+    /* BOTTONI MODALE UNIFORMI E RESPONSIVE */
     .btn-call { flex: 1 1 auto; min-width: 0; height: 50px; background-color: var(--brand-blue); color: var(--white); text-decoration: none; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 13px; border-radius: 16px; transition: var(--transition); text-transform: uppercase; letter-spacing: 0.05em; padding: 0 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .btn-reel { width: 50px; height: 50px; flex-shrink: 0; background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: var(--white); text-decoration: none; display: flex; align-items: center; justify-content: center; border-radius: 16px; transition: var(--transition); }
     .btn-wa { width: 50px; height: 50px; flex-shrink: 0; background-color: #25D366; color: var(--white); text-decoration: none; display: flex; align-items: center; justify-content: center; border-radius: 16px; transition: var(--transition); }
@@ -141,6 +151,7 @@
 </head>
 <body>
 
+  <!-- NAVBAR CON HAMBURGER -->
   <nav class="navbar">
     <a href="index.html" class="brand">
       <div class="brand-icon-box" style="padding: 0; background: transparent;">
@@ -201,6 +212,7 @@
     </div>
   </main>
 
+  <!-- INIZIO NUOVO FOOTER COLORATO -->
   <footer style="background-color: var(--brand-blue); padding: 4rem 1rem 3rem 1rem; margin-top: auto; text-align: center; color: var(--white); box-shadow: 0 -10px 20px rgba(0,68,255, 0.1);">
       <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 1rem;">
           <h3 style="color: var(--brand-yellow); margin: 0; font-size: 1.5rem; font-weight: 900; text-transform: uppercase;">Michele Erre</h3>
@@ -227,6 +239,7 @@
       </div>
   </footer>
 
+  <!-- FLOATING ACTION MENU -->
   <div class="fab-container" id="fab-container">
       <div class="fab-menu" id="fab-menu">
           <a href="https://wa.me/393348576926" target="_blank" class="fab-action fab-wa" data-tooltip="Su WhatsApp">
@@ -241,6 +254,7 @@
       </button>
   </div>
 
+  <!-- MODALE DETTAGLIO IMMOBILE -->
   <div id="property-modal" class="modal-overlay">
     <div class="modal-card">
       <button onclick="closeModal()" class="btn-close-modal">
@@ -309,11 +323,13 @@
     let currentModalImages = [];
     let currentImageIndex = 0;
 
+    // GESTIONE HAMBURGER MENU
     const mobileToggle = document.getElementById('mobile-toggle');
     const mobileMenu = document.getElementById('mobile-menu');
     mobileToggle.addEventListener('click', () => { mobileMenu.classList.toggle('open'); });
     mobileMenu.querySelectorAll('a').forEach(link => { link.addEventListener('click', () => mobileMenu.classList.remove('open')); });
 
+    // GESTIONE FLOATING MENU
     function toggleFab() {
         document.getElementById('fab-menu').classList.toggle('open');
         document.getElementById('fab-container').classList.toggle('active');
@@ -324,43 +340,20 @@
         const { data, error } = await _supabase.from('properties').select('*').order('created_at', { ascending: false });
         if (!error && data) {
           properties = data;
-          populateFilters();
-          renderGrid();
+          renderVetrina();
         }
       } catch (err) { console.error(err); }
     });
 
-    function populateFilters() {
-      const zoneSelect = document.getElementById('filter-zone');
-      const typeSelect = document.getElementById('filter-type');
-      
-      const zones = [...new Set(properties.map(p => p.zone.trim()))].filter(Boolean);
-      const types = [...new Set(properties.map(p => p.property_type.trim()))].filter(Boolean);
-      
-      zones.forEach(z => { const opt = document.createElement('option'); opt.value = z; opt.innerText = z; zoneSelect.appendChild(opt); });
-      types.forEach(t => { const opt = document.createElement('option'); opt.value = t; opt.innerText = t; typeSelect.appendChild(opt); });
-    }
-
-    function renderGrid() {
-      const statusF = document.getElementById('filter-status').value;
-      const zoneF = document.getElementById('filter-zone').value;
-      const typeF = document.getElementById('filter-type').value;
-
-      const filtered = properties.filter(p => {
-        if(statusF !== "Tutti" && p.status !== statusF) return false;
-        if(zoneF !== "Tutte" && p.zone !== zoneF) return false;
-        if(typeF !== "Tutte" && p.property_type !== typeF) return false;
-        return true;
-      });
-
-      const grid = document.getElementById('properties-grid');
-      
-      if(filtered.length === 0) {
-        grid.innerHTML = `<div class="empty-state">Nessun immobile trovato con questi filtri. Prova a cambiarli!</div>`;
-        return;
+    function renderVetrina() {
+      const grid = document.getElementById('featured-grid');
+      let featured = properties.filter(p => p.is_featured);
+      if (featured.length < 3) {
+        const others = properties.filter(p => !p.is_featured);
+        featured = [...featured, ...others.slice(0, 3 - featured.length)];
       }
 
-      grid.innerHTML = filtered.map(p => `
+      grid.innerHTML = featured.map(p => `
         <div class="card" onclick="openModal('${p.id}')">
           <div class="card-img-container">
             <span class="card-badge-contract ${p.status === 'Vendita' ? 'vendita' : 'affitto'}">In ${p.status}</span>
