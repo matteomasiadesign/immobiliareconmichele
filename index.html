@@ -175,7 +175,7 @@
 
   <nav class="navbar">
     <a href="index.html" class="brand">
-      <div class="brand-icon-box">
+      <div class="brand-icon-box" style="padding: 0; background: transparent;">
         <img src="icona.webp" alt="Icona Michele Erre" style="width: 100%; height: 100%; object-fit: contain;">
       </div>
       <div class="brand-text">
@@ -397,7 +397,6 @@
     let currentModalImages = [];
     let currentImageIndex = 0;
 
-    // GESTIONE HAMBURGER MENU
     const mobileToggle = document.getElementById('mobile-toggle');
     const mobileMenu = document.getElementById('mobile-menu');
     mobileToggle.addEventListener('click', () => { mobileMenu.classList.toggle('open'); });
