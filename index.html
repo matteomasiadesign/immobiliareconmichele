@@ -296,7 +296,7 @@
         </div>
       </section>
 
-      <!-- CALL TO ACTION CONTATTI -->
+      <!-- CALL TO ACTION CONTATTI - REIMPAGINATA CON IMMAGINE -->
       <section id="contatti" class="section">
         <div class="section-header">
           <span class="section-label">Parliamone</span>
@@ -469,7 +469,7 @@
         <div class="card" onclick="openModal('${p.id}')">
           <div class="card-img-container">
             <span class="card-badge-contract ${p.status === 'Vendita' ? 'vendita' : 'affitto'}">In ${p.status}</span>
-            <img src="${p.images[0] || ''}" class="card-img" alt="Foto">
+            <img src="${(p.images && p.images[0]) || ''}" class="card-img" alt="Foto">
           </div>
           <div class="card-content">
             <span style="font-size:11px; font-weight:900; color:var(--brand-blue); text-transform:uppercase;">${p.property_type}</span>
