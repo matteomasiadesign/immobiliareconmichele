@@ -25,7 +25,7 @@
 
     .navbar { background-color: var(--brand-blue); border-bottom: 4px solid var(--brand-yellow); height: 80px; display: flex; align-items: center; justify-content: space-between; padding: 0 1rem; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(0,68,255,0.15); }
     .brand { display: flex; align-items: center; text-decoration: none; z-index: 1001; }
-    .brand-icon-box { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
+    .brand-icon-box { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; padding: 0; background: transparent; }
     .brand-text { margin-left: 12px; display: flex; flex-direction: column; line-height: 1.1; }
     .brand-title { font-size: 1.25rem; font-weight: 900; color: var(--brand-yellow); letter-spacing: -0.025em; }
     .brand-subtitle { font-size: 10px; font-weight: 900; color: var(--white); letter-spacing: 0.1em; margin-top: 2px; }
@@ -101,7 +101,18 @@
     .btn-close-modal:hover { background-color: var(--brand-blue); transform: scale(1.05); }
 
     .modal-scroll { overflow-y: auto; flex: 1; -webkit-overflow-scrolling: touch; }
-    .modal-img { width: 100%; aspect-ratio: 4/3; object-fit: cover; background: #e2e8f0; }
+    
+    /* MODIFICA CAROSELLO MODALE CSS */
+    .modal-carousel-container { position: relative; width: 100%; aspect-ratio: 4/3; background: #e2e8f0; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+    .modal-img { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.3s ease; }
+    .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(15, 23, 42, 0.5); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; backdrop-filter: blur(4px); transition: var(--transition); }
+    .carousel-btn:hover { background: var(--brand-blue); }
+    .carousel-btn.prev { left: 10px; }
+    .carousel-btn.next { right: 10px; }
+    .carousel-dots { position: absolute; bottom: 10px; left: 0; width: 100%; display: flex; justify-content: center; gap: 6px; z-index: 10; }
+    .gallery-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.5); cursor: pointer; transition: var(--transition); box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+    .gallery-dot.active { background: var(--brand-yellow); transform: scale(1.2); }
+
     .modal-content { padding: 1.25rem; }
     @media (min-width: 768px) { .modal-content { padding: 1.5rem; } }
     .modal-type { display: inline-block; background: rgba(0,68,255,0.05); color: var(--brand-blue); font-size: 11px; font-weight: 900; text-transform: uppercase; padding: 4px 10px; border-radius: 12px; margin-bottom: 0.5rem; }
@@ -132,7 +143,7 @@
 
   <nav class="navbar">
     <a href="index.html" class="brand">
-      <div class="brand-icon-box" style="padding: 0; background: transparent;">
+      <div class="brand-icon-box">
         <img src="icona.webp" alt="Icona Michele Erre" style="width: 100%; height: 100%; object-fit: contain;">
       </div>
       <div class="brand-text">
@@ -237,7 +248,17 @@
       </button>
 
       <div class="modal-scroll">
-        <img id="mod-img" src="" class="modal-img" alt="Foto">
+        <div class="modal-carousel-container">
+          <button id="mod-prev-img" class="carousel-btn prev" onclick="prevImage()">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path></svg>
+          </button>
+          <img id="mod-img" src="" class="modal-img" alt="Foto">
+          <button id="mod-next-img" class="carousel-btn next" onclick="nextImage()">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+          </button>
+          <div id="mod-img-dots" class="carousel-dots"></div>
+        </div>
+        
         <div class="modal-content">
           <span id="mod-type" class="modal-type"></span>
           <h2 id="mod-title" class="modal-title"></h2>
@@ -285,7 +306,10 @@
     const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     
     let properties = [];
+    let currentModalImages = [];
+    let currentImageIndex = 0;
 
+    // GESTIONE HAMBURGER MENU
     const mobileToggle = document.getElementById('mobile-toggle');
     const mobileMenu = document.getElementById('mobile-menu');
     mobileToggle.addEventListener('click', () => { mobileMenu.classList.toggle('open'); });
@@ -372,7 +396,11 @@
     function openModal(id) {
       const p = properties.find(x => x.id === id);
       if(!p) return;
-      document.getElementById('mod-img').src = p.images[0] || '';
+      
+      currentModalImages = p.images || [];
+      currentImageIndex = 0;
+      updateModalImage();
+
       document.getElementById('mod-type').innerText = p.property_type;
       document.getElementById('mod-title').innerText = p.title;
       document.getElementById('mod-zone').innerText = p.zone;
@@ -395,6 +423,53 @@
       `;
 
       document.getElementById('property-modal').style.display = 'flex';
+    }
+
+    function updateModalImage() {
+      const imgEl = document.getElementById('mod-img');
+      const prevBtn = document.getElementById('mod-prev-img');
+      const nextBtn = document.getElementById('mod-next-img');
+      const dotsContainer = document.getElementById('mod-img-dots');
+
+      if (!currentModalImages || currentModalImages.length === 0) {
+        imgEl.src = '';
+        prevBtn.style.display = 'none';
+        nextBtn.style.display = 'none';
+        dotsContainer.innerHTML = '';
+        return;
+      }
+
+      imgEl.src = currentModalImages[currentImageIndex];
+
+      if (currentModalImages.length > 1) {
+        prevBtn.style.display = 'flex';
+        nextBtn.style.display = 'flex';
+        dotsContainer.innerHTML = currentModalImages.map((_, i) => 
+          `<div class="gallery-dot ${i === currentImageIndex ? 'active' : ''}" onclick="goToImage(${i})"></div>`
+        ).join('');
+      } else {
+        prevBtn.style.display = 'none';
+        nextBtn.style.display = 'none';
+        dotsContainer.innerHTML = '';
+      }
+    }
+
+    function nextImage() {
+      if (currentModalImages.length <= 1) return;
+      currentImageIndex = (currentImageIndex + 1) % currentModalImages.length;
+      updateModalImage();
+    }
+
+    function prevImage() {
+      if (currentModalImages.length <= 1) return;
+      currentImageIndex = (currentImageIndex - 1 + currentModalImages.length) % currentModalImages.length;
+      updateModalImage();
+    }
+
+    function goToImage(index) {
+      if (index < 0 || index >= currentModalImages.length) return;
+      currentImageIndex = index;
+      updateModalImage();
     }
 
     function closeModal() {
