@@ -1,131 +1,3 @@
-
-Claude ha terminato la risposta
-
-index.html
-html
-
-
-admin.html
-html
-
-
-catalogo.html
-html
-
-1782888218646_image.png
-1782888249353_image.png
-Questo è il sito che abbiamo creato per l'agente immobiliare collegato a supabase:
-
-Vorrei aggiungere una cosa per quanto riguarda le card degli immobili.
-Mi sono dimenticato di aggiungere i metri quadri per ogni immobile l'ideale sarebbe inserire una pills affianco a locali e bagni.
-
-Questo parametro vorrei poterlo inserire tramite l'admin
-
-
-Esaminato il contesto per proporre miglioramenti strutturati
-Esaminato il contesto per proporre miglioramenti strutturati
-Ora vediamo dove nell'admin viene costruito l'oggetto da salvare su Supabase (per capire il nome campi es. rooms, bathrooms, parking) e dove nel catalogo/index vengono renderizzate le pills "Locali/Bagni".
-
-
-Find where form data is assembled and saved
-Find where form data is assembled and saved
-Ora vediamo come vengono renderizzate le pills "Locali/Bagni" in catalogo.html e index.html.
-
-
-Confermando il piano per aggiungere la colonna metri quadri
-Confermando il piano per aggiungere la colonna metri quadri
-Ora controllo lo stesso in index.html (probabilmente ha una struttura simile per la home).
-
-
-Architettato piano per aggiungere metri quadri con chiarimenti preliminari
-Architettato piano per aggiungere metri quadri con chiarimenti preliminari
-Perfetto, ho analizzato i tre file. Prima di modificare il codice, ti faccio qualche domanda rapida per essere sicuro di implementare esattamente quello che vuoi.
-
-D: Dove vuoi mostrare i metri quadri?
-R: In entrambi i punti
-
-D: Il campo mq è obbligatorio nel form admin?
-R: No, opzionale (per non rompere gli immobili già inseriti)
-
-D: Formato di visualizzazione
-R: il più adatto
-
-
-Architettato layout a tre colonne per integrare campo metri quadri
-Architettato layout a tre colonne per integrare campo metri quadri
-Procedo con le modifiche. Aggiungo il campo mq nel form admin (riga con Stanze/Bagni), lo includo nel payload Supabase, e aggiungo la pill "X m²" sia nelle card (index.html + catalogo.html) che nel modal di dettaglio — nascosta automaticamente se il valore non è presente, per non rompere gli annunci già pubblicati.
-
-
-3 file modificati
-3 file modificati
-Ora aggiorno la logica JS di salvataggio e di popolamento in edit mode:
-
-
-File visualizzato, file modificato
-File visualizzato, file modificato
-Ora la funzione che popola il form in modalità modifica:
-
-
-Selezionando icona appropriata per visualizzare metri quadri
-Selezionando icona appropriata per visualizzare metri quadri
-Bene, il form usa .reset() che pulirà automaticamente anche il nuovo campo mq. Ora passo a catalogo.html: aggiungo la pill nella card e la voce nel modal.
-
-
-Architettato visualizzazione condizionale metratura in due sezioni interfaccia
-Architettato visualizzazione condizionale metratura in due sezioni interfaccia
-Ora lo stesso in index.html:
-
-
-Architettando griglia dinamica con toggle visibilità elementi
-Architettando griglia dinamica con toggle visibilità elementi
-Ora aggiorno il modal di dettaglio (dove ci sono le box Locali/Bagni/Parcheggio) in entrambi i file, mostrando la box Mq solo quando il valore è presente.
-
-
-Architected responsive grid layout with dynamic column toggling
-Architected responsive grid layout with dynamic column toggling
-Ora lo stesso identico blocco per catalogo.html:
-
-
-Verificato layout CSS per garantire corretta disposizione elementi
-Verificato layout CSS per garantire corretta disposizione elementi
-Verifico rapidamente che il contenitore delle pills gestisca bene il wrap con 3 elementi, e faccio un check di sintassi generale sui file.
-
-
-Check card-features CSS and basic tag balance
-Check card-features CSS and basic tag balance
-Ottimo, flex-wrap: wrap gestisce già bene la terza pill. Tutto ok sintatticamente. Copio i file finali nella cartella di output.
-
-
-Eseguito un comando, file letto
-Eseguito un comando, file letto
-Cosa ho fatto:
-
-admin.html — aggiunto il campo "Mq (opzionale)" accanto a Stanze/Bagni, incluso nel payload salvato su Supabase (sqm) sia in creazione che in modifica, e precompilato correttamente quando modifichi un annuncio esistente.
-index.html + catalogo.html — aggiunta la pill "🔲 X m²" nelle card, subito dopo Locali e Bagni (compare solo se il valore è presente, quindi gli annunci vecchi restano intatti). Aggiunta anche la box "Mq" nel modal di dettaglio, che appare tra Bagni e Parcheggio e allarga automaticamente la griglia a 4 colonne solo quando il dato c'è.
-Un passaggio da fare tu (o che posso fare io se mi dai l'ok): serve aggiungere la colonna sqm alla tabella properties su Supabase, altrimenti il salvataggio darà errore. Basta questa query nel SQL editor:
-
-sql
-ALTER TABLE properties ADD COLUMN sqm integer;
-Vuoi che la esegua io direttamente collegandomi al tuo progetto Supabase, o preferisci lanciarla tu?
-
-
-Index
-Codice · HTML 
-
-Catalogo
-Codice · HTML 
-
-Admin
-Codice · HTML 
-
-
-
-
-
-Claude è un'AI e può commettere errori. Verifica le risposte.
-
-
-Catalogo · HTML
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -134,7 +6,7 @@ Catalogo · HTML
   <title>Catalogo - Immobiliare con Michele</title>
   
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
- 
+
   <style>
     :root {
       --brand-blue: #0044FF;
@@ -146,11 +18,11 @@ Catalogo · HTML
       --border-color: #e2e8f0;
       --transition: all 0.3s ease-in-out;
     }
- 
+
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     
     html, body { scroll-behavior: smooth; background-color: var(--bg-slate); color: var(--text-slate); min-height: 100vh; max-width: 100%; overflow-x: clip; display: flex; flex-direction: column; }
- 
+
     /* NAVBAR STICKY */
     .navbar { background-color: var(--brand-blue); border-bottom: 4px solid var(--brand-yellow); height: 80px; display: flex; align-items: center; justify-content: space-between; padding: 0 1rem; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(0,68,255,0.15); }
     .brand { display: flex; align-items: center; text-decoration: none; z-index: 1001; }
@@ -165,7 +37,7 @@ Catalogo · HTML
     .nav-link { color: var(--brand-yellow); text-decoration: none; font-weight: 900; font-size: 13px; text-transform: uppercase; transition: var(--transition); }
     .nav-link:hover { color: var(--white); }
     .btn-catalog-nav { background-color: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 12px; text-decoration: none; font-weight: bold; font-size: 11px; text-transform: uppercase; }
- 
+
     /* HAMBURGER MENU (MOBILE) */
     .mobile-toggle { display: block; background: none; border: none; cursor: pointer; z-index: 1001; }
     @media (min-width: 768px) { .mobile-toggle { display: none; } }
@@ -174,7 +46,7 @@ Catalogo · HTML
     .mobile-menu.open { transform: translateY(0); }
     .mobile-menu .nav-link { font-size: 1.1rem; }
     .mobile-menu .btn-catalog-nav { font-size: 1.1rem; padding: 14px 28px; }
- 
+
     /* MAIN CONTENT */
     .catalog-container { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem; flex: 1 0 auto; width: 100%; display: flex; flex-direction: column; }
     @media (min-width: 768px) { .catalog-container { padding: 3rem 1.5rem; } }
@@ -203,7 +75,21 @@ Catalogo · HTML
     .filter-select:focus { border-color: var(--brand-blue); background-color: var(--white); }
     .filter-reset-btn { margin-top: 0.5rem; padding: 10px; text-align: center; font-size: 11px; font-weight: 900; color: var(--brand-blue); text-transform: uppercase; cursor: pointer; background: rgba(0,68,255,0.05); border-radius: 12px; transition: var(--transition); border: none; width: 100%; }
     .filter-reset-btn:hover { background: rgba(0,68,255,0.1); }
- 
+
+    /* PRICE RANGE SLIDER */
+    .price-values { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .price-val { font-size: 13px; font-weight: 900; color: var(--brand-blue); }
+    .price-val-sep { font-size: 11px; font-weight: 700; color: var(--text-muted); }
+    .range-slider { position: relative; height: 32px; }
+    .range-track { position: absolute; top: 50%; transform: translateY(-50%); width: 100%; height: 4px; background: #e2e8f0; border-radius: 4px; }
+    .range-track-fill { position: absolute; top: 50%; transform: translateY(-50%); height: 4px; background: var(--brand-blue); border-radius: 4px; }
+    .range-slider input[type="range"] { position: absolute; top: 0; left: 0; width: 100%; height: 32px; margin: 0; background: none; pointer-events: none; -webkit-appearance: none; appearance: none; }
+    .range-slider input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; pointer-events: auto; width: 22px; height: 22px; border-radius: 50%; background: var(--white); border: 3px solid var(--brand-blue); cursor: grab; box-shadow: 0 2px 6px rgba(0,0,0,0.15); margin-top: 0; }
+    .range-slider input[type="range"]::-webkit-slider-thumb:active { cursor: grabbing; }
+    .range-slider input[type="range"]::-moz-range-thumb { pointer-events: auto; width: 22px; height: 22px; border-radius: 50%; background: var(--white); border: 3px solid var(--brand-blue); cursor: grab; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
+    .range-slider input[type="range"]::-webkit-slider-runnable-track { background: none; }
+    .range-slider input[type="range"]::-moz-range-track { background: none; }
+
     /* GRID IMMOBILI */
     .properties-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
     @media (min-width: 768px) { .properties-grid { grid-template-columns: repeat(2, 1fr); gap: 2rem; } }
@@ -215,12 +101,12 @@ Catalogo · HTML
     .card-img { width: 100%; height: 100%; object-fit: cover; }
     .card-content { padding: 1.25rem; flex: 1; display: flex; flex-direction: column; position: relative; }
     @media (min-width: 768px) { .card-content { padding: 1.5rem; } }
- 
+
     /* BADGE */
     .card-badge-contract { position: absolute; top: 12px; left: 12px; font-size: 10px; font-weight: 900; text-transform: uppercase; padding: 6px 16px; border-radius: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.15); z-index: 10; }
     .card-badge-contract.vendita { background-color: var(--brand-yellow); color: var(--brand-blue); border: 2px solid var(--white); }
     .card-badge-contract.affitto { background-color: var(--brand-blue); color: var(--white); border: 2px solid var(--brand-yellow); }
- 
+
     .card-title { font-size: 1.2rem; font-weight: 900; color: var(--text-slate); margin-top: 0.5rem; margin-bottom: 0.5rem; line-height: 1.2; }
     .card-zone { color: var(--brand-blue); font-size: 12px; font-weight: 800; display: flex; align-items: center; gap: 4px; margin-bottom: 1rem; }
     .card-features { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color); }
@@ -228,9 +114,9 @@ Catalogo · HTML
     .card-footer { margin-top: auto; display: flex; justify-content: space-between; align-items: flex-end; padding-top: 1rem; border-top: 1px solid var(--border-color); }
     .card-price-label { font-size: 10px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 2px; }
     .card-price { font-size: 1.35rem; font-weight: 900; color: var(--text-slate); }
- 
+
     .empty-state { grid-column: 1 / -1; text-align: center; padding: 4rem 1rem; background: var(--white); border-radius: 24px; border: 1px solid var(--border-color); color: var(--text-muted); font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 1rem; }
- 
+
     /* FLOATING ACTION MENU */
     .fab-container { position: fixed; bottom: 24px; right: 24px; z-index: 900; display: flex; flex-direction: column; align-items: center; gap: 12px; }
     .fab-menu { display: flex; flex-direction: column; gap: 10px; opacity: 0; transform: translateY(20px) scale(0.9); pointer-events: none; transition: var(--transition); transform-origin: bottom center; }
@@ -246,14 +132,14 @@ Catalogo · HTML
     
     .fab-action::after { content: attr(data-tooltip); position: absolute; right: 60px; background: rgba(15, 23, 42, 0.9); color: white; padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 600; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
     .fab-action:hover::after { opacity: 1; }
- 
+
     /* MODALE SICURO E CAROSELLO */
     .modal-overlay { position: fixed; inset: 0; background-color: rgba(15, 23, 42, 0.8); backdrop-filter: blur(5px); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 1rem; }
     .modal-card { background: var(--white); width: 100%; max-width: 600px; max-height: 90vh; border-radius: 24px; display: flex; flex-direction: column; overflow: hidden; position: relative; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
     
     .btn-close-modal { position: absolute; top: 12px; right: 12px; width: 44px; height: 44px; border-radius: 50%; background-color: rgba(0,0,0,0.6); backdrop-filter: blur(8px); border: 2px solid rgba(255,255,255,0.2); color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 100; transition: var(--transition); }
     .btn-close-modal:hover { background-color: var(--brand-blue); transform: scale(1.05); }
- 
+
     .modal-scroll { overflow-y: auto; flex: 1; -webkit-overflow-scrolling: touch; }
     
     .modal-carousel-container { position: relative; width: 100%; aspect-ratio: 4/3; background: #e2e8f0; overflow: hidden; display: flex; align-items: center; justify-content: center; }
@@ -265,7 +151,7 @@ Catalogo · HTML
     .carousel-dots { position: absolute; bottom: 10px; left: 0; width: 100%; display: flex; justify-content: center; gap: 6px; z-index: 10; }
     .gallery-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.5); cursor: pointer; transition: var(--transition); box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
     .gallery-dot.active { background: var(--brand-yellow); transform: scale(1.2); }
- 
+
     .modal-content { padding: 1.25rem; }
     @media (min-width: 768px) { .modal-content { padding: 1.5rem; } }
     .modal-type { display: inline-block; background: rgba(0,68,255,0.05); color: var(--brand-blue); font-size: 11px; font-weight: 900; text-transform: uppercase; padding: 4px 10px; border-radius: 12px; margin-bottom: 0.5rem; }
@@ -294,7 +180,7 @@ Catalogo · HTML
   </style>
 </head>
 <body>
- 
+
   <nav class="navbar">
     <a href="index.html" class="brand">
       <div class="brand-icon-box">
@@ -311,22 +197,22 @@ Catalogo · HTML
       <a href="index.html#contatti" class="nav-link">Contatti</a>
       <a href="admin.html" class="btn-catalog-nav">Area Privata</a>
     </div>
- 
+
     <button id="mobile-toggle" class="mobile-toggle">
       <svg width="28" height="28" fill="none" stroke="var(--brand-yellow)" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path></svg>
     </button>
   </nav>
- 
+
   <div id="mobile-menu" class="mobile-menu">
     <a href="index.html" class="nav-link">Torna alla Home</a>
     <a href="index.html#contatti" class="nav-link">Contatti</a>
     <a href="admin.html" class="btn-catalog-nav">Area Privata</a>
   </div>
- 
+
   <main class="catalog-container">
     <h1 class="catalog-title">Il Catalogo</h1>
     <p style="color: var(--text-muted); font-weight: 500;">Esplora tutte le proposte disponibili. Usa la barra di ricerca o i filtri per trovare la combinazione perfetta per te.</p>
- 
+
     <div class="search-wrapper" id="search-wrapper">
       <div class="search-input-container">
         <svg class="search-icon" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"></path></svg>
@@ -337,7 +223,7 @@ Catalogo · HTML
         <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"></path></svg>
         <span class="hidden sm:inline">Filtri</span>
       </button>
- 
+
       <div class="filter-dropdown-content" id="filter-dropdown">
         <div>
           <label class="filter-label">Contratto</label>
@@ -359,15 +245,29 @@ Catalogo · HTML
             <option value="Tutte">Qualsiasi tipologia</option>
           </select>
         </div>
+        <div>
+          <label class="filter-label">Fascia di Prezzo</label>
+          <div class="price-values">
+            <span class="price-val" id="price-val-min">€0</span>
+            <span class="price-val-sep">—</span>
+            <span class="price-val" id="price-val-max">€0</span>
+          </div>
+          <div class="range-slider">
+            <div class="range-track"></div>
+            <div class="range-track-fill" id="range-fill"></div>
+            <input type="range" id="price-min" min="0" max="100" value="0" oninput="onPriceInput()">
+            <input type="range" id="price-max" min="0" max="100" value="100" oninput="onPriceInput()">
+          </div>
+        </div>
         <button class="filter-reset-btn" onclick="resetFilters()">Azzera Filtri</button>
       </div>
     </div>
- 
+
     <div id="properties-grid" class="properties-grid">
       <!-- Popolato da JS -->
     </div>
   </main>
- 
+
   <footer style="background-color: var(--brand-blue); padding: 4rem 1rem 3rem 1rem; margin-top: auto; text-align: center; color: var(--white); box-shadow: 0 -10px 20px rgba(0,68,255, 0.1);">
       <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 1rem;">
           <h3 style="color: var(--brand-yellow); margin: 0; font-size: 1.5rem; font-weight: 900; text-transform: uppercase;">Michele Erre</h3>
@@ -393,7 +293,7 @@ Catalogo · HTML
           </div>
       </div>
   </footer>
- 
+
   <div class="fab-container" id="fab-container">
       <div class="fab-menu" id="fab-menu">
           <a href="https://wa.me/393348576926" target="_blank" class="fab-action fab-wa" data-tooltip="Su WhatsApp">
@@ -407,14 +307,14 @@ Catalogo · HTML
           <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
       </button>
   </div>
- 
+
   <!-- MODALE DETTAGLIO IMMOBILE -->
   <div id="property-modal" class="modal-overlay">
     <div class="modal-card">
       <button onclick="closeModal()" class="btn-close-modal">
         <svg style="width: 24px; height: 24px; flex-shrink: 0;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
       </button>
- 
+
       <div class="modal-scroll">
         <div class="modal-carousel-container">
           <button id="mod-prev-img" class="carousel-btn prev" onclick="prevImage()">
@@ -453,12 +353,12 @@ Catalogo · HTML
               <span id="mod-parking" class="modal-grid-value"></span>
             </div>
           </div>
- 
+
           <div class="modal-desc-title">Descrizione Completa</div>
           <div id="mod-desc" class="modal-desc"></div>
         </div>
       </div>
- 
+
       <div class="modal-footer">
         <div class="modal-price-box">
           <span class="modal-price-label">Prezzo Richiesto</span>
@@ -470,7 +370,7 @@ Catalogo · HTML
       </div>
     </div>
   </div>
- 
+
   <script>
     const SUPABASE_URL = "https://svdfgejkjvkbajmqoqjz.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_aGoAYeXnUtVMe4bIc20wIQ_2EM4LTSG";
@@ -480,19 +380,19 @@ Catalogo · HTML
     let properties = [];
     let currentModalImages = [];
     let currentImageIndex = 0;
- 
+
     // GESTIONE HAMBURGER MENU
     const mobileToggle = document.getElementById('mobile-toggle');
     const mobileMenu = document.getElementById('mobile-menu');
     mobileToggle.addEventListener('click', () => { mobileMenu.classList.toggle('open'); });
     mobileMenu.querySelectorAll('a').forEach(link => { link.addEventListener('click', () => mobileMenu.classList.remove('open')); });
- 
+
     // GESTIONE FLOATING MENU
     function toggleFab() {
         document.getElementById('fab-menu').classList.toggle('open');
         document.getElementById('fab-container').classList.toggle('active');
     }
- 
+
     // GESTIONE DROPDOWN FILTRI
     function toggleFilterDropdown(e) {
       if(e) e.stopPropagation();
@@ -501,7 +401,7 @@ Catalogo · HTML
       btn.classList.toggle('active');
       dropdown.classList.toggle('open');
     }
- 
+
     // Chiudi la tendina dei filtri se si clicca fuori
     document.addEventListener('click', function(event) {
       const wrapper = document.getElementById('search-wrapper');
@@ -512,7 +412,7 @@ Catalogo · HTML
         btn.classList.remove('active');
       }
     });
- 
+
     window.addEventListener('DOMContentLoaded', async () => {
       try {
         const { data, error } = await _supabase.from('properties').select('*').order('created_at', { ascending: false });
@@ -523,7 +423,7 @@ Catalogo · HTML
         }
       } catch (err) { console.error(err); }
     });
- 
+
     function populateFilters() {
       const zoneSelect = document.getElementById('filter-zone');
       const typeSelect = document.getElementById('filter-type');
@@ -533,41 +433,101 @@ Catalogo · HTML
       
       zones.forEach(z => { const opt = document.createElement('option'); opt.value = z; opt.innerText = z; zoneSelect.appendChild(opt); });
       types.forEach(t => { const opt = document.createElement('option'); opt.value = t; opt.innerText = t; typeSelect.appendChild(opt); });
+
+      // Inizializza lo slider prezzi in base ai prezzi reali degli immobili
+      initPriceSlider();
     }
- 
+
+    let priceBounds = { min: 0, max: 0 };
+
+    function initPriceSlider() {
+      const prices = properties.map(p => Number(p.price)).filter(v => !isNaN(v));
+      if (prices.length === 0) { priceBounds = { min: 0, max: 0 }; }
+      else {
+        // Arrotondo per avere estremi puliti (step da 5.000€)
+        const step = 5000;
+        priceBounds.min = Math.floor(Math.min(...prices) / step) * step;
+        priceBounds.max = Math.ceil(Math.max(...prices) / step) * step;
+        if (priceBounds.min === priceBounds.max) priceBounds.max += step;
+      }
+      const minEl = document.getElementById('price-min');
+      const maxEl = document.getElementById('price-max');
+      minEl.min = priceBounds.min; minEl.max = priceBounds.max; minEl.value = priceBounds.min; minEl.step = 5000;
+      maxEl.min = priceBounds.min; maxEl.max = priceBounds.max; maxEl.value = priceBounds.max; maxEl.step = 5000;
+      updatePriceUI();
+    }
+
+    function updatePriceUI() {
+      const minEl = document.getElementById('price-min');
+      const maxEl = document.getElementById('price-max');
+      let minV = Number(minEl.value);
+      let maxV = Number(maxEl.value);
+      // Impedisce che i due cursori si scavalchino
+      if (minV > maxV) { [minV, maxV] = [maxV, minV]; }
+      document.getElementById('price-val-min').innerText = '€' + minV.toLocaleString('it-IT');
+      document.getElementById('price-val-max').innerText = '€' + maxV.toLocaleString('it-IT');
+      const range = priceBounds.max - priceBounds.min || 1;
+      const leftPct = ((minV - priceBounds.min) / range) * 100;
+      const rightPct = ((maxV - priceBounds.min) / range) * 100;
+      const fill = document.getElementById('range-fill');
+      fill.style.left = leftPct + '%';
+      fill.style.width = (rightPct - leftPct) + '%';
+    }
+
+    function onPriceInput() {
+      const minEl = document.getElementById('price-min');
+      const maxEl = document.getElementById('price-max');
+      // Evita lo scavalco mantenendo un piccolo margine
+      if (Number(minEl.value) > Number(maxEl.value)) {
+        const tmp = minEl.value; minEl.value = maxEl.value; maxEl.value = tmp;
+      }
+      updatePriceUI();
+      renderGrid();
+    }
+
     function resetFilters() {
       document.getElementById('search-text').value = '';
       document.getElementById('filter-status').value = 'Tutti';
       document.getElementById('filter-zone').value = 'Tutte';
       document.getElementById('filter-type').value = 'Tutte';
+      document.getElementById('price-min').value = priceBounds.min;
+      document.getElementById('price-max').value = priceBounds.max;
+      updatePriceUI();
       renderGrid();
       // Chiude il dropdown dopo aver azzerato
       document.getElementById('filter-dropdown').classList.remove('open');
       document.getElementById('filter-toggle-btn').classList.remove('active');
     }
- 
+
     function renderGrid() {
       // Prendo i valori da tutti i filtri (testo + dropdown)
       const searchQuery = document.getElementById('search-text').value.toLowerCase().trim();
       const statusF = document.getElementById('filter-status').value;
       const zoneF = document.getElementById('filter-zone').value;
       const typeF = document.getElementById('filter-type').value;
- 
+      const priceMinF = Number(document.getElementById('price-min').value);
+      const priceMaxF = Number(document.getElementById('price-max').value);
+      const [pMin, pMax] = priceMinF <= priceMaxF ? [priceMinF, priceMaxF] : [priceMaxF, priceMinF];
+
       const filtered = properties.filter(p => {
         // Filtro Dropdown
         if(statusF !== "Tutti" && p.status !== statusF) return false;
         if(zoneF !== "Tutte" && p.zone !== zoneF) return false;
         if(typeF !== "Tutte" && p.property_type !== typeF) return false;
+
+        // Filtro Prezzo (slider)
+        const price = Number(p.price);
+        if(!isNaN(price) && (price < pMin || price > pMax)) return false;
         
         // Filtro Testuale Libero
         if(searchQuery !== "") {
           const combinedString = `${p.title} ${p.description} ${p.zone} ${p.property_type}`.toLowerCase();
           if(!combinedString.includes(searchQuery)) return false;
         }
- 
+
         return true;
       });
- 
+
       const grid = document.getElementById('properties-grid');
       if(!grid) return;
       
@@ -579,7 +539,7 @@ Catalogo · HTML
           </div>`;
         return;
       }
- 
+
       grid.innerHTML = filtered.map(p => `
         <div class="card" onclick="openModal('${p.id}')">
           <div class="card-img-container">
@@ -612,7 +572,7 @@ Catalogo · HTML
         </div>
       `).join('');
     }
- 
+
     function openModal(id) {
       const p = properties.find(x => x.id === id);
       if(!p) return;
@@ -620,7 +580,7 @@ Catalogo · HTML
       currentModalImages = p.images || [];
       currentImageIndex = 0;
       updateModalImage();
- 
+
       document.getElementById('mod-type').innerText = p.property_type;
       document.getElementById('mod-title').innerText = p.title;
       document.getElementById('mod-zone').innerText = p.zone;
@@ -645,16 +605,16 @@ Catalogo · HTML
           <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.327.101.148.45.712.96 1.211.66.651 1.221.852 1.369.94.148.087.235.075.321-.025.087-.1.372-.43.473-.578.101-.148.202-.124.336-.075.134.05 .85.4 1.011.477.16.077.268.115.304.177.037.062.037.347-.106.752z"></path></svg>
         </a>
       `;
- 
+
       document.getElementById('property-modal').style.display = 'flex';
     }
- 
+
     function updateModalImage() {
       const imgEl = document.getElementById('mod-img');
       const prevBtn = document.getElementById('mod-prev-img');
       const nextBtn = document.getElementById('mod-next-img');
       const dotsContainer = document.getElementById('mod-img-dots');
- 
+
       if (!currentModalImages || currentModalImages.length === 0) {
         imgEl.src = '';
         prevBtn.style.display = 'none';
@@ -662,9 +622,9 @@ Catalogo · HTML
         dotsContainer.innerHTML = '';
         return;
       }
- 
+
       imgEl.src = currentModalImages[currentImageIndex];
- 
+
       if (currentModalImages.length > 1) {
         prevBtn.style.display = 'flex';
         nextBtn.style.display = 'flex';
@@ -677,32 +637,28 @@ Catalogo · HTML
         dotsContainer.innerHTML = '';
       }
     }
- 
+
     function nextImage() {
       if (currentModalImages.length <= 1) return;
       currentImageIndex = (currentImageIndex + 1) % currentModalImages.length;
       updateModalImage();
     }
- 
+
     function prevImage() {
       if (currentModalImages.length <= 1) return;
       currentImageIndex = (currentImageIndex - 1 + currentModalImages.length) % currentModalImages.length;
       updateModalImage();
     }
- 
+
     function goToImage(index) {
       if (index < 0 || index >= currentModalImages.length) return;
       currentImageIndex = index;
       updateModalImage();
     }
- 
+
     function closeModal() {
       document.getElementById('property-modal').style.display = 'none';
     }
   </script>
 </body>
 </html>
- 
-
-
-
