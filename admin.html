@@ -75,6 +75,8 @@
     
     .form-row { display: grid; grid-template-columns: 1fr; gap: 12px; }
     @media (min-width: 480px) { .form-row { grid-template-columns: 1fr 1fr; } }
+    .form-row-3 { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    @media (min-width: 480px) { .form-row-3 { grid-template-columns: 1fr 1fr 1fr; } }
 
     .photo-fields-box { background-color: #f8fafc; padding: 1rem; border-radius: 18px; border: 1px solid var(--border-color); margin-bottom: 1rem; width: 100%; }
     .file-upload-row { display: flex; flex-direction: column; gap: 10px; width: 100%; }
@@ -254,7 +256,7 @@
             </div>
           </div>
 
-          <div class="form-row">
+          <div class="form-row-3">
             <div>
               <label class="form-label">Stanze</label>
               <input required type="number" id="prop-rooms" min="1" value="1" class="form-input">
@@ -262,6 +264,10 @@
             <div>
               <label class="form-label">Bagni</label>
               <input required type="number" id="prop-bathrooms" min="1" value="1" class="form-input">
+            </div>
+            <div>
+              <label class="form-label">Mq (opzionale)</label>
+              <input type="number" id="prop-sqm" min="1" placeholder="es. 90" class="form-input">
             </div>
           </div>
 
@@ -544,6 +550,8 @@
       const type = document.getElementById('prop-type').value.trim();
       const rooms = Number(document.getElementById('prop-rooms').value);
       const bathrooms = Number(document.getElementById('prop-bathrooms').value);
+      const sqmRaw = document.getElementById('prop-sqm').value.trim();
+      const sqm = sqmRaw ? Number(sqmRaw) : null;
       const description = document.getElementById('prop-desc').value.trim();
       const reel_url = document.getElementById('prop-reel').value.trim();
       const hasParking = document.getElementById('prop-parking').checked;
@@ -553,7 +561,7 @@
 
       showLoader(id ? "Aggiornamento in corso..." : "Pubblicazione annuncio...");
 
-      const payload = { title, status, price, zone, property_type: type, rooms, bathrooms, description, reel_url, has_parking: hasParking, is_featured: isFeatured, images: uploadedImageUrls };
+      const payload = { title, status, price, zone, property_type: type, rooms, bathrooms, sqm, description, reel_url, has_parking: hasParking, is_featured: isFeatured, images: uploadedImageUrls };
 
       try {
         if (id) { const { error } = await _supabase.from('properties').update(payload).eq('id', id); if (error) throw error; cancelEdit(); } 
@@ -572,6 +580,7 @@
       document.getElementById('prop-type').value = p.property_type;
       document.getElementById('prop-rooms').value = p.rooms;
       document.getElementById('prop-bathrooms').value = p.bathrooms;
+      document.getElementById('prop-sqm').value = p.sqm || '';
       document.getElementById('prop-desc').value = p.description;
       document.getElementById('prop-reel').value = p.reel_url || '';
       document.getElementById('prop-parking').checked = p.has_parking;
