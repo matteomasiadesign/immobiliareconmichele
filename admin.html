@@ -34,6 +34,8 @@
     .nav-actions { display: flex; align-items: center; gap: 8px; }
     .btn-nav-link { background: transparent; color: var(--brand-yellow); text-decoration: none; font-weight: 900; font-size: 11px; text-transform: uppercase; padding: 8px 10px; border-radius: 12px; transition: var(--transition); display: flex; align-items: center; gap: 6px; border: 1px solid rgba(255,217,15,0.3); }
     .btn-nav-link:hover { background: rgba(255,217,15,0.1); }
+    .btn-nav-proposta { background: var(--brand-yellow); color: var(--brand-blue); border-color: var(--brand-yellow); }
+    .btn-nav-proposta:hover { background: #ffe552; color: var(--brand-blue); }
     .btn-logout { background-color: rgba(239,68,68,0.1); color: #fca5a5; border: 1px solid rgba(239,68,68,0.3); font-weight: 900; font-size: 11px; text-transform: uppercase; padding: 8px 12px; border-radius: 12px; cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 6px;}
     .btn-logout:hover { background-color: #ef4444; color: var(--white); }
     
@@ -168,6 +170,10 @@
     </div>
     
     <div id="nav-actions" class="nav-actions" style="display: none;">
+      <a href="proposta.html" class="btn-nav-link btn-nav-proposta" title="Crea una nuova proposta d'acquisto">
+        <svg style="width: 14px; height: 14px; flex-shrink: 0;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+        <span class="hide-mobile">Proposta d'Acquisto</span>
+      </a>
       <a href="index.html" class="btn-nav-link" title="Torna al Sito">
         <svg style="width: 14px; height: 14px; flex-shrink: 0;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
         <span class="hide-mobile">Sito</span>
