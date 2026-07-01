@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proposta di Acquisto Immobiliare</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+            background: #f5f5f7;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .header {
+            padding: 40px 40px 30px;
+            border-bottom: 1px solid #f0f0f0;
+            background: #ffffff;
+            text-align: center;
+        }
+
+        .header-title-box {
+            border: 3px solid #FFD700;
+            border-radius: 12px;
+            padding: 20px 30px;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        .header-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1E5FD9;
+            margin: 0;
+            letter-spacing: -0.5px;
+        }
+
+        .header-subtitle {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1E5FD9;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .header-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            font-size: 12px;
+            color: #666;
+            line-height: 1.8;
+            text-align: left;
+        }
+
+        .detail-row {
+            display: flex;
+            gap: 30px;
+        }
+
+        .detail-col {
+            flex: 1;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #1E5FD9;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 4px;
+        }
+
+        .detail-value {
+            color: #333;
+            font-size: 12px;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .info-box {
+            background: #f0f7ff;
+            border-left: 3px solid #1E5FD9;
+            padding: 14px 16px;
+            margin-bottom: 30px;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #1E5FD9;
+            line-height: 1.6;
+        }
+
+        .button-area {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .btn-example {
+            background: linear-gradient(135deg, #FFD700 0%, #FFC700 100%);
+            color: #1E5FD9;
+            padding: 12px 28px;
+            font-size: 13px;
+            font-weight: 600;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-example:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1E5FD9;
+            margin-bottom: 18px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #FFD700;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 18px;
+        }
+
+        .form-row.full {
+            grid-template-columns: 1fr;
+        }
+
+        .form-row.half {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #1E5FD9;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="date"],
+        input[type="number"],
+        textarea,
+        select {
+            padding: 10px 12px;
+            border: 1px solid #e5e5e5;
+            border-radius: 6px;
+            font-size: 13px;
+            font-family: inherit;
+            transition: all 0.2s ease;
+            background: #fafafa;
+            color: #333;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="tel"]:focus,
+        input[type="date"]:focus,
+        input[type="number"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #1E5FD9;
+            background: white;
+            box-shadow: 0 0 0 2px rgba(30, 95, 217, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 70px;
+        }
+
+        .checkbox-group,
+        .radio-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .checkbox-item,
+        .radio-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        input[type="checkbox"],
+        input[type="radio"] {
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+            accent-color: #1E5FD9;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .checkbox-item label,
+        .radio-item label {
+            margin: 0;
+            text-transform: none;
+            letter-spacing: normal;
+            font-weight: 400;
+            cursor: pointer;
+            font-size: 12px;
+            color: #333;
+            text-transform: none;
+            text-transform: capitalize;
+        }
+
+        .amount-row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .amount-row input {
+            width: 100%;
+        }
+
+        .currency {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1E5FD9;
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        button {
+            padding: 11px 26px;
+            font-size: 13px;
+            font-weight: 600;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-generate {
+            background: linear-gradient(135deg, #1E5FD9 0%, #1e4fa8 100%);
+            color: white;
+            flex: 1;
+        }
+
+        .btn-generate:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(30, 95, 217, 0.3);
+        }
+
+        .btn-reset {
+            background: #f0f0f0;
+            color: #333;
+            flex: 1;
+        }
+
+        .btn-reset:hover {
+            background: #e5e5e5;
+        }
+
+        .required {
+            color: #e74c3c;
+        }
+
+        .loading {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 30px;
+            border-radius: 12px;
+            color: white;
+            text-align: center;
+            z-index: 1000;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 3px solid rgba(255, 215, 0, 0.2);
+            border-top: 3px solid #FFD700;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .form-row.half {
+                grid-template-columns: 1fr;
+            }
+
+            .header-details {
+                grid-template-columns: 1fr;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .header {
+                padding: 30px 20px;
+            }
+
+            .content {
+                padding: 20px;
+            }
+        }
+        /* ===== AUTH GATE + NAVBAR (coerenti con l'admin) ===== */
+        .app-navbar { background-color: #0044FF; border-bottom: 4px solid #FFD90F; height: 80px; display: flex; align-items: center; justify-content: space-between; padding: 0 1rem; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(0,68,255,0.15); }
+        @media (min-width: 768px) { .app-navbar { padding: 0 2rem; } }
+        .app-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .app-brand-icon { width: 48px; height: 48px; border-radius: 50%; border: 2px solid #FFD90F; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; }
+        .app-brand-icon img { width: 100%; height: 100%; object-fit: contain; }
+        .app-brand-title { font-size: 1.1rem; font-weight: 900; color: #FFD90F; letter-spacing: -0.025em; line-height: 1.1; }
+        .app-brand-sub { font-size: 10px; font-weight: 800; color: #ffffff; text-transform: uppercase; letter-spacing: 0.05em; }
+        .app-nav-actions { display: flex; align-items: center; gap: 8px; }
+        .app-nav-btn { background: transparent; color: #FFD90F; text-decoration: none; font-weight: 900; font-size: 11px; text-transform: uppercase; padding: 8px 12px; border-radius: 12px; transition: all 0.2s ease; display: flex; align-items: center; gap: 6px; border: 1px solid rgba(255,217,15,0.3); cursor: pointer; }
+        .app-nav-btn:hover { background: rgba(255,217,15,0.1); }
+        .app-nav-btn.danger { color: #fca5a5; border-color: rgba(239,68,68,0.3); }
+        .app-nav-btn.danger:hover { background: #ef4444; color: #fff; }
+        @media (max-width: 600px) { .app-nav-btn .lbl { display: none; } }
+
+        /* Contenuto protetto: nascosto finché non autenticati */
+        #app-content { display: none; }
+        body.authed #app-content { display: block; }
+
+        /* Schermata di verifica accesso */
+        .access-screen { position: fixed; inset: 0; background: #0044FF; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.25rem; z-index: 3000; padding: 2rem; text-align: center; }
+        .access-screen .spinner { border: 4px solid rgba(255,255,255,0.25); border-top-color: #FFD90F; border-radius: 50%; width: 48px; height: 48px; animation: spin 0.9s linear infinite; }
+        .access-title { color: #fff; font-weight: 900; font-size: 1.15rem; text-transform: uppercase; letter-spacing: 0.03em; }
+        .access-sub { color: rgba(255,255,255,0.8); font-size: 13px; font-weight: 500; max-width: 320px; line-height: 1.5; }
+        .access-btn { margin-top: 0.5rem; background: #FFD90F; color: #0044FF; border: none; padding: 12px 24px; border-radius: 14px; font-weight: 900; text-transform: uppercase; font-size: 12px; letter-spacing: 0.05em; cursor: pointer; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <!-- Schermata di verifica accesso (visibile di default, rimossa a login valido) -->
+    <div class="access-screen" id="access-screen">
+        <div class="spinner" id="access-spinner"></div>
+        <div class="access-title" id="access-title">Verifica accesso in corso…</div>
+        <div class="access-sub" id="access-sub">Sto controllando le tue credenziali di amministratore.</div>
+        <a href="admin.html" class="access-btn" id="access-btn" style="display:none;">Vai al login</a>
+    </div>
+
+    <!-- Navbar dashboard -->
+    <nav class="app-navbar" id="app-navbar" style="display:none;">
+        <a href="admin.html" class="app-brand">
+            <div class="app-brand-icon">
+                <img src="icona.webp" alt="Michele Erre">
+            </div>
+            <div>
+                <div class="app-brand-title">MICHELE ERRE</div>
+                <div class="app-brand-sub">Proposta d'Acquisto</div>
+            </div>
+        </a>
+        <div class="app-nav-actions">
+            <a href="admin.html" class="app-nav-btn" title="Torna alla Dashboard">
+                <svg style="width:14px;height:14px;flex-shrink:0;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                <span class="lbl">Dashboard</span>
+            </a>
+            <button type="button" class="app-nav-btn danger" onclick="handleLogout()" title="Disconnetti">
+                <svg style="width:14px;height:14px;flex-shrink:0;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                <span class="lbl">Esci</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Contenuto protetto -->
+    <div id="app-content">
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p>Generazione PDF in corso...</p>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <div class="header-subtitle">Proposta di Acquisto Immobiliare</div>
+            <div class="header-title-box">
+                <div class="header-title">Michele Erre | Agente Immobiliare</div>
+            </div>
+            <div class="header-details">
+                <div class="detail-col">
+                    <div class="detail-label">Registrazione</div>
+                    <div class="detail-value">REA: SS-227691 | P.IVA: 03076110901</div>
+                </div>
+                <div class="detail-col">
+                    <div class="detail-label">Contatti</div>
+                    <div class="detail-value">Tel. 3348576926</div>
+                </div>
+                <div class="detail-col">
+                    <div class="detail-label">Sede</div>
+                    <div class="detail-value">Via Libio 80, Porto Torres</div>
+                </div>
+                <div class="detail-col">
+                    <div class="detail-label">Email</div>
+                    <div class="detail-value">infoerreimmobili@gmail.com</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="info-box">
+                ℹ️ Compilare tutti i campi marcati con <span class="required">*</span> per generare il PDF
+            </div>
+
+            <div class="button-area">
+                <button type="button" class="btn-example" onclick="compilaDatiEsempio()">
+                    🧪 Compila Dati di Esempio
+                </button>
+            </div>
+
+            <form id="proposaForm">
+                <!-- PROPONENTE -->
+                <div class="section">
+                    <div class="section-title">Proponente (Acquirente)</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Nome e Cognome <span class="required">*</span></label>
+                            <input type="text" name="proponenteNome" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Codice Fiscale</label>
+                            <input type="text" name="proponenteCF">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Luogo e Data di Nascita</label>
+                            <input type="text" name="proponenteLuogoNascita">
+                        </div>
+                        <div class="form-group">
+                            <label>Data</label>
+                            <input type="date" name="proponenteDataNascita">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Documento di Identità</label>
+                            <input type="text" name="proponenteDocumento">
+                        </div>
+                        <div class="form-group">
+                            <label>Indirizzo</label>
+                            <input type="text" name="proponenteVia">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Telefono</label>
+                            <input type="tel" name="proponenteTel">
+                        </div>
+                        <div class="form-group">
+                            <label>Cellulare</label>
+                            <input type="tel" name="proponenteCell">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" name="proponenteEmail">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VENDITORE -->
+                <div class="section">
+                    <div class="section-title">Venditore</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Nome e Cognome / Società <span class="required">*</span></label>
+                            <input type="text" name="venditoreNome" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Codice Fiscale / P.IVA</label>
+                            <input type="text" name="venditoreCF">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Indirizzo</label>
+                            <input type="text" name="venditoreVia">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Telefono</label>
+                            <input type="tel" name="venditoreTel">
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" name="venditoreEmail">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DESCRIZIONE IMMOBILE -->
+                <div class="section">
+                    <div class="section-title">Descrizione e Stato dell'Immobile</div>
+                    
+                    <div class="form-row full">
+                        <div class="form-group">
+                            <label>a) Ubicazione <span class="required">*</span></label>
+                            <textarea name="immobileUbicazione" required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-row full">
+                        <div class="form-group">
+                            <label>b) Composizione</label>
+                            <textarea name="immobileComposizione"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>c) Proprietà</label>
+                            <input type="text" name="immobileProrieta">
+                        </div>
+                        <div class="form-group">
+                            <label>d) Atto di Provenienza</label>
+                            <input type="text" name="immobileAtti">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>e) Destinazione d'uso</label>
+                            <input type="text" name="immobileDestinazione">
+                        </div>
+                        <div class="form-group">
+                            <label>f) Categoria Catastale</label>
+                            <input type="text" name="immobileCategoria">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>g) Situazione Catastale - Intestazione</label>
+                            <div class="radio-group">
+                                <div class="radio-item">
+                                    <input type="radio" id="catAllineato" name="situazioneCatastale" value="allineato">
+                                    <label for="catAllineato">Allineato</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" id="catNonAllineato" name="situazioneCatastale" value="non_allineato">
+                                    <label for="catNonAllineato">Non Allineato</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Planimetria e Dati Catastali</label>
+                            <div class="radio-group">
+                                <div class="radio-item">
+                                    <input type="radio" id="planConforme" name="planimetria" value="conforme">
+                                    <label for="planConforme">Conforme</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" id="planNC" name="planimetria" value="non_conforme">
+                                    <label for="planNC">Non Conforme</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" id="planAssente" name="planimetria" value="assente">
+                                    <label for="planAssente">Assente</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" id="planVerificare" name="planimetria" value="verificare">
+                                    <label for="planVerificare">Da Verificare</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>h) Certificato di Agibilità</label>
+                            <div class="radio-group">
+                                <div class="radio-item">
+                                    <input type="radio" id="agibDotato" name="agibilita" value="dotato">
+                                    <label for="agibDotato">Dotato</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" id="agibNonDotato" name="agibilita" value="non_dotato">
+                                    <label for="agibNonDotato">Non Dotato</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" id="agibAssente" name="agibilita" value="assente">
+                                    <label for="agibAssente">Assente</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>i) Regime Edilizio</label>
+                            <div class="radio-group">
+                                <div class="radio-item">
+                                    <input type="radio" id="ediliziPrivata" name="regime" value="privata">
+                                    <label for="ediliziPrivata">Privata/Libera</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" id="edilizConvenzionata" name="regime" value="convenzionata">
+                                    <label for="edilizConvenzionata">Convenzionata</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Proprietà Terreno</label>
+                            <div class="radio-group">
+                                <div class="radio-item">
+                                    <input type="radio" id="terrPiena" name="terreno" value="piena">
+                                    <label for="terrPiena">Piena Proprietà</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" id="terrSuperficiaria" name="terreno" value="superficiaria">
+                                    <label for="terrSuperficiaria">Superficiaria</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row full">
+                        <div class="form-group">
+                            <label>l) Situazione Edilizio Urbanistica</label>
+                            <textarea name="situazioneEdilizia"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-row full">
+                        <div class="form-group">
+                            <label>m) Ipoteche, Pignoramenti e Pregiudizi</label>
+                            <textarea name="ipoteche"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>n) Stato di Occupazione</label>
+                            <div class="radio-group">
+                                <div class="radio-item">
+                                    <input type="radio" id="occupLibero" name="occupazione" value="libero">
+                                    <label for="occupLibero">Libero</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" id="occupLocato" name="occupazione" value="locato">
+                                    <label for="occupLocato">Locato</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Canone Annuo</label>
+                            <div class="amount-row">
+                                <input type="number" name="canoneAnnuo">
+                                <span class="currency">€</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>o) Spese Condominiali Ordinarie (annue)</label>
+                            <div class="amount-row">
+                                <input type="number" name="spesiCondominiali">
+                                <span class="currency">€</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>p) Certificazione Energetica</label>
+                            <div class="radio-group">
+                                <div class="radio-item">
+                                    <input type="radio" id="energPresente" name="energetica" value="presente">
+                                    <label for="energPresente">Presente</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" id="energAssente" name="energetica" value="assente">
+                                    <label for="energAssente">Assente</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" id="energDaFornire" name="energetica" value="da_fornire">
+                                    <label for="energDaFornire">Da Fornire</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PREZZO E PAGAMENTO -->
+                <div class="section">
+                    <div class="section-title">Prezzo di Acquisto e Condizioni di Pagamento</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Prezzo Totale <span class="required">*</span></label>
+                            <div class="amount-row">
+                                <input type="number" name="prezzoTotale" required>
+                                <span class="currency">€</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Caparra Confirmatoria</label>
+                            <div class="amount-row">
+                                <input type="number" name="caparra1">
+                                <span class="currency">€</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Data Versamento</label>
+                            <input type="date" name="dataCaparra1">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>2° Versamento</label>
+                            <div class="amount-row">
+                                <input type="number" name="versamento2">
+                                <span class="currency">€</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Entro il</label>
+                            <input type="date" name="dataVersamento2">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Importo al Rogito</label>
+                            <div class="amount-row">
+                                <input type="number" name="importoRogito">
+                                <span class="currency">€</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Finanziamento</label>
+                            <div class="amount-row">
+                                <input type="number" name="finanziamento">
+                                <span class="currency">€</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ATTO NOTARILE E CONSEGNA -->
+                <div class="section">
+                    <div class="section-title">Atto Notarile e Consegna dell'Immobile</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Data Prevista Rogito</label>
+                            <input type="date" name="dataRogito">
+                        </div>
+                        <div class="form-group">
+                            <label>Notaio</label>
+                            <input type="text" name="notaio">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Consegna dell'Immobile</label>
+                            <div class="radio-group">
+                                <div class="radio-item">
+                                    <input type="radio" id="consRogito" name="consegna" value="rogito">
+                                    <label for="consRogito">Alla Stipula del Rogito - Libero</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" id="consOccupato" name="consegna" value="occupato">
+                                    <label for="consOccupato">Occupato da Conduttore</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row full">
+                        <div class="form-group">
+                            <label>Eccezioni e Precisazioni</label>
+                            <textarea name="eccezioniBeni"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- INCARICO DI MEDIAZIONE -->
+                <div class="section">
+                    <div class="section-title">Incarico di Mediazione</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Importo Provvigione <span class="required">*</span></label>
+                            <div class="amount-row">
+                                <input type="number" name="provvigione" required>
+                                <span class="currency">€</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row full">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="privacyAccepted" name="privacy" required>
+                            <label for="privacyAccepted">Accetto l'informativa sulla privacy e il trattamento dei dati personali <span class="required">*</span></label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NOTE AGGIUNTIVE -->
+                <div class="section">
+                    <div class="section-title">Note Aggiuntive</div>
+                    <div class="form-row full">
+                        <div class="form-group">
+                            <label>Ulteriori Informazioni</label>
+                            <textarea name="noteAggiuntive"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AZIONI -->
+                <div class="actions">
+                    <button type="submit" class="btn-generate">📥 Genera PDF</button>
+                    <button type="reset" class="btn-reset">🔄 Ripristina</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    </div><!-- /#app-content -->
+
+    <script>
+        /* ===== AUTH GATE: verifica del token Supabase (server-side) ===== */
+        const SUPABASE_URL = "https://svdfgejkjvkbajmqoqjz.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_aGoAYeXnUtVMe4bIc20wIQ_2EM4LTSG";
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        function blockAccess() {
+            document.body.classList.remove('authed');
+            document.getElementById('app-navbar').style.display = 'none';
+            document.getElementById('access-screen').style.display = 'flex';
+            document.getElementById('access-spinner').style.display = 'none';
+            document.getElementById('access-title').innerText = 'Accesso riservato';
+            document.getElementById('access-sub').innerText = 'Devi effettuare il login come amministratore per creare una proposta d\u2019acquisto.';
+            document.getElementById('access-btn').style.display = 'inline-block';
+            // Reindirizzo al login dopo un breve avviso
+            setTimeout(() => { window.location.replace('admin.html'); }, 2200);
+        }
+
+        function grantAccess() {
+            document.getElementById('access-screen').style.display = 'none';
+            document.getElementById('app-navbar').style.display = 'flex';
+            document.body.classList.add('authed');
+        }
+
+        async function verifyAccess() {
+            try {
+                // 1) Sessione presente in locale?
+                const { data: { session } } = await _supabase.auth.getSession();
+                if (!session) { blockAccess(); return; }
+                // 2) Validazione del token contro il server Supabase
+                const { data: { user }, error } = await _supabase.auth.getUser();
+                if (error || !user) { blockAccess(); return; }
+                grantAccess();
+            } catch (err) {
+                blockAccess();
+            }
+        }
+
+        async function handleLogout() {
+            try { await _supabase.auth.signOut(); } catch (e) {}
+            window.location.replace('admin.html');
+        }
+
+        // Se la sessione decade mentre la pagina è aperta, blocco subito
+        _supabase.auth.onAuthStateChange((event) => {
+            if (event === 'SIGNED_OUT') { window.location.replace('admin.html'); }
+        });
+
+        document.addEventListener('DOMContentLoaded', verifyAccess);
+    </script>
+
+    <script>
+
+        const form = document.getElementById('proposaForm');
+        const loading = document.getElementById('loading');
+
+        function compilaDatiEsempio() {
+            document.querySelector('input[name="proponenteNome"]').value = 'Marco Rossini';
+            document.querySelector('input[name="proponenteCF"]').value = 'RSSMRC85M15L219Q';
+            document.querySelector('input[name="proponenteLuogoNascita"]').value = 'Porto Torres';
+            document.querySelector('input[name="proponenteDataNascita"]').value = '1985-05-15';
+            document.querySelector('input[name="proponenteDocumento"]').value = 'Patente CA 1234567';
+            document.querySelector('input[name="proponenteVia"]').value = 'Via Roma 42, Porto Torres (SS)';
+            document.querySelector('input[name="proponenteTel"]').value = '0792345678';
+            document.querySelector('input[name="proponenteCell"]').value = '3391234567';
+            document.querySelector('input[name="proponenteEmail"]').value = 'marco.rossini@email.com';
+
+            document.querySelector('input[name="venditoreNome"]').value = 'Anna Piras';
+            document.querySelector('input[name="venditoreCF"]').value = 'PRIANNA75D45L219T';
+            document.querySelector('input[name="venditoreVia"]').value = 'Via Garibaldi 28, Porto Torres (SS)';
+            document.querySelector('input[name="venditoreTel"]').value = '0792876543';
+            document.querySelector('input[name="venditoreEmail"]').value = 'anna.piras@email.com';
+
+            document.querySelector('textarea[name="immobileUbicazione"]').value = 'Porto Torres (SS) - Via Sassari 15, interno 3 - Piano 2° di una palazzina signorile del 1995';
+            document.querySelector('textarea[name="immobileComposizione"]').value = 'Appartamento di 120 mq: ingresso, soggiorno, cucina abitabile, 3 camere da letto, 2 bagni, ripostiglio, balcone 15 mq';
+            document.querySelector('input[name="immobileDestinazione"]').value = 'Abitazione civile';
+            document.querySelector('input[name="immobileCategoria"]').value = 'A/2 - Abitazioni di tipo civile';
+            
+            document.getElementById('catAllineato').checked = true;
+            document.getElementById('planConforme').checked = true;
+            document.getElementById('agibDotato').checked = true;
+            document.getElementById('ediliziPrivata').checked = true;
+            document.getElementById('terrPiena').checked = true;
+            document.getElementById('occupLibero').checked = true;
+
+            document.querySelector('input[name="spesiCondominiali"]').value = '1200';
+
+            document.querySelector('input[name="prezzoTotale"]').value = '380000';
+            document.querySelector('input[name="caparra1"]').value = '60000';
+            document.querySelector('input[name="dataCaparra1"]').value = '2026-07-10';
+            document.querySelector('input[name="versamento2"]').value = '100000';
+            document.querySelector('input[name="dataVersamento2"]').value = '2026-08-20';
+            document.querySelector('input[name="importoRogito"]').value = '220000';
+
+            document.querySelector('input[name="dataRogito"]').value = '2026-09-15';
+            document.querySelector('input[name="notaio"]').value = 'Notaio Dott. Giuseppe Satta - Via Roma 10, Porto Torres';
+            document.getElementById('consRogito').checked = true;
+
+            document.querySelector('input[name="provvigione"]').value = '7600';
+            document.getElementById('privacyAccepted').checked = true;
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            alert('✅ Dati compilati! Clicca "Genera PDF" per il risultato.');
+        }
+
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (!form.checkValidity()) {
+                alert('Completa tutti i campi obbligatori');
+                return;
+            }
+
+            loading.classList.add('active');
+
+            try {
+                const data = Object.fromEntries(new FormData(form));
+                generaPDF(data);
+                alert('✅ PDF generato con successo!');
+            } catch (error) {
+                console.error('Errore:', error);
+                alert('❌ Errore nella generazione: ' + error.message);
+            } finally {
+                loading.classList.remove('active');
+            }
+        });
+
+        // ====== COLORI ======
+        const BLU = [30, 95, 217];
+        const GIALLO = [255, 215, 0];
+        const NERO = [34, 34, 34];
+        const GRIGIO = [110, 110, 110];
+
+        function generaPDF(data) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
+
+            const PW = doc.internal.pageSize.getWidth();
+            const PH = doc.internal.pageSize.getHeight();
+            const M = 16;                 // margine
+            const CW = PW - 2 * M;        // larghezza contenuto
+            const FOOTER_Y = PH - 12;     // soglia footer
+            let y = M;
+
+            // ---- helper: check spazio / nuova pagina ----
+            function ensure(space) {
+                if (y + space > FOOTER_Y - 4) {
+                    addFooter();
+                    doc.addPage();
+                    y = M;
+                }
+            }
+
+            // ---- helper: footer su ogni pagina ----
+            function addFooter() {
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(7);
+                doc.setTextColor(...GRIGIO);
+                doc.text('Michele Erre · Agente Immobiliare · REA: SS-227691 · Via Libio 80, Porto Torres · Tel. 3348576926', PW / 2, FOOTER_Y, { align: 'center' });
+            }
+
+            // ---- helper: titolo sezione con barra gialla ----
+            function sezione(titolo) {
+                ensure(14);
+                y += 3;
+                doc.setFillColor(...GIALLO);
+                doc.rect(M, y - 3.5, 3, 5, 'F');         // tacca gialla
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(10.5);
+                doc.setTextColor(...BLU);
+                doc.text(titolo.toUpperCase(), M + 5, y);
+                y += 2.5;
+                doc.setDrawColor(...GIALLO);
+                doc.setLineWidth(0.5);
+                doc.line(M, y, PW - M, y);
+                y += 5;
+            }
+
+            // ---- helper: campo etichetta + valore su riga ----
+            function campo(label, valore, opt = {}) {
+                const val = (valore === undefined || valore === null || valore === '') ? '—' : String(valore);
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(8);
+                doc.setTextColor(...BLU);
+                const labelW = doc.getTextWidth(label + ': ');
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(9);
+                doc.setTextColor(...NERO);
+                const valLines = doc.splitTextToSize(val, CW - labelW - 1);
+                const blockH = Math.max(4.5, valLines.length * 4.2);
+                ensure(blockH + 1);
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(8);
+                doc.setTextColor(...BLU);
+                doc.text(label + ':', M, y);
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(9);
+                doc.setTextColor(...NERO);
+                doc.text(valLines, M + labelW, y);
+                y += blockH + 1.5;
+            }
+
+            // ---- helper: due campi affiancati ----
+            function campoDoppio(l1, v1, l2, v2) {
+                ensure(6);
+                const col = CW / 2;
+                const v1s = (v1 === undefined || v1 === '' || v1 === null) ? '—' : String(v1);
+                const v2s = (v2 === undefined || v2 === '' || v2 === null) ? '—' : String(v2);
+                // colonna 1
+                doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.setTextColor(...BLU);
+                const w1 = doc.getTextWidth(l1 + ': ');
+                doc.text(l1 + ':', M, y);
+                doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(...NERO);
+                doc.text(doc.splitTextToSize(v1s, col - w1 - 3), M + w1, y);
+                // colonna 2
+                doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.setTextColor(...BLU);
+                const w2 = doc.getTextWidth(l2 + ': ');
+                doc.text(l2 + ':', M + col, y);
+                doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(...NERO);
+                doc.text(doc.splitTextToSize(v2s, col - w2 - 1), M + col + w2, y);
+                y += 6;
+            }
+
+            // ---- helper: paragrafo legale giustificato ----
+            function paragrafo(testo, opt = {}) {
+                doc.setFont('helvetica', opt.bold ? 'bold' : 'normal');
+                doc.setFontSize(opt.size || 8.2);
+                doc.setTextColor(...(opt.color || NERO));
+                const lines = doc.splitTextToSize(testo, CW);
+                lines.forEach(line => {
+                    ensure(4.2);
+                    doc.text(line, M, y, { align: 'left', maxWidth: CW });
+                    y += 4.2;
+                });
+                y += (opt.gap !== undefined ? opt.gap : 2);
+            }
+
+            // ---- helper: opzioni con checkbox ----
+            function checkLine(label, opzioni) {
+                // opzioni = [{txt, on}]
+                ensure(5);
+                doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.setTextColor(...BLU);
+                doc.text(label + ':', M, y);
+                const labelW = doc.getTextWidth(label + ': ');
+
+                // calcolo larghezza totale opzioni
+                doc.setFont('helvetica', 'normal'); doc.setFontSize(8.5);
+                const segs = opzioni.map(o => (o.on ? '[X] ' : '[  ] ') + o.txt);
+                const gap = doc.getTextWidth('    ');
+                const totW = segs.reduce((s, t) => s + doc.getTextWidth(t) + gap, 0);
+
+                // se le opzioni non stanno accanto all'etichetta, vado a capo e parto da sinistra rientrato
+                let x, startX;
+                if (labelW + totW > CW) {
+                    y += 4.2;
+                    ensure(5);
+                    x = M + 4; startX = M + 4;
+                } else {
+                    x = M + labelW + 1; startX = M + labelW + 1;
+                }
+
+                doc.setTextColor(...NERO);
+                segs.forEach((seg, idx) => {
+                    const segW = doc.getTextWidth(seg) + gap;
+                    if (x + segW > PW - M) { y += 4.2; x = startX; ensure(5); }
+                    doc.setFont('helvetica', opzioni[idx].on ? 'bold' : 'normal');
+                    doc.text(seg, x, y);
+                    x += segW;
+                });
+                doc.setFont('helvetica', 'normal');
+                y += 5.5;
+            }
+
+            // ---- helper: blocco firma ----
+            function firma(label) {
+                ensure(20);
+                y += 8;
+                doc.setDrawColor(...NERO);
+                doc.setLineWidth(0.3);
+                doc.line(M, y, M + 70, y);
+                y += 4;
+                doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(...GRIGIO);
+                doc.text(label, M, y);
+                y += 6;
+            }
+
+            const fmt = (n) => (!n ? '—' : '€ ' + Number(n).toLocaleString('it-IT', { minimumFractionDigits: 2 }));
+            const lbl = (v, map) => map[v] || '—';
+
+            // ============ INTESTAZIONE ============
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(9);
+            doc.setTextColor(...BLU);
+            doc.text('PROPOSTA DI ACQUISTO IMMOBILIARE', PW / 2, y, { align: 'center' });
+            y += 7;
+
+            // box titolo con cornice gialla arrotondata
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(15);
+            const tit = 'Michele Erre  |  Agente Immobiliare';
+            const titW = doc.getTextWidth(tit);
+            const boxW = titW + 16;
+            const boxX = (PW - boxW) / 2;
+            doc.setDrawColor(...GIALLO);
+            doc.setLineWidth(0.9);
+            doc.roundedRect(boxX, y - 5.5, boxW, 11, 2.5, 2.5, 'S');
+            doc.setTextColor(...BLU);
+            doc.text(tit, PW / 2, y, { align: 'center', baseline: 'middle' });
+            y += 11;
+
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(8);
+            doc.setTextColor(...GRIGIO);
+            doc.text('REA: SS-227691  |  P.IVA: 03076110901  |  Via Libio 80, Porto Torres', PW / 2, y, { align: 'center' });
+            y += 4;
+            doc.text('Tel. 3348576926  |  infoerreimmobili@gmail.com  |  PEC: erremichele12@pec.it', PW / 2, y, { align: 'center' });
+            y += 5;
+            doc.setDrawColor(...GIALLO);
+            doc.setLineWidth(1.2);
+            doc.line(M, y, PW - M, y);
+            y += 7;
+
+            // ============ 1. PROPONENTE ============
+            sezione('1. Proponente (Acquirente)');
+            campo('Nome e Cognome', data.proponenteNome);
+            campoDoppio('Codice Fiscale', data.proponenteCF, 'Documento', data.proponenteDocumento);
+            campoDoppio('Luogo di Nascita', data.proponenteLuogoNascita, 'Data di Nascita', data.proponenteDataNascita);
+            campo('Indirizzo', data.proponenteVia);
+            campoDoppio('Telefono', data.proponenteTel, 'Cellulare', data.proponenteCell);
+            campo('Email', data.proponenteEmail);
+
+            // ============ 2. VENDITORE ============
+            sezione('2. Venditore');
+            campo('Nome e Cognome / Società', data.venditoreNome);
+            campo('Codice Fiscale / P.IVA', data.venditoreCF);
+            campo('Indirizzo', data.venditoreVia);
+            campoDoppio('Telefono', data.venditoreTel, 'Email', data.venditoreEmail);
+
+            y += 2;
+            paragrafo('Il Proponente, tramite Michele Erre — regolarmente iscritto al ruolo degli agenti di affari in mediazione presso la C.C.I.A.A. di Sassari al n. 227691, di seguito denominato "Agente Immobiliare" — PROPONE IRREVOCABILMENTE DI ACQUISTARE per sé, persona o società che si riserva di nominare prima del rogito, l\'immobile di seguito descritto alle condizioni qui indicate.', { gap: 3 });
+
+            // ============ 3. DESCRIZIONE IMMOBILE ============
+            sezione('3. Descrizione e Stato dell\'Immobile');
+            campo('a) Ubicazione', (data.immobileUbicazione || '').replace(/\n/g, ' '));
+            campo('b) Composizione', (data.immobileComposizione || '').replace(/\n/g, ' '));
+            campoDoppio('c) Proprietà', data.immobileProrieta, 'd) Atto di Provenienza', data.immobileAtti);
+            campoDoppio('e) Destinazione d\'uso', data.immobileDestinazione, 'f) Categoria Catastale', data.immobileCategoria);
+
+            checkLine('g) Situazione catastale', [
+                { txt: 'Allineato', on: data.situazioneCatastale === 'allineato' },
+                { txt: 'Non Allineato', on: data.situazioneCatastale === 'non_allineato' }
+            ]);
+            checkLine('Planimetria', [
+                { txt: 'Conforme', on: data.planimetria === 'conforme' },
+                { txt: 'Non Conforme', on: data.planimetria === 'non_conforme' },
+                { txt: 'Assente', on: data.planimetria === 'assente' },
+                { txt: 'Da Verificare', on: data.planimetria === 'verificare' }
+            ]);
+            checkLine('h) Agibilità', [
+                { txt: 'Dotato', on: data.agibilita === 'dotato' },
+                { txt: 'Non Dotato', on: data.agibilita === 'non_dotato' },
+                { txt: 'Assente', on: data.agibilita === 'assente' }
+            ]);
+            checkLine('i) Regime edilizio', [
+                { txt: 'Privata/Libera', on: data.regime === 'privata' },
+                { txt: 'Convenzionata', on: data.regime === 'convenzionata' }
+            ]);
+            checkLine('Proprietà terreno', [
+                { txt: 'Piena Proprietà', on: data.terreno === 'piena' },
+                { txt: 'Superficiaria', on: data.terreno === 'superficiaria' }
+            ]);
+            campo('l) Situazione Edilizio Urbanistica', (data.situazioneEdilizia || '').replace(/\n/g, ' '));
+            campo('m) Ipoteche, pignoramenti e pregiudizi', (data.ipoteche || '').replace(/\n/g, ' '));
+            checkLine('n) Stato di occupazione', [
+                { txt: 'Libero', on: data.occupazione === 'libero' },
+                { txt: 'Locato', on: data.occupazione === 'locato' }
+            ]);
+            if (data.occupazione === 'locato') campo('Canone annuo', fmt(data.canoneAnnuo));
+            campo('o) Spese condominiali ordinarie (annue)', fmt(data.spesiCondominiali));
+            checkLine('p) Certificazione energetica', [
+                { txt: 'Presente', on: data.energetica === 'presente' },
+                { txt: 'Assente', on: data.energetica === 'assente' },
+                { txt: 'Da Fornire', on: data.energetica === 'da_fornire' }
+            ]);
+
+            paragrafo('Il Venditore, con l\'accettazione della presente proposta, garantisce la veridicità della descrizione e dello stato dell\'immobile e si obbliga, anche in relazione ai punti e), g), h), m) e p), a ottenere e consegnare quanto necessario per la stipula dell\'atto notarile in conformità alle normative vigenti.', { size: 7.8, color: GRIGIO, gap: 3 });
+
+            // ============ 4. PREZZO E PAGAMENTO ============
+            sezione('4. Prezzo di Acquisto e Condizioni di Pagamento');
+            campo('Prezzo totale offerto', fmt(data.prezzoTotale));
+            paragrafo('Il prezzo è pattuito a corpo e non a misura e sarà corrisposto come segue:', { size: 8.2, gap: 2 });
+            campoDoppio('a) Caparra confirmatoria', fmt(data.caparra1), 'Versata il', data.dataCaparra1);
+            campoDoppio('b) 2° versamento', fmt(data.versamento2), 'Entro il', data.dataVersamento2);
+            campo('c) Saldo al rogito (assegno circolare / bonifico)', fmt(data.importoRogito));
+            campo('d) Tramite finanziamento (istituto mutuante a scelta del proponente)', fmt(data.finanziamento));
+            paragrafo('La somma dei punti a) e b) costituisce CAPARRA CONFIRMATORIA ai sensi dell\'art. 1385 c.c.', { size: 7.8, color: GRIGIO, gap: 3 });
+
+            // ============ 5. ATTO NOTARILE E CONSEGNA ============
+            sezione('5. Atto Notarile e Consegna dell\'Immobile');
+            campoDoppio('Data prevista rogito', data.dataRogito, 'Notaio', data.notaio);
+            checkLine('Consegna immobile', [
+                { txt: 'Al rogito, libero', on: data.consegna === 'rogito' },
+                { txt: 'Occupato da conduttore', on: data.consegna === 'occupato' }
+            ]);
+            campo('Eccezioni e precisazioni', (data.eccezioniBeni || '').replace(/\n/g, ' '));
+            paragrafo('L\'immobile sarà trasferito nello stato di fatto e di diritto in cui si trova, con tutte le accessioni, pertinenze, servitù attive e passive, franco e libero da pesi e oneri pregiudizievoli, in regola con le spese condominiali e con garanzia per molestie ed evizione, salvo le eccezioni sopra indicate. Ogni spesa e imposta connessa al trasferimento è a carico della parte proponente.', { size: 7.8, color: GRIGIO, gap: 3 });
+
+            // ============ 6. IRREVOCABILITÀ ============
+            sezione('6. Irrevocabilità della Proposta');
+            paragrafo('La presente proposta è irrevocabile per 15 giorni dalla sua sottoscrizione e diverrà inefficace se, entro tale termine, il Venditore o l\'Agente Immobiliare non avranno inviato — mediante raccomandata o PEC — comunicazione di accettazione.', { gap: 3 });
+
+            // ============ NOTE ============
+            sezione('7. Note Aggiuntive');
+            paragrafo((data.noteAggiuntive || '—').replace(/\n/g, ' '), { gap: 2 });
+
+            firma('Firma del Proponente');
+
+            paragrafo('Ai sensi degli artt. 1469-bis c.c. e 33 ss. del D.Lgs. 206/2005 ("Codice del Consumo"), le parti dichiarano che le clausole della presente proposta sono state oggetto di trattativa individuale e le approvano specificamente, anche ai sensi degli artt. 1341 e 1342 c.c.', { size: 7.5, color: GRIGIO, gap: 2 });
+
+            firma('Firma del Proponente');
+
+            // ============ INCARICO DI MEDIAZIONE ============
+            sezione('Incarico di Mediazione');
+            campo('Importo provvigione', fmt(data.provvigione));
+            paragrafo('Il Proponente, con la sottoscrizione della presente, conferisce incarico di mediazione all\'Agente Immobiliare, al quale verserà l\'importo sopra indicato a titolo di provvigione — con contestuale rilascio di regolare fattura — nel momento in cui verrà a conoscenza dell\'avvenuta accettazione della proposta d\'acquisto.', { gap: 2 });
+            paragrafo('Il Proponente dichiara di aver preso atto dell\'informativa ex art. 13 del Regolamento UE 2016/679 (GDPR) e autorizza il trattamento dei propri dati personali, anche dopo la conclusione dell\'affare. Dichiara inoltre di aver preso atto degli obblighi dell\'Agente Immobiliare ai sensi del D.Lgs. 231/2007 e s.m.i. in materia di antiriciclaggio (identificazione, registrazione e conservazione dei dati).', { gap: 1 });
+            campo('Consenso privacy (GDPR)', data.privacy === 'on' ? 'Accettato' : 'Non accettato');
+
+            firma('Firma del Proponente');
+            firma('Firma del Mediatore');
+
+            // ============ ACCETTAZIONE VENDITORE ============
+            sezione('Accettazione del Venditore');
+            paragrafo('Il sottoscritto, preso atto del contenuto della presente proposta di acquisto, dichiara di accettarla integralmente, confermando tutte le garanzie a proprio carico riportate ai punti 3 e 5.', { gap: 2 });
+            firma('Firma del Venditore');
+
+            // ============ RITIRO PROPOSTA ACCETTATA ============
+            sezione('Ritiro della Proposta Accettata');
+            paragrafo('Il sottoscritto dichiara di ricevere copia della proposta di acquisto regolarmente accettata dal Venditore.', { gap: 2 });
+            firma('Firma del Proponente');
+
+            // footer ultima pagina + numerazione
+            addFooter();
+            const tot = doc.internal.getNumberOfPages();
+            for (let i = 1; i <= tot; i++) {
+                doc.setPage(i);
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(7);
+                doc.setTextColor(...GRIGIO);
+                doc.text(`Pagina ${i} di ${tot}`, PW - M, FOOTER_Y, { align: 'right' });
+            }
+
+            doc.save(`Proposta_Acquisto_${new Date().toISOString().split('T')[0]}.pdf`);
+        }
+
+    </script>
+</body>
+</html>
