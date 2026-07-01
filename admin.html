@@ -31,6 +31,7 @@
     .brand-subtitle { font-size: 9px; font-weight: 900; color: var(--white); letter-spacing: 0.05em; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     @media (min-width: 375px) { .navbar { padding: 0 1.5rem; } .brand-text { margin-left: 12px; } .brand-title { font-size: 1.25rem; } .brand-subtitle { font-size: 10px; letter-spacing: 0.1em; } }
     
+    .nav-auth { display: flex; align-items: center; gap: 8px; }
     .nav-actions { display: flex; align-items: center; gap: 8px; }
     .btn-nav-link { background: transparent; color: var(--brand-yellow); text-decoration: none; font-weight: 900; font-size: 11px; text-transform: uppercase; padding: 8px 10px; border-radius: 12px; transition: var(--transition); display: flex; align-items: center; gap: 6px; border: 1px solid rgba(255,217,15,0.3); }
     .btn-nav-link:hover { background: rgba(255,217,15,0.1); }
@@ -38,6 +39,24 @@
     .btn-nav-proposta:hover { background: #ffe552; color: var(--brand-blue); }
     .btn-logout { background-color: rgba(239,68,68,0.1); color: #fca5a5; border: 1px solid rgba(239,68,68,0.3); font-weight: 900; font-size: 11px; text-transform: uppercase; padding: 8px 12px; border-radius: 12px; cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 6px;}
     .btn-logout:hover { background-color: #ef4444; color: var(--white); }
+
+    /* ===== HAMBURGER + MENU MOBILE (admin) ===== */
+    .admin-mobile-toggle { display: none; background: none; border: none; cursor: pointer; padding: 6px; line-height: 0; }
+    .admin-mobile-menu { position: fixed; top: 80px; left: 0; width: 100%; background-color: var(--brand-blue); border-bottom: 4px solid var(--brand-yellow); display: flex; flex-direction: column; gap: 10px; padding: 1rem; transform: translateY(-150%); transition: var(--transition); z-index: 999; box-shadow: 0 12px 20px rgba(0,0,0,0.15); }
+    .admin-mobile-menu.open { transform: translateY(0); }
+    .mobile-menu-item { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; text-decoration: none; font-weight: 900; font-size: 14px; text-transform: uppercase; letter-spacing: 0.03em; padding: 14px 16px; border-radius: 14px; cursor: pointer; transition: var(--transition); background: transparent; color: var(--brand-yellow); border: 1px solid rgba(255,217,15,0.3); }
+    .mobile-menu-item.primary { background: var(--brand-yellow); color: var(--brand-blue); border-color: var(--brand-yellow); }
+    .mobile-menu-item.danger { color: #fca5a5; border-color: rgba(239,68,68,0.35); }
+    .mobile-menu-item.danger:hover { background: #ef4444; color: var(--white); }
+    /* Mobile: mostra hamburger, nascondi i pulsanti inline */
+    @media (max-width: 767px) {
+      .nav-actions { display: none; }
+      .admin-mobile-toggle { display: flex; }
+    }
+    /* Desktop: nascondi hamburger e menu a tendina */
+    @media (min-width: 768px) {
+      .admin-mobile-menu { display: none; }
+    }
     
     @media (max-width: 380px) {
       .hide-mobile { display: none; }
@@ -169,21 +188,41 @@
       </div>
     </div>
     
-    <div id="nav-actions" class="nav-actions" style="display: none;">
-      <a href="proposta.html" class="btn-nav-link btn-nav-proposta" title="Crea una nuova proposta d'acquisto">
-        <svg style="width: 14px; height: 14px; flex-shrink: 0;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-        <span class="hide-mobile">Proposta d'Acquisto</span>
-      </a>
-      <a href="index.html" class="btn-nav-link" title="Torna al Sito">
-        <svg style="width: 14px; height: 14px; flex-shrink: 0;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-        <span class="hide-mobile">Sito</span>
-      </a>
-      <button onclick="handleLogout()" class="btn-logout" title="Disconnetti">
-        <svg style="width: 14px; height: 14px; flex-shrink: 0;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-        <span class="hide-mobile">Esci</span>
+    <div id="nav-auth" class="nav-auth" style="display: none;">
+      <div class="nav-actions">
+        <a href="proposta.html" class="btn-nav-link btn-nav-proposta" title="Crea una nuova proposta d'acquisto">
+          <svg style="width: 14px; height: 14px; flex-shrink: 0;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+          <span class="hide-mobile">Proposta d'Acquisto</span>
+        </a>
+        <a href="index.html" class="btn-nav-link" title="Torna al Sito">
+          <svg style="width: 14px; height: 14px; flex-shrink: 0;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+          <span class="hide-mobile">Sito</span>
+        </a>
+        <button onclick="handleLogout()" class="btn-logout" title="Disconnetti">
+          <svg style="width: 14px; height: 14px; flex-shrink: 0;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+          <span class="hide-mobile">Esci</span>
+        </button>
+      </div>
+      <button id="admin-mobile-toggle" class="admin-mobile-toggle" aria-label="Apri menu" title="Menu">
+        <svg width="28" height="28" fill="none" stroke="var(--brand-yellow)" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path></svg>
       </button>
     </div>
   </nav>
+
+  <div id="admin-mobile-menu" class="admin-mobile-menu">
+    <a href="proposta.html" class="mobile-menu-item primary">
+      <svg style="width: 18px; height: 18px; flex-shrink: 0;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+      Proposta d'Acquisto
+    </a>
+    <a href="index.html" class="mobile-menu-item">
+      <svg style="width: 18px; height: 18px; flex-shrink: 0;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+      Torna al Sito
+    </a>
+    <button onclick="handleLogout()" class="mobile-menu-item danger">
+      <svg style="width: 18px; height: 18px; flex-shrink: 0;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+      Esci
+    </button>
+  </div>
 
   <div id="login-screen" class="login-container">
     <div class="login-card">
@@ -408,12 +447,27 @@
       _supabase.auth.onAuthStateChange((event, session) => {
         if (event === 'SIGNED_IN') { handleAuthSuccess(); } else if (event === 'SIGNED_OUT') { showLoginScreen(); }
       });
+
+      // Menu hamburger (mobile)
+      const mobileToggle = document.getElementById('admin-mobile-toggle');
+      const mobileMenu = document.getElementById('admin-mobile-menu');
+      mobileToggle.addEventListener('click', (e) => { e.stopPropagation(); mobileMenu.classList.toggle('open'); });
+      // Chiudi il menu quando si tocca una voce
+      mobileMenu.querySelectorAll('.mobile-menu-item').forEach(item => {
+        item.addEventListener('click', () => mobileMenu.classList.remove('open'));
+      });
+      // Chiudi il menu toccando fuori
+      document.addEventListener('click', (e) => {
+        if (mobileMenu.classList.contains('open') && !mobileMenu.contains(e.target) && !mobileToggle.contains(e.target)) {
+          mobileMenu.classList.remove('open');
+        }
+      });
     });
 
     async function handleAuthSuccess() {
       document.getElementById('login-screen').style.display = 'none';
       document.getElementById('admin-dashboard').style.display = 'block';
-      document.getElementById('nav-actions').style.display = 'flex';
+      document.getElementById('nav-auth').style.display = 'flex';
       await loadProperties();
       hideLoader();
     }
@@ -421,7 +475,8 @@
     function showLoginScreen() {
       document.getElementById('login-screen').style.display = 'block';
       document.getElementById('admin-dashboard').style.display = 'none';
-      document.getElementById('nav-actions').style.display = 'none';
+      document.getElementById('nav-auth').style.display = 'none';
+      document.getElementById('admin-mobile-menu').classList.remove('open');
       hideLoader();
     }
 
