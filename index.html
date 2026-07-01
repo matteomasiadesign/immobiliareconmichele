@@ -170,6 +170,7 @@
     .modal-title { font-size: 1.5rem; font-weight: 900; color: var(--text-slate); line-height: 1.1; margin-bottom: 0.5rem; }
     .modal-zone { color: var(--brand-blue); font-weight: 800; font-size: 13px; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 6px; }
     .modal-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1.5rem; }
+    .modal-grid.has-sqm { grid-template-columns: repeat(4, 1fr); }
     .modal-grid-item { background: #f8fafc; border: 1px solid var(--border-color); border-radius: 16px; padding: 12px 8px; text-align: center; }
     .modal-grid-label { font-size: 9px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 4px; }
     .modal-grid-value { font-size: 13px; font-weight: 900; color: var(--text-slate); }
@@ -393,7 +394,7 @@
             <span id="mod-zone"></span>
           </div>
           
-          <div class="modal-grid">
+          <div class="modal-grid" id="mod-grid">
             <div class="modal-grid-item">
               <span class="modal-grid-label">Locali</span>
               <span id="mod-rooms" class="modal-grid-value"></span>
@@ -401,6 +402,10 @@
             <div class="modal-grid-item">
               <span class="modal-grid-label">Bagni</span>
               <span id="mod-bathrooms" class="modal-grid-value"></span>
+            </div>
+            <div class="modal-grid-item" id="mod-sqm-item" style="display:none;">
+              <span class="modal-grid-label">Mq</span>
+              <span id="mod-sqm" class="modal-grid-value"></span>
             </div>
             <div class="modal-grid-item">
               <span class="modal-grid-label">Parcheggio</span>
@@ -481,6 +486,7 @@
             <div class="card-features">
               <span class="feature-item"><svg style="width: 12px; height: 12px; flex-shrink: 0;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg> ${p.rooms} Locali</span>
               <span class="feature-item"><svg style="width: 12px; height: 12px; flex-shrink: 0;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg> ${p.bathrooms} Bagni</span>
+              ${p.sqm ? `<span class="feature-item"><svg style="width: 12px; height: 12px; flex-shrink: 0;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4h4M16 4h4v4M20 16v4h-4M8 20H4v-4"></path></svg> ${p.sqm} m²</span>` : ''}
             </div>
             <div class="card-footer">
               <div>
@@ -510,6 +516,10 @@
       document.getElementById('mod-zone').innerText = p.zone;
       document.getElementById('mod-rooms').innerText = p.rooms + " Stanze";
       document.getElementById('mod-bathrooms').innerText = p.bathrooms + " Bagni";
+      const modGrid = document.getElementById('mod-grid');
+      const sqmItem = document.getElementById('mod-sqm-item');
+      if (p.sqm) { document.getElementById('mod-sqm').innerText = p.sqm + " m²"; sqmItem.style.display = ''; modGrid.classList.add('has-sqm'); }
+      else { sqmItem.style.display = 'none'; modGrid.classList.remove('has-sqm'); }
       document.getElementById('mod-parking').innerText = p.has_parking ? "Sì" : "No";
       document.getElementById('mod-desc').innerText = p.description;
       document.getElementById('mod-price').innerText = "€" + p.price.toLocaleString('it-IT') + (p.status === 'Affitto' ? " /mese" : "");
