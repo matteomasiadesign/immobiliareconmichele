@@ -438,7 +438,7 @@
             <form id="incaricoForm">
 
                 <div class="section">
-                    <div class="section-title">Proponente (Venditore)</div>
+                    <div class="section-title">VENDITORE</div>
                     <div class="form-row">
                         <div class="form-group">
                             <label>Nome e Cognome <span class="required">*</span></label>
@@ -964,7 +964,7 @@
                     <div class="form-row full">
                         <div class="checkbox-item">
                             <input type="checkbox" id="privacyAccepted" name="privacy" required>
-                            <label for="privacyAccepted">Il proponente accetta l'informativa sulla privacy e prende atto degli obblighi antiriciclaggio <span class="required">*</span></label>
+                            <label for="privacyAccepted">Il VENDITORE accetta l'informativa sulla privacy e prende atto degli obblighi antiriciclaggio <span class="required">*</span></label>
                         </div>
                     </div>
                 </div>
@@ -1362,8 +1362,8 @@
             doc.line(M, y, PW - M, y);
             y += 7;
 
-            // ============ PROPONENTE ============
-            sezione('Proponente (Venditore)');
+            // ============ VENDITORE ============
+            sezione('VENDITORE');
             campo('Nome e Cognome', data.propNome);
             campoDoppio('Codice Fiscale', data.propCF, 'Documento', data.propDocumento);
             campoDoppio('Luogo di Nascita', data.propLuogoNascita, 'Data di Nascita', fmtData(data.propDataNascita));
@@ -1376,11 +1376,11 @@
             campo('Email', data.propEmail);
 
             y += 2;
-            paragrafo('Il soggetto sopra indicato, di seguito denominato "PROPONENTE", conferisce — tramite Michele Erre, regolarmente iscritto al ruolo degli Agenti di Affari in Mediazione presso la C.C.I.A.A. di Sassari al n. 227691, di seguito denominato "AGENTE IMMOBILIARE" — incarico di mediazione per la vendita dell\'immobile di seguito descritto, alle condizioni qui indicate.', { gap: 3 });
+            paragrafo('Il soggetto sopra indicato, di seguito denominato "VENDITORE", conferisce — tramite Michele Erre, regolarmente iscritto al ruolo degli Agenti di Affari in Mediazione presso la C.C.I.A.A. di Sassari al n. 227691, di seguito denominato "AGENTE IMMOBILIARE" — incarico di mediazione per la vendita dell\'immobile di seguito descritto, alle condizioni qui indicate.', { gap: 3 });
 
             // ============ 1. DESCRIZIONE IMMOBILE ============
             sezione('1) Descrizione e Stato dell\'Immobile');
-            paragrafo('Il PROPONENTE dichiara e garantisce che l\'immobile sottodescritto si trova nel seguente stato:', { size: 8.2, gap: 2 });
+            paragrafo('Il VENDITORE dichiara e garantisce che l\'immobile sottodescritto si trova nel seguente stato:', { size: 8.2, gap: 2 });
             campo('a) Ubicazione', (data.immUbicazione || '').replace(/\n/g, ' '));
             campo('b) Composizione', (data.immComposizione || '').replace(/\n/g, ' '));
             campoDoppio('c) Proprietà', data.immProprieta, 'd) Atto di Provenienza', data.immAtto);
@@ -1434,26 +1434,26 @@
                 { txt: 'Da Fornire', on: data.energetica === 'da_fornire' }
             ]);
 
-            paragrafo('Il PROPONENTE, mediante l\'accettazione della presente proposta, garantisce la veridicità della descrizione e dello stato dell\'immobile e si obbliga, anche in relazione ai punti e), g), h), m) e p), ad ottenere e consegnare tutto quanto necessario per la stipula dell\'atto notarile in conformità alle normative vigenti.', { size: 7.8, color: GRIGIO, gap: 3 });
+            paragrafo('Il VENDITORE, mediante l\'accettazione della presente proposta, garantisce la veridicità della descrizione e dello stato dell\'immobile e si obbliga, anche in relazione ai punti e), g), h), m) e p), ad ottenere e consegnare tutto quanto necessario per la stipula dell\'atto notarile in conformità alle normative vigenti.', { size: 7.8, color: GRIGIO, gap: 3 });
 
             // ============ 2. PREZZO ============
             sezione('2) Prezzo di Vendita Richiesto');
             const lettere = numeroInLettere(data.prezzo);
             campo('Prezzo richiesto', fmt(data.prezzo) + (lettere ? ` (Euro ${lettere}/00)` : ''));
             campo('Comprendente il residuo capitale mutuo attuale di circa', fmt(data.residuoMutuo));
-            paragrafo('Nel caso l\'acquirente non intenda accollarsi il predetto mutuo residuo, il PROPONENTE, a propria cura e spesa, si obbliga ad estinguerlo e ad espletare ogni formalità necessaria alla cancellazione della relativa ipoteca prima della stipulazione dell\'atto notarile di compravendita.', { size: 7.8, color: GRIGIO, gap: 3 });
+            paragrafo('Nel caso l\'acquirente non intenda accollarsi il predetto mutuo residuo, il VENDITORE, a propria cura e spesa, si obbliga ad estinguerlo e ad espletare ogni formalità necessaria alla cancellazione della relativa ipoteca prima della stipulazione dell\'atto notarile di compravendita.', { size: 7.8, color: GRIGIO, gap: 3 });
 
             // ============ 3. CONDIZIONI DI PAGAMENTO ============
             sezione('3) Condizioni di Pagamento');
             campoDoppio('Caparra minima (% del prezzo)', data.caparraPerc ? data.caparraPerc + ' %' : '—', 'Da versare entro (giorni dalla proposta)', data.caparraGiorni);
-            paragrafo('Il saldo del prezzo dovrà essere effettuato a mezzo assegni circolari o bonifico bancario entro l\'atto notarile di compravendita. L\'acquirente potrà avvalersi, a propria cura e spesa, di mutui o finanziamenti anche previa garanzia sull\'immobile oggetto del contratto, il cui importo sarà messo a disposizione del PROPONENTE, esperite le formalità necessarie.', { size: 7.8, color: GRIGIO, gap: 3 });
+            paragrafo('Il saldo del prezzo dovrà essere effettuato a mezzo assegni circolari o bonifico bancario entro l\'atto notarile di compravendita. L\'acquirente potrà avvalersi, a propria cura e spesa, di mutui o finanziamenti anche previa garanzia sull\'immobile oggetto del contratto, il cui importo sarà messo a disposizione del VENDITORE, esperite le formalità necessarie.', { size: 7.8, color: GRIGIO, gap: 3 });
 
             // ============ 4. ATTO NOTARILE E CONSEGNA ============
             sezione('4) Atto Notarile e Consegna dell\'Immobile');
             campoDoppio('Stipula non prima di (mesi)', data.rogitoMin, 'E non dopo (mesi)', data.rogitoMax);
             paragrafo('Imposte, tasse e spese notarili saranno a carico dell\'acquirente. L\'immobile verrà trasferito, al momento dell\'atto notarile, nello stato di fatto e di diritto in cui attualmente si trova, con particolare riferimento all\'agibilità ed agli impianti tecnologici di cui all\'art. 1 del D.M. n. 37 del 22.01.2008; l\'eventuale adeguamento degli impianti, a norma delle leggi vigenti, sarà a carico dell\'acquirente. L\'immobile sarà altresì trasferito con tutti i diritti, accessioni, accessori, dipendenze e pertinenze, servitù attive e passive, franco e libero da qualsiasi peso od onere pregiudizievole, in regola con il pagamento delle spese condominiali e con garanzia per i casi di molestie ed evizione, ad eccezione di quanto segue.', { size: 7.8, color: GRIGIO, gap: 2 });
             campo('Eccezioni a pesi e oneri', (data.eccezioniOneri || 'nessuna eccezione').replace(/\n/g, ' '));
-            paragrafo('Il PROPONENTE si obbliga a produrre la documentazione attestante la situazione energetica dell\'immobile entro 15 giorni da oggi.', { size: 7.8, color: GRIGIO, gap: 2 });
+            paragrafo('Il VENDITORE si obbliga a produrre la documentazione attestante la situazione energetica dell\'immobile entro 15 giorni da oggi.', { size: 7.8, color: GRIGIO, gap: 2 });
             checkLine('Consegna dell\'immobile', [
                 { txt: 'Alla stipula del rogito notarile', on: data.consegnaQuando === 'rogito' },
                 { txt: data.consegnaQuando === 'altro' && data.consegnaAltroTxt ? data.consegnaAltroTxt : 'Altro', on: data.consegnaQuando === 'altro' }
@@ -1462,7 +1462,7 @@
                 { txt: 'Libero da cose e persone', on: data.consegnaStato === 'libero' },
                 { txt: 'Occupato dal conduttore con subentro dell\'acquirente nel contratto di locazione in corso', on: data.consegnaStato === 'occupato' }
             ]);
-            paragrafo('Il PROPONENTE sarà tenuto ad accettare e far accettare agli eventuali altri aventi diritto sull\'immobile la proposta d\'acquisto che rispetti le condizioni previste dal presente incarico.', { size: 7.8, color: GRIGIO, gap: 3 });
+            paragrafo('Il VENDITORE sarà tenuto ad accettare e far accettare agli eventuali altri aventi diritto sull\'immobile la proposta d\'acquisto che rispetti le condizioni previste dal presente incarico.', { size: 7.8, color: GRIGIO, gap: 3 });
 
             // ============ 5. DURATA ============
             sezione('5) Durata dell\'Incarico di Mediazione');
@@ -1502,7 +1502,7 @@
                     { txt: 'Promozione della vendita immobiliare con i seguenti strumenti pubblicitari', on: data.obbPromozione === 'on' }
                 ]);
                 campo('Strumenti pubblicitari', (data.strumentiPubblicitari || '').replace(/\n/g, ' '));
-                firma('Firma del PROPONENTE per accettazione esclusività e irrevocabilità');
+                firma('Firma del VENDITORE per accettazione esclusività e irrevocabilità');
             } else {
                 paragrafo('In questo caso l\'AGENTE IMMOBILIARE non avrà alcun obbligo di impegnare la propria organizzazione per la conclusione dell\'affare ed entrambe le parti potranno recedere dal contratto liberamente con semplice comunicazione scritta a mezzo raccomandata a.r.', { size: 7.8, color: GRIGIO, gap: 3 });
             }
@@ -1510,7 +1510,7 @@
             // ============ 8. PROVVIGIONE ============
             sezione('8) Provvigione dell\'Agente Immobiliare');
             campoDoppio('Provvigione (% del prezzo di incarico)', data.provvigionePerc ? data.provvigionePerc + ' %' : '—', 'Corrispondente a (oltre IVA)', fmt(data.provvigioneEuro));
-            paragrafo('Il diritto al compenso maturerà nel momento in cui sarà data comunicazione all\'acquirente dell\'avvenuta accettazione della sua proposta d\'acquisto. Per patto espresso, il compenso provvigionale come sopra determinato sarà altresì dovuto anche nel caso di conclusione dell\'affare successiva alla scadenza dell\'incarico nei confronti di soggetti e/o società messe in relazione con il PROPONENTE dall\'AGENTE IMMOBILIARE, come risultanti da apposita comunicazione scritta. In quest\'ultimo caso, l\'affare si intenderà concluso con la stipula e trascrizione dell\'atto notarile.', { size: 7.8, color: GRIGIO, gap: 3 });
+            paragrafo('Il diritto al compenso maturerà nel momento in cui sarà data comunicazione all\'acquirente dell\'avvenuta accettazione della sua proposta d\'acquisto. Per patto espresso, il compenso provvigionale come sopra determinato sarà altresì dovuto anche nel caso di conclusione dell\'affare successiva alla scadenza dell\'incarico nei confronti di soggetti e/o società messe in relazione con il VENDITORE dall\'AGENTE IMMOBILIARE, come risultanti da apposita comunicazione scritta. In quest\'ultimo caso, l\'affare si intenderà concluso con la stipula e trascrizione dell\'atto notarile.', { size: 7.8, color: GRIGIO, gap: 3 });
 
             // ============ 9. INADEMPIMENTI ============
             sezione('9) Inadempimenti Contrattuali');
@@ -1518,7 +1518,7 @@
 
             // ============ 10. PRIVACY ============
             sezione('10) Normativa sulla Privacy e Antiriciclaggio');
-            paragrafo('Il PROPONENTE dichiara di aver preso atto dell\'informativa comunicata ai sensi dell\'art. 13 del D.Lgs. 196/03 e di aver avuto conoscenza dei diritti in essa previsti a tutela della privacy; autorizza altresì, senza limitazioni, l\'AGENTE IMMOBILIARE al trattamento dei dati personali anche successivamente alla conclusione dell\'affare. Dichiara inoltre di aver preso atto dell\'obbligo dell\'agente immobiliare di rispettare il D.Lgs. n. 231/07 e successive modifiche, integrazioni e decreti ministeriali attuativi in materia di antiriciclaggio, in ordine all\'identificazione, registrazione e conservazione delle informazioni nell\'archivio unico.', { gap: 2 });
+            paragrafo('Il VENDITORE dichiara di aver preso atto dell\'informativa comunicata ai sensi dell\'art. 13 del D.Lgs. 196/03 e di aver avuto conoscenza dei diritti in essa previsti a tutela della privacy; autorizza altresì, senza limitazioni, l\'AGENTE IMMOBILIARE al trattamento dei dati personali anche successivamente alla conclusione dell\'affare. Dichiara inoltre di aver preso atto dell\'obbligo dell\'agente immobiliare di rispettare il D.Lgs. n. 231/07 e successive modifiche, integrazioni e decreti ministeriali attuativi in materia di antiriciclaggio, in ordine all\'identificazione, registrazione e conservazione delle informazioni nell\'archivio unico.', { gap: 2 });
             campo('Consenso privacy e antiriciclaggio', data.privacy === 'on' ? 'Accettato' : 'Non accettato');
 
             // ============ NOTE ============
@@ -1527,11 +1527,11 @@
 
             // ============ SOTTOSCRIZIONE ============
             campoDoppio('Lì', data.luogoFirma, 'In data', fmtData(data.dataFirma));
-            firma('Firma del PROPONENTE');
+            firma('Firma del VENDITORE');
 
-            paragrafo('Ai sensi degli articoli 1469-bis Cod. Civ. e 33 e seguenti D.Lgs. n. 206/05 "Codice del Consumo", il PROPONENTE dichiara che le clausole riportate nei punti: 5 (durata dell\'incarico di mediazione ed eventuale tacito rinnovo), 7 (esclusività e irrevocabilità dell\'incarico di mediazione), 8 (provvigione dell\'AGENTE IMMOBILIARE), sono state oggetto di attenta trattativa individuale e le approva specificatamente, anche ai sensi degli artt. 1341 e 1342 Cod. Civ.', { size: 7.5, color: GRIGIO, gap: 2 });
+            paragrafo('Ai sensi degli articoli 1469-bis Cod. Civ. e 33 e seguenti D.Lgs. n. 206/05 "Codice del Consumo", il VENDITORE dichiara che le clausole riportate nei punti: 5 (durata dell\'incarico di mediazione ed eventuale tacito rinnovo), 7 (esclusività e irrevocabilità dell\'incarico di mediazione), 8 (provvigione dell\'AGENTE IMMOBILIARE), sono state oggetto di attenta trattativa individuale e le approva specificatamente, anche ai sensi degli artt. 1341 e 1342 Cod. Civ.', { size: 7.5, color: GRIGIO, gap: 2 });
 
-            firma('Firma del PROPONENTE');
+            firma('Firma del VENDITORE');
 
             // ============ ACCETTAZIONE AGENTE ============
             sezione('Accettazione dell\'Agente Immobiliare');
