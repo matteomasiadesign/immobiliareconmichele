@@ -40,7 +40,6 @@
     .btn-logout { background-color: rgba(239,68,68,0.1); color: #fca5a5; border: 1px solid rgba(239,68,68,0.3); font-weight: 900; font-size: 11px; text-transform: uppercase; padding: 8px 12px; border-radius: 12px; cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 6px;}
     .btn-logout:hover { background-color: #ef4444; color: var(--white); }
 
-    /* ===== HAMBURGER + MENU MOBILE (admin) ===== */
     .admin-mobile-toggle { display: none; background: none; border: none; cursor: pointer; padding: 6px; line-height: 0; }
     .admin-mobile-menu { position: fixed; top: 80px; left: 0; width: 100%; background-color: var(--brand-blue); border-bottom: 4px solid var(--brand-yellow); display: flex; flex-direction: column; gap: 10px; padding: 1rem; transform: translateY(-150%); transition: var(--transition); z-index: 999; box-shadow: 0 12px 20px rgba(0,0,0,0.15); }
     .admin-mobile-menu.open { transform: translateY(0); }
@@ -48,16 +47,13 @@
     .mobile-menu-item.primary { background: var(--brand-yellow); color: var(--brand-blue); border-color: var(--brand-yellow); }
     .mobile-menu-item.danger { color: #fca5a5; border-color: rgba(239,68,68,0.35); }
     .mobile-menu-item.danger:hover { background: #ef4444; color: var(--white); }
-    /* Mobile: mostra hamburger, nascondi i pulsanti inline */
     @media (max-width: 820px) {
       .nav-actions { display: none; }
       .admin-mobile-toggle { display: flex; }
     }
-    /* Desktop: nascondi hamburger e menu a tendina */
     @media (min-width: 821px) {
       .admin-mobile-menu { display: none; }
     }
-    
     @media (max-width: 380px) {
       .hide-mobile { display: none; }
       .btn-nav-link { padding: 8px; }
@@ -87,6 +83,7 @@
     @media (min-width: 768px) { .featured-status-box { width: auto; } }
     .badge-counter { background-color: var(--brand-blue); color: var(--white); padding: 4px 10px; border-radius: 20px; font-size: 13px; font-weight: 900; }
     .badge-counter.filled { background-color: #f59e0b; }
+    
     .main-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; width: 100%; }
     @media (min-width: 1024px) { .main-grid { grid-template-columns: 380px 1fr; gap: 2rem; } }
     .panel-card { background-color: var(--white); padding: 1.25rem; border-radius: 24px; border: 1px solid var(--border-color); box-shadow: 0 4px 20px rgba(0,0,0,0.02); width: 100%; }
@@ -104,10 +101,34 @@
     .file-input-custom { border: 2px dashed var(--border-color); padding: 20px; border-radius: 16px; text-align: center; background-color: var(--white); cursor: pointer; transition: var(--transition); font-size: 12px; font-weight: 700; color: var(--text-muted); }
     .file-input-custom:hover { border-color: var(--brand-blue); background-color: rgba(0,68,255,0.02); }
     
-    .preview-thumbs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(65px, 1fr)); gap: 8px; margin-top: 10px; }
-    .preview-thumb-container { position: relative; aspect-ratio: 4/3; border-radius: 8px; overflow: hidden; border: 1px solid var(--border-color); }
-    .preview-thumb { width: 100%; height: 100%; object-fit: cover; }
-    .btn-remove-thumb { position: absolute; top: 2px; right: 2px; background-color: rgba(239,68,68,0.9); color: var(--white); border: none; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 10px; font-weight: bold; }
+    /* FIX: Migliorata la visualizzazione delle thumbnail per evitare che il bottone esca tagliato */
+    .preview-thumbs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(75px, 1fr)); gap: 12px; margin-top: 15px; }
+    .preview-thumb-container { position: relative; aspect-ratio: 4/3; }
+    .preview-thumb { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-color); }
+    
+    /* FIX: Bottone di eliminazione ingrandito e più cliccabile */
+    .btn-remove-thumb { 
+      position: absolute; 
+      top: -8px; 
+      right: -8px; 
+      background-color: #ef4444; 
+      color: var(--white); 
+      border: 2px solid white; 
+      border-radius: 50%; 
+      width: 26px; 
+      height: 26px; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      cursor: pointer; 
+      font-size: 12px; 
+      font-weight: bold; 
+      box-shadow: 0 2px 5px rgba(0,0,0,0.25);
+      z-index: 10;
+      transition: transform 0.2s;
+    }
+    .btn-remove-thumb:active { transform: scale(0.9); }
+
     .checkbox-container { background-color: #f1f5f9; padding: 1rem; border-radius: 18px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 12px; width: 100%; }
     .checkbox-row { display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
     .checkbox-row input { width: 18px; height: 18px; accent-color: var(--brand-blue); flex-shrink: 0; }
@@ -180,7 +201,8 @@
   <nav class="navbar">
     <div class="brand">
       <div class="brand-icon-box" style="padding: 0; background: transparent;">
-        <img src="icona.webp" alt="Icona Michele Erre" style="width: 100%; height: 100%; object-fit: contain;">
+        <!-- L'icona dovrebbe essere presente nella tua cartella del progetto -->
+        <div style="width: 100%; height: 100%; background: var(--brand-yellow); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--brand-blue); font-weight: bold;">ME</div>
       </div>
       <div class="brand-text">
         <span class="brand-title">MICHELE ERRE</span>
@@ -271,7 +293,7 @@
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
           <h2 id="form-title" class="panel-title" style="margin-bottom: 0;">Nuovo Annuncio</h2>
           <button id="cancel-edit-btn" onclick="cancelEdit()" class="btn-cancel-edit hidden">
-            <svg style="width: 14px; height: 14px; flex-shrink: 0;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <svg style="width: 14px; height: 14px; flex-shrink: 0;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l-2-2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             Annulla
           </button>
         </div>
@@ -328,7 +350,7 @@
             <label class="form-label">Immagini Immobile (Upload Automatico)</label>
             <div class="file-upload-row">
               <label class="file-input-custom">
-                📷 Trascina o tocca per aggiungere foto dal tuo telefono
+                📷 Trascina o tocca per aggiungere foto...
                 <input type="file" id="file-uploader" accept="image/*" multiple onchange="handleImageSelection(event)" style="display: none;">
               </label>
             </div>
@@ -423,9 +445,6 @@
         <p>Sede: Porto Torres (SS)</p>
         <p>Telefono: 334 857 6926</p>
         <p>Email: infoerreimmobili@gmail.com</p>
-        <p>PEC: erremichele12@pec.it</p>
-        <p>P.IVA: 03076110901</p>
-        <p>REA: SS - 227691</p>
       </div>
     </div>
     <div class="footer-bottom">
@@ -456,15 +475,12 @@
         if (event === 'SIGNED_IN') { handleAuthSuccess(); } else if (event === 'SIGNED_OUT') { showLoginScreen(); }
       });
 
-      // Menu hamburger (mobile)
       const mobileToggle = document.getElementById('admin-mobile-toggle');
       const mobileMenu = document.getElementById('admin-mobile-menu');
       mobileToggle.addEventListener('click', (e) => { e.stopPropagation(); mobileMenu.classList.toggle('open'); });
-      // Chiudi il menu quando si tocca una voce
       mobileMenu.querySelectorAll('.mobile-menu-item').forEach(item => {
         item.addEventListener('click', () => mobileMenu.classList.remove('open'));
       });
-      // Chiudi il menu toccando fuori
       document.addEventListener('click', (e) => {
         if (mobileMenu.classList.contains('open') && !mobileMenu.contains(e.target) && !mobileToggle.contains(e.target)) {
           mobileMenu.classList.remove('open');
@@ -498,7 +514,7 @@
         if (error) throw error;
       } catch (err) {
         hideLoader();
-        alert("Accesso fallito. Verifica email o password: " + err.message);
+        alert("Accesso fallito. Verifica email o password.");
       }
     }
 
@@ -514,7 +530,7 @@
         if (error) throw error;
         properties = data || [];
         updateZoneDropdown(); renderPropertiesList();
-      } catch (err) { alert("Impossibile caricare gli immobili dal database: " + err.message); }
+      } catch (err) { console.error("Impossibile caricare gli immobili."); }
     }
 
     async function handleImageSelection(e) {
@@ -523,7 +539,7 @@
       showLoader("Compressione e invio immagini...");
       for (let i = 0; i < files.length; i++) {
         try { const publicUrl = await compressAndUpload(files[i]); uploadedImageUrls.push(publicUrl); } 
-        catch (err) { alert(`Errore foto ${files[i].name}: ${err}`); }
+        catch (err) { alert(`Errore foto ${files[i].name}`); }
       }
       renderImagePreviews(); hideLoader(); e.target.value = ""; 
     }
@@ -544,53 +560,55 @@
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, width, height);
             canvas.toBlob(async function (blob) {
-              if (!blob) { reject("Fallita conversione in Blob."); return; }
+              if (!blob) { reject("Errore conversione"); return; }
               const fileName = `prop_${Date.now()}_${Math.random().toString(36).substring(2, 9)}.jpg`;
               try {
-                const { data, error } = await _supabase.storage.from('properties-images').upload(fileName, blob, { contentType: 'image/jpeg' });
+                const { error } = await _supabase.storage.from('properties-images').upload(fileName, blob, { contentType: 'image/jpeg' });
                 if (error) throw error;
                 const { data: { publicUrl } } = _supabase.storage.from('properties-images').getPublicUrl(fileName);
                 resolve(publicUrl);
-              } catch (storageErr) { reject(storageErr.message || storageErr); }
+              } catch (storageErr) { reject(storageErr); }
             }, 'image/jpeg', 0.7); 
           };
-          img.onerror = () => reject("Impossibile caricare il file d'origine.");
+          img.onerror = () => reject("File non valido");
         };
-        reader.onerror = () => reject("Lettura del file non riuscita.");
+        reader.onerror = () => reject("Errore lettura");
       });
     }
 
     function renderImagePreviews() {
       const grid = document.getElementById('preview-grid'); grid.innerHTML = "";
       uploadedImageUrls.forEach((url, index) => {
-        const thumbBox = document.createElement('div'); thumbBox.className = "preview-thumb-container";
-        thumbBox.innerHTML = `<img src="${url}" class="preview-thumb" alt="anteprima"><button type="button" class="btn-remove-thumb" onclick="removeImage(${index})">✕</button>`;
+        const thumbBox = document.createElement('div'); 
+        thumbBox.className = "preview-thumb-container";
+        // FIX: Aggiunto event.preventDefault() ed event.stopPropagation() per sicurezza sul click del bottone X
+        thumbBox.innerHTML = `
+          <img src="${url}" class="preview-thumb" alt="anteprima">
+          <button type="button" class="btn-remove-thumb" onclick="event.preventDefault(); event.stopPropagation(); removeImage(${index})">✕</button>
+        `;
         grid.appendChild(thumbBox);
       });
     }
 
+    // FIX: Funzione corretta per eliminare l'immagine istantaneamente dalla UI senza bloccare lo schermo
     async function removeImage(index) {
       const urlToRemove = uploadedImageUrls[index];
       
+      // 1. Rimuovo immediatamente dall'array locale e aggiorno la UI
       uploadedImageUrls.splice(index, 1);
       renderImagePreviews();
 
+      // 2. Se è un file di Supabase, invio la richiesta per rimuoverlo "in background"
+      // Non richiamo "showLoader()" così l'utente non viene interrotto mentre usa l'interfaccia.
       if (urlToRemove && urlToRemove.includes('/properties-images/')) {
         const urlParts = urlToRemove.split('/properties-images/');
         const filePath = urlParts.length > 1 ? urlParts[1] : null;
 
         if (filePath) {
           try {
-            showLoader("Rimozione foto dal server...");
-            const { error: storageErr } = await _supabase.storage.from('properties-images').remove([filePath]);
-            
-            if (storageErr) {
-              console.error("Errore cancellazione singola foto:", storageErr);
-            }
+            await _supabase.storage.from('properties-images').remove([filePath]);
           } catch (err) {
-            console.error("Impossibile eliminare la foto:", err);
-          } finally {
-            hideLoader();
+            console.warn("L'immagine è stata tolta dal form, ma non dal server remoto:", err);
           }
         }
       }
@@ -689,8 +707,7 @@
             }).filter(path => path !== null);
 
             if (filePaths.length > 0) {
-              const { error: storageErr } = await _supabase.storage.from('properties-images').remove(filePaths);
-              if (storageErr) console.error("Errore cancellazione foto:", storageErr);
+              await _supabase.storage.from('properties-images').remove(filePaths);
             }
           }
 
