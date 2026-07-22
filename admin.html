@@ -6,6 +6,8 @@
   <title>Pannello Admin - Immobiliare con Michele</title>
   
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Aggiunto SortableJS per il Drag & Drop cross-device -->
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 
   <style>
     :root {
@@ -101,12 +103,18 @@
     .file-input-custom { border: 2px dashed var(--border-color); padding: 20px; border-radius: 16px; text-align: center; background-color: var(--white); cursor: pointer; transition: var(--transition); font-size: 12px; font-weight: 700; color: var(--text-muted); }
     .file-input-custom:hover { border-color: var(--brand-blue); background-color: rgba(0,68,255,0.02); }
     
-    /* FIX: Migliorata la visualizzazione delle thumbnail per evitare che il bottone esca tagliato */
     .preview-thumbs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(75px, 1fr)); gap: 12px; margin-top: 15px; }
-    .preview-thumb-container { position: relative; aspect-ratio: 4/3; }
-    .preview-thumb { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-color); }
+    .preview-thumb-container { position: relative; aspect-ratio: 4/3; cursor: grab; }
+    .preview-thumb-container:active { cursor: grabbing; }
+    .preview-thumb { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-color); transition: border 0.2s; }
     
-    /* FIX: Bottone di eliminazione ingrandito e più cliccabile */
+    /* Stili per la copertina e drag and drop */
+    .preview-thumb.cover-img { border: 3px solid var(--brand-yellow); box-shadow: 0 4px 10px rgba(255, 217, 15, 0.3); }
+    .cover-badge { position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%); background-color: var(--brand-yellow); color: var(--brand-blue); font-size: 8px; font-weight: 900; padding: 2px 6px; border-radius: 12px; pointer-events: none; white-space: nowrap; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .btn-set-cover { position: absolute; top: -8px; left: -8px; background-color: var(--white); color: #f59e0b; border: 2px solid #f59e0b; border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.25); z-index: 10; transition: transform 0.2s; }
+    .btn-set-cover:hover { transform: scale(1.1); background-color: #fef3c7; }
+    .sortable-ghost { opacity: 0.4; transform: scale(0.95); }
+    
     .btn-remove-thumb { 
       position: absolute; 
       top: -8px; 
@@ -201,7 +209,6 @@
   <nav class="navbar">
     <div class="brand">
       <div class="brand-icon-box" style="padding: 0; background: transparent;">
-        <!-- L'icona dovrebbe essere presente nella tua cartella del progetto -->
         <div style="width: 100%; height: 100%; background: var(--brand-yellow); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--brand-blue); font-weight: bold;">ME</div>
       </div>
       <div class="brand-text">
@@ -347,7 +354,7 @@
           </div>
 
           <div class="photo-fields-box">
-            <label class="form-label">Immagini Immobile (Upload Automatico)</label>
+            <label class="form-label">Immagini Immobile <span style="text-transform:none">(Trascina per riordinare)</span></label>
             <div class="file-upload-row">
               <label class="file-input-custom">
                 📷 Trascina o tocca per aggiungere foto...
@@ -461,6 +468,7 @@
     let properties = [];
     let uploadedImageUrls = []; 
     let selectedPropertyToDelete = null;
+    let sortableInstance = null; // Variabile per tracciare l'istanza di SortableJS
 
     function showLoader(text = "Attendere prego...") { document.getElementById('loader-text').innerText = text; document.getElementById('loader').classList.remove('hidden'); }
     function hideLoader() { document.getElementById('loader').classList.add('hidden'); }
@@ -576,34 +584,60 @@
       });
     }
 
+    // Funzione per impostare esplicitamente un'immagine come copertina
+    function setAsCover(index) {
+      if (index === 0) return;
+      const targetUrl = uploadedImageUrls.splice(index, 1)[0];
+      uploadedImageUrls.unshift(targetUrl);
+      renderImagePreviews();
+    }
+
     function renderImagePreviews() {
-      const grid = document.getElementById('preview-grid'); grid.innerHTML = "";
+      const grid = document.getElementById('preview-grid'); 
+      grid.innerHTML = "";
+      
       uploadedImageUrls.forEach((url, index) => {
+        const isCover = index === 0;
         const thumbBox = document.createElement('div'); 
         thumbBox.className = "preview-thumb-container";
-        // FIX: Aggiunto event.preventDefault() ed event.stopPropagation() per sicurezza sul click del bottone X
+        
+        // Se è la prima immagine mostriamo il badge "Copertina", altrimenti il bottone per farla diventare tale.
         thumbBox.innerHTML = `
-          <img src="${url}" class="preview-thumb" alt="anteprima">
-          <button type="button" class="btn-remove-thumb" onclick="event.preventDefault(); event.stopPropagation(); removeImage(${index})">✕</button>
+          <img src="${url}" class="preview-thumb ${isCover ? 'cover-img' : ''}" alt="anteprima">
+          ${isCover ? 
+            `<span class="cover-badge">COPERTINA</span>` : 
+            `<button type="button" class="btn-set-cover" onclick="event.preventDefault(); event.stopPropagation(); setAsCover(${index})" title="Imposta come copertina">⭐</button>`
+          }
+          <button type="button" class="btn-remove-thumb" onclick="event.preventDefault(); event.stopPropagation(); removeImage(${index})" title="Rimuovi foto">✕</button>
         `;
         grid.appendChild(thumbBox);
       });
+
+      // Inizializza o aggiorna SortableJS per il Drag & Drop
+      if (sortableInstance) { sortableInstance.destroy(); }
+      sortableInstance = new Sortable(grid, {
+        animation: 150,
+        ghostClass: 'sortable-ghost',
+        delay: 100, // Leggero ritardo per evitare drag accidentali scrollando da mobile
+        delayOnTouchOnly: true,
+        onEnd: function (evt) {
+          // Quando il drag finisce, riordina l'array per combaciare con l'interfaccia
+          const itemEl = uploadedImageUrls.splice(evt.oldIndex, 1)[0];
+          uploadedImageUrls.splice(evt.newIndex, 0, itemEl);
+          // Ri-renderizza per aggiornare i bordi gialli e i badge (la prima immagine è sempre copertina)
+          renderImagePreviews();
+        }
+      });
     }
 
-    // FIX: Funzione corretta per eliminare l'immagine istantaneamente dalla UI senza bloccare lo schermo
     async function removeImage(index) {
       const urlToRemove = uploadedImageUrls[index];
-      
-      // 1. Rimuovo immediatamente dall'array locale e aggiorno la UI
       uploadedImageUrls.splice(index, 1);
       renderImagePreviews();
 
-      // 2. Se è un file di Supabase, invio la richiesta per rimuoverlo "in background"
-      // Non richiamo "showLoader()" così l'utente non viene interrotto mentre usa l'interfaccia.
       if (urlToRemove && urlToRemove.includes('/properties-images/')) {
         const urlParts = urlToRemove.split('/properties-images/');
         const filePath = urlParts.length > 1 ? urlParts[1] : null;
-
         if (filePath) {
           try {
             await _supabase.storage.from('properties-images').remove([filePath]);
@@ -648,6 +682,7 @@
 
       showLoader(id ? "Aggiornamento in corso..." : "Pubblicazione annuncio...");
 
+      // L'ordine delle immagini è già corretto nell'array uploadedImageUrls, la prima è la copertina
       const payload = { title, status, price, zone, property_type: type, rooms, bathrooms, sqm, description, reel_url, has_parking: hasParking, is_featured: isFeatured, images: uploadedImageUrls };
 
       try {
