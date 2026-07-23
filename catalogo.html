@@ -181,6 +181,20 @@
     /* BOTTONE CONDIVIDI */
     .btn-share { width: 50px; height: 50px; flex-shrink: 0; background-color: var(--white); color: var(--brand-blue); border: 2px solid var(--border-color); text-decoration: none; display: flex; align-items: center; justify-content: center; border-radius: 16px; transition: var(--transition); cursor: pointer; }
     .btn-share:hover { background-color: #f1f5f9; border-color: var(--brand-blue); }
+
+    /* OTTIMIZZAZIONE SPAZIO MODALE SU DESKTOP */
+    @media (min-width: 992px) {
+      .modal-card { max-width: 1300px; height: 85vh; display: grid; grid-template-columns: 65% 35%; grid-template-rows: 1fr auto; }
+      .modal-scroll { display: contents; /* Annulla il div wrapper per usare la griglia direttamente */ }
+      .modal-carousel-container { grid-column: 1 / 2; grid-row: 1 / 3; height: 100%; width: 100%; aspect-ratio: auto; background-color: #0f172a; }
+      .modal-img { object-fit: contain; }
+      .modal-content { grid-column: 2 / 3; grid-row: 1 / 2; overflow-y: auto; padding: 3rem 2.5rem 2rem 2.5rem; border-left: 1px solid var(--border-color); }
+      .modal-footer { grid-column: 2 / 3; grid-row: 2 / 3; border-top: 1px solid var(--border-color); border-left: 1px solid var(--border-color); padding: 1.5rem 2.5rem; }
+      
+      /* Adattamento bottone di chiusura per il layout desktop */
+      .btn-close-modal { top: 24px; right: 24px; background-color: var(--bg-slate); color: var(--text-slate); border: 1px solid var(--border-color); }
+      .btn-close-modal:hover { background-color: var(--brand-blue); color: var(--white); border-color: var(--brand-blue); }
+    }
   </style>
 </head>
 <body>
