@@ -164,6 +164,13 @@
     .modal-content { background-color: var(--white); border-radius: 24px; padding: 1.5rem; max-width: 500px; width: 100%; border: 1px solid var(--border-color); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); margin: auto; }
     .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
     .btn-close-modal { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted); }
+
+    /* --- FIX OVERFLOW MOBILE --- */
+    @media (max-width: 380px) {
+      .stats-cards-grid { grid-template-columns: 1fr; }
+      .stat-card { padding: 1rem; }
+    }
+    .data-table td { word-break: break-word; }
   </style>
 </head>
 <body>
@@ -177,7 +184,7 @@
     <div class="brand">
       <div class="brand-icon-box">
         <!-- FIX CRITICO LOGO: Cambiato object-fit in contain e rimosso background per evitare schiacciamenti. -->
-        <img src="icona.webp" alt="Logo" style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px;" onerror="this.outerHTML='<div style=\'width: 40px; height: 40px; background: var(--brand-yellow); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--brand-blue); font-weight: bold;\'>ME</div>'">
+        <img src="icona.webp" alt="Logo" style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px;" onerror="this.outerHTML='<div style='width: 40px; height: 40px; background: var(--brand-yellow); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--brand-blue); font-weight: bold;'>ME</div>'">
       </div>
       <div class="brand-text">
         <span class="brand-title">MICHELE ERRE</span>
@@ -358,7 +365,7 @@
       <div class="panel-card" style="padding: 0;">
         <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-color); display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;">
           <h3 style="font-size: 14px; font-weight: 900; color: var(--text-slate); text-transform: uppercase;">Storico Incarichi</h3>
-          <input type="text" id="trans-search" oninput="renderTransactionsTable()" placeholder="Cerca per immobile o proprietario..." class="form-input" style="max-width: 300px; padding: 8px 12px;">
+          <input type="text" id="trans-search" oninput="renderTransactionsTable()" placeholder="Cerca per immobile o proprietario..." class="form-input" style="flex: 1; min-width: 200px; padding: 8px 12px;">
         </div>
         <div class="data-table-container" style="border: none; border-radius: 0 0 24px 24px;">
           <table class="data-table">
@@ -378,9 +385,9 @@
       <div class="panel-card" style="padding: 0;">
          <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap:wrap; gap:10px;">
             <h3 style="font-size: 14px; font-weight: 900; color: var(--text-slate); text-transform: uppercase;">Rubrica Clienti</h3>
-            <div style="display:flex; gap:10px;">
-              <input type="text" id="buyer-search" oninput="renderBuyersList()" placeholder="Cerca cliente..." class="form-input" style="width: 200px; padding: 8px 12px;">
-              <button onclick="openBuyerModal()" class="btn-submit" style="width: auto; padding: 8px 16px;">+ Aggiungi</button>
+            <div style="display:flex; gap:10px; flex: 1; min-width: 200px;">
+              <input type="text" id="buyer-search" oninput="renderBuyersList()" placeholder="Cerca cliente..." class="form-input" style="flex: 1; min-width: 0; padding: 8px 12px;">
+              <button onclick="openBuyerModal()" class="btn-submit" style="width: auto; padding: 8px 16px; flex-shrink: 0;">+ Aggiungi</button>
             </div>
          </div>
          <div class="data-table-container" style="border:none;">
@@ -898,7 +905,10 @@
         if(res.error) { throw res.error; }
         closeModals(); await loadTransactions();
       } catch (err) {
-        alert("ERRORE SALVATAGGIO:\n" + err.message + "\n\nAssicurati di aver aggiornato correttamente la tabella 'transactions' su Supabase aggiungendo le colonne mancanti!");
+        alert("ERRORE SALVATAGGIO:
+" + err.message + "
+
+Assicurati di aver aggiornato correttamente la tabella 'transactions' su Supabase aggiungendo le colonne mancanti!");
       } finally { hideLoader(); }
     }
 
