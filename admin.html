@@ -416,38 +416,52 @@
       </div>
       <form onsubmit="handleTransactionSubmit(event)">
         <input type="hidden" id="trans-id">
+        
         <div class="form-group">
           <label class="form-label">Stato Incarico</label>
-          <select id="trans-status" class="form-select" required onchange="toggleTransactionFields()">
-            <option value="In Vendita">🟢 In Vendita</option>
+          <select id="trans-status" class="form-select" required onchange="toggleTransactionFields()" style="font-weight: 900;">
+            <option value="In Vendita">🟢 In Vendita (Incarico Attivo)</option>
             <option value="Venduto">🤝 Venduto</option>
             <option value="Scaduto">🔴 Scaduto / Ritirato</option>
           </select>
         </div>
+        
         <div class="form-group">
           <label class="form-label">Immobile (Riferimento)</label>
           <input type="text" id="trans-title" class="form-input" required placeholder="es. Bilocale Via Roma">
         </div>
+        
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">Data Acquisizione</label>
             <input type="date" id="trans-acq-date" class="form-input" required>
           </div>
-          <div class="form-group" id="group-sale-date" style="display:none;">
-            <label class="form-label">Data Vendita</label>
-            <input type="date" id="trans-sale-date" class="form-input">
+          <div class="form-group">
+            <label class="form-label">Prezzo di Partenza (€)</label>
+            <input type="number" id="trans-initial-price" class="form-input" required placeholder="es. 150000">
           </div>
         </div>
-        <div class="form-row" id="group-financials" style="display:none;">
-          <div class="form-group">
-            <label class="form-label">Prezzo Finale (€)</label>
-            <input type="number" id="trans-price" class="form-input">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Provvigione (€)</label>
-            <input type="number" id="trans-comm" class="form-input">
+
+        <div class="form-group">
+          <label class="form-label">Provvigione Pattuita (%)</label>
+          <input type="number" step="0.1" id="trans-comm-perc" class="form-input" required placeholder="es. 3">
+        </div>
+
+        <!-- SEZIONE VENDITA (Visibile solo se lo stato è "Venduto") -->
+        <div id="group-sale-details" style="display:none; background-color: #f0fdf4; padding: 1rem; border-radius: 16px; border: 1px solid #bbf7d0; margin-bottom: 1rem;">
+          <h4 style="font-size: 11px; font-weight: 900; text-transform: uppercase; color: #166534; margin-bottom: 10px;">Dettagli Vendita</h4>
+          <div class="form-row">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" style="color: #166534;">Data Vendita</label>
+              <input type="date" id="trans-sale-date" class="form-input" style="border-color: #bbf7d0;">
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" style="color: #166534;">Prezzo Finale Chiusura (€)</label>
+              <input type="number" id="trans-final-price" class="form-input" style="border-color: #bbf7d0;" placeholder="es. 145000">
+            </div>
           </div>
         </div>
+
         <button type="submit" class="btn-submit">Salva Dati</button>
       </form>
     </div>
@@ -741,19 +755,24 @@
       transactions.forEach(t => {
         const acqDate = new Date(t.acquisition_date);
         
-        // Statistiche acquisizioni
+        // Statistiche acquisizioni (Incarichi presi quest'anno)
         if (acqDate.getFullYear() === year) {
           acq++;
           monthlyData.acq[acqDate.getMonth()]++;
         }
 
-        // Statistiche vendite e provvigioni
+        // Statistiche vendite e provvigioni (Chiuse quest'anno)
         if (t.status === 'Venduto' && t.sale_date) {
           const saleDate = new Date(t.sale_date);
           if (saleDate.getFullYear() === year) {
             ven++;
             monthlyData.ven[saleDate.getMonth()]++;
-            if (t.commission) prov += Number(t.commission);
+            
+            // Calcolo provvigione in Euro: (Prezzo Finale * Percentuale) / 100
+            if (t.final_price && t.commission_perc) {
+              const euroCommission = (Number(t.final_price) * Number(t.commission_perc)) / 100;
+              prov += euroCommission;
+            }
             
             // Calcolo giorni esatti impiegati per vendere
             const diffTime = Math.abs(saleDate - acqDate);
@@ -766,7 +785,7 @@
 
       document.getElementById('stat-acq').innerText = acq;
       document.getElementById('stat-ven').innerText = ven;
-      document.getElementById('stat-prov').innerText = `€${prov.toLocaleString('it-IT')}`;
+      document.getElementById('stat-prov').innerText = `€${prov.toLocaleString('it-IT', {maximumFractionDigits: 0})}`;
       document.getElementById('stat-days').innerText = daysCount > 0 ? Math.round(daysTotal/daysCount) + ' gg' : '0 gg';
 
       const ctx = document.getElementById('transactionsChart').getContext('2d');
@@ -776,7 +795,7 @@
         data: {
           labels: ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'],
           datasets: [
-            { label: 'Acquisizioni', data: monthlyData.acq, backgroundColor: '#3b82f6', borderRadius: 6 },
+            { label: 'Nuovi Incarichi', data: monthlyData.acq, backgroundColor: '#3b82f6', borderRadius: 6 },
             { label: 'Vendite Concluse', data: monthlyData.ven, backgroundColor: '#10b981', borderRadius: 6 }
           ]
         },
@@ -792,25 +811,42 @@
         else if(t.status === 'Venduto') statusBadge = '<span class="status-badge bg-green">🤝 Venduto</span>';
         else statusBadge = '<span class="status-badge bg-red">🔴 Scaduto</span>';
 
-        // Logica per il calcolo dei giorni live vs congelati
+        // Calcolo automatico giorni live vs congelati
         let days = 0;
         const acqDate = new Date(t.acquisition_date);
+        
+        // Per evitare bug di fuso orario, impostiamo l'ora a mezzanotte
+        acqDate.setHours(0,0,0,0);
+        
         if (t.status === 'Venduto' && t.sale_date) {
-          days = Math.ceil(Math.abs(new Date(t.sale_date) - acqDate) / (1000 * 60 * 60 * 24));
+          const sDate = new Date(t.sale_date);
+          sDate.setHours(0,0,0,0);
+          days = Math.ceil((sDate - acqDate) / (1000 * 60 * 60 * 24));
         } else if (t.status === 'In Vendita') {
-          // Contatore Live: quanti giorni sono passati da quando l'ho acquisito a oggi
-          days = Math.ceil(Math.abs(new Date() - acqDate) / (1000 * 60 * 60 * 24));
+          const today = new Date();
+          today.setHours(0,0,0,0);
+          days = Math.ceil((today - acqDate) / (1000 * 60 * 60 * 24));
         }
 
         const dAcq = acqDate.toLocaleDateString('it-IT');
         const dSale = t.sale_date ? new Date(t.sale_date).toLocaleDateString('it-IT') : '-';
+        
+        // Formattazione Prezzi e Provvigione
+        let priceString = `€${t.initial_price.toLocaleString('it-IT')}`;
+        let commString = `${t.commission_perc}%`;
+        
+        if (t.status === 'Venduto' && t.final_price) {
+           priceString = `€${t.final_price.toLocaleString('it-IT')} <span style="font-size:10px;text-decoration:line-through;color:gray;">(€${t.initial_price.toLocaleString('it-IT')})</span>`;
+           const euroCommission = (t.final_price * t.commission_perc) / 100;
+           commString = `<b>€${euroCommission.toLocaleString('it-IT')}</b> <span style="font-size:10px;color:gray">(${t.commission_perc}%)</span>`;
+        }
         
         tbody.innerHTML += `
           <tr>
             <td>${statusBadge}</td>
             <td style="font-weight:600;">${t.property_title}</td>
             <td><span style="font-size:11px;color:gray">Acquisito:</span> <b>${dAcq}</b> ${t.status === 'Venduto' ? `<br><span style="font-size:11px;color:gray">Venduto:</span> <b>${dSale}</b>` : ''}</td>
-            <td>${t.status === 'Venduto' ? (t.final_price ? '€'+t.final_price.toLocaleString('it-IT') : '-') + '<br><span style="font-size:10px;color:gray">Provv: ' + (t.commission ? '€'+t.commission.toLocaleString('it-IT') : '-') + '</span>' : '-'}</td>
+            <td>${priceString}<br><span style="font-size:11px;color:var(--brand-blue)">Provv: ${commString}</span></td>
             <td><span style="font-weight:900; color:${t.status==='In Vendita' ? 'var(--brand-blue)' : 'var(--text-slate)'};">${days} gg</span></td>
             <td>
               <div class="action-buttons">
@@ -824,27 +860,41 @@
 
     function toggleTransactionFields() {
       const status = document.getElementById('trans-status').value;
-      const saleDateGroup = document.getElementById('group-sale-date');
-      const finGroup = document.getElementById('group-financials');
+      const saleDetailsGroup = document.getElementById('group-sale-details');
+      const saleDateInput = document.getElementById('trans-sale-date');
+      const finalPriceInput = document.getElementById('trans-final-price');
+      const initialPriceValue = document.getElementById('trans-initial-price').value;
       
       if (status === 'Venduto') {
-        saleDateGroup.style.display = 'block';
-        finGroup.style.display = 'grid'; // .form-row uses grid
-        document.getElementById('trans-sale-date').required = true;
+        saleDetailsGroup.style.display = 'block';
+        saleDateInput.required = true;
+        finalPriceInput.required = true;
+        
+        // Auto-compila la data di oggi se vuota
+        if(!saleDateInput.value) {
+            saleDateInput.value = new Date().toISOString().split('T')[0];
+        }
+        // Auto-compila il prezzo finale con il prezzo di partenza come suggerimento
+        if(!finalPriceInput.value && initialPriceValue) {
+            finalPriceInput.value = initialPriceValue;
+        }
       } else {
-        saleDateGroup.style.display = 'none';
-        finGroup.style.display = 'none';
-        document.getElementById('trans-sale-date').required = false;
-        document.getElementById('trans-sale-date').value = "";
-        document.getElementById('trans-price').value = "";
-        document.getElementById('trans-comm').value = "";
+        saleDetailsGroup.style.display = 'none';
+        saleDateInput.required = false;
+        finalPriceInput.required = false;
+        saleDateInput.value = "";
+        finalPriceInput.value = "";
       }
     }
 
     function openTransactionModal() {
-      document.getElementById('trans-id').value = ""; document.getElementById('trans-title').value = "";
+      document.getElementById('trans-id').value = ""; 
+      document.getElementById('trans-title').value = "";
       document.getElementById('trans-status').value = "In Vendita";
       document.getElementById('trans-acq-date').value = new Date().toISOString().split('T')[0];
+      document.getElementById('trans-initial-price').value = "";
+      document.getElementById('trans-comm-perc').value = "";
+      
       document.getElementById('trans-modal-title').innerText = "Nuovo Incarico";
       toggleTransactionFields();
       document.getElementById('modal-transaction').style.display = 'flex';
@@ -856,9 +906,11 @@
       document.getElementById('trans-status').value = t.status;
       document.getElementById('trans-title').value = t.property_title; 
       document.getElementById('trans-acq-date').value = t.acquisition_date;
+      document.getElementById('trans-initial-price').value = t.initial_price || "";
+      document.getElementById('trans-comm-perc').value = t.commission_perc || "";
+      
       document.getElementById('trans-sale-date').value = t.sale_date || "";
-      document.getElementById('trans-price').value = t.final_price || ""; 
-      document.getElementById('trans-comm').value = t.commission || "";
+      document.getElementById('trans-final-price').value = t.final_price || ""; 
       
       document.getElementById('trans-modal-title').innerText = "Modifica Incarico";
       toggleTransactionFields();
@@ -869,16 +921,21 @@
       e.preventDefault(); showLoader("Salvataggio...");
       const id = document.getElementById('trans-id').value;
       const status = document.getElementById('trans-status').value;
+      
       const payload = {
         status: status, 
         property_title: document.getElementById('trans-title').value,
         acquisition_date: document.getElementById('trans-acq-date').value, 
-        sale_date: status === 'Venduto' ? (document.getElementById('trans-sale-date').value || null) : null,
-        final_price: status === 'Venduto' ? (document.getElementById('trans-price').value || null) : null,
-        commission: status === 'Venduto' ? (document.getElementById('trans-comm').value || null) : null
+        initial_price: Number(document.getElementById('trans-initial-price').value),
+        commission_perc: Number(document.getElementById('trans-comm-perc').value),
+        
+        sale_date: status === 'Venduto' ? document.getElementById('trans-sale-date').value : null,
+        final_price: status === 'Venduto' ? Number(document.getElementById('trans-final-price').value) : null
       };
+
       if(id) await _supabase.from('transactions').update(payload).eq('id', id);
       else await _supabase.from('transactions').insert([payload]);
+      
       closeModals(); await loadTransactions(); hideLoader();
     }
 
