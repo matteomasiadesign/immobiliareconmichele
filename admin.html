@@ -89,6 +89,7 @@
     .main-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; width: 100%; }
     @media (min-width: 1024px) { .main-grid { grid-template-columns: 380px 1fr; gap: 2rem; } }
     .btn-cancel-edit { font-size: 11px; font-weight: 900; text-transform: uppercase; color: #ef4444; background: none; border: none; cursor: pointer; display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+    
     .photo-fields-box { background-color: #f8fafc; padding: 1rem; border-radius: 18px; border: 1px solid var(--border-color); margin-bottom: 1rem; width: 100%; }
     .file-input-custom { border: 2px dashed var(--border-color); padding: 20px; border-radius: 16px; text-align: center; background-color: var(--white); cursor: pointer; transition: var(--transition); font-size: 12px; font-weight: 700; color: var(--text-muted); display: block;}
     .file-input-custom:hover { border-color: var(--brand-blue); background-color: rgba(0,68,255,0.02); }
@@ -100,10 +101,12 @@
     .cover-badge { position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%); background-color: var(--brand-yellow); color: var(--brand-blue); font-size: 8px; font-weight: 900; padding: 2px 6px; border-radius: 12px; pointer-events: none; white-space: nowrap; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
     .btn-set-cover { position: absolute; top: -8px; left: -8px; background-color: var(--white); color: #f59e0b; border: 2px solid #f59e0b; border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.25); z-index: 10; }
     .btn-remove-thumb { position: absolute; top: -8px; right: -8px; background-color: #ef4444; color: var(--white); border: 2px solid white; border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 12px; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.25); z-index: 10; }
+    
     .checkbox-container { background-color: #f1f5f9; padding: 1rem; border-radius: 18px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 12px; width: 100%; margin-bottom: 1rem;}
     .checkbox-row { display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
     .checkbox-row input { width: 18px; height: 18px; accent-color: var(--brand-blue); flex-shrink: 0; }
     .checkbox-label { font-size: 13px; font-weight: 700; }
+
     .archive-header { padding: 1.25rem 1rem; border-bottom: 2px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background-color: rgba(0,68,255,0.03); width: 100%; }
     .archive-header h2 { font-size: 14px; font-weight: 900; text-transform: uppercase; color: var(--brand-blue); }
     .list-wrapper { display: flex; flex-direction: column; width: 100%; }
@@ -170,7 +173,8 @@
   <nav class="navbar">
     <div class="brand">
       <div class="brand-icon-box">
-        <img src="logo.webp" alt="Logo" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.outerHTML='<div style=\'width: 100%; height: 100%; background: var(--brand-yellow); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--brand-blue); font-weight: bold;\'>ME</div>'">
+        <!-- IMMAGINE CORRETTA CON FALLBACK -->
+        <img src="icona.webp" alt="Logo" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.outerHTML='<div style=\'width: 100%; height: 100%; background: var(--brand-yellow); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--brand-blue); font-weight: bold;\'>ME</div>'">
       </div>
       <div class="brand-text">
         <span class="brand-title">MICHELE ERRE</span>
@@ -319,27 +323,27 @@
     <div id="tab-stats" class="tab-content">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 15px;">
         <div class="year-selector-box">
-          📅 Anno: <select id="stats-year" onchange="updateDashboardStats()"></select>
+          📅 Anno Fiscale: <select id="stats-year" onchange="updateDashboardStats()"></select>
         </div>
         <button onclick="openTransactionModal()" class="btn-submit" style="width: auto; padding: 12px 24px;">+ Nuovo Incarico 📝</button>
       </div>
 
       <!-- KPI Cards -->
       <div class="stats-cards-grid">
-        <div class="stat-card"><div class="stat-value" id="stat-active">0</div><div class="stat-label">Incarichi in Corso (Oggi)</div></div>
-        <div class="stat-card"><div class="stat-value" id="stat-sold">0</div><div class="stat-label">Vendite (Anno Sel.)</div></div>
-        <div class="stat-card"><div class="stat-value" id="stat-revenue" style="color: #10b981;">€0</div><div class="stat-label">Fatturato Netto (Anno Sel.)</div></div>
-        <div class="stat-card"><div class="stat-value" id="stat-days">0 gg</div><div class="stat-label">Tempo Medio Vendita</div></div>
+        <div class="stat-card"><div class="stat-value" id="stat-active">0</div><div class="stat-label">Incarichi in Corso (Globale)</div></div>
+        <div class="stat-card"><div class="stat-value" id="stat-sold">0</div><div class="stat-label">Vendite Concluse (Anno)</div></div>
+        <div class="stat-card"><div class="stat-value" id="stat-revenue" style="color: #10b981;">€0</div><div class="stat-label">Fatturato Netto (Anno)</div></div>
+        <div class="stat-card"><div class="stat-value" id="stat-days">0 gg</div><div class="stat-label">Tempo Medio di Vendita</div></div>
       </div>
 
       <!-- Charts -->
       <div class="charts-grid">
         <div class="chart-container">
-          <div class="chart-header">Andamento Volumi e Fatturato</div>
+          <div class="chart-header">Andamento Volumi e Fatturato (Anno)</div>
           <div style="flex: 1; position: relative;"><canvas id="mainChart"></canvas></div>
         </div>
         <div class="chart-container">
-          <div class="chart-header">Tasso di Successo Incarichi (Anno)</div>
+          <div class="chart-header">Tasso di Successo (Anno)</div>
           <div style="flex: 1; position: relative;"><canvas id="pieChart"></canvas></div>
         </div>
       </div>
@@ -348,7 +352,7 @@
       <div class="panel-card" style="padding: 0;">
         <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-color); display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;">
           <h3 style="font-size: 14px; font-weight: 900; color: var(--text-slate); text-transform: uppercase;">Storico Incarichi</h3>
-          <input type="text" id="trans-search" oninput="renderTransactionsTable()" placeholder="Cerca immobile o prop..." class="form-input" style="max-width: 250px; padding: 8px 12px;">
+          <input type="text" id="trans-search" oninput="renderTransactionsTable()" placeholder="Cerca per immobile o proprietario..." class="form-input" style="max-width: 300px; padding: 8px 12px;">
         </div>
         <div class="data-table-container" style="border: none; border-radius: 0 0 24px 24px;">
           <table class="data-table">
@@ -383,7 +387,6 @@
     </div>
   </div>
 
-  
   <!-- Delete Prop Modal -->
   <div id="modal-delete-prop" class="modal-overlay">
     <div class="modal-content" style="max-width:360px; text-align:center;">
@@ -419,19 +422,21 @@
         </div>
         <div class="form-row">
           <div class="form-group"><label class="form-label">Data Acquisizione</label><input type="date" id="trans-acq-date" class="form-input" required></div>
-          <div class="form-group"><label class="form-label">Prezzo Iniziale (€)</label><input type="number" id="trans-initial-price" class="form-input" required placeholder="es. 150000"></div>
+          <div class="form-group"><label class="form-label">Prezzo Partenza (€)</label><input type="number" id="trans-initial-price" class="form-input" required placeholder="es. 150000"></div>
         </div>
         <div class="form-row">
           <div class="form-group"><label class="form-label">Provv. Venditore (%)</label><input type="number" step="0.1" id="trans-comm-seller" class="form-input" required placeholder="es. 3"></div>
           <div class="form-group"><label class="form-label">Provv. Acquirente (%)</label><input type="number" step="0.1" id="trans-comm-buyer" class="form-input" required placeholder="es. 3"></div>
         </div>
+        
         <div id="group-sale-details" style="display:none; background-color: #f0fdf4; padding: 1rem; border-radius: 16px; border: 1px solid #bbf7d0; margin-bottom: 1rem;">
           <h4 style="font-size: 11px; font-weight: 900; text-transform: uppercase; color: #166534; margin-bottom: 10px;">💸 Dettagli Chiusura</h4>
           <div class="form-row">
             <div class="form-group" style="margin-bottom: 0;"><label class="form-label" style="color: #166534;">Data di Vendita</label><input type="date" id="trans-sale-date" class="form-input" style="border-color: #bbf7d0;"></div>
-            <div class="form-group" style="margin-bottom: 0;"><label class="form-label" style="color: #166534;">Prezzo Chiusura (€)</label><input type="number" id="trans-final-price" class="form-input" style="border-color: #bbf7d0;"></div>
+            <div class="form-group" style="margin-bottom: 0;"><label class="form-label" style="color: #166534;">Prezzo Finale Chiusura (€)</label><input type="number" id="trans-final-price" class="form-input" style="border-color: #bbf7d0;"></div>
           </div>
         </div>
+        
         <button type="submit" class="btn-submit">Salva Incarico</button>
       </form>
     </div>
@@ -473,16 +478,14 @@
     const { createClient } = supabase;
     const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // Dati
+    // Global State
     let properties = [];
     let uploadedImageUrls = [];
     let sortableInstance = null;
     let propToDelete = null;
-
     let transactions = [];
     let mainChartInstance = null;
     let pieChartInstance = null;
-
     let buyers = [];
 
     // Utility
@@ -494,12 +497,13 @@
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       document.getElementById(tabId).classList.add('active');
       btn.classList.add('active');
+      if(tabId === 'tab-stats') { updateDashboardStats(); } // Resize graphs correctly
     }
 
     window.addEventListener('DOMContentLoaded', async () => {
       showLoader("Verifica connessione...");
       
-      // Fix Mobile Menu: Aggiunto event listener sicuro
+      // Fix Sicuro Menu Mobile
       const mobileToggle = document.getElementById('admin-mobile-toggle');
       const mobileMenu = document.getElementById('admin-mobile-menu');
       if(mobileToggle && mobileMenu) {
@@ -547,7 +551,6 @@
       document.getElementById('admin-dashboard').style.display = 'flex';
       document.getElementById('nav-auth').style.display = 'flex';
       
-      // Caricamento asincrono parallelo
       await Promise.all([loadProperties(), loadTransactions(), loadBuyers()]);
       hideLoader();
     }
@@ -708,21 +711,21 @@
 
     function updateDashboardStats() {
       const yr = parseInt(document.getElementById('stats-year').value); if(!yr) return;
-      let activeToday = 0; let salesYr = 0; let revYr = 0; let totalDays = 0;
+      let activeOggi = 0; let salesYr = 0; let revYr = 0; let totalDays = 0;
       let acqByM = Array(12).fill(0); let salesByM = Array(12).fill(0); let revByM = Array(12).fill(0);
       let pieS = 0; let pieA = 0; let pieE = 0;
 
       transactions.forEach(t => {
-        if(t.status === 'In Vendita') activeToday++;
+        if(t.status === 'In Vendita') activeOggi++;
         const dAcq = new Date(t.acquisition_date);
         
-        // Logica Ciambella
+        // Logica Ciambella (Analisi Acquisizioni dell'Anno Scelto)
         if(dAcq.getFullYear() === yr) {
           acqByM[dAcq.getMonth()]++;
           if(t.status==='In Vendita') pieA++; else if(t.status==='Venduto') pieS++; else pieE++;
         }
         
-        // Logica Vendite/Fatturato
+        // Logica Fatturato/Vendite dell'Anno Scelto
         if(t.status === 'Venduto' && t.sale_date && t.final_price) {
           const dSale = new Date(t.sale_date);
           if(dSale.getFullYear() === yr) {
@@ -735,7 +738,7 @@
         }
       });
 
-      document.getElementById('stat-active').innerText = activeToday; document.getElementById('stat-sold').innerText = salesYr;
+      document.getElementById('stat-active').innerText = activeOggi; document.getElementById('stat-sold').innerText = salesYr;
       document.getElementById('stat-revenue').innerText = `€${revYr.toLocaleString('it-IT')}`;
       document.getElementById('stat-days').innerText = salesYr > 0 ? `${Math.round(totalDays/salesYr)} gg` : '0 gg';
       renderCharts(acqByM, salesByM, revByM, pieS, pieA, pieE);
@@ -743,27 +746,30 @@
 
     function renderCharts(acqD, saleD, revD, pS, pA, pE) {
       const mesi = ['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'];
+      
+      // Chart 1: Volumi e Fatturato
       if(mainChartInstance) mainChartInstance.destroy();
       mainChartInstance = new Chart(document.getElementById('mainChart'), {
         type: 'bar',
         data: {
           labels: mesi,
           datasets: [
-            { type:'line', label:'Fatturato (€)', data:revD, borderColor:'#10b981', backgroundColor:'rgba(16,185,129,0.1)', borderWidth:3, fill:true, yAxisID:'yR' },
-            { type:'bar', label:'Incarichi', data:acqD, backgroundColor:'#FFD90F', borderRadius:4, yAxisID:'yV' },
-            { type:'bar', label:'Vendite', data:saleD, backgroundColor:'#0044FF', borderRadius:4, yAxisID:'yV' }
+            { type:'line', label:'Fatturato Netto (€)', data:revD, borderColor:'#0044FF', backgroundColor:'rgba(0,68,255,0.1)', borderWidth:3, fill:true, yAxisID:'yR', tension:0.4 },
+            { type:'bar', label:'Incarichi Presi', data:acqD, backgroundColor:'#FFD90F', borderRadius:4, yAxisID:'yV' },
+            { type:'bar', label:'Immobili Venduti', data:saleD, backgroundColor:'#10b981', borderRadius:4, yAxisID:'yV' }
           ]
         },
         options: { responsive:true, maintainAspectRatio:false, interaction:{mode:'index', intersect:false},
-          scales: { yV:{type:'linear', position:'left', title:{display:true,text:'Volumi'}}, yR:{type:'linear', position:'right', title:{display:true,text:'€'}} }
+          scales: { yV:{type:'linear', position:'left', title:{display:true,text:'Volumi (N. Case)'}, min:0, ticks:{stepSize:1}}, yR:{type:'linear', position:'right', title:{display:true,text:'€ Incassati'}, grid:{drawOnChartArea:false}, min:0} }
         }
       });
 
+      // Chart 2: Ciambella Successo
       if(pieChartInstance) pieChartInstance.destroy();
       pieChartInstance = new Chart(document.getElementById('pieChart'), {
         type: 'doughnut',
-        data: { labels: ['Venduti','In Corso','Scaduti'], datasets: [{ data: [pS, pA, pE], backgroundColor: ['#10b981','#3b82f6','#ef4444'], borderWidth:0 }] },
-        options: { responsive:true, maintainAspectRatio:false, cutout:'70%' }
+        data: { labels: ['Venduti','In Vendita','Scaduti/Ritirati'], datasets: [{ data: [pS, pA, pE], backgroundColor: ['#10b981','#0044FF','#ef4444'], borderWidth:0 }] },
+        options: { responsive:true, maintainAspectRatio:false, cutout:'70%', plugins:{legend:{position:'bottom'}} }
       });
     }
 
@@ -844,7 +850,7 @@
 
       const res = id ? await _supabase.from('transactions').update(payload).eq('id', id) : await _supabase.from('transactions').insert([payload]);
       hideLoader();
-      if(res.error) { alert("ERRORE: Controlla di aver aggiornato la tabella Supabase!\n" + res.error.message); } 
+      if(res.error) { alert("ERRORE SALVATAGGIO:\n" + res.error.message + "\n\nAssicurati di aver aggiornato correttamente la tabella 'transactions' su Supabase!"); } 
       else { closeModals(); await loadTransactions(); }
     }
 
