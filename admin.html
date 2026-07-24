@@ -151,13 +151,6 @@
     .bg-yellow { background: #fef3c7; color: #d97706; }
     .bg-orange { background: #ffedd5; color: #ea580c; } /* Nuova classe per alert scadenze */
     
-    .btn-action { border: none; width: 34px; height: 34px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: var(--transition); flex-shrink: 0; background-color: #f1f5f9;}
-    .btn-action:hover { background-color: #e2e8f0; }
-    .btn-action.edit { background-color: #fffbeb; color: #d97706; }
-    .btn-action.edit:hover { background-color: #d97706; color: white; }
-    .btn-action.delete { background-color: #fef2f2; color: #ef4444; }
-    .btn-action.delete:hover { background-color: #ef4444; color: white; }
-
     .loader-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(15,23,42,0.8); backdrop-filter: blur(4px); z-index: 3000; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; color: var(--white); font-weight: 700; font-size: 14px; }
     .spinner { border: 4px solid rgba(255,255,255,0.1); width: 48px; height: 48px; border-radius: 50%; border-left-color: var(--brand-yellow); animation: spin 1s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
@@ -169,11 +162,10 @@
     .btn-close-modal { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted); }
 
     /* --- NUOVI STILI PER MENU A TENDINA (KEBAB MENU) --- */
-    .dropdown-container { position: relative; display: inline-block; }
     .kebab-btn { background: none; border: none; font-size: 22px; cursor: pointer; padding: 4px 10px; color: var(--text-muted); border-radius: 8px; transition: var(--transition); }
     .kebab-btn:hover { background-color: #e2e8f0; color: var(--text-slate); }
     
-    /* FIX: Menu con posizione Fixed sganciato dalla tabella */
+    /* FIX: Menu Singolo sganciato dalle tabelle */
     .dropdown-menu { 
       display: none; 
       position: fixed; 
@@ -592,6 +584,12 @@
     </div>
   </div>
 
+  <!-- Menu Kebab Globale (Fuori da ogni tabella per prevenire clipping) -->
+  <div id="global-kebab-menu" class="dropdown-menu">
+      <button id="global-kebab-edit" class="dropdown-item">✏️ Modifica</button>
+      <button id="global-kebab-delete" class="dropdown-item delete">🗑️ Elimina</button>
+  </div>
+
   <script>
     const SUPABASE_URL = "https://svdfgejkjvkbajmqoqjz.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_aGoAYeXnUtVMe4bIc20wIQ_2EM4LTSG";
@@ -610,31 +608,55 @@
     let pieChartInstance = null;
     let buyers = [];
 
-    // --- GESTIONE DROPDOWN GLOBALE (FIX SCROLL TABELLA) ---
-    function toggleDropdown(event, id) {
+    // --- GESTIONE DROPDOWN GLOBALE (SINGLETON PATTERN) ---
+    let currentDropdownContext = null;
+
+    function toggleDropdown(event, type, id) {
        event.stopPropagation();
-       const currentMenu = document.getElementById('dropdown-' + id);
-       const isShowing = currentMenu.classList.contains('show');
+       const menu = document.getElementById('global-kebab-menu');
+       const isShowing = menu.classList.contains('show');
        
-       // Chiude preventivamente tutti gli altri menu aperti
+       // Se l'utente clicca sullo stesso pulsante già aperto, chiudo il menu e mi fermo
+       if (isShowing && currentDropdownContext?.id === id && currentDropdownContext?.type === type) {
+           closeAllDropdowns();
+           return;
+       }
+       
+       // Chiudo forzatamente qualsiasi menu prima di riaprirlo
        closeAllDropdowns();
 
-       if (!isShowing) {
-           currentMenu.classList.add('show');
-           
-           // Calcola dinamicamente la posizione del pulsante cliccato
-           const btnRect = event.target.getBoundingClientRect();
-           
-           // Applica la posizione assoluta rispetto alla viewport (position: fixed)
-           currentMenu.style.top = (btnRect.bottom + 4) + 'px';
-           currentMenu.style.left = (btnRect.right - currentMenu.offsetWidth) + 'px';
-       }
+       // Aggiorno il contesto attuale per ricordarmi quale riga sto modificando
+       currentDropdownContext = { type, id };
+       
+       // Assegno le funzioni dinamiche ai pulsanti del menu globale
+       document.getElementById('global-kebab-edit').onclick = (e) => {
+           e.stopPropagation();
+           closeAllDropdowns();
+           type === 'trans' ? editTransaction(id) : editBuyer(id);
+       };
+       document.getElementById('global-kebab-delete').onclick = (e) => {
+           e.stopPropagation();
+           closeAllDropdowns();
+           type === 'trans' ? openDeleteTransModal(id) : openDeleteBuyerModal(id);
+       };
+
+       // Mostro il menu
+       menu.classList.add('show');
+       
+       // Calcolo la posizione esatta del pulsante "⋮" che ho appena cliccato
+       const btnRect = event.target.getBoundingClientRect();
+       
+       // Applico la posizione 'fixed' calcolata per far apparire il menu sotto al pulsante e a sinistra
+       menu.style.top = (btnRect.bottom + 4) + 'px';
+       menu.style.left = (btnRect.right - 140) + 'px'; // 140px è il min-width del menu
     }
 
     function closeAllDropdowns() {
-        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+        const menu = document.getElementById('global-kebab-menu');
+        if (menu) {
             menu.classList.remove('show');
-        });
+        }
+        currentDropdownContext = null;
     }
 
     // Chiusura al click fuori dal menu
@@ -644,7 +666,7 @@
       }
     });
 
-    // Chiusura automatica del menu se l'utente esegue uno scroll
+    // Chiusura automatica del menu se l'utente esegue uno scroll nella tabella o pagina
     window.addEventListener('scroll', closeAllDropdowns, true);
 
 
@@ -1113,6 +1135,7 @@
           cStr = `<b style="color:#10b981">Netto: €${tot.toLocaleString('it-IT')}</b>`;
         }
 
+        // Il Menu Kebab è stampato tramite il Singleton toggleDropdown
         list.innerHTML += `
         <tr>
           <td>${b}</td>
@@ -1120,13 +1143,7 @@
           <td>Acq: <b>${acq.toLocaleDateString('it-IT')}</b> <span style="font-size:10px;color:gray;">(${t.assignment_duration||'-'})</span><br>Giorni: <b style="color:var(--brand-blue)">${days>=0?days:0} gg</b></td>
           <td>${pStr}<br><span style="font-size:11px;">Provv: ${cStr}</span></td>
           <td style="text-align:center;">
-             <div class="dropdown-container">
-                <button class="kebab-btn" onclick="toggleDropdown(event, 'trans-${t.id}')">⋮</button>
-                <div class="dropdown-menu" id="dropdown-trans-${t.id}">
-                    <button class="dropdown-item" onclick="editTransaction('${t.id}')">✏️ Modifica</button>
-                    <button class="dropdown-item delete" onclick="openDeleteTransModal('${t.id}')">🗑️ Elimina</button>
-                </div>
-             </div>
+             <button class="kebab-btn" onclick="toggleDropdown(event, 'trans', '${t.id}')">⋮</button>
           </td>
         </tr>`;
       });
@@ -1265,14 +1282,7 @@
           <td>${b.desired_type||'-'} <span style="font-size:11px;color:gray;">(${b.desired_zone||'Ovunque'})</span></td>
           <td>${b.max_budget ? '€'+b.max_budget.toLocaleString('it-IT') : '-'}</td>
           <td style="text-align:center;" onclick="event.stopPropagation()">
-             <!-- Kebab Menu Clienti -->
-             <div class="dropdown-container">
-                <button class="kebab-btn" onclick="toggleDropdown(event, 'buyer-${b.id}')">⋮</button>
-                <div class="dropdown-menu" id="dropdown-buyer-${b.id}">
-                    <button class="dropdown-item" onclick="editBuyer('${b.id}')">✏️ Modifica</button>
-                    <button class="dropdown-item delete" onclick="openDeleteBuyerModal('${b.id}')">🗑️ Elimina</button>
-                </div>
-             </div>
+             <button class="kebab-btn" onclick="toggleDropdown(event, 'buyer', '${b.id}')">⋮</button>
           </td>
         </tr>
         <!-- Accordion Note -->
