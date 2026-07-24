@@ -151,6 +151,13 @@
     .bg-yellow { background: #fef3c7; color: #d97706; }
     .bg-orange { background: #ffedd5; color: #ea580c; } /* Nuova classe per alert scadenze */
     
+    .btn-action { border: none; width: 34px; height: 34px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: var(--transition); flex-shrink: 0; background-color: #f1f5f9;}
+    .btn-action:hover { background-color: #e2e8f0; }
+    .btn-action.edit { background-color: #fffbeb; color: #d97706; }
+    .btn-action.edit:hover { background-color: #d97706; color: white; }
+    .btn-action.delete { background-color: #fef2f2; color: #ef4444; }
+    .btn-action.delete:hover { background-color: #ef4444; color: white; }
+
     .loader-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(15,23,42,0.8); backdrop-filter: blur(4px); z-index: 3000; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; color: var(--white); font-weight: 700; font-size: 14px; }
     .spinner { border: 4px solid rgba(255,255,255,0.1); width: 48px; height: 48px; border-radius: 50%; border-left-color: var(--brand-yellow); animation: spin 1s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
@@ -165,7 +172,20 @@
     .dropdown-container { position: relative; display: inline-block; }
     .kebab-btn { background: none; border: none; font-size: 22px; cursor: pointer; padding: 4px 10px; color: var(--text-muted); border-radius: 8px; transition: var(--transition); }
     .kebab-btn:hover { background-color: #e2e8f0; color: var(--text-slate); }
-    .dropdown-menu { display: none; position: absolute; right: 0; top: 100%; background: var(--white); min-width: 140px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-radius: 12px; border: 1px solid var(--border-color); z-index: 50; overflow: hidden; }
+    
+    /* FIX: Menu con posizione Fixed sganciato dalla tabella */
+    .dropdown-menu { 
+      display: none; 
+      position: fixed; 
+      background: var(--white); 
+      min-width: 140px; 
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15); 
+      border-radius: 12px; 
+      border: 1px solid var(--border-color); 
+      z-index: 9999; 
+      overflow: hidden; 
+    }
+    
     .dropdown-menu.show { display: block; animation: fadeIn 0.2s ease; }
     .dropdown-item { display: flex; align-items: center; gap: 8px; padding: 12px 16px; width: 100%; border: none; background: none; text-align: left; font-size: 13px; font-weight: 700; cursor: pointer; color: var(--text-slate); transition: background 0.2s; }
     .dropdown-item:hover { background-color: #f1f5f9; }
@@ -281,9 +301,15 @@
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">Contratto</label>
-                <select id="prop-status" class="form-select"><option value="Vendita">Vendita</option><option value="Affitto">Affitto</option></select>
+                <select id="prop-status" class="form-select">
+                  <option value="Vendita">Vendita</option>
+                  <option value="Affitto">Affitto</option>
+                </select>
               </div>
-              <div class="form-group"><label class="form-label">Prezzo (€)</label><input required type="number" id="prop-price" class="form-input"></div>
+              <div class="form-group">
+                <label class="form-label">Prezzo (€)</label>
+                <input required type="number" id="prop-price" class="form-input">
+              </div>
             </div>
             <div class="form-row">
               <div class="form-group"><label class="form-label">Zona</label><input required type="text" id="prop-zone" class="form-input"></div>
@@ -343,8 +369,14 @@
       </div>
 
       <div class="charts-grid">
-        <div class="chart-container"><div class="chart-header">Andamento Volumi e Fatturato (Anno)</div><div class="chart-wrapper"><canvas id="mainChart"></canvas></div></div>
-        <div class="chart-container"><div class="chart-header">Tasso di Successo Incarichi (Anno)</div><div class="chart-wrapper"><canvas id="pieChart"></canvas></div></div>
+        <div class="chart-container">
+          <div class="chart-header">Andamento Volumi e Fatturato (Anno)</div>
+          <div class="chart-wrapper"><canvas id="mainChart"></canvas></div>
+        </div>
+        <div class="chart-container">
+          <div class="chart-header">Tasso di Successo Incarichi (Anno)</div>
+          <div class="chart-wrapper"><canvas id="pieChart"></canvas></div>
+        </div>
       </div>
 
       <div class="panel-card flex-wrap" style="padding: 0;">
@@ -354,11 +386,17 @@
               <input type="text" id="trans-search" oninput="renderTransactionsTable()" placeholder="Cerca per immobile o proprietario..." class="form-input" style="width: 100%; padding: 8px 12px;">
           </div>
         </div>
-        <!-- Il max-height assicura che lo sticky header funzioni e previene problemi di altezza eccessiva -->
+        
         <div class="data-table-container" style="border: none; border-radius: 0 0 24px 24px; max-height: 600px; overflow-y: auto;">
           <table class="data-table">
             <thead>
-              <tr><th>Stato</th><th>Immobile / Proprietario</th><th>Tempistiche</th><th>Economia</th><th style="text-align:center;">Azioni</th></tr>
+              <tr>
+                <th>Stato</th>
+                <th>Immobile / Proprietario</th>
+                <th>Tempistiche</th>
+                <th>Economia</th>
+                <th style="text-align:center;">Azioni</th>
+              </tr>
             </thead>
             <tbody id="transactions-list"></tbody>
           </table>
@@ -378,7 +416,15 @@
          </div>
          <div class="data-table-container" style="border:none; max-height: 600px; overflow-y: auto;">
            <table class="data-table">
-             <thead><tr><th>Stato</th><th>Cliente / Contatto</th><th>Cosa Cerca</th><th>Budget</th><th style="text-align:center;">Azioni</th></tr></thead>
+             <thead>
+               <tr>
+                 <th>Stato</th>
+                 <th>Cliente / Contatto</th>
+                 <th>Cosa Cerca</th>
+                 <th>Budget</th>
+                 <th style="text-align:center;">Azioni</th>
+               </tr>
+             </thead>
              <tbody id="buyers-list"></tbody>
            </table>
          </div>
@@ -392,25 +438,30 @@
       <h3 style="font-size:18px; font-weight:900; color:var(--text-slate); margin-bottom:10px;">Sei sicuro?</h3>
       <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Eliminerai definitivamente questo annuncio dalla vetrina.</p>
       <div style="display:flex; gap:10px;">
-        <button onclick="closeModals()" class="btn-submit" style="background:#f1f5f9; color:var(--text-slate);">Annulla</button><button id="confirm-delete-prop-btn" class="btn-submit" style="background:#ef4444; color:white;">Elimina</button>
+        <button onclick="closeModals()" class="btn-submit" style="background:#f1f5f9; color:var(--text-slate);">Annulla</button>
+        <button id="confirm-delete-prop-btn" class="btn-submit" style="background:#ef4444; color:white;">Elimina</button>
       </div>
     </div>
   </div>
+  
   <div id="modal-delete-trans" class="modal-overlay">
     <div class="modal-content" style="max-width:360px; text-align:center;">
       <h3 style="font-size:18px; font-weight:900; color:var(--text-slate); margin-bottom:10px;">Attenzione!</h3>
       <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Stai per eliminare questo incarico dallo storico.</p>
       <div style="display:flex; gap:10px;">
-        <button onclick="closeModals()" class="btn-submit" style="background:#f1f5f9; color:var(--text-slate);">Annulla</button><button id="confirm-delete-trans-btn" class="btn-submit" style="background:#ef4444; color:white;">Elimina</button>
+        <button onclick="closeModals()" class="btn-submit" style="background:#f1f5f9; color:var(--text-slate);">Annulla</button>
+        <button id="confirm-delete-trans-btn" class="btn-submit" style="background:#ef4444; color:white;">Elimina</button>
       </div>
     </div>
   </div>
+  
   <div id="modal-delete-buyer" class="modal-overlay">
     <div class="modal-content" style="max-width:360px; text-align:center;">
       <h3 style="font-size:18px; font-weight:900; color:var(--text-slate); margin-bottom:10px;">Elimina Cliente</h3>
       <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Vuoi rimuovere questo potenziale cliente?</p>
       <div style="display:flex; gap:10px;">
-        <button onclick="closeModals()" class="btn-submit" style="background:#f1f5f9; color:var(--text-slate);">Annulla</button><button id="confirm-delete-buyer-btn" class="btn-submit" style="background:#ef4444; color:white;">Elimina</button>
+        <button onclick="closeModals()" class="btn-submit" style="background:#f1f5f9; color:var(--text-slate);">Annulla</button>
+        <button id="confirm-delete-buyer-btn" class="btn-submit" style="background:#ef4444; color:white;">Elimina</button>
       </div>
     </div>
   </div>
@@ -418,7 +469,10 @@
   <!-- Modal Incarico -->
   <div id="modal-transaction" class="modal-overlay">
     <div class="modal-content">
-      <div class="modal-header"><h3 class="panel-title" id="trans-modal-title" style="margin:0;">Gestione Incarico</h3><button type="button" class="btn-close-modal" onclick="closeModals()">✕</button></div>
+      <div class="modal-header">
+        <h3 class="panel-title" id="trans-modal-title" style="margin:0;">Gestione Incarico</h3>
+        <button type="button" class="btn-close-modal" onclick="closeModals()">✕</button>
+      </div>
       <form onsubmit="handleTransactionSubmit(event)">
         <input type="hidden" id="trans-id">
         <div class="form-group">
@@ -429,27 +483,56 @@
             <option value="Scaduto">🔴 Scaduto / Ritirato</option>
           </select>
         </div>
-        <div class="form-group"><label class="form-label">Riferimento Immobile</label><input type="text" id="trans-title" class="form-input" required placeholder="es. Bilocale Via Roma"></div>
+        <div class="form-group">
+          <label class="form-label">Riferimento Immobile</label>
+          <input type="text" id="trans-title" class="form-input" required placeholder="es. Bilocale Via Roma">
+        </div>
         <div class="form-row">
-          <div class="form-group"><label class="form-label">Nome Proprietario</label><input type="text" id="trans-owner" class="form-input" placeholder="es. Mario Rossi"></div>
-          <div class="form-group"><label class="form-label">Durata Incarico</label>
-            <select id="trans-duration" class="form-select"><option value="6 mesi">6 Mesi</option><option value="1 anno">1 Anno</option><option value="2 anni">2 Anni</option></select>
+          <div class="form-group">
+            <label class="form-label">Nome Proprietario</label>
+            <input type="text" id="trans-owner" class="form-input" placeholder="es. Mario Rossi">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Durata Incarico</label>
+            <select id="trans-duration" class="form-select">
+              <option value="6 mesi">6 Mesi</option>
+              <option value="1 anno">1 Anno</option>
+              <option value="2 anni">2 Anni</option>
+            </select>
           </div>
         </div>
         <div class="form-row">
-          <div class="form-group"><label class="form-label">Data Acquisizione</label><input type="date" id="trans-acq-date" class="form-input" required></div>
-          <div class="form-group"><label class="form-label">Prezzo Partenza (€)</label><input type="number" id="trans-initial-price" class="form-input" required placeholder="es. 150000"></div>
+          <div class="form-group">
+            <label class="form-label">Data Acquisizione</label>
+            <input type="date" id="trans-acq-date" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Prezzo Partenza (€)</label>
+            <input type="number" id="trans-initial-price" class="form-input" required placeholder="es. 150000">
+          </div>
         </div>
         <div class="form-row">
-          <div class="form-group"><label class="form-label">Provv. Venditore (%)</label><input type="number" step="0.1" id="trans-comm-seller" class="form-input" required placeholder="es. 3"></div>
-          <div class="form-group"><label class="form-label">Provv. Acquirente (%)</label><input type="number" step="0.1" id="trans-comm-buyer" class="form-input" required placeholder="es. 3"></div>
+          <div class="form-group">
+            <label class="form-label">Provv. Venditore (%)</label>
+            <input type="number" step="0.1" id="trans-comm-seller" class="form-input" required placeholder="es. 3">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Provv. Acquirente (%)</label>
+            <input type="number" step="0.1" id="trans-comm-buyer" class="form-input" required placeholder="es. 3">
+          </div>
         </div>
         
         <div id="group-sale-details" style="display:none; background-color: #f0fdf4; padding: 1rem; border-radius: 16px; border: 1px solid #bbf7d0; margin-bottom: 1rem;">
           <h4 style="font-size: 11px; font-weight: 900; text-transform: uppercase; color: #166534; margin-bottom: 10px;">💸 Dettagli Chiusura</h4>
           <div class="form-row">
-            <div class="form-group" style="margin-bottom: 0;"><label class="form-label" style="color: #166534;">Data di Vendita</label><input type="date" id="trans-sale-date" class="form-input" style="border-color: #bbf7d0;"></div>
-            <div class="form-group" style="margin-bottom: 0;"><label class="form-label" style="color: #166534;">Prezzo Finale Chiusura (€)</label><input type="number" id="trans-final-price" class="form-input" style="border-color: #bbf7d0;"></div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" style="color: #166534;">Data di Vendita</label>
+              <input type="date" id="trans-sale-date" class="form-input" style="border-color: #bbf7d0;">
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" style="color: #166534;">Prezzo Finale Chiusura (€)</label>
+              <input type="number" id="trans-final-price" class="form-input" style="border-color: #bbf7d0;">
+            </div>
           </div>
         </div>
         <button type="submit" class="btn-submit">Salva Incarico</button>
@@ -460,12 +543,19 @@
   <!-- Modal Cliente -->
   <div id="modal-buyer" class="modal-overlay">
     <div class="modal-content">
-      <div class="modal-header"><h3 class="panel-title" id="buyer-modal-title" style="margin:0;">Gestione Cliente</h3><button type="button" class="btn-close-modal" onclick="closeModals()">✕</button></div>
+      <div class="modal-header">
+        <h3 class="panel-title" id="buyer-modal-title" style="margin:0;">Gestione Cliente</h3>
+        <button type="button" class="btn-close-modal" onclick="closeModals()">✕</button>
+      </div>
       <form onsubmit="handleBuyerSubmit(event)">
         <input type="hidden" id="buyer-id">
         <div class="form-row">
-          <div class="form-group"><label class="form-label">Nome Cognome</label><input type="text" id="buyer-name" class="form-input" required></div>
-          <div class="form-group"><label class="form-label">Stato</label>
+          <div class="form-group">
+            <label class="form-label">Nome Cognome</label>
+            <input type="text" id="buyer-name" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Stato</label>
             <select id="buyer-status" class="form-select">
               <option value="Attivo">Ricerca Attiva</option>
               <option value="Trovato">Ha comprato</option>
@@ -474,14 +564,29 @@
           </div>
         </div>
         <div class="form-row">
-          <div class="form-group"><label class="form-label">Telefono</label><input type="text" id="buyer-phone" class="form-input" required></div>
-          <div class="form-group"><label class="form-label">Budget Max (€)</label><input type="number" id="buyer-budget" class="form-input"></div>
+          <div class="form-group">
+            <label class="form-label">Telefono</label>
+            <input type="text" id="buyer-phone" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Budget Max (€)</label>
+            <input type="number" id="buyer-budget" class="form-input">
+          </div>
         </div>
         <div class="form-row">
-          <div class="form-group"><label class="form-label">Zona Desiderata</label><input type="text" id="buyer-zone" class="form-input"></div>
-          <div class="form-group"><label class="form-label">Tipologia</label><input type="text" id="buyer-type" class="form-input"></div>
+          <div class="form-group">
+            <label class="form-label">Zona Desiderata</label>
+            <input type="text" id="buyer-zone" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tipologia</label>
+            <input type="text" id="buyer-type" class="form-input">
+          </div>
         </div>
-        <div class="form-group"><label class="form-label">Note (Appunti)</label><textarea id="buyer-notes" rows="2" class="form-textarea"></textarea></div>
+        <div class="form-group">
+          <label class="form-label">Note (Appunti)</label>
+          <textarea id="buyer-notes" rows="2" class="form-textarea"></textarea>
+        </div>
         <button type="submit" class="btn-submit">Salva Cliente</button>
       </form>
     </div>
@@ -493,27 +598,57 @@
     const { createClient } = supabase;
     const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    let properties = []; let uploadedImageUrls = []; let sortableInstance = null;
-    let propToDelete = null; let transToDelete = null; let buyerToDelete = null;
-    let transactions = []; let mainChartInstance = null; let pieChartInstance = null;
+    // Variabili Globali
+    let properties = []; 
+    let uploadedImageUrls = []; 
+    let sortableInstance = null;
+    let propToDelete = null; 
+    let transToDelete = null; 
+    let buyerToDelete = null;
+    let transactions = []; 
+    let mainChartInstance = null; 
+    let pieChartInstance = null;
     let buyers = [];
 
-    // GESTIONE DROPDOWN GLOBALE
+    // --- GESTIONE DROPDOWN GLOBALE (FIX SCROLL TABELLA) ---
     function toggleDropdown(event, id) {
        event.stopPropagation();
        const currentMenu = document.getElementById('dropdown-' + id);
        const isShowing = currentMenu.classList.contains('show');
-       document.querySelectorAll('.dropdown-menu').forEach(menu => menu.classList.remove('show'));
-       if (!isShowing) currentMenu.classList.add('show');
+       
+       // Chiude preventivamente tutti gli altri menu aperti
+       closeAllDropdowns();
+
+       if (!isShowing) {
+           currentMenu.classList.add('show');
+           
+           // Calcola dinamicamente la posizione del pulsante cliccato
+           const btnRect = event.target.getBoundingClientRect();
+           
+           // Applica la posizione assoluta rispetto alla viewport (position: fixed)
+           currentMenu.style.top = (btnRect.bottom + 4) + 'px';
+           currentMenu.style.left = (btnRect.right - currentMenu.offsetWidth) + 'px';
+       }
     }
 
-    window.onclick = function(event) {
-      if (!event.target.matches('.kebab-btn')) {
-        document.querySelectorAll('.dropdown-menu').forEach(menu => menu.classList.remove('show'));
-      }
+    function closeAllDropdowns() {
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            menu.classList.remove('show');
+        });
     }
-    
-    // GESTIONE ACCORDION NOTE
+
+    // Chiusura al click fuori dal menu
+    window.addEventListener('click', function(event) {
+      if (!event.target.matches('.kebab-btn')) {
+        closeAllDropdowns();
+      }
+    });
+
+    // Chiusura automatica del menu se l'utente esegue uno scroll
+    window.addEventListener('scroll', closeAllDropdowns, true);
+
+
+    // --- GESTIONE ACCORDION NOTE ---
     function toggleNotes(id) {
        const notesRow = document.getElementById(`row-buyer-notes-${id}`);
        const notesContent = document.getElementById(`buyer-notes-${id}`);
@@ -529,9 +664,19 @@
        }
     }
 
-    function showLoader(text="Attendere...") { document.getElementById('loader-text').innerText = text; document.getElementById('loader').classList.remove('hidden'); }
-    function hideLoader() { document.getElementById('loader').classList.add('hidden'); }
-    function closeModals() { document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none'); }
+    function showLoader(text="Attendere...") { 
+        document.getElementById('loader-text').innerText = text; 
+        document.getElementById('loader').classList.remove('hidden'); 
+    }
+
+    function hideLoader() { 
+        document.getElementById('loader').classList.add('hidden'); 
+    }
+
+    function closeModals() { 
+        document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none'); 
+    }
+
     function switchTab(tabId, btn) {
       document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -542,59 +687,406 @@
 
     window.addEventListener('DOMContentLoaded', async () => {
       showLoader("Verifica connessione...");
+      
       const mobileToggle = document.getElementById('admin-mobile-toggle');
       const mobileMenu = document.getElementById('admin-mobile-menu');
+      
       if(mobileToggle && mobileMenu) {
-        mobileToggle.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); mobileMenu.classList.toggle('open'); });
-        document.addEventListener('click', (e) => { if (mobileMenu.classList.contains('open') && !mobileMenu.contains(e.target) && !mobileToggle.contains(e.target)) { mobileMenu.classList.remove('open'); } });
+        mobileToggle.addEventListener('click', (e) => { 
+            e.preventDefault(); 
+            e.stopPropagation(); 
+            mobileMenu.classList.toggle('open'); 
+        });
+        document.addEventListener('click', (e) => { 
+            if (mobileMenu.classList.contains('open') && !mobileMenu.contains(e.target) && !mobileToggle.contains(e.target)) { 
+                mobileMenu.classList.remove('open'); 
+            } 
+        });
       }
-      try { const { data: { session } } = await _supabase.auth.getSession(); if (session) { handleAuthSuccess(); } else { showLoginScreen(); } } catch (err) { showLoginScreen(); }
-      _supabase.auth.onAuthStateChange((event, session) => { if (event === 'SIGNED_IN') handleAuthSuccess(); else if (event === 'SIGNED_OUT') showLoginScreen(); });
+
+      try { 
+          const { data: { session } } = await _supabase.auth.getSession(); 
+          if (session) { 
+              handleAuthSuccess(); 
+          } else { 
+              showLoginScreen(); 
+          } 
+      } catch (err) { 
+          showLoginScreen(); 
+      }
+      
+      _supabase.auth.onAuthStateChange((event, session) => { 
+          if (event === 'SIGNED_IN') handleAuthSuccess(); 
+          else if (event === 'SIGNED_OUT') showLoginScreen(); 
+      });
     });
 
-    function showLoginScreen() { document.getElementById('login-screen').style.display = 'block'; document.getElementById('admin-dashboard').style.display = 'none'; document.getElementById('nav-auth').style.display = 'none'; hideLoader(); }
-    async function handleLogin(e) { e.preventDefault(); showLoader("Accesso in corso..."); const email = document.getElementById('login-email').value; const password = document.getElementById('login-password').value; const { error } = await _supabase.auth.signInWithPassword({ email, password }); if (error) { hideLoader(); alert("Errore di accesso: " + error.message); } }
-    async function handleLogout() { showLoader("Uscita..."); await _supabase.auth.signOut(); }
-    async function handleAuthSuccess() { document.getElementById('login-screen').style.display = 'none'; document.getElementById('admin-dashboard').style.display = 'flex'; document.getElementById('nav-auth').style.display = 'flex'; await Promise.all([loadProperties(), loadTransactions(), loadBuyers()]); hideLoader(); }
+    function showLoginScreen() { 
+        document.getElementById('login-screen').style.display = 'block'; 
+        document.getElementById('admin-dashboard').style.display = 'none'; 
+        document.getElementById('nav-auth').style.display = 'none'; 
+        hideLoader(); 
+    }
 
-    /* ===== VETRINA ===== */
-    async function loadProperties() { const { data, error } = await _supabase.from('properties').select('*').order('created_at', { ascending: false }); if(!error && data) { properties = data; renderPropertiesList(); } }
-    async function handleImageSelection(e) { const files = e.target.files; if (!files || files.length === 0) return; showLoader("Caricamento foto in corso..."); for (let i = 0; i < files.length; i++) { try { const url = await compressAndUpload(files[i]); uploadedImageUrls.push(url); } catch (err) { console.error("Errore foto", err); } } renderImagePreviews(); hideLoader(); e.target.value = ""; }
-    function compressAndUpload(file) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.readAsDataURL(file); reader.onload = (event) => { const img = new Image(); img.src = event.target.result; img.onload = () => { const canvas = document.createElement('canvas'); const MAX_W = 1080; let w = img.width; let h = img.height; if (w > MAX_W) { h = Math.round((h * MAX_W) / w); w = MAX_W; } canvas.width = w; canvas.height = h; canvas.getContext('2d').drawImage(img, 0, 0, w, h); canvas.toBlob(async (blob) => { const fileName = `prop_${Date.now()}_${Math.random().toString(36).substring(2,7)}.jpg`; const { error } = await _supabase.storage.from('properties-images').upload(fileName, blob, { contentType: 'image/jpeg' }); if(error) reject(error); const { data: { publicUrl } } = _supabase.storage.from('properties-images').getPublicUrl(fileName); resolve(publicUrl); }, 'image/jpeg', 0.7); }; }; }); }
-    function renderImagePreviews() { const grid = document.getElementById('prop-preview-grid'); grid.innerHTML = ""; uploadedImageUrls.forEach((url, i) => { grid.innerHTML += `<div class="preview-thumb-container"><img src="${url}" class="preview-thumb ${i===0 ? 'cover-img' : ''}">${i===0 ? '<span class="cover-badge">COPERTINA</span>' : `<button type="button" class="btn-set-cover" onclick="event.preventDefault(); uploadedImageUrls.unshift(uploadedImageUrls.splice(${i},1)[0]); renderImagePreviews();">⭐</button>`}<button type="button" class="btn-remove-thumb" onclick="event.preventDefault(); uploadedImageUrls.splice(${i},1); renderImagePreviews();">✕</button></div>`; }); if(sortableInstance) sortableInstance.destroy(); sortableInstance = new Sortable(grid, { animation: 150, ghostClass: 'sortable-ghost', onEnd: (evt) => { uploadedImageUrls.splice(evt.newIndex, 0, uploadedImageUrls.splice(evt.oldIndex, 1)[0]); renderImagePreviews(); } }); }
-    async function handlePropSubmit(e) { e.preventDefault(); if(uploadedImageUrls.length===0) return alert("Inserisci almeno una foto!"); showLoader("Salvataggio Vetrina..."); const id = document.getElementById('prop-id').value; const payload = { title: document.getElementById('prop-title').value, status: document.getElementById('prop-status').value, price: Number(document.getElementById('prop-price').value), zone: document.getElementById('prop-zone').value, property_type: document.getElementById('prop-type').value, rooms: Number(document.getElementById('prop-rooms').value), bathrooms: Number(document.getElementById('prop-bathrooms').value), sqm: Number(document.getElementById('prop-sqm').value) || null, description: document.getElementById('prop-desc').value, has_parking: document.getElementById('prop-parking').checked, is_featured: document.getElementById('prop-featured').checked, images: uploadedImageUrls }; const res = id ? await _supabase.from('properties').update(payload).eq('id', id) : await _supabase.from('properties').insert([payload]); if(res.error) alert("Errore: " + res.error.message); else { cancelPropEdit(); await loadProperties(); } hideLoader(); }
-    function startPropEdit(id) { const p = properties.find(x => x.id == id); if(!p) return; document.getElementById('prop-id').value = p.id; document.getElementById('prop-title').value = p.title; document.getElementById('prop-status').value = p.status; document.getElementById('prop-price').value = p.price; document.getElementById('prop-zone').value = p.zone; document.getElementById('prop-type').value = p.property_type; document.getElementById('prop-rooms').value = p.rooms; document.getElementById('prop-bathrooms').value = p.bathrooms; document.getElementById('prop-sqm').value = p.sqm||''; document.getElementById('prop-desc').value = p.description; document.getElementById('prop-parking').checked = p.has_parking; document.getElementById('prop-featured').checked = p.is_featured; uploadedImageUrls = [...p.images]; renderImagePreviews(); document.getElementById('prop-form-title').innerText = "Modifica Annuncio"; document.getElementById('prop-cancel-btn').classList.remove('hidden'); window.scrollTo({top:0, behavior:'smooth'}); }
-    function cancelPropEdit() { document.getElementById('prop-id').value = ""; document.getElementById('prop-form-title').innerText = "Nuovo Annuncio (Vetrina)"; document.getElementById('prop-cancel-btn').classList.add('hidden'); document.querySelector('#tab-vetrina form').reset(); uploadedImageUrls = []; renderImagePreviews(); }
-    function openDeletePropModal(id) { propToDelete = id; document.getElementById('modal-delete-prop').style.display = 'flex'; }
-    document.getElementById('confirm-delete-prop-btn').onclick = async () => { if(!propToDelete) return; showLoader("Eliminazione..."); await _supabase.from('properties').delete().eq('id', propToDelete); propToDelete = null; closeModals(); await loadProperties(); hideLoader(); };
-    function renderPropertiesList() { const search = document.getElementById('prop-search').value.toLowerCase(); const list = document.getElementById('properties-list'); list.innerHTML = ""; const filtered = properties.filter(p => p.title.toLowerCase().includes(search) || p.zone.toLowerCase().includes(search)); document.getElementById('prop-count-badge').innerText = filtered.length; filtered.forEach(p => { list.innerHTML += `<div class="item-row"><div class="item-info"><img src="${p.images[0]||'https://via.placeholder.com/80'}" class="item-thumbnail"><div class="item-texts"><p class="item-title">${p.title}</p><p class="item-details-text">${p.zone} • ${p.property_type}</p><div style="display:flex; gap:6px; margin-top:4px;"><span class="status-badge ${p.status==='Vendita'?'bg-blue':'bg-green'}">${p.status}</span>${p.is_featured ? '<span class="status-badge bg-yellow">★ Vetrina</span>' : ''}</div></div></div><div class="item-actions-box"><span style="font-weight:900;">€${p.price.toLocaleString('it-IT')}</span><div class="action-buttons"><button onclick="startPropEdit('${p.id}')" class="btn-action edit" title="Modifica">✏️</button><button onclick="openDeletePropModal('${p.id}')" class="btn-action delete" title="Elimina">🗑️</button></div></div></div>`; }); }
+    async function handleLogin(e) { 
+        e.preventDefault(); 
+        showLoader("Accesso in corso..."); 
+        const email = document.getElementById('login-email').value; 
+        const password = document.getElementById('login-password').value; 
+        const { error } = await _supabase.auth.signInWithPassword({ email, password }); 
+        if (error) { 
+            hideLoader(); 
+            alert("Errore di accesso: " + error.message); 
+        } 
+    }
 
-    /* ===== INCARICHI & STATS ===== */
-    async function loadTransactions() { const { data, error } = await _supabase.from('transactions').select('*').order('acquisition_date', { ascending: false }); if(!error) { transactions = data || []; populateYearDropdown(); renderTransactionsTable(); updateDashboardStats(); } }
-    function populateYearDropdown() { const sel = document.getElementById('stats-year'); const years = new Set([new Date().getFullYear()]); transactions.forEach(t => { years.add(new Date(t.acquisition_date).getFullYear()); if(t.sale_date) years.add(new Date(t.sale_date).getFullYear()); }); const sorted = Array.from(years).sort((a,b)=>b-a); const curr = sel.value || new Date().getFullYear().toString(); sel.innerHTML = ""; sorted.forEach(y => { const opt = document.createElement('option'); opt.value = y; opt.innerText = y; sel.appendChild(opt); }); sel.value = curr; }
-    function updateDashboardStats() { const yr = parseInt(document.getElementById('stats-year').value); if(!yr) return; let activeOggi = 0; let salesYr = 0; let revYr = 0; let totalDays = 0; let acqByM = Array(12).fill(0); let salesByM = Array(12).fill(0); let revByM = Array(12).fill(0); let pieS = 0; let pieA = 0; let pieE = 0; transactions.forEach(t => { if(t.status === 'In Vendita') activeOggi++; const dAcq = new Date(t.acquisition_date); if(dAcq.getFullYear() === yr) { acqByM[dAcq.getMonth()]++; if(t.status==='In Vendita') pieA++; else if(t.status==='Venduto') pieS++; else pieE++; } if(t.status === 'Venduto' && t.sale_date && t.final_price) { const dSale = new Date(t.sale_date); if(dSale.getFullYear() === yr) { salesYr++; salesByM[dSale.getMonth()]++; const pV = parseFloat(t.commission_seller_perc)||0; const pA = parseFloat(t.commission_buyer_perc)||0; const incasso = ((t.final_price * pV)/100) + ((t.final_price * pA)/100); revYr += incasso; revByM[dSale.getMonth()] += incasso; totalDays += Math.ceil((dSale - dAcq) / (1000*60*60*24)); } } }); document.getElementById('stat-active').innerText = activeOggi; document.getElementById('stat-sold').innerText = salesYr; document.getElementById('stat-revenue').innerText = `€${revYr.toLocaleString('it-IT')}`; document.getElementById('stat-days').innerText = salesYr > 0 ? `${Math.round(totalDays/salesYr)} gg` : '0 gg'; renderCharts(acqByM, salesByM, revByM, pieS, pieA, pieE); }
-    function renderCharts(acqD, saleD, revD, pS, pA, pE) { const mesi = ['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic']; if(mainChartInstance) mainChartInstance.destroy(); mainChartInstance = new Chart(document.getElementById('mainChart'), { type: 'bar', data: { labels: mesi, datasets: [ { type:'line', label:'Fatturato Netto (€)', data:revD, borderColor:'#0044FF', backgroundColor:'rgba(0,68,255,0.1)', borderWidth:3, fill:true, yAxisID:'yR', tension:0.4 }, { type:'bar', label:'Incarichi Presi', data:acqD, backgroundColor:'#FFD90F', borderRadius:4, yAxisID:'yV' }, { type:'bar', label:'Immobili Venduti', data:saleD, backgroundColor:'#10b981', borderRadius:4, yAxisID:'yV' } ] }, options: { responsive:true, maintainAspectRatio:false, interaction:{mode:'index', intersect:false}, scales: { yV:{type:'linear', position:'left', title:{display:true,text:'Volumi (N. Case)'}, min:0, ticks:{stepSize:1}}, yR:{type:'linear', position:'right', title:{display:true,text:'€ Incassati'}, grid:{drawOnChartArea:false}, min:0} } } }); if(pieChartInstance) pieChartInstance.destroy(); pieChartInstance = new Chart(document.getElementById('pieChart'), { type: 'doughnut', data: { labels: ['Venduti','In Vendita','Scaduti/Ritirati'], datasets: [{ data: [pS, pA, pE], backgroundColor: ['#10b981','#0044FF','#ef4444'], borderWidth:0 }] }, options: { responsive:true, maintainAspectRatio:false, cutout:'70%', plugins:{legend:{position:'bottom'}} } }); }
+    async function handleLogout() { 
+        showLoader("Uscita..."); 
+        await _supabase.auth.signOut(); 
+    }
+
+    async function handleAuthSuccess() { 
+        document.getElementById('login-screen').style.display = 'none'; 
+        document.getElementById('admin-dashboard').style.display = 'flex'; 
+        document.getElementById('nav-auth').style.display = 'flex'; 
+        await Promise.all([loadProperties(), loadTransactions(), loadBuyers()]); 
+        hideLoader(); 
+    }
+
+    /* =======================================================
+       TAB 1: VETRINA
+       ======================================================= */
+    async function loadProperties() { 
+        const { data, error } = await _supabase.from('properties').select('*').order('created_at', { ascending: false }); 
+        if(!error && data) { 
+            properties = data; 
+            renderPropertiesList(); 
+        } 
+    }
+
+    async function handleImageSelection(e) { 
+        const files = e.target.files; 
+        if (!files || files.length === 0) return; 
+        showLoader("Caricamento foto in corso..."); 
+        for (let i = 0; i < files.length; i++) { 
+            try { 
+                const url = await compressAndUpload(files[i]); 
+                uploadedImageUrls.push(url); 
+            } catch (err) { 
+                console.error("Errore foto", err); 
+            } 
+        } 
+        renderImagePreviews(); 
+        hideLoader(); 
+        e.target.value = ""; 
+    }
+
+    function compressAndUpload(file) { 
+        return new Promise((resolve, reject) => { 
+            const reader = new FileReader(); 
+            reader.readAsDataURL(file); 
+            reader.onload = (event) => { 
+                const img = new Image(); 
+                img.src = event.target.result; 
+                img.onload = () => { 
+                    const canvas = document.createElement('canvas'); 
+                    const MAX_W = 1080; 
+                    let w = img.width; 
+                    let h = img.height; 
+                    if (w > MAX_W) { 
+                        h = Math.round((h * MAX_W) / w); 
+                        w = MAX_W; 
+                    } 
+                    canvas.width = w; 
+                    canvas.height = h; 
+                    canvas.getContext('2d').drawImage(img, 0, 0, w, h); 
+                    canvas.toBlob(async (blob) => { 
+                        const fileName = `prop_${Date.now()}_${Math.random().toString(36).substring(2,7)}.jpg`; 
+                        const { error } = await _supabase.storage.from('properties-images').upload(fileName, blob, { contentType: 'image/jpeg' }); 
+                        if(error) reject(error); 
+                        const { data: { publicUrl } } = _supabase.storage.from('properties-images').getPublicUrl(fileName); 
+                        resolve(publicUrl); 
+                    }, 'image/jpeg', 0.7); 
+                }; 
+            }; 
+        }); 
+    }
+
+    function renderImagePreviews() { 
+        const grid = document.getElementById('prop-preview-grid'); 
+        grid.innerHTML = ""; 
+        uploadedImageUrls.forEach((url, i) => { 
+            grid.innerHTML += `
+            <div class="preview-thumb-container">
+                <img src="${url}" class="preview-thumb ${i===0 ? 'cover-img' : ''}">
+                ${i===0 ? '<span class="cover-badge">COPERTINA</span>' : `<button type="button" class="btn-set-cover" onclick="event.preventDefault(); uploadedImageUrls.unshift(uploadedImageUrls.splice(${i},1)[0]); renderImagePreviews();">⭐</button>`}
+                <button type="button" class="btn-remove-thumb" onclick="event.preventDefault(); uploadedImageUrls.splice(${i},1); renderImagePreviews();">✕</button>
+            </div>`; 
+        }); 
+        if(sortableInstance) sortableInstance.destroy(); 
+        sortableInstance = new Sortable(grid, { 
+            animation: 150, 
+            ghostClass: 'sortable-ghost', 
+            onEnd: (evt) => { 
+                uploadedImageUrls.splice(evt.newIndex, 0, uploadedImageUrls.splice(evt.oldIndex, 1)[0]); 
+                renderImagePreviews(); 
+            } 
+        }); 
+    }
+
+    async function handlePropSubmit(e) { 
+        e.preventDefault(); 
+        if(uploadedImageUrls.length===0) return alert("Inserisci almeno una foto!"); 
+        showLoader("Salvataggio Vetrina..."); 
+        const id = document.getElementById('prop-id').value; 
+        const payload = { 
+            title: document.getElementById('prop-title').value, 
+            status: document.getElementById('prop-status').value, 
+            price: Number(document.getElementById('prop-price').value), 
+            zone: document.getElementById('prop-zone').value, 
+            property_type: document.getElementById('prop-type').value, 
+            rooms: Number(document.getElementById('prop-rooms').value), 
+            bathrooms: Number(document.getElementById('prop-bathrooms').value), 
+            sqm: Number(document.getElementById('prop-sqm').value) || null, 
+            description: document.getElementById('prop-desc').value, 
+            has_parking: document.getElementById('prop-parking').checked, 
+            is_featured: document.getElementById('prop-featured').checked, 
+            images: uploadedImageUrls 
+        }; 
+        const res = id ? await _supabase.from('properties').update(payload).eq('id', id) : await _supabase.from('properties').insert([payload]); 
+        
+        if(res.error) {
+            alert("Errore: " + res.error.message); 
+        } else { 
+            cancelPropEdit(); 
+            await loadProperties(); 
+        } 
+        hideLoader(); 
+    }
+
+    function startPropEdit(id) { 
+        const p = properties.find(x => x.id == id); 
+        if(!p) return; 
+        document.getElementById('prop-id').value = p.id; 
+        document.getElementById('prop-title').value = p.title; 
+        document.getElementById('prop-status').value = p.status; 
+        document.getElementById('prop-price').value = p.price; 
+        document.getElementById('prop-zone').value = p.zone; 
+        document.getElementById('prop-type').value = p.property_type; 
+        document.getElementById('prop-rooms').value = p.rooms; 
+        document.getElementById('prop-bathrooms').value = p.bathrooms; 
+        document.getElementById('prop-sqm').value = p.sqm||''; 
+        document.getElementById('prop-desc').value = p.description; 
+        document.getElementById('prop-parking').checked = p.has_parking; 
+        document.getElementById('prop-featured').checked = p.is_featured; 
+        uploadedImageUrls = [...p.images]; 
+        renderImagePreviews(); 
+        document.getElementById('prop-form-title').innerText = "Modifica Annuncio"; 
+        document.getElementById('prop-cancel-btn').classList.remove('hidden'); 
+        window.scrollTo({top:0, behavior:'smooth'}); 
+    }
+
+    function cancelPropEdit() { 
+        document.getElementById('prop-id').value = ""; 
+        document.getElementById('prop-form-title').innerText = "Nuovo Annuncio (Vetrina)"; 
+        document.getElementById('prop-cancel-btn').classList.add('hidden'); 
+        document.querySelector('#tab-vetrina form').reset(); 
+        uploadedImageUrls = []; 
+        renderImagePreviews(); 
+    }
+
+    function openDeletePropModal(id) { 
+        propToDelete = id; 
+        document.getElementById('modal-delete-prop').style.display = 'flex'; 
+    }
+
+    document.getElementById('confirm-delete-prop-btn').onclick = async () => { 
+        if(!propToDelete) return; 
+        showLoader("Eliminazione..."); 
+        await _supabase.from('properties').delete().eq('id', propToDelete); 
+        propToDelete = null; 
+        closeModals(); 
+        await loadProperties(); 
+        hideLoader(); 
+    };
+
+    function renderPropertiesList() { 
+        const search = document.getElementById('prop-search').value.toLowerCase(); 
+        const list = document.getElementById('properties-list'); 
+        list.innerHTML = ""; 
+        const filtered = properties.filter(p => p.title.toLowerCase().includes(search) || p.zone.toLowerCase().includes(search)); 
+        document.getElementById('prop-count-badge').innerText = filtered.length; 
+        
+        filtered.forEach(p => { 
+            list.innerHTML += `
+            <div class="item-row">
+                <div class="item-info">
+                    <img src="${p.images[0]||'https://via.placeholder.com/80'}" class="item-thumbnail">
+                    <div class="item-texts">
+                        <p class="item-title">${p.title}</p>
+                        <p class="item-details-text">${p.zone} • ${p.property_type}</p>
+                        <div style="display:flex; gap:6px; margin-top:4px;">
+                            <span class="status-badge ${p.status==='Vendita'?'bg-blue':'bg-green'}">${p.status}</span>
+                            ${p.is_featured ? '<span class="status-badge bg-yellow">★ Vetrina</span>' : ''}
+                        </div>
+                    </div>
+                </div>
+                <div class="item-actions-box">
+                    <span style="font-weight:900;">€${p.price.toLocaleString('it-IT')}</span>
+                    <div class="action-buttons">
+                        <button onclick="startPropEdit('${p.id}')" class="btn-action edit" title="Modifica">✏️</button>
+                        <button onclick="openDeletePropModal('${p.id}')" class="btn-action delete" title="Elimina">🗑️</button>
+                    </div>
+                </div>
+            </div>`; 
+        }); 
+    }
+
+
+    /* =======================================================
+       TAB 2: INCARICHI & STATISTICHE
+       ======================================================= */
+    async function loadTransactions() { 
+        const { data, error } = await _supabase.from('transactions').select('*').order('acquisition_date', { ascending: false }); 
+        if(!error) { 
+            transactions = data || []; 
+            populateYearDropdown(); 
+            renderTransactionsTable(); 
+            updateDashboardStats(); 
+        } 
+    }
+
+    function populateYearDropdown() { 
+        const sel = document.getElementById('stats-year'); 
+        const years = new Set([new Date().getFullYear()]); 
+        transactions.forEach(t => { 
+            years.add(new Date(t.acquisition_date).getFullYear()); 
+            if(t.sale_date) years.add(new Date(t.sale_date).getFullYear()); 
+        }); 
+        const sorted = Array.from(years).sort((a,b)=>b-a); 
+        const curr = sel.value || new Date().getFullYear().toString(); 
+        sel.innerHTML = ""; 
+        sorted.forEach(y => { 
+            const opt = document.createElement('option'); 
+            opt.value = y; 
+            opt.innerText = y; 
+            sel.appendChild(opt); 
+        }); 
+        sel.value = curr; 
+    }
+
+    function updateDashboardStats() { 
+        const yr = parseInt(document.getElementById('stats-year').value); 
+        if(!yr) return; 
+        
+        let activeOggi = 0; 
+        let salesYr = 0; 
+        let revYr = 0; 
+        let totalDays = 0; 
+        let acqByM = Array(12).fill(0); 
+        let salesByM = Array(12).fill(0); 
+        let revByM = Array(12).fill(0); 
+        let pieS = 0; 
+        let pieA = 0; 
+        let pieE = 0; 
+        
+        transactions.forEach(t => { 
+            if(t.status === 'In Vendita') activeOggi++; 
+            const dAcq = new Date(t.acquisition_date); 
+            
+            if(dAcq.getFullYear() === yr) { 
+                acqByM[dAcq.getMonth()]++; 
+                if(t.status==='In Vendita') pieA++; 
+                else if(t.status==='Venduto') pieS++; 
+                else pieE++; 
+            } 
+            
+            if(t.status === 'Venduto' && t.sale_date && t.final_price) { 
+                const dSale = new Date(t.sale_date); 
+                if(dSale.getFullYear() === yr) { 
+                    salesYr++; 
+                    salesByM[dSale.getMonth()]++; 
+                    const pV = parseFloat(t.commission_seller_perc)||0; 
+                    const pA = parseFloat(t.commission_buyer_perc)||0; 
+                    const incasso = ((t.final_price * pV)/100) + ((t.final_price * pA)/100); 
+                    revYr += incasso; 
+                    revByM[dSale.getMonth()] += incasso; 
+                    totalDays += Math.ceil((dSale - dAcq) / (1000*60*60*24)); 
+                } 
+            } 
+        }); 
+        
+        document.getElementById('stat-active').innerText = activeOggi; 
+        document.getElementById('stat-sold').innerText = salesYr; 
+        document.getElementById('stat-revenue').innerText = `€${revYr.toLocaleString('it-IT')}`; 
+        document.getElementById('stat-days').innerText = salesYr > 0 ? `${Math.round(totalDays/salesYr)} gg` : '0 gg'; 
+        
+        renderCharts(acqByM, salesByM, revByM, pieS, pieA, pieE); 
+    }
+
+    function renderCharts(acqD, saleD, revD, pS, pA, pE) { 
+        const mesi = ['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic']; 
+        if(mainChartInstance) mainChartInstance.destroy(); 
+        mainChartInstance = new Chart(document.getElementById('mainChart'), { 
+            type: 'bar', 
+            data: { 
+                labels: mesi, 
+                datasets: [ 
+                    { type:'line', label:'Fatturato Netto (€)', data:revD, borderColor:'#0044FF', backgroundColor:'rgba(0,68,255,0.1)', borderWidth:3, fill:true, yAxisID:'yR', tension:0.4 }, 
+                    { type:'bar', label:'Incarichi Presi', data:acqD, backgroundColor:'#FFD90F', borderRadius:4, yAxisID:'yV' }, 
+                    { type:'bar', label:'Immobili Venduti', data:saleD, backgroundColor:'#10b981', borderRadius:4, yAxisID:'yV' } 
+                ] 
+            }, 
+            options: { 
+                responsive:true, 
+                maintainAspectRatio:false, 
+                interaction:{mode:'index', intersect:false}, 
+                scales: { 
+                    yV:{type:'linear', position:'left', title:{display:true,text:'Volumi (N. Case)'}, min:0, ticks:{stepSize:1}}, 
+                    yR:{type:'linear', position:'right', title:{display:true,text:'€ Incassati'}, grid:{drawOnChartArea:false}, min:0} 
+                } 
+            } 
+        }); 
+        
+        if(pieChartInstance) pieChartInstance.destroy(); 
+        pieChartInstance = new Chart(document.getElementById('pieChart'), { 
+            type: 'doughnut', 
+            data: { 
+                labels: ['Venduti','In Vendita','Scaduti/Ritirati'], 
+                datasets: [{ data: [pS, pA, pE], backgroundColor: ['#10b981','#0044FF','#ef4444'], borderWidth:0 }] 
+            }, 
+            options: { 
+                responsive:true, 
+                maintainAspectRatio:false, 
+                cutout:'70%', 
+                plugins:{legend:{position:'bottom'}} 
+            } 
+        }); 
+    }
     
     function renderTransactionsTable() {
       const s = document.getElementById('trans-search').value.toLowerCase();
-      const list = document.getElementById('transactions-list'); list.innerHTML = "";
-      const filtered = transactions.filter(t => t.property_title.toLowerCase().includes(s) || (t.owner_name||'').toLowerCase().includes(s));
+      const list = document.getElementById('transactions-list'); 
+      list.innerHTML = "";
       
+      const filtered = transactions.filter(t => t.property_title.toLowerCase().includes(s) || (t.owner_name||'').toLowerCase().includes(s));
       const today = new Date();
       
       filtered.forEach(t => {
         let b = '';
-        let acq = new Date(t.acquisition_date); acq.setHours(0,0,0,0);
+        let acq = new Date(t.acquisition_date); 
+        acq.setHours(0,0,0,0);
         let days = 0;
         
-        // Logica Scadenze (Pallino arancione per 3 mesi)
+        // Logica Scadenze
         if (t.status === 'Venduto') {
             b = '<span class="status-badge bg-green">🤝 Venduto</span>';
             if(t.sale_date) days = Math.ceil((new Date(t.sale_date) - acq)/86400000);
         } else if (t.status === 'Scaduto') {
             b = '<span class="status-badge bg-red">🔴 Scaduto</span>';
             days = Math.ceil((today - acq)/86400000);
-        } else { // In Vendita
+        } else { 
+            // In Vendita
             days = Math.ceil((today - acq)/86400000);
             
             // Calcolo Data Scadenza
@@ -606,7 +1098,6 @@
             if (daysLeft < 0) {
                 b = `<span class="status-badge bg-red" title="Scaduto il ${exp.toLocaleDateString('it-IT')}">🔴 Scaduto (${Math.abs(daysLeft)} gg fa)</span>`;
             } else if (daysLeft <= 90) {
-                // Mancano meno di 3 mesi
                 b = `<span class="status-badge bg-orange" title="Scade il ${exp.toLocaleDateString('it-IT')}">🟠 Scade tra ${daysLeft} gg</span>`;
             } else {
                 b = '<span class="status-badge bg-blue">🟢 In Corso</span>';
@@ -622,13 +1113,13 @@
           cStr = `<b style="color:#10b981">Netto: €${tot.toLocaleString('it-IT')}</b>`;
         }
 
-        list.innerHTML += `<tr>
+        list.innerHTML += `
+        <tr>
           <td>${b}</td>
           <td style="font-weight:600;">${t.property_title}<br><span style="font-size:10px;color:gray;">Prop: ${t.owner_name||'-'}</span></td>
           <td>Acq: <b>${acq.toLocaleDateString('it-IT')}</b> <span style="font-size:10px;color:gray;">(${t.assignment_duration||'-'})</span><br>Giorni: <b style="color:var(--brand-blue)">${days>=0?days:0} gg</b></td>
           <td>${pStr}<br><span style="font-size:11px;">Provv: ${cStr}</span></td>
           <td style="text-align:center;">
-             <!-- Kebab Menu Incarichi -->
              <div class="dropdown-container">
                 <button class="kebab-btn" onclick="toggleDropdown(event, 'trans-${t.id}')">⋮</button>
                 <div class="dropdown-menu" id="dropdown-trans-${t.id}">
@@ -641,18 +1132,124 @@
       });
     }
 
-    function toggleTransactionFields() { const s = document.getElementById('trans-status').value; const grp = document.getElementById('group-sale-details'); if(s === 'Venduto') { grp.style.display = 'block'; document.getElementById('trans-sale-date').required = true; document.getElementById('trans-final-price').required = true; if(!document.getElementById('trans-sale-date').value) document.getElementById('trans-sale-date').value = new Date().toISOString().split('T')[0]; if(!document.getElementById('trans-final-price').value) document.getElementById('trans-final-price').value = document.getElementById('trans-initial-price').value; } else { grp.style.display = 'none'; document.getElementById('trans-sale-date').required = false; document.getElementById('trans-final-price').required = false; } }
-    function openTransactionModal() { document.getElementById('trans-id').value = ""; document.querySelector('#modal-transaction form').reset(); document.getElementById('trans-status').value = "In Vendita"; document.getElementById('trans-acq-date').value = new Date().toISOString().split('T')[0]; document.getElementById('trans-duration').value = "6 mesi"; document.getElementById('trans-modal-title').innerText = "Nuovo Incarico"; toggleTransactionFields(); document.getElementById('modal-transaction').style.display = 'flex'; }
-    function editTransaction(id) { const t = transactions.find(x => x.id == id); if(!t) return; document.getElementById('trans-id').value = t.id; document.getElementById('trans-status').value = t.status; document.getElementById('trans-title').value = t.property_title; document.getElementById('trans-owner').value = t.owner_name||""; document.getElementById('trans-duration').value = t.assignment_duration||"6 mesi"; document.getElementById('trans-acq-date').value = t.acquisition_date; document.getElementById('trans-initial-price').value = t.initial_price||""; document.getElementById('trans-comm-seller').value = t.commission_seller_perc||""; document.getElementById('trans-comm-buyer').value = t.commission_buyer_perc||""; document.getElementById('trans-sale-date').value = t.sale_date||""; document.getElementById('trans-final-price').value = t.final_price||""; document.getElementById('trans-modal-title').innerText = "Modifica Incarico"; toggleTransactionFields(); document.getElementById('modal-transaction').style.display = 'flex'; }
-    async function handleTransactionSubmit(e) { e.preventDefault(); showLoader("Salvataggio Incarico..."); const id = document.getElementById('trans-id').value; const status = document.getElementById('trans-status').value; const payload = { status: status, property_title: document.getElementById('trans-title').value, owner_name: document.getElementById('trans-owner').value, assignment_duration: document.getElementById('trans-duration').value, acquisition_date: document.getElementById('trans-acq-date').value, initial_price: Number(document.getElementById('trans-initial-price').value), commission_seller_perc: Number(document.getElementById('trans-comm-seller').value), commission_buyer_perc: Number(document.getElementById('trans-comm-buyer').value), sale_date: status === 'Venduto' ? document.getElementById('trans-sale-date').value : null, final_price: status === 'Venduto' ? Number(document.getElementById('trans-final-price').value) : null }; try { const res = id ? await _supabase.from('transactions').update(payload).eq('id', id) : await _supabase.from('transactions').insert([payload]); if(res.error) { throw res.error; } closeModals(); await loadTransactions(); } catch (err) { alert("ERRORE SALVATAGGIO:\n" + err.message); } finally { hideLoader(); } }
-    function openDeleteTransModal(id) { transToDelete = id; document.getElementById('modal-delete-trans').style.display = 'flex'; }
-    document.getElementById('confirm-delete-trans-btn').onclick = async () => { if(!transToDelete) return; showLoader("Eliminazione..."); await _supabase.from('transactions').delete().eq('id', transToDelete); transToDelete = null; closeModals(); await loadTransactions(); hideLoader(); };
+    function toggleTransactionFields() { 
+        const s = document.getElementById('trans-status').value; 
+        const grp = document.getElementById('group-sale-details'); 
+        
+        if(s === 'Venduto') { 
+            grp.style.display = 'block'; 
+            document.getElementById('trans-sale-date').required = true; 
+            document.getElementById('trans-final-price').required = true; 
+            
+            if(!document.getElementById('trans-sale-date').value) {
+                document.getElementById('trans-sale-date').value = new Date().toISOString().split('T')[0]; 
+            }
+            if(!document.getElementById('trans-final-price').value) {
+                document.getElementById('trans-final-price').value = document.getElementById('trans-initial-price').value; 
+            }
+        } else { 
+            grp.style.display = 'none'; 
+            document.getElementById('trans-sale-date').required = false; 
+            document.getElementById('trans-final-price').required = false; 
+        } 
+    }
 
-    /* ===== RUBRICA ===== */
-    async function loadBuyers() { const { data, error } = await _supabase.from('buyers').select('*').order('created_at', { ascending: false }); if(!error) { buyers = data || []; renderBuyersList(); } }
+    function openTransactionModal() { 
+        document.getElementById('trans-id').value = ""; 
+        document.querySelector('#modal-transaction form').reset(); 
+        document.getElementById('trans-status').value = "In Vendita"; 
+        document.getElementById('trans-acq-date').value = new Date().toISOString().split('T')[0]; 
+        document.getElementById('trans-duration').value = "6 mesi"; 
+        document.getElementById('trans-modal-title').innerText = "Nuovo Incarico"; 
+        toggleTransactionFields(); 
+        document.getElementById('modal-transaction').style.display = 'flex'; 
+    }
+
+    function editTransaction(id) { 
+        const t = transactions.find(x => x.id == id); 
+        if(!t) return; 
+        
+        document.getElementById('trans-id').value = t.id; 
+        document.getElementById('trans-status').value = t.status; 
+        document.getElementById('trans-title').value = t.property_title; 
+        document.getElementById('trans-owner').value = t.owner_name||""; 
+        document.getElementById('trans-duration').value = t.assignment_duration||"6 mesi"; 
+        document.getElementById('trans-acq-date').value = t.acquisition_date; 
+        document.getElementById('trans-initial-price').value = t.initial_price||""; 
+        document.getElementById('trans-comm-seller').value = t.commission_seller_perc||""; 
+        document.getElementById('trans-comm-buyer').value = t.commission_buyer_perc||""; 
+        document.getElementById('trans-sale-date').value = t.sale_date||""; 
+        document.getElementById('trans-final-price').value = t.final_price||""; 
+        document.getElementById('trans-modal-title').innerText = "Modifica Incarico"; 
+        
+        toggleTransactionFields(); 
+        document.getElementById('modal-transaction').style.display = 'flex'; 
+    }
+
+    async function handleTransactionSubmit(e) { 
+        e.preventDefault(); 
+        showLoader("Salvataggio Incarico..."); 
+        
+        const id = document.getElementById('trans-id').value; 
+        const status = document.getElementById('trans-status').value; 
+        
+        const payload = { 
+            status: status, 
+            property_title: document.getElementById('trans-title').value, 
+            owner_name: document.getElementById('trans-owner').value, 
+            assignment_duration: document.getElementById('trans-duration').value, 
+            acquisition_date: document.getElementById('trans-acq-date').value, 
+            initial_price: Number(document.getElementById('trans-initial-price').value), 
+            commission_seller_perc: Number(document.getElementById('trans-comm-seller').value), 
+            commission_buyer_perc: Number(document.getElementById('trans-comm-buyer').value), 
+            sale_date: status === 'Venduto' ? document.getElementById('trans-sale-date').value : null, 
+            final_price: status === 'Venduto' ? Number(document.getElementById('trans-final-price').value) : null 
+        }; 
+        
+        try { 
+            const res = id ? await _supabase.from('transactions').update(payload).eq('id', id) : await _supabase.from('transactions').insert([payload]); 
+            if(res.error) { throw res.error; } 
+            
+            closeModals(); 
+            await loadTransactions(); 
+        } catch (err) { 
+            alert("ERRORE SALVATAGGIO:\n" + err.message); 
+        } finally { 
+            hideLoader(); 
+        } 
+    }
+
+    function openDeleteTransModal(id) { 
+        transToDelete = id; 
+        document.getElementById('modal-delete-trans').style.display = 'flex'; 
+    }
+
+    document.getElementById('confirm-delete-trans-btn').onclick = async () => { 
+        if(!transToDelete) return; 
+        showLoader("Eliminazione..."); 
+        await _supabase.from('transactions').delete().eq('id', transToDelete); 
+        transToDelete = null; 
+        closeModals(); 
+        await loadTransactions(); 
+        hideLoader(); 
+    };
+
+    /* =======================================================
+       TAB 3: RUBRICA CRM
+       ======================================================= */
+    async function loadBuyers() { 
+        const { data, error } = await _supabase.from('buyers').select('*').order('created_at', { ascending: false }); 
+        if(!error) { 
+            buyers = data || []; 
+            renderBuyersList(); 
+        } 
+    }
+
     function renderBuyersList() {
       const s = document.getElementById('buyer-search').value.toLowerCase();
-      const list = document.getElementById('buyers-list'); list.innerHTML = "";
+      const list = document.getElementById('buyers-list'); 
+      list.innerHTML = "";
+      
       const filtered = buyers.filter(b => b.full_name.toLowerCase().includes(s) || (b.desired_zone||'').toLowerCase().includes(s));
       
       filtered.forEach(b => {
@@ -692,11 +1289,70 @@
       });
     }
 
-    function openBuyerModal() { document.getElementById('buyer-id').value = ""; document.querySelector('#modal-buyer form').reset(); document.getElementById('buyer-status').value = "Attivo"; document.getElementById('buyer-modal-title').innerText = "Nuovo Cliente"; document.getElementById('modal-buyer').style.display = 'flex'; }
-    function editBuyer(id) { const b = buyers.find(x => x.id == id); if(!b) return; document.getElementById('buyer-id').value = b.id; document.getElementById('buyer-name').value = b.full_name; document.getElementById('buyer-status').value = b.status; document.getElementById('buyer-phone').value = b.phone; document.getElementById('buyer-budget').value = b.max_budget||""; document.getElementById('buyer-zone').value = b.desired_zone||""; document.getElementById('buyer-type').value = b.desired_type||""; document.getElementById('buyer-notes').value = b.notes||""; document.getElementById('buyer-modal-title').innerText = "Modifica Cliente"; document.getElementById('modal-buyer').style.display = 'flex'; }
-    async function handleBuyerSubmit(e) { e.preventDefault(); showLoader("Salvataggio Cliente..."); const id = document.getElementById('buyer-id').value; const payload = { full_name: document.getElementById('buyer-name').value, status: document.getElementById('buyer-status').value, phone: document.getElementById('buyer-phone').value, max_budget: Number(document.getElementById('buyer-budget').value)||null, desired_zone: document.getElementById('buyer-zone').value, desired_type: document.getElementById('buyer-type').value, notes: document.getElementById('buyer-notes').value }; const res = id ? await _supabase.from('buyers').update(payload).eq('id', id) : await _supabase.from('buyers').insert([payload]); hideLoader(); if(res.error) alert("Errore Salvataggio Cliente: " + res.error.message); else { closeModals(); await loadBuyers(); } }
-    function openDeleteBuyerModal(id) { buyerToDelete = id; document.getElementById('modal-delete-buyer').style.display = 'flex'; }
-    document.getElementById('confirm-delete-buyer-btn').onclick = async () => { if(!buyerToDelete) return; showLoader("Eliminazione..."); await _supabase.from('buyers').delete().eq('id', buyerToDelete); buyerToDelete = null; closeModals(); await loadBuyers(); hideLoader(); };
+    function openBuyerModal() { 
+        document.getElementById('buyer-id').value = ""; 
+        document.querySelector('#modal-buyer form').reset(); 
+        document.getElementById('buyer-status').value = "Attivo"; 
+        document.getElementById('buyer-modal-title').innerText = "Nuovo Cliente"; 
+        document.getElementById('modal-buyer').style.display = 'flex'; 
+    }
+
+    function editBuyer(id) { 
+        const b = buyers.find(x => x.id == id); 
+        if(!b) return; 
+        
+        document.getElementById('buyer-id').value = b.id; 
+        document.getElementById('buyer-name').value = b.full_name; 
+        document.getElementById('buyer-status').value = b.status; 
+        document.getElementById('buyer-phone').value = b.phone; 
+        document.getElementById('buyer-budget').value = b.max_budget||""; 
+        document.getElementById('buyer-zone').value = b.desired_zone||""; 
+        document.getElementById('buyer-type').value = b.desired_type||""; 
+        document.getElementById('buyer-notes').value = b.notes||""; 
+        document.getElementById('buyer-modal-title').innerText = "Modifica Cliente"; 
+        document.getElementById('modal-buyer').style.display = 'flex'; 
+    }
+
+    async function handleBuyerSubmit(e) { 
+        e.preventDefault(); 
+        showLoader("Salvataggio Cliente..."); 
+        const id = document.getElementById('buyer-id').value; 
+        
+        const payload = { 
+            full_name: document.getElementById('buyer-name').value, 
+            status: document.getElementById('buyer-status').value, 
+            phone: document.getElementById('buyer-phone').value, 
+            max_budget: Number(document.getElementById('buyer-budget').value)||null, 
+            desired_zone: document.getElementById('buyer-zone').value, 
+            desired_type: document.getElementById('buyer-type').value, 
+            notes: document.getElementById('buyer-notes').value 
+        }; 
+        
+        const res = id ? await _supabase.from('buyers').update(payload).eq('id', id) : await _supabase.from('buyers').insert([payload]); 
+        hideLoader(); 
+        
+        if(res.error) {
+            alert("Errore Salvataggio Cliente: " + res.error.message); 
+        } else { 
+            closeModals(); 
+            await loadBuyers(); 
+        } 
+    }
+
+    function openDeleteBuyerModal(id) { 
+        buyerToDelete = id; 
+        document.getElementById('modal-delete-buyer').style.display = 'flex'; 
+    }
+
+    document.getElementById('confirm-delete-buyer-btn').onclick = async () => { 
+        if(!buyerToDelete) return; 
+        showLoader("Eliminazione..."); 
+        await _supabase.from('buyers').delete().eq('id', buyerToDelete); 
+        buyerToDelete = null; 
+        closeModals(); 
+        await loadBuyers(); 
+        hideLoader(); 
+    };
 
   </script>
 </body>
