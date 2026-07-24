@@ -347,17 +347,18 @@
 
       <div class="panel-card" style="padding: 0;">
         <div style="padding: 1.5rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color);">
-          <h3 class="panel-title" style="margin:0;">Storico Transazioni</h3>
-          <button onclick="openTransactionModal()" class="btn-add-new">+ Nuova Transazione</button>
+          <h3 class="panel-title" style="margin:0;">Storico Incarichi</h3>
+          <button onclick="openTransactionModal()" class="btn-add-new">+ Nuovo Incarico</button>
         </div>
         <div class="data-table-container" style="border: none; border-radius: 0 0 24px 24px;">
           <table class="data-table">
             <thead>
               <tr>
-                <th>Data</th>
-                <th>Tipo</th>
+                <th>Stato</th>
                 <th>Immobile</th>
+                <th>Date</th>
                 <th>Prezzo / Provv.</th>
+                <th>Giorni</th>
                 <th>Azioni</th>
               </tr>
             </thead>
@@ -410,29 +411,36 @@
   <div id="modal-transaction" class="modal-overlay">
     <div class="modal-content">
       <div class="modal-header">
-        <h3 class="modal-title" id="trans-modal-title">Nuova Transazione</h3>
+        <h3 class="modal-title" id="trans-modal-title">Nuovo Incarico</h3>
         <button class="btn-close-modal" onclick="closeModals()">✕</button>
       </div>
       <form onsubmit="handleTransactionSubmit(event)">
         <input type="hidden" id="trans-id">
         <div class="form-group">
-          <label class="form-label">Tipo Transazione</label>
-          <select id="trans-type" class="form-select" required>
-            <option value="Acquisizione">Acquisizione (Incarico)</option>
-            <option value="Vendita">Vendita Conclusa</option>
+          <label class="form-label">Stato Incarico</label>
+          <select id="trans-status" class="form-select" required onchange="toggleTransactionFields()">
+            <option value="In Vendita">🟢 In Vendita</option>
+            <option value="Venduto">🤝 Venduto</option>
+            <option value="Scaduto">🔴 Scaduto / Ritirato</option>
           </select>
         </div>
         <div class="form-group">
           <label class="form-label">Immobile (Riferimento)</label>
           <input type="text" id="trans-title" class="form-input" required placeholder="es. Bilocale Via Roma">
         </div>
-        <div class="form-group">
-          <label class="form-label">Data</label>
-          <input type="date" id="trans-date" class="form-input" required>
-        </div>
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label">Prezzo Immobile (€)</label>
+            <label class="form-label">Data Acquisizione</label>
+            <input type="date" id="trans-acq-date" class="form-input" required>
+          </div>
+          <div class="form-group" id="group-sale-date" style="display:none;">
+            <label class="form-label">Data Vendita</label>
+            <input type="date" id="trans-sale-date" class="form-input">
+          </div>
+        </div>
+        <div class="form-row" id="group-financials" style="display:none;">
+          <div class="form-group">
+            <label class="form-label">Prezzo Finale (€)</label>
             <input type="number" id="trans-price" class="form-input">
           </div>
           <div class="form-group">
@@ -440,11 +448,7 @@
             <input type="number" id="trans-comm" class="form-input">
           </div>
         </div>
-        <div class="form-group">
-          <label class="form-label">Giorni impiegati per vendere (Solo vendite)</label>
-          <input type="number" id="trans-days" class="form-input">
-        </div>
-        <button type="submit" class="btn-submit">Salva Transazione</button>
+        <button type="submit" class="btn-submit">Salva Dati</button>
       </form>
     </div>
   </div>
@@ -723,34 +727,48 @@
 
     // ================= TAB 2: TRANSACTIONS & STATS =================
     async function loadTransactions() {
-      const { data } = await _supabase.from('transactions').select('*').order('transaction_date', { ascending: false });
+      const { data } = await _supabase.from('transactions').select('*').order('acquisition_date', { ascending: false });
       transactions = data || [];
       renderStats(); renderTransactionsList();
     }
 
     function renderStats() {
       const year = new Date().getFullYear();
-      const yearData = transactions.filter(t => new Date(t.transaction_date).getFullYear() === year);
       
       let acq = 0, ven = 0, prov = 0, daysTotal = 0, daysCount = 0;
       const monthlyData = { acq: Array(12).fill(0), ven: Array(12).fill(0) };
 
-      yearData.forEach(t => {
-        const m = new Date(t.transaction_date).getMonth();
-        if (t.transaction_type === 'Acquisizione') { acq++; monthlyData.acq[m]++; }
-        if (t.transaction_type === 'Vendita') { 
-          ven++; monthlyData.ven[m]++; 
-          if(t.commission) prov += Number(t.commission);
-          if(t.days_to_sell) { daysTotal += Number(t.days_to_sell); daysCount++; }
+      transactions.forEach(t => {
+        const acqDate = new Date(t.acquisition_date);
+        
+        // Statistiche acquisizioni
+        if (acqDate.getFullYear() === year) {
+          acq++;
+          monthlyData.acq[acqDate.getMonth()]++;
+        }
+
+        // Statistiche vendite e provvigioni
+        if (t.status === 'Venduto' && t.sale_date) {
+          const saleDate = new Date(t.sale_date);
+          if (saleDate.getFullYear() === year) {
+            ven++;
+            monthlyData.ven[saleDate.getMonth()]++;
+            if (t.commission) prov += Number(t.commission);
+            
+            // Calcolo giorni esatti impiegati per vendere
+            const diffTime = Math.abs(saleDate - acqDate);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            daysTotal += diffDays;
+            daysCount++;
+          }
         }
       });
 
       document.getElementById('stat-acq').innerText = acq;
       document.getElementById('stat-ven').innerText = ven;
       document.getElementById('stat-prov').innerText = `€${prov.toLocaleString('it-IT')}`;
-      document.getElementById('stat-days').innerText = daysCount > 0 ? Math.round(daysTotal/daysCount) : 0;
+      document.getElementById('stat-days').innerText = daysCount > 0 ? Math.round(daysTotal/daysCount) + ' gg' : '0 gg';
 
-      // Update Chart
       const ctx = document.getElementById('transactionsChart').getContext('2d');
       if(myChart) myChart.destroy();
       myChart = new Chart(ctx, {
@@ -759,7 +777,7 @@
           labels: ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'],
           datasets: [
             { label: 'Acquisizioni', data: monthlyData.acq, backgroundColor: '#3b82f6', borderRadius: 6 },
-            { label: 'Vendite', data: monthlyData.ven, backgroundColor: '#10b981', borderRadius: 6 }
+            { label: 'Vendite Concluse', data: monthlyData.ven, backgroundColor: '#10b981', borderRadius: 6 }
           ]
         },
         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
@@ -769,13 +787,31 @@
     function renderTransactionsList() {
       const tbody = document.getElementById('transactions-list'); tbody.innerHTML = "";
       transactions.forEach(t => {
-        const d = new Date(t.transaction_date).toLocaleDateString('it-IT');
+        let statusBadge = "";
+        if(t.status === 'In Vendita') statusBadge = '<span class="status-badge bg-blue">🟢 In Vendita</span>';
+        else if(t.status === 'Venduto') statusBadge = '<span class="status-badge bg-green">🤝 Venduto</span>';
+        else statusBadge = '<span class="status-badge bg-red">🔴 Scaduto</span>';
+
+        // Logica per il calcolo dei giorni live vs congelati
+        let days = 0;
+        const acqDate = new Date(t.acquisition_date);
+        if (t.status === 'Venduto' && t.sale_date) {
+          days = Math.ceil(Math.abs(new Date(t.sale_date) - acqDate) / (1000 * 60 * 60 * 24));
+        } else if (t.status === 'In Vendita') {
+          // Contatore Live: quanti giorni sono passati da quando l'ho acquisito a oggi
+          days = Math.ceil(Math.abs(new Date() - acqDate) / (1000 * 60 * 60 * 24));
+        }
+
+        const dAcq = acqDate.toLocaleDateString('it-IT');
+        const dSale = t.sale_date ? new Date(t.sale_date).toLocaleDateString('it-IT') : '-';
+        
         tbody.innerHTML += `
           <tr>
-            <td style="font-weight:700;">${d}</td>
-            <td><span class="status-badge ${t.transaction_type==='Acquisizione'?'bg-blue':'bg-green'}">${t.transaction_type}</span></td>
+            <td>${statusBadge}</td>
             <td style="font-weight:600;">${t.property_title}</td>
-            <td>${t.price ? '€'+t.price.toLocaleString('it-IT') : '-'} <br> <span style="font-size:10px;color:gray">Provv: ${t.commission ? '€'+t.commission.toLocaleString('it-IT') : '-'}</span></td>
+            <td><span style="font-size:11px;color:gray">Acquisito:</span> <b>${dAcq}</b> ${t.status === 'Venduto' ? `<br><span style="font-size:11px;color:gray">Venduto:</span> <b>${dSale}</b>` : ''}</td>
+            <td>${t.status === 'Venduto' ? (t.final_price ? '€'+t.final_price.toLocaleString('it-IT') : '-') + '<br><span style="font-size:10px;color:gray">Provv: ' + (t.commission ? '€'+t.commission.toLocaleString('it-IT') : '-') + '</span>' : '-'}</td>
+            <td><span style="font-weight:900; color:${t.status==='In Vendita' ? 'var(--brand-blue)' : 'var(--text-slate)'};">${days} gg</span></td>
             <td>
               <div class="action-buttons">
                 <button onclick="editTransaction('${t.id}')" class="btn-icon">✏️</button>
@@ -786,31 +822,60 @@
       });
     }
 
+    function toggleTransactionFields() {
+      const status = document.getElementById('trans-status').value;
+      const saleDateGroup = document.getElementById('group-sale-date');
+      const finGroup = document.getElementById('group-financials');
+      
+      if (status === 'Venduto') {
+        saleDateGroup.style.display = 'block';
+        finGroup.style.display = 'grid'; // .form-row uses grid
+        document.getElementById('trans-sale-date').required = true;
+      } else {
+        saleDateGroup.style.display = 'none';
+        finGroup.style.display = 'none';
+        document.getElementById('trans-sale-date').required = false;
+        document.getElementById('trans-sale-date').value = "";
+        document.getElementById('trans-price').value = "";
+        document.getElementById('trans-comm').value = "";
+      }
+    }
+
     function openTransactionModal() {
       document.getElementById('trans-id').value = ""; document.getElementById('trans-title').value = "";
-      document.getElementById('trans-date').value = new Date().toISOString().split('T')[0];
-      document.getElementById('trans-price').value = ""; document.getElementById('trans-comm').value = ""; document.getElementById('trans-days').value = "";
-      document.getElementById('trans-modal-title').innerText = "Nuova Transazione";
+      document.getElementById('trans-status').value = "In Vendita";
+      document.getElementById('trans-acq-date').value = new Date().toISOString().split('T')[0];
+      document.getElementById('trans-modal-title').innerText = "Nuovo Incarico";
+      toggleTransactionFields();
       document.getElementById('modal-transaction').style.display = 'flex';
     }
 
     function editTransaction(id) {
       const t = transactions.find(x => x.id == id); if(!t) return;
-      document.getElementById('trans-id').value = t.id; document.getElementById('trans-type').value = t.transaction_type;
-      document.getElementById('trans-title').value = t.property_title; document.getElementById('trans-date').value = t.transaction_date;
-      document.getElementById('trans-price').value = t.price || ""; document.getElementById('trans-comm').value = t.commission || "";
-      document.getElementById('trans-days').value = t.days_to_sell || "";
-      document.getElementById('trans-modal-title').innerText = "Modifica Transazione";
+      document.getElementById('trans-id').value = t.id; 
+      document.getElementById('trans-status').value = t.status;
+      document.getElementById('trans-title').value = t.property_title; 
+      document.getElementById('trans-acq-date').value = t.acquisition_date;
+      document.getElementById('trans-sale-date').value = t.sale_date || "";
+      document.getElementById('trans-price').value = t.final_price || ""; 
+      document.getElementById('trans-comm').value = t.commission || "";
+      
+      document.getElementById('trans-modal-title').innerText = "Modifica Incarico";
+      toggleTransactionFields();
       document.getElementById('modal-transaction').style.display = 'flex';
     }
 
     async function handleTransactionSubmit(e) {
       e.preventDefault(); showLoader("Salvataggio...");
       const id = document.getElementById('trans-id').value;
+      const status = document.getElementById('trans-status').value;
       const payload = {
-        transaction_type: document.getElementById('trans-type').value, property_title: document.getElementById('trans-title').value,
-        transaction_date: document.getElementById('trans-date').value, price: document.getElementById('trans-price').value || null,
-        commission: document.getElementById('trans-comm').value || null, days_to_sell: document.getElementById('trans-days').value || null
+        status: status, 
+        property_title: document.getElementById('trans-title').value,
+        acquisition_date: document.getElementById('trans-acq-date').value, 
+        sale_date: status === 'Venduto' ? (document.getElementById('trans-sale-date').value || null) : null,
+        final_price: status === 'Venduto' ? (document.getElementById('trans-price').value || null) : null,
+        commission: status === 'Venduto' ? (document.getElementById('trans-comm').value || null) : null
       };
       if(id) await _supabase.from('transactions').update(payload).eq('id', id);
       else await _supabase.from('transactions').insert([payload]);
