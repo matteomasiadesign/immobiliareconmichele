@@ -28,7 +28,7 @@
 
     .navbar { background-color: var(--brand-blue); border-bottom: 4px solid var(--brand-yellow); height: 80px; display: flex; align-items: center; justify-content: space-between; padding: 0 1rem; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(0,68,255,0.15); width: 100%; }
     .brand { display: flex; align-items: center; text-decoration: none; min-width: 0; z-index: 1001; }
-    .brand-icon-box { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border-radius: 8px; overflow: hidden; background: var(--brand-yellow); }
+    .brand-icon-box { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border-radius: 8px; overflow: hidden; background: transparent; }
     .brand-text { margin-left: 8px; display: flex; flex-direction: column; line-height: 1.1; min-width: 0; }
     .brand-title { font-size: 1.1rem; font-weight: 900; color: var(--brand-yellow); letter-spacing: -0.025em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .brand-subtitle { font-size: 9px; font-weight: 900; color: var(--white); letter-spacing: 0.05em; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -128,10 +128,13 @@
     .stat-card { background: var(--white); padding: 1.5rem; border-radius: 20px; border: 1px solid var(--border-color); text-align: center; display: flex; flex-direction: column; justify-content: center; }
     .stat-value { font-size: 1.8rem; font-weight: 900; color: var(--brand-blue); margin-bottom: 4px; line-height: 1; }
     .stat-label { font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--text-muted); }
+    
+    /* FIX CRITICO: Contenitore Grafici Chart.js per evitare overflow */
     .charts-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
-    @media (min-width: 1024px) { .charts-grid { grid-template-columns: 2.5fr 1fr; } }
-    .chart-container { background: var(--white); padding: 1.5rem; border-radius: 20px; border: 1px solid var(--border-color); position: relative; height: 320px; display: flex; flex-direction: column; }
-    .chart-header { font-size: 12px; font-weight: 900; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; }
+    @media (min-width: 1024px) { .charts-grid { grid-template-columns: 2fr 1fr; } }
+    .chart-container { background: var(--white); padding: 1.5rem; border-radius: 20px; border: 1px solid var(--border-color); display: flex; flex-direction: column; height: 350px; overflow: hidden; }
+    .chart-header { font-size: 12px; font-weight: 900; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; flex-shrink: 0; }
+    .chart-wrapper { position: relative; flex-grow: 1; min-height: 0; width: 100%; } /* Indispensabile per costringere la canvas ai bordi */
 
     .data-table-container { background: var(--white); border-radius: 20px; border: 1px solid var(--border-color); overflow-x: auto; }
     .data-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; min-width: 600px;}
@@ -173,8 +176,8 @@
   <nav class="navbar">
     <div class="brand">
       <div class="brand-icon-box">
-        <!-- IMMAGINE CORRETTA CON FALLBACK -->
-        <img src="icona.webp" alt="Logo" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.outerHTML='<div style=\'width: 100%; height: 100%; background: var(--brand-yellow); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--brand-blue); font-weight: bold;\'>ME</div>'">
+        <!-- FIX CRITICO LOGO: Cambiato object-fit in contain e rimosso background per evitare schiacciamenti. -->
+        <img src="icona.webp" alt="Logo" style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px;" onerror="this.outerHTML='<div style=\'width: 40px; height: 40px; background: var(--brand-yellow); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--brand-blue); font-weight: bold;\'>ME</div>'">
       </div>
       <div class="brand-text">
         <span class="brand-title">MICHELE ERRE</span>
@@ -201,7 +204,8 @@
           <span class="hide-mobile">Esci</span>
         </button>
       </div>
-      <button id="admin-mobile-toggle" class="admin-mobile-toggle">
+      <!-- Tasto Mobile sistemato per intercettare i click perfettamente -->
+      <button id="admin-mobile-toggle" class="admin-mobile-toggle" style="pointer-events: auto;">
         <svg style="pointer-events: none;" width="28" height="28" fill="none" stroke="var(--brand-yellow)" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path></svg>
       </button>
     </div>
@@ -340,11 +344,13 @@
       <div class="charts-grid">
         <div class="chart-container">
           <div class="chart-header">Andamento Volumi e Fatturato (Anno)</div>
-          <div style="flex: 1; position: relative;"><canvas id="mainChart"></canvas></div>
+          <!-- Fix strutturale chart-wrapper -->
+          <div class="chart-wrapper"><canvas id="mainChart"></canvas></div>
         </div>
         <div class="chart-container">
-          <div class="chart-header">Tasso di Successo (Anno)</div>
-          <div style="flex: 1; position: relative;"><canvas id="pieChart"></canvas></div>
+          <div class="chart-header">Tasso di Successo Incarichi (Anno)</div>
+          <!-- Fix strutturale chart-wrapper -->
+          <div class="chart-wrapper"><canvas id="pieChart"></canvas></div>
         </div>
       </div>
 
@@ -387,7 +393,7 @@
     </div>
   </div>
 
-  <!-- Delete Prop Modal -->
+  <!-- Modale Eliminazione Annuncio Vetrina -->
   <div id="modal-delete-prop" class="modal-overlay">
     <div class="modal-content" style="max-width:360px; text-align:center;">
       <h3 style="font-size:18px; font-weight:900; color:var(--text-slate); margin-bottom:10px;">Sei sicuro?</h3>
@@ -399,7 +405,31 @@
     </div>
   </div>
 
-  <!-- Transaction Modal -->
+  <!-- NUOVA Modale Eliminazione Incarico Statistiche -->
+  <div id="modal-delete-trans" class="modal-overlay">
+    <div class="modal-content" style="max-width:360px; text-align:center;">
+      <h3 style="font-size:18px; font-weight:900; color:var(--text-slate); margin-bottom:10px;">Attenzione!</h3>
+      <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Stai per eliminare questo incarico dallo storico. Questo aggiornerà anche i grafici. Sei sicuro?</p>
+      <div style="display:flex; gap:10px;">
+        <button onclick="closeModals()" class="btn-submit" style="background:#f1f5f9; color:var(--text-slate);">Annulla</button>
+        <button id="confirm-delete-trans-btn" class="btn-submit" style="background:#ef4444; color:white;">Elimina</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NUOVA Modale Eliminazione Cliente -->
+  <div id="modal-delete-buyer" class="modal-overlay">
+    <div class="modal-content" style="max-width:360px; text-align:center;">
+      <h3 style="font-size:18px; font-weight:900; color:var(--text-slate); margin-bottom:10px;">Elimina Cliente</h3>
+      <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Vuoi rimuovere questo potenziale cliente dalla rubrica?</p>
+      <div style="display:flex; gap:10px;">
+        <button onclick="closeModals()" class="btn-submit" style="background:#f1f5f9; color:var(--text-slate);">Annulla</button>
+        <button id="confirm-delete-buyer-btn" class="btn-submit" style="background:#ef4444; color:white;">Elimina</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Transaction Modal (Form Incarichi) -->
   <div id="modal-transaction" class="modal-overlay">
     <div class="modal-content">
       <div class="modal-header"><h3 class="panel-title" id="trans-modal-title" style="margin:0;">Gestione Incarico</h3><button type="button" class="btn-close-modal" onclick="closeModals()">✕</button></div>
@@ -442,7 +472,7 @@
     </div>
   </div>
 
-  <!-- Buyer Modal -->
+  <!-- Buyer Modal (Form Clienti) -->
   <div id="modal-buyer" class="modal-overlay">
     <div class="modal-content">
       <div class="modal-header"><h3 class="panel-title" id="buyer-modal-title" style="margin:0;">Gestione Cliente</h3><button type="button" class="btn-close-modal" onclick="closeModals()">✕</button></div>
@@ -483,12 +513,14 @@
     let uploadedImageUrls = [];
     let sortableInstance = null;
     let propToDelete = null;
+    let transToDelete = null;
+    let buyerToDelete = null;
     let transactions = [];
     let mainChartInstance = null;
     let pieChartInstance = null;
     let buyers = [];
 
-    // Utility
+    // Utility Funzioni
     function showLoader(text="Attendere...") { document.getElementById('loader-text').innerText = text; document.getElementById('loader').classList.remove('hidden'); }
     function hideLoader() { document.getElementById('loader').classList.add('hidden'); }
     function closeModals() { document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none'); }
@@ -497,7 +529,7 @@
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       document.getElementById(tabId).classList.add('active');
       btn.classList.add('active');
-      if(tabId === 'tab-stats') { updateDashboardStats(); } // Resize graphs correctly
+      if(tabId === 'tab-stats') { updateDashboardStats(); } // Forza il resize di Chart.js che altrimenti si rompe
     }
 
     window.addEventListener('DOMContentLoaded', async () => {
@@ -685,8 +717,8 @@
             <div class="item-actions-box">
               <span style="font-weight:900;">€${p.price.toLocaleString('it-IT')}</span>
               <div class="action-buttons">
-                <button onclick="startPropEdit('${p.id}')" class="btn-action edit">✏️</button>
-                <button onclick="openDeletePropModal('${p.id}')" class="btn-action delete">🗑️</button>
+                <button onclick="startPropEdit('${p.id}')" class="btn-action edit" title="Modifica">✏️</button>
+                <button onclick="openDeletePropModal('${p.id}')" class="btn-action delete" title="Elimina">🗑️</button>
               </div>
             </div>
           </div>`;
@@ -759,7 +791,10 @@
             { type:'bar', label:'Immobili Venduti', data:saleD, backgroundColor:'#10b981', borderRadius:4, yAxisID:'yV' }
           ]
         },
-        options: { responsive:true, maintainAspectRatio:false, interaction:{mode:'index', intersect:false},
+        options: { 
+          responsive:true, 
+          maintainAspectRatio:false, /* Cruciale per evitare l'overflow */
+          interaction:{mode:'index', intersect:false},
           scales: { yV:{type:'linear', position:'left', title:{display:true,text:'Volumi (N. Case)'}, min:0, ticks:{stepSize:1}}, yR:{type:'linear', position:'right', title:{display:true,text:'€ Incassati'}, grid:{drawOnChartArea:false}, min:0} }
         }
       });
@@ -769,7 +804,12 @@
       pieChartInstance = new Chart(document.getElementById('pieChart'), {
         type: 'doughnut',
         data: { labels: ['Venduti','In Vendita','Scaduti/Ritirati'], datasets: [{ data: [pS, pA, pE], backgroundColor: ['#10b981','#0044FF','#ef4444'], borderWidth:0 }] },
-        options: { responsive:true, maintainAspectRatio:false, cutout:'70%', plugins:{legend:{position:'bottom'}} }
+        options: { 
+          responsive:true, 
+          maintainAspectRatio:false, /* Cruciale per evitare che esca dal contenitore */
+          cutout:'70%', 
+          plugins:{legend:{position:'bottom'}} 
+        }
       });
     }
 
@@ -798,7 +838,12 @@
           <td style="font-weight:600;">${t.property_title}<br><span style="font-size:10px;color:gray;">Prop: ${t.owner_name||'-'}</span></td>
           <td>Acq: <b>${acq.toLocaleDateString('it-IT')}</b> <span style="font-size:10px;color:gray;">(${t.assignment_duration||'-'})</span><br>Giorni: <b style="color:var(--brand-blue)">${days>=0?days:0} gg</b></td>
           <td>${pStr}<br><span style="font-size:11px;">Provv: ${cStr}</span></td>
-          <td><button onclick="editTransaction('${t.id}')" class="btn-action edit">✏️</button></td>
+          <td>
+            <div style="display:flex; gap:6px;">
+                <button onclick="editTransaction('${t.id}')" class="btn-action edit" title="Modifica">✏️</button>
+                <button onclick="openDeleteTransModal('${t.id}')" class="btn-action delete" title="Elimina">🗑️</button>
+            </div>
+          </td>
         </tr>`;
       });
     }
@@ -848,11 +893,21 @@
         final_price: status === 'Venduto' ? Number(document.getElementById('trans-final-price').value) : null
       };
 
-      const res = id ? await _supabase.from('transactions').update(payload).eq('id', id) : await _supabase.from('transactions').insert([payload]);
-      hideLoader();
-      if(res.error) { alert("ERRORE SALVATAGGIO:\n" + res.error.message + "\n\nAssicurati di aver aggiornato correttamente la tabella 'transactions' su Supabase!"); } 
-      else { closeModals(); await loadTransactions(); }
+      try {
+        const res = id ? await _supabase.from('transactions').update(payload).eq('id', id) : await _supabase.from('transactions').insert([payload]);
+        if(res.error) { throw res.error; }
+        closeModals(); await loadTransactions();
+      } catch (err) {
+        alert("ERRORE SALVATAGGIO:\n" + err.message + "\n\nAssicurati di aver aggiornato correttamente la tabella 'transactions' su Supabase aggiungendo le colonne mancanti!");
+      } finally { hideLoader(); }
     }
+
+    function openDeleteTransModal(id) { transToDelete = id; document.getElementById('modal-delete-trans').style.display = 'flex'; }
+    document.getElementById('confirm-delete-trans-btn').onclick = async () => {
+      if(!transToDelete) return; showLoader("Eliminazione...");
+      await _supabase.from('transactions').delete().eq('id', transToDelete);
+      transToDelete = null; closeModals(); await loadTransactions(); hideLoader();
+    };
 
     async function loadBuyers() {
       const { data, error } = await _supabase.from('buyers').select('*').order('created_at', { ascending: false });
@@ -871,7 +926,12 @@
           <td style="font-weight:600;">${b.full_name}<br><span style="font-size:11px;color:gray;">📞 ${b.phone}</span></td>
           <td>${b.desired_type||'-'} <span style="font-size:11px;color:gray;">(${b.desired_zone||'Ovunque'})</span></td>
           <td>${b.max_budget ? '€'+b.max_budget.toLocaleString('it-IT') : '-'}</td>
-          <td><button onclick="editBuyer('${b.id}')" class="btn-action edit">✏️</button></td>
+          <td>
+             <div style="display:flex; gap:6px;">
+                <button onclick="editBuyer('${b.id}')" class="btn-action edit" title="Modifica">✏️</button>
+                <button onclick="openDeleteBuyerModal('${b.id}')" class="btn-action delete" title="Elimina">🗑️</button>
+             </div>
+          </td>
         </tr>`;
       });
     }
@@ -904,6 +964,14 @@
       hideLoader();
       if(res.error) alert("Errore Salvataggio Cliente: " + res.error.message); else { closeModals(); await loadBuyers(); }
     }
+
+    function openDeleteBuyerModal(id) { buyerToDelete = id; document.getElementById('modal-delete-buyer').style.display = 'flex'; }
+    document.getElementById('confirm-delete-buyer-btn').onclick = async () => {
+      if(!buyerToDelete) return; showLoader("Eliminazione...");
+      await _supabase.from('buyers').delete().eq('id', buyerToDelete);
+      buyerToDelete = null; closeModals(); await loadBuyers(); hideLoader();
+    };
+
   </script>
 </body>
 </html>
