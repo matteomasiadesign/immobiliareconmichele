@@ -322,6 +322,14 @@
 
     <!-- ================= TAB 2: STATISTICHE ================= -->
     <div id="tab-stats" class="tab-content">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h2 class="panel-title" style="margin:0;">Andamento & Storico</h2>
+        <button onclick="openTransactionModal()" class="btn-submit" style="width: auto; padding: 10px 20px; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(0,68,255,0.3);">
+           <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path></svg>
+           Nuovo Incarico
+        </button>
+      </div>
+
       <div class="stats-cards-grid">
         <div class="stat-card">
           <div class="stat-value" id="stat-acq">0</div>
@@ -346,17 +354,25 @@
       </div>
 
       <div class="panel-card" style="padding: 0;">
-        <div style="padding: 1.5rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color);">
-          <h3 class="panel-title" style="margin:0;">Storico Incarichi</h3>
-          <button onclick="openTransactionModal()" class="btn-add-new">+ Nuovo Incarico</button>
+        <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-color);">
+          <h3 class="panel-title" style="margin:0; margin-bottom: 1rem;">Gestione Incarichi</h3>
+          <div class="filters-grid" style="margin: 0;">
+            <input type="text" id="filter-trans-search" oninput="applyTransactionFilters()" placeholder="Cerca immobile o proprietario..." class="form-input">
+            <select id="filter-trans-status" onchange="applyTransactionFilters()" class="form-select">
+              <option value="Tutti">Tutti gli stati</option>
+              <option value="In Vendita">🟢 In Vendita</option>
+              <option value="Venduto">🤝 Venduto</option>
+              <option value="Scaduto">🔴 Scaduto</option>
+            </select>
+          </div>
         </div>
         <div class="data-table-container" style="border: none; border-radius: 0 0 24px 24px;">
           <table class="data-table">
             <thead>
               <tr>
                 <th>Stato</th>
-                <th>Immobile</th>
-                <th>Date</th>
+                <th>Immobile / Proprietario</th>
+                <th>Date / Durata</th>
                 <th>Prezzo / Provv.</th>
                 <th>Giorni</th>
                 <th>Azioni</th>
@@ -430,6 +446,21 @@
           <label class="form-label">Immobile (Riferimento)</label>
           <input type="text" id="trans-title" class="form-input" required placeholder="es. Bilocale Via Roma">
         </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Nome Proprietario</label>
+            <input type="text" id="trans-owner" class="form-input" placeholder="es. Mario Rossi">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Durata Incarico</label>
+            <select id="trans-duration" class="form-select">
+              <option value="6 mesi">6 Mesi</option>
+              <option value="1 anno">1 Anno</option>
+              <option value="2 anni">2 Anni</option>
+            </select>
+          </div>
+        </div>
         
         <div class="form-row">
           <div class="form-group">
@@ -442,9 +473,15 @@
           </div>
         </div>
 
-        <div class="form-group">
-          <label class="form-label">Provvigione Pattuita (%)</label>
-          <input type="number" step="0.1" id="trans-comm-perc" class="form-input" required placeholder="es. 3">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Provvigione Venditore (%)</label>
+            <input type="number" step="0.1" id="trans-comm-seller" class="form-input" required placeholder="es. 3">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Provvigione Acquirente (%)</label>
+            <input type="number" step="0.1" id="trans-comm-buyer" class="form-input" required placeholder="es. 3">
+          </div>
         </div>
 
         <!-- SEZIONE VENDITA (Visibile solo se lo stato è "Venduto") -->
@@ -631,181 +668,23 @@
       });
     }
 
-    function renderImagePreviews() {
-      const grid = document.getElementById('preview-grid'); grid.innerHTML = "";
-      uploadedImageUrls.forEach((url, i) => {
-        const isC = i === 0;
-        grid.innerHTML += `
-          <div class="preview-thumb-container">
-            <img src="${url}" class="preview-thumb ${isC?'cover-img':''}">
-            ${isC ? `<span class="cover-badge">COPERTINA</span>` : `<button type="button" class="btn-set-cover" onclick="setAsCover(${i})">⭐</button>`}
-            <button type="button" class="btn-remove-thumb" onclick="removeImage(${i})">✕</button>
-          </div>`;
-      });
-      if (sortableInstance) sortableInstance.destroy();
-      sortableInstance = new Sortable(grid, { animation: 150, delay: 100, onEnd: e => { const item = uploadedImageUrls.splice(e.oldIndex, 1)[0]; uploadedImageUrls.splice(e.newIndex, 0, item); renderImagePreviews(); }});
-    }
-    
-    function setAsCover(i) { const url = uploadedImageUrls.splice(i,1)[0]; uploadedImageUrls.unshift(url); renderImagePreviews(); }
-    async function removeImage(i) { uploadedImageUrls.splice(i,1); renderImagePreviews(); }
-
-    function validateFeaturedLimit(cb) {
-      const count = properties.filter(p => p.is_featured).length;
-      if (cb.checked && count >= 3 && !properties.find(p => p.id == document.getElementById('property-id').value)?.is_featured) {
-        alert("Massimo 3 immobili in evidenza!"); cb.checked = false;
-      }
-    }
-
-    async function handleFormSubmit(e) {
-      e.preventDefault(); showLoader("Salvataggio...");
-      const id = document.getElementById('property-id').value;
-      const payload = {
-        title: document.getElementById('prop-title').value, status: document.getElementById('prop-status').value,
-        price: Number(document.getElementById('prop-price').value), zone: document.getElementById('prop-zone').value,
-        property_type: document.getElementById('prop-type').value, rooms: Number(document.getElementById('prop-rooms').value),
-        bathrooms: Number(document.getElementById('prop-bathrooms').value), sqm: Number(document.getElementById('prop-sqm').value) || null,
-        description: document.getElementById('prop-desc').value, has_parking: document.getElementById('prop-parking').checked,
-        is_featured: document.getElementById('prop-featured').checked, images: uploadedImageUrls
-      };
-
-      if (!uploadedImageUrls.length) { hideLoader(); alert("Inserisci foto!"); return; }
-
-      if (id) await _supabase.from('properties').update(payload).eq('id', id);
-      else await _supabase.from('properties').insert([payload]);
-      
-      cancelEdit(); await loadProperties(); hideLoader();
-    }
-
-    function startEditProperty(id) {
-      const p = properties.find(i => i.id == id); if (!p) return;
-      document.getElementById('property-id').value = p.id; document.getElementById('prop-title').value = p.title;
-      document.getElementById('prop-status').value = p.status; document.getElementById('prop-price').value = p.price;
-      document.getElementById('prop-zone').value = p.zone; document.getElementById('prop-type').value = p.property_type;
-      document.getElementById('prop-rooms').value = p.rooms; document.getElementById('prop-bathrooms').value = p.bathrooms;
-      document.getElementById('prop-sqm').value = p.sqm || ''; document.getElementById('prop-desc').value = p.description;
-      document.getElementById('prop-parking').checked = p.has_parking; document.getElementById('prop-featured').checked = p.is_featured;
-      uploadedImageUrls = [...p.images]; renderImagePreviews();
-      document.getElementById('form-title').innerText = "Modifica Annuncio"; document.getElementById('cancel-edit-btn').classList.remove('hidden');
-      document.getElementById('submit-btn').innerText = "Salva Modifiche";
-    }
-
-    function cancelEdit() {
-      document.querySelector('form').reset(); document.getElementById('property-id').value = "";
-      uploadedImageUrls = []; renderImagePreviews();
-      document.getElementById('form-title').innerText = "Nuovo Annuncio"; document.getElementById('cancel-edit-btn').classList.add('hidden');
-      document.getElementById('submit-btn').innerText = "Pubblica in Vetrina 🚀";
-    }
-
-    async function deleteProperty(id) {
-      if(!confirm("Eliminare definitivamente l'annuncio?")) return;
-      showLoader("Eliminazione...");
-      await _supabase.from('properties').delete().eq('id', id);
-      await loadProperties(); hideLoader();
-    }
-
-    function applyPropFilters() { renderPropertiesList(); }
-    function renderPropertiesList() {
-      const q = document.getElementById('search-title').value.toLowerCase();
-      const st = document.getElementById('search-status').value;
-      const f = properties.filter(p => (!q || p.title.toLowerCase().includes(q) || p.zone.toLowerCase().includes(q)) && (st === 'Tutti' || p.status === st));
-      
-      document.getElementById('featured-counter').innerText = properties.filter(p=>p.is_featured).length;
-      const list = document.getElementById('properties-list'); list.innerHTML = "";
-      
-      if(!f.length) { list.innerHTML = `<p style="padding:1rem;text-align:center;color:gray;">Nessun annuncio trovato.</p>`; return; }
-      
-      f.forEach(p => {
-        list.innerHTML += `
-          <div class="item-row">
-            <div class="item-info">
-              <img src="${p.images[0]}" class="item-thumbnail">
-              <div class="item-texts">
-                <p style="font-weight:800; font-size:14px; color:var(--text-slate);">${p.title}</p>
-                <p style="font-size:12px; color:var(--text-muted);">${p.zone} • ${p.property_type}</p>
-                <div style="display:flex;gap:5px;margin-top:5px;">
-                  <span class="status-badge ${p.status==='Vendita'?'bg-yellow':'bg-gray'}">${p.status}</span>
-                  ${p.is_featured ? `<span class="status-badge bg-blue">★ Vetrina</span>` : ''}
-                </div>
-              </div>
-            </div>
-            <div style="display:flex;align-items:center;gap:15px;">
-              <span style="font-weight:900;">€${p.price.toLocaleString('it-IT')}</span>
-              <div class="action-buttons">
-                <button onclick="startEditProperty('${p.id}')" class="btn-icon">✏️</button>
-                <button onclick="deleteProperty('${p.id}')" class="btn-icon delete">🗑️</button>
-              </div>
-            </div>
-          </div>`;
-      });
-    }
-
-    // ================= TAB 2: TRANSACTIONS & STATS =================
-    async function loadTransactions() {
-      const { data } = await _supabase.from('transactions').select('*').order('acquisition_date', { ascending: false });
-      transactions = data || [];
-      renderStats(); renderTransactionsList();
-    }
-
-    function renderStats() {
-      const year = new Date().getFullYear();
-      
-      let acq = 0, ven = 0, prov = 0, daysTotal = 0, daysCount = 0;
-      const monthlyData = { acq: Array(12).fill(0), ven: Array(12).fill(0) };
-
-      transactions.forEach(t => {
-        const acqDate = new Date(t.acquisition_date);
-        
-        // Statistiche acquisizioni (Incarichi presi quest'anno)
-        if (acqDate.getFullYear() === year) {
-          acq++;
-          monthlyData.acq[acqDate.getMonth()]++;
-        }
-
-        // Statistiche vendite e provvigioni (Chiuse quest'anno)
-        if (t.status === 'Venduto' && t.sale_date) {
-          const saleDate = new Date(t.sale_date);
-          if (saleDate.getFullYear() === year) {
-            ven++;
-            monthlyData.ven[saleDate.getMonth()]++;
-            
-            // Calcolo provvigione in Euro: (Prezzo Finale * Percentuale) / 100
-            if (t.final_price && t.commission_perc) {
-              const euroCommission = (Number(t.final_price) * Number(t.commission_perc)) / 100;
-              prov += euroCommission;
-            }
-            
-            // Calcolo giorni esatti impiegati per vendere
-            const diffTime = Math.abs(saleDate - acqDate);
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            daysTotal += diffDays;
-            daysCount++;
-          }
-        }
-      });
-
-      document.getElementById('stat-acq').innerText = acq;
-      document.getElementById('stat-ven').innerText = ven;
-      document.getElementById('stat-prov').innerText = `€${prov.toLocaleString('it-IT', {maximumFractionDigits: 0})}`;
-      document.getElementById('stat-days').innerText = daysCount > 0 ? Math.round(daysTotal/daysCount) + ' gg' : '0 gg';
-
-      const ctx = document.getElementById('transactionsChart').getContext('2d');
-      if(myChart) myChart.destroy();
-      myChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'],
-          datasets: [
-            { label: 'Nuovi Incarichi', data: monthlyData.acq, backgroundColor: '#3b82f6', borderRadius: 6 },
-            { label: 'Vendite Concluse', data: monthlyData.ven, backgroundColor: '#10b981', borderRadius: 6 }
-          ]
-        },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
-      });
-    }
+    function applyTransactionFilters() { renderTransactionsList(); }
 
     function renderTransactionsList() {
+      const q = (document.getElementById('filter-trans-search')?.value || '').toLowerCase();
+      const s = document.getElementById('filter-trans-status')?.value || 'Tutti';
+      
+      const filtered = transactions.filter(t => {
+        const matchQuery = !q || t.property_title.toLowerCase().includes(q) || (t.owner_name && t.owner_name.toLowerCase().includes(q));
+        const matchStatus = s === 'Tutti' || t.status === s;
+        return matchQuery && matchStatus;
+      });
+
       const tbody = document.getElementById('transactions-list'); tbody.innerHTML = "";
-      transactions.forEach(t => {
+
+      if(!filtered.length) { tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 2rem; color:gray;">Nessun incarico trovato con questi filtri.</td></tr>`; return; }
+
+      filtered.forEach(t => {
         let statusBadge = "";
         if(t.status === 'In Vendita') statusBadge = '<span class="status-badge bg-blue">🟢 In Vendita</span>';
         else if(t.status === 'Venduto') statusBadge = '<span class="status-badge bg-green">🤝 Venduto</span>';
@@ -814,8 +693,6 @@
         // Calcolo automatico giorni live vs congelati
         let days = 0;
         const acqDate = new Date(t.acquisition_date);
-        
-        // Per evitare bug di fuso orario, impostiamo l'ora a mezzanotte
         acqDate.setHours(0,0,0,0);
         
         if (t.status === 'Venduto' && t.sale_date) {
@@ -833,19 +710,21 @@
         
         // Formattazione Prezzi e Provvigione
         let priceString = `€${t.initial_price.toLocaleString('it-IT')}`;
-        let commString = `${t.commission_perc}%`;
+        let commString = `V: ${t.commission_seller_perc || 0}% | A: ${t.commission_buyer_perc || 0}%`;
         
         if (t.status === 'Venduto' && t.final_price) {
            priceString = `€${t.final_price.toLocaleString('it-IT')} <span style="font-size:10px;text-decoration:line-through;color:gray;">(€${t.initial_price.toLocaleString('it-IT')})</span>`;
-           const euroCommission = (t.final_price * t.commission_perc) / 100;
-           commString = `<b>€${euroCommission.toLocaleString('it-IT')}</b> <span style="font-size:10px;color:gray">(${t.commission_perc}%)</span>`;
+           const sellerComm = t.commission_seller_perc ? (t.final_price * t.commission_seller_perc) / 100 : 0;
+           const buyerComm = t.commission_buyer_perc ? (t.final_price * t.commission_buyer_perc) / 100 : 0;
+           const totalComm = sellerComm + buyerComm;
+           commString = `<b>€${totalComm.toLocaleString('it-IT')}</b> <span style="font-size:10px;color:gray">(V:${t.commission_seller_perc || 0}% + A:${t.commission_buyer_perc || 0}%)</span>`;
         }
         
         tbody.innerHTML += `
           <tr>
             <td>${statusBadge}</td>
-            <td style="font-weight:600;">${t.property_title}</td>
-            <td><span style="font-size:11px;color:gray">Acquisito:</span> <b>${dAcq}</b> ${t.status === 'Venduto' ? `<br><span style="font-size:11px;color:gray">Venduto:</span> <b>${dSale}</b>` : ''}</td>
+            <td style="font-weight:600;">${t.property_title}<br><span style="font-size:11px;color:var(--text-muted);font-weight:600;">👤 Prop: ${t.owner_name || 'N/D'}</span></td>
+            <td><span style="font-size:11px;color:gray">Acquisito:</span> <b>${dAcq}</b> <span style="font-size:10px;color:gray">(${t.assignment_duration || '-'})</span> ${t.status === 'Venduto' ? `<br><span style="font-size:11px;color:gray">Venduto:</span> <b>${dSale}</b>` : ''}</td>
             <td>${priceString}<br><span style="font-size:11px;color:var(--brand-blue)">Provv: ${commString}</span></td>
             <td><span style="font-weight:900; color:${t.status==='In Vendita' ? 'var(--brand-blue)' : 'var(--text-slate)'};">${days} gg</span></td>
             <td>
@@ -890,10 +769,13 @@
     function openTransactionModal() {
       document.getElementById('trans-id').value = ""; 
       document.getElementById('trans-title').value = "";
+      document.getElementById('trans-owner').value = "";
+      document.getElementById('trans-duration').value = "6 mesi";
       document.getElementById('trans-status').value = "In Vendita";
       document.getElementById('trans-acq-date').value = new Date().toISOString().split('T')[0];
       document.getElementById('trans-initial-price').value = "";
-      document.getElementById('trans-comm-perc').value = "";
+      document.getElementById('trans-comm-seller').value = "";
+      document.getElementById('trans-comm-buyer').value = "";
       
       document.getElementById('trans-modal-title').innerText = "Nuovo Incarico";
       toggleTransactionFields();
@@ -905,9 +787,12 @@
       document.getElementById('trans-id').value = t.id; 
       document.getElementById('trans-status').value = t.status;
       document.getElementById('trans-title').value = t.property_title; 
+      document.getElementById('trans-owner').value = t.owner_name || "";
+      document.getElementById('trans-duration').value = t.assignment_duration || "6 mesi";
       document.getElementById('trans-acq-date').value = t.acquisition_date;
       document.getElementById('trans-initial-price').value = t.initial_price || "";
-      document.getElementById('trans-comm-perc').value = t.commission_perc || "";
+      document.getElementById('trans-comm-seller').value = t.commission_seller_perc || "";
+      document.getElementById('trans-comm-buyer').value = t.commission_buyer_perc || "";
       
       document.getElementById('trans-sale-date').value = t.sale_date || "";
       document.getElementById('trans-final-price').value = t.final_price || ""; 
@@ -925,9 +810,12 @@
       const payload = {
         status: status, 
         property_title: document.getElementById('trans-title').value,
+        owner_name: document.getElementById('trans-owner').value || null,
+        assignment_duration: document.getElementById('trans-duration').value,
         acquisition_date: document.getElementById('trans-acq-date').value, 
         initial_price: Number(document.getElementById('trans-initial-price').value),
-        commission_perc: Number(document.getElementById('trans-comm-perc').value),
+        commission_seller_perc: Number(document.getElementById('trans-comm-seller').value),
+        commission_buyer_perc: Number(document.getElementById('trans-comm-buyer').value),
         
         sale_date: status === 'Venduto' ? (document.getElementById('trans-sale-date').value || null) : null,
         final_price: status === 'Venduto' ? Number(document.getElementById('trans-final-price').value) : null
