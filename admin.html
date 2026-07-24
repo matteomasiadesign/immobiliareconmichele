@@ -929,12 +929,26 @@
         initial_price: Number(document.getElementById('trans-initial-price').value),
         commission_perc: Number(document.getElementById('trans-comm-perc').value),
         
-        sale_date: status === 'Venduto' ? document.getElementById('trans-sale-date').value : null,
+        sale_date: status === 'Venduto' ? (document.getElementById('trans-sale-date').value || null) : null,
         final_price: status === 'Venduto' ? Number(document.getElementById('trans-final-price').value) : null
       };
 
-      if(id) await _supabase.from('transactions').update(payload).eq('id', id);
-      else await _supabase.from('transactions').insert([payload]);
+      let dbError;
+
+      if(id) {
+        const { error } = await _supabase.from('transactions').update(payload).eq('id', id);
+        dbError = error;
+      } else {
+        const { error } = await _supabase.from('transactions').insert([payload]);
+        dbError = error;
+      }
+      
+      if (dbError) {
+        hideLoader();
+        alert("⚠️ ERRORE SUPABASE: " + dbError.message);
+        console.error("Dettagli errore:", dbError);
+        return;
+      }
       
       closeModals(); await loadTransactions(); hideLoader();
     }
