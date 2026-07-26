@@ -321,6 +321,7 @@
               <div id="prop-preview-grid" class="preview-thumbs-grid"></div>
             </div>
             <div class="form-group"><label class="form-label">Descrizione</label><textarea required id="prop-desc" rows="3" class="form-textarea"></textarea></div>
+            <div class="form-group"><label class="form-label">URL Reel Instagram (Opzionale)</label><input type="url" id="prop-instagram" placeholder="es. https://www.instagram.com/reel/..." class="form-input"></div>
             <div class="checkbox-container">
               <label class="checkbox-row"><input type="checkbox" id="prop-parking"><span class="checkbox-label">Parcheggio auto</span></label>
               <label class="checkbox-row"><input type="checkbox" id="prop-featured"><span class="checkbox-label" style="color: var(--brand-blue);">In evidenza (Home)</span></label>
@@ -871,6 +872,7 @@
             bathrooms: Number(document.getElementById('prop-bathrooms').value), 
             sqm: Number(document.getElementById('prop-sqm').value) || null, 
             description: document.getElementById('prop-desc').value, 
+            instagram_url: document.getElementById('prop-instagram').value || null,
             has_parking: document.getElementById('prop-parking').checked, 
             is_featured: document.getElementById('prop-featured').checked, 
             images: uploadedImageUrls 
@@ -899,6 +901,7 @@
         document.getElementById('prop-bathrooms').value = p.bathrooms; 
         document.getElementById('prop-sqm').value = p.sqm||''; 
         document.getElementById('prop-desc').value = p.description; 
+        document.getElementById('prop-instagram').value = p.instagram_url || '';
         document.getElementById('prop-parking').checked = p.has_parking; 
         document.getElementById('prop-featured').checked = p.is_featured; 
         uploadedImageUrls = [...p.images]; 
