@@ -609,6 +609,26 @@
     let pieChartInstance = null;
     let buyers = [];
 
+    // Sfugge i caratteri HTML pericolosi nei dati provenienti dal database
+    // prima di inserirli in innerHTML, per evitare XSS.
+    function escapeHtml(value) {
+        return String(value ?? '').replace(/[&<>"']/g, (c) => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        }[c]));
+    }
+
+    // Estrae i nomi file da un elenco di URL pubblici Supabase Storage ed elimina
+    // gli oggetti corrispondenti dal bucket 'properties-images' (best-effort).
+    async function deleteStorageImages(urls) {
+        const paths = (urls || []).map(u => u.split('/').pop()).filter(Boolean);
+        if (paths.length === 0) return;
+        try {
+            await _supabase.storage.from('properties-images').remove(paths);
+        } catch (err) {
+            console.error('Errore pulizia storage immagini', err);
+        }
+    }
+
     // --- GESTIONE DROPDOWN GLOBALE (SINGLETON PATTERN) ---
     let currentDropdownContext = null;
 
@@ -823,13 +843,13 @@
                     canvas.width = w; 
                     canvas.height = h; 
                     canvas.getContext('2d').drawImage(img, 0, 0, w, h); 
-                    canvas.toBlob(async (blob) => { 
-                        const fileName = `prop_${Date.now()}_${Math.random().toString(36).substring(2,7)}.jpg`; 
-                        const { error } = await _supabase.storage.from('properties-images').upload(fileName, blob, { contentType: 'image/jpeg' }); 
-                        if(error) reject(error); 
-                        const { data: { publicUrl } } = _supabase.storage.from('properties-images').getPublicUrl(fileName); 
-                        resolve(publicUrl); 
-                    }, 'image/jpeg', 0.7); 
+                    canvas.toBlob(async (blob) => {
+                        const fileName = `prop_${Date.now()}_${Math.random().toString(36).substring(2,7)}.jpg`;
+                        const { error } = await _supabase.storage.from('properties-images').upload(fileName, blob, { contentType: 'image/jpeg' });
+                        if(error) return reject(error);
+                        const { data: { publicUrl } } = _supabase.storage.from('properties-images').getPublicUrl(fileName);
+                        resolve(publicUrl);
+                    }, 'image/jpeg', 0.7);
                 }; 
             }; 
         }); 
@@ -843,21 +863,27 @@
             <div class="preview-thumb-container">
                 <img src="${url}" class="preview-thumb ${i===0 ? 'cover-img' : ''}">
                 ${i===0 ? '<span class="cover-badge">COPERTINA</span>' : `<button type="button" class="btn-set-cover" onclick="event.preventDefault(); uploadedImageUrls.unshift(uploadedImageUrls.splice(${i},1)[0]); renderImagePreviews();">⭐</button>`}
-                <button type="button" class="btn-remove-thumb" onclick="event.preventDefault(); uploadedImageUrls.splice(${i},1); renderImagePreviews();">✕</button>
+                <button type="button" class="btn-remove-thumb" onclick="event.preventDefault(); removeUploadedImage(${i});">✕</button>
             </div>`; 
         }); 
-        if(sortableInstance) sortableInstance.destroy(); 
-        sortableInstance = new Sortable(grid, { 
+        if(sortableInstance) sortableInstance.destroy();
+        sortableInstance = new Sortable(grid, {
             animation: 150, 
             ghostClass: 'sortable-ghost', 
             onEnd: (evt) => { 
                 uploadedImageUrls.splice(evt.newIndex, 0, uploadedImageUrls.splice(evt.oldIndex, 1)[0]); 
                 renderImagePreviews(); 
             } 
-        }); 
+        });
     }
 
-    async function handlePropSubmit(e) { 
+    function removeUploadedImage(i) {
+        const [removed] = uploadedImageUrls.splice(i, 1);
+        deleteStorageImages([removed]);
+        renderImagePreviews();
+    }
+
+    async function handlePropSubmit(e) {
         e.preventDefault(); 
         if(uploadedImageUrls.length===0) return alert("Inserisci almeno una foto!"); 
         showLoader("Salvataggio Vetrina..."); 
@@ -928,14 +954,16 @@
         document.getElementById('modal-delete-prop').style.display = 'flex'; 
     }
 
-    document.getElementById('confirm-delete-prop-btn').onclick = async () => { 
-        if(!propToDelete) return; 
-        showLoader("Eliminazione..."); 
-        await _supabase.from('properties').delete().eq('id', propToDelete); 
-        propToDelete = null; 
-        closeModals(); 
-        await loadProperties(); 
-        hideLoader(); 
+    document.getElementById('confirm-delete-prop-btn').onclick = async () => {
+        if(!propToDelete) return;
+        showLoader("Eliminazione...");
+        const p = properties.find(x => x.id == propToDelete);
+        await _supabase.from('properties').delete().eq('id', propToDelete);
+        if (p) await deleteStorageImages(p.images);
+        propToDelete = null;
+        closeModals();
+        await loadProperties();
+        hideLoader();
     };
 
     function renderPropertiesList() { 
@@ -951,8 +979,8 @@
                 <div class="item-info">
                     <img src="${p.images[0]||'https://via.placeholder.com/80'}" class="item-thumbnail">
                     <div class="item-texts">
-                        <p class="item-title">${p.title}</p>
-                        <p class="item-details-text">${p.zone} • ${p.property_type}</p>
+                        <p class="item-title">${escapeHtml(p.title)}</p>
+                        <p class="item-details-text">${escapeHtml(p.zone)} • ${escapeHtml(p.property_type)}</p>
                         <div style="display:flex; gap:6px; margin-top:4px;">
                             <span class="status-badge ${p.status==='Vendita'?'bg-blue':'bg-green'}">${p.status}</span>
                             ${p.is_featured ? '<span class="status-badge bg-yellow">★ Vetrina</span>' : ''}
@@ -1145,7 +1173,7 @@
         list.innerHTML += `
         <tr>
           <td>${b}</td>
-          <td style="font-weight:600;">${t.property_title}<br><span style="font-size:10px;color:gray;">Prop: ${t.owner_name||'-'}</span></td>
+          <td style="font-weight:600;">${escapeHtml(t.property_title)}<br><span style="font-size:10px;color:gray;">Prop: ${escapeHtml(t.owner_name||'-')}</span></td>
           <td>Acq: <b>${acq.toLocaleDateString('it-IT')}</b> <span style="font-size:10px;color:gray;">(${t.assignment_duration||'-'})</span><br>Giorni: <b style="color:var(--brand-blue)">${days>=0?days:0} gg</b></td>
           <td>${pStr}<br><span style="font-size:11px;">Provv: ${cStr}</span></td>
           <td style="text-align:center;">
@@ -1278,14 +1306,14 @@
       filtered.forEach(b => {
         let badge = b.status==='Attivo'?'<span class="status-badge bg-blue">In Ricerca</span>':(b.status==='Trovato'?'<span class="status-badge bg-green">Trovato</span>':'<span class="status-badge bg-red">Non Int.</span>');
         
-        let notesHTML = b.notes ? b.notes.replace(/\n/g, '<br>') : '<i>Nessuna nota presente.</i>';
-        
+        let notesHTML = b.notes ? escapeHtml(b.notes).replace(/\n/g, '<br>') : '<i>Nessuna nota presente.</i>';
+
         list.innerHTML += `
         <!-- Riga Cliccabile -->
         <tr class="clickable-row" onclick="toggleNotes('${b.id}')" title="Clicca per visualizzare le note">
           <td>${badge}</td>
-          <td style="font-weight:600;">${b.full_name}<br><span style="font-size:11px;color:gray;">📞 ${b.phone}</span></td>
-          <td>${b.desired_type||'-'} <span style="font-size:11px;color:gray;">(${b.desired_zone||'Ovunque'})</span></td>
+          <td style="font-weight:600;">${escapeHtml(b.full_name)}<br><span style="font-size:11px;color:gray;">📞 ${escapeHtml(b.phone)}</span></td>
+          <td>${escapeHtml(b.desired_type||'-')} <span style="font-size:11px;color:gray;">(${escapeHtml(b.desired_zone||'Ovunque')})</span></td>
           <td>${b.max_budget ? '€'+b.max_budget.toLocaleString('it-IT') : '-'}</td>
           <td style="text-align:center;" onclick="event.stopPropagation()">
              <button class="kebab-btn" onclick="toggleDropdown(event, 'buyer', '${b.id}')">⋮</button>
@@ -1296,7 +1324,7 @@
           <td colspan="5" style="padding: 0; border: none;">
             <div id="buyer-notes-${b.id}" class="notes-content">
                <div style="margin: 0 16px 16px 16px; padding: 12px 16px; background-color: #fffbeb; font-size: 13px; color: var(--text-slate); border-left: 4px solid var(--brand-yellow); border-radius: 6px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);">
-                 <b>📝 Note di ${b.full_name.split(' ')[0]}:</b><br><br>${notesHTML}
+                 <b>📝 Note di ${escapeHtml(b.full_name.split(' ')[0])}:</b><br><br>${notesHTML}
                </div>
             </div>
           </td>
