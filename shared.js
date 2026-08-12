@@ -71,6 +71,32 @@ const motionOK = typeof gsap !== 'undefined';
 
 if (motionOK) gsap.registerPlugin(ScrollTrigger);
 
+// --- SMOOTH SCROLL (Lenis) ---
+// Rende lo scroll fluido/inerziale invece del salto 1:1 con la rotellina.
+// Va agganciato al ticker di GSAP (non a requestAnimationFrame proprio)
+// e ScrollTrigger va avvisato ad ogni suo scroll simulato, altrimenti le
+// animazioni legate allo scroll restano ancorate alla posizione nativa.
+let lenis = null;
+if (motionOK && typeof Lenis !== 'undefined') {
+    lenis = new Lenis({ duration: 1.1, smoothWheel: true });
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add((time) => lenis.raf(time * 1000));
+    gsap.ticker.lagSmoothing(0);
+
+    // I link "#id" (menu, bottoni "Scopri di più", ecc.) devono scorrere
+    // in modo fluido tramite Lenis invece del salto nativo del browser,
+    // altrimenti si vedrebbe un'incoerenza tra i due comportamenti.
+    // L'offset -100 replica lo scroll-margin-top delle sezioni (navbar fissa).
+    document.addEventListener('click', (e) => {
+        const link = e.target.closest('a[href^="#"]');
+        if (!link || link.getAttribute('href') === '#') return;
+        const target = document.querySelector(link.getAttribute('href'));
+        if (!target) return;
+        e.preventDefault();
+        lenis.scrollTo(target, { offset: -100 });
+    });
+}
+
 // Rivela con un leggero fade+slide dal basso gli elementi che entrano nel
 // viewport durante lo scroll. Richiamabile più volte in sicurezza (es. dopo
 // il render dinamico delle card): gli elementi già rivelati non vengono
