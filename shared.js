@@ -64,12 +64,10 @@ function propertyCardHTML(p) {
 }
 
 // --- ANIMAZIONI (GSAP) ---
-// motionOK è false se GSAP non è disponibile (es. CDN irraggiungibile) o se
-// l'utente ha richiesto meno movimento a livello di sistema operativo: in
-// entrambi i casi tutte le funzioni sotto diventano no-op e il contenuto
-// resta quello visibile via HTML/CSS normale, senza mai restare nascosto.
-const motionOK = typeof gsap !== 'undefined' &&
-    !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+// motionOK è false solo se GSAP non è disponibile (es. CDN/file irraggiungibile):
+// in quel caso tutte le funzioni sotto diventano no-op e il contenuto resta
+// quello visibile via HTML/CSS normale, senza mai restare nascosto.
+const motionOK = typeof gsap !== 'undefined';
 
 if (motionOK) gsap.registerPlugin(ScrollTrigger);
 
