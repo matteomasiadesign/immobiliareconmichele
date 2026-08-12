@@ -26,12 +26,21 @@
 -- NOTE
 -- - "properties" resta leggibile pubblicamente (serve al sito pubblico),
 --   ma scrivibile solo da utenti autenticati (il pannello admin).
--- - "transactions" e "buyers" NON sono leggibili ne' scrivibili in modo
---   anonimo: solo un utente autenticato (chi ha fatto login in admin.html)
---   puo' leggerle e modificarle.
+-- - "transactions" NON e' leggibile ne' scrivibile in modo anonimo: solo
+--   un utente autenticato (chi ha fatto login in admin.html) puo'
+--   leggerla e modificarla.
+-- - "buyers" segue la stessa regola, con UNA eccezione: chiunque puo'
+--   INSERIRE una nuova riga (il modulo "Contatti" del sito la usa per
+--   registrare le richieste), ma nessuno puo' leggere/modificare/
+--   cancellare le righe esistenti senza essere autenticato.
 -- - Il bucket storage "properties-images" resta leggibile pubblicamente
 --   (le foto devono essere visibili sul sito) ma caricabile/cancellabile
 --   solo da utenti autenticati.
+--
+-- SE HAI GIA' ESEGUITO QUESTO FILE IN PRECEDENZA: e' stata aggiunta solo
+-- la policy "buyers_public_insert" (sezione 3). Puoi rieseguire l'intero
+-- file senza problemi (ogni policy viene ricreata da zero con DROP+CREATE),
+-- oppure incollare ed eseguire solo il blocco della sezione 3.
 -- =====================================================================
 
 
@@ -86,8 +95,12 @@ CREATE POLICY "transactions_auth_all"
 
 
 -- ---------------------------------------------------------------------
--- 3) BUYERS (rubrica clienti): solo utenti autenticati, in lettura
---    e scrittura. Nessun accesso anonimo (dati personali dei clienti).
+-- 3) BUYERS (rubrica clienti): lettura/modifica/cancellazione solo per
+--    utenti autenticati. Fa eccezione l'INSERT pubblico, che serve al
+--    modulo "Contatti" del sito (index.html) per inviare una nuova
+--    richiesta: un visitatore puo' CREARE una riga (la sua richiesta),
+--    ma non puo' leggere, modificare o cancellare i clienti gia'
+--    presenti in rubrica - quelli restano visibili solo a te via login.
 -- ---------------------------------------------------------------------
 ALTER TABLE public.buyers ENABLE ROW LEVEL SECURITY;
 
@@ -97,6 +110,13 @@ CREATE POLICY "buyers_auth_all"
   FOR ALL
   TO authenticated
   USING (true)
+  WITH CHECK (true);
+
+DROP POLICY IF EXISTS "buyers_public_insert" ON public.buyers;
+CREATE POLICY "buyers_public_insert"
+  ON public.buyers
+  FOR INSERT
+  TO anon
   WITH CHECK (true);
 
 

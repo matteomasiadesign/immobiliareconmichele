@@ -5,23 +5,33 @@
  * (--brand-blue, --brand-yellow, --white, --text-slate, --text-muted, --border-color, --transition).
  */
 
-/* NAVBAR STICKY */
-.navbar { background-color: var(--brand-blue); border-bottom: 4px solid var(--brand-yellow); height: 80px; display: flex; align-items: center; justify-content: space-between; padding: 0 1rem; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(0,68,255,0.15); }
+/* NAVBAR STICKY: a riposo (in cima) è piena/solida, perché lì sotto non c'è
+   ancora nulla da sfocare - l'effetto vetro smerigliato si attiva solo
+   quando si scrolla, quando il contenuto della pagina passa davvero sotto. */
+.navbar { background: linear-gradient(120deg, var(--brand-blue), #001f8c); border-bottom: 4px solid var(--brand-yellow); height: 80px; display: flex; align-items: center; justify-content: space-between; padding: 0 1rem; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(0,68,255,0.15); transition: height 0.3s ease, box-shadow 0.3s ease, background 0.3s ease, backdrop-filter 0.3s ease; }
+/* brightness() nel backdrop-filter scurisce quello che c'è sotto (schede
+   bianche, sfondi chiari) PRIMA che si mescoli col blu, cosi' il colore
+   resta sempre saturo anche scrollando su sezioni chiare della pagina. */
+.navbar.scrolled { height: 64px; box-shadow: 0 8px 20px rgba(0,0,0,0.18); background: linear-gradient(120deg, rgba(0,68,255,0.85), rgba(0,31,140,0.88)); backdrop-filter: blur(20px) saturate(180%) brightness(0.75); -webkit-backdrop-filter: blur(20px) saturate(180%) brightness(0.75); }
 .brand { display: flex; align-items: center; text-decoration: none; z-index: 1001; }
+.brand-icon-box { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
 .brand-text { margin-left: 12px; display: flex; flex-direction: column; line-height: 1.1; }
 .brand-title { font-size: 1.25rem; font-weight: 900; color: var(--brand-yellow); letter-spacing: -0.025em; }
 .brand-subtitle { font-size: 10px; font-weight: 900; color: var(--white); letter-spacing: 0.1em; margin-top: 2px; }
 
 .nav-links { display: none; gap: 1.5rem; align-items: center; }
 @media (min-width: 768px) { .nav-links { display: flex; } .navbar { padding: 0 2rem; } }
-.nav-link { color: var(--brand-yellow); text-decoration: none; font-weight: 900; font-size: 13px; text-transform: uppercase; transition: var(--transition); }
+/* Sottolineatura che si attiva sulla sezione attualmente in vista (scroll-spy) */
+.nav-link { position: relative; color: var(--brand-yellow); text-decoration: none; font-weight: 900; font-size: 13px; text-transform: uppercase; transition: var(--transition); }
 .nav-link:hover { color: var(--white); }
+.nav-link::after { content: ''; position: absolute; left: 0; right: 0; bottom: -6px; height: 2px; background: var(--brand-yellow); border-radius: 2px; transform: scaleX(0); transition: transform 0.25s ease; }
+.nav-link.active::after { transform: scaleX(1); }
 
 /* HAMBURGER MENU (MOBILE) */
 .mobile-toggle { display: block; background: none; border: none; cursor: pointer; z-index: 1001; }
 @media (min-width: 768px) { .mobile-toggle { display: none; } }
 
-.mobile-menu { position: fixed; top: 80px; left: 0; width: 100%; background-color: var(--brand-blue); border-bottom: 4px solid var(--brand-yellow); display: flex; flex-direction: column; align-items: center; gap: 1.5rem; padding: 2rem 1rem; transform: translateY(-150%); transition: var(--transition); z-index: 999; box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
+.mobile-menu { position: fixed; top: 80px; left: 0; width: 100%; background: linear-gradient(160deg, rgba(0,68,255,0.75), rgba(0,31,140,0.8)); backdrop-filter: blur(20px) saturate(160%); -webkit-backdrop-filter: blur(20px) saturate(160%); border-bottom: 4px solid var(--brand-yellow); display: flex; flex-direction: column; align-items: center; gap: 1.5rem; padding: 2rem 1rem; transform: translateY(-150%); transition: var(--transition); z-index: 999; box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
 .mobile-menu.open { transform: translateY(0); }
 .mobile-menu .nav-link { font-size: 1.1rem; }
 .mobile-menu .btn-catalog-nav { font-size: 1.1rem; padding: 14px 28px; }
@@ -33,38 +43,52 @@
 .card { background: var(--white); border-radius: 24px; overflow: hidden; border: 1px solid var(--border-color); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); cursor: pointer; display: flex; flex-direction: column; transition: var(--transition); }
 .card:hover { transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
 .card-img-container { position: relative; aspect-ratio: 4/3; width: 100%; overflow: hidden; background: #e2e8f0; }
-.card-img { width: 100%; height: 100%; object-fit: cover; }
+.card-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease, opacity 0.5s ease; }
+.card:hover .card-img { transform: scale(1.06); }
+/* Se l'annuncio ha più di una foto, la seconda appare al passaggio del mouse */
+.card-img-hover { opacity: 0; }
+.card:hover .card-img-primary { opacity: 0; }
+.card:hover .card-img-hover { opacity: 1; }
 .card-content { padding: 1.25rem; flex: 1; display: flex; flex-direction: column; position: relative; }
 @media (min-width: 768px) { .card-content { padding: 1.5rem; } }
 
-/* BADGE */
+/* BADGE contratto (Vendita/Affitto) in alto a sinistra sulla foto */
 .card-badge-contract { position: absolute; top: 12px; left: 12px; font-size: 10px; font-weight: 900; text-transform: uppercase; padding: 6px 16px; border-radius: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.15); z-index: 10; }
 .card-badge-contract.vendita { background-color: var(--brand-yellow); color: var(--brand-blue); border: 2px solid var(--white); }
 .card-badge-contract.affitto { background-color: var(--brand-blue); color: var(--white); border: 2px solid var(--brand-yellow); }
 
-.card-title { font-size: 1.2rem; font-weight: 900; color: var(--text-slate); margin-top: 0.5rem; margin-bottom: 0.5rem; line-height: 1.2; }
+/* BADGE Reel: indicatore video in alto a destra sulla foto, apre Instagram */
+.card-badge-reel { position: absolute; top: 10px; right: 10px; z-index: 10; width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: var(--white); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.2); transition: var(--transition); }
+.card-badge-reel:hover { transform: scale(1.12); }
+
+.card-title { font-family: 'Space Grotesk', -apple-system, sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--text-slate); margin-top: 0.5rem; margin-bottom: 0.5rem; line-height: 1.25; }
 .card-zone { color: var(--brand-blue); font-size: 12px; font-weight: 800; display: flex; align-items: center; gap: 4px; margin-bottom: 1rem; }
 .card-features { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color); }
 .feature-item { background: #f1f5f9; font-size: 11px; font-weight: 800; color: var(--text-muted); padding: 6px 10px; border-radius: 12px; display: flex; align-items: center; gap: 4px; }
+
+/* FOOTER card: solo prezzo + invito a scoprire, un'unica azione chiara */
 .card-footer { margin-top: auto; display: flex; justify-content: space-between; align-items: flex-end; padding-top: 1rem; border-top: 1px solid var(--border-color); }
 .card-price-label { font-size: 10px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 2px; }
 .card-price { font-size: 1.35rem; font-weight: 900; color: var(--text-slate); }
+.card-cta { font-size: 11px; font-weight: 900; color: var(--brand-blue); text-transform: uppercase; letter-spacing: 0.03em; display: flex; align-items: center; gap: 4px; transition: var(--transition); }
+.card:hover .card-cta { gap: 8px; }
 
 /* FLOATING ACTION MENU */
-.fab-container { position: fixed; bottom: 24px; right: 24px; z-index: 900; display: flex; flex-direction: column; align-items: center; gap: 12px; }
-.fab-menu { display: flex; flex-direction: column; gap: 10px; opacity: 0; transform: translateY(20px) scale(0.9); pointer-events: none; transition: var(--transition); transform-origin: bottom center; }
+.fab-container { position: fixed; bottom: 24px; right: 24px; z-index: 900; display: flex; flex-direction: column; align-items: flex-end; gap: 12px; }
+.fab-menu { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; opacity: 0; transform: translateY(20px) scale(0.95); pointer-events: none; transition: var(--transition); transform-origin: bottom right; }
 .fab-menu.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
-.fab-action { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: var(--transition); position: relative; }
-.fab-action:hover { transform: scale(1.1); }
-.fab-wa { background-color: #25D366; }
+/* Pillole con testo sempre visibile (niente tooltip solo-hover: su mobile non funzionerebbe) */
+.fab-action { height: 50px; padding: 0 18px 0 14px; border-radius: 30px; display: flex; align-items: center; gap: 10px; color: white; text-decoration: none; font-weight: 900; font-size: 12px; text-transform: uppercase; letter-spacing: 0.03em; white-space: nowrap; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: var(--transition); }
+.fab-action:hover { transform: scale(1.03); }
+.fab-action svg { flex-shrink: 0; }
+.fab-wa { background-color: #059669; }
+.fab-wa svg { width: 27px; height: 27px; }
 .fab-call { background-color: var(--brand-blue); }
+.fab-call svg { width: 24px; height: 24px; }
 .fab-main { width: 64px; height: 64px; border-radius: 50%; background-color: var(--brand-yellow); color: var(--brand-blue); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(0,0,0,0.15); transition: var(--transition); z-index: 2; }
 .fab-main:hover { transform: scale(1.05); }
 .fab-main svg { transition: var(--transition); }
 .fab-container.active .fab-main svg { transform: rotate(45deg); }
-
-.fab-action::after { content: attr(data-tooltip); position: absolute; right: 60px; background: rgba(15, 23, 42, 0.9); color: white; padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 600; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
-.fab-action:hover::after { opacity: 1; }
 
 /* MODALE SICURO E CAROSELLO */
 .modal-overlay { position: fixed; inset: 0; background-color: rgba(15, 23, 42, 0.8); backdrop-filter: blur(5px); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 1rem; }
@@ -88,7 +112,7 @@
 .modal-content { padding: 1.25rem; }
 @media (min-width: 768px) { .modal-content { padding: 1.5rem; } }
 .modal-type { display: inline-block; background: rgba(0,68,255,0.05); color: var(--brand-blue); font-size: 11px; font-weight: 900; text-transform: uppercase; padding: 4px 10px; border-radius: 12px; margin-bottom: 0.5rem; }
-.modal-title { font-size: 1.5rem; font-weight: 900; color: var(--text-slate); line-height: 1.1; margin-bottom: 0.5rem; }
+.modal-title { font-family: 'Space Grotesk', -apple-system, sans-serif; font-size: 1.6rem; font-weight: 700; color: var(--text-slate); line-height: 1.15; margin-bottom: 0.5rem; }
 .modal-zone { color: var(--brand-blue); font-weight: 800; font-size: 13px; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 6px; }
 .modal-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1.5rem; }
 .modal-grid.has-sqm { grid-template-columns: repeat(4, 1fr); }
@@ -110,7 +134,8 @@
 /* BOTTONI MODALE UNIFORMI E RESPONSIVE */
 .btn-call { flex: 1 1 auto; min-width: 0; height: 50px; background-color: var(--brand-blue); color: var(--white); text-decoration: none; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 13px; border-radius: 16px; transition: var(--transition); text-transform: uppercase; letter-spacing: 0.05em; padding: 0 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .btn-reel { width: 50px; height: 50px; flex-shrink: 0; background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: var(--white); text-decoration: none; display: flex; align-items: center; justify-content: center; border-radius: 16px; transition: var(--transition); }
-.btn-wa { width: 50px; height: 50px; flex-shrink: 0; background-color: #25D366; color: var(--white); text-decoration: none; display: flex; align-items: center; justify-content: center; border-radius: 16px; transition: var(--transition); }
+.btn-wa { width: 50px; height: 50px; flex-shrink: 0; background-color: #059669; color: var(--white); text-decoration: none; display: flex; align-items: center; justify-content: center; border-radius: 16px; transition: var(--transition); }
+.btn-wa svg { width: 28px; height: 28px; }
 
 /* BOTTONE CONDIVIDI */
 .btn-share { width: 50px; height: 50px; flex-shrink: 0; background-color: var(--white); color: var(--brand-blue); border: 2px solid var(--border-color); text-decoration: none; display: flex; align-items: center; justify-content: center; border-radius: 16px; transition: var(--transition); cursor: pointer; }
@@ -129,3 +154,21 @@
   .btn-close-modal { top: 24px; right: 24px; background-color: var(--bg-slate); color: var(--text-slate); border: 1px solid var(--border-color); }
   .btn-close-modal:hover { background-color: var(--brand-blue); color: var(--white); border-color: var(--brand-blue); }
 }
+
+/* FOOTER */
+.site-footer { background: linear-gradient(160deg, var(--brand-blue), #001f80); color: var(--white); padding: 4rem 1.5rem 0; margin-top: auto; box-shadow: 0 -10px 20px rgba(0,68,255,0.1); }
+.footer-inner { max-width: 1200px; margin: 0 auto; }
+.footer-grid { display: grid; grid-template-columns: 1fr; gap: 2.5rem; padding-bottom: 2.5rem; text-align: center; }
+@media (min-width: 768px) { .footer-grid { grid-template-columns: 1.4fr 1fr 1fr; gap: 2rem; text-align: left; } }
+.footer-brand-title { color: var(--brand-yellow); font-size: 1.4rem; font-weight: 900; text-transform: uppercase; margin-bottom: 0.5rem; }
+.footer-tagline { font-size: 0.95rem; font-weight: 500; color: rgba(255,255,255,0.85); line-height: 1.6; margin-bottom: 1.5rem; }
+.footer-heading { font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; color: var(--brand-yellow); margin-bottom: 1.1rem; }
+.footer-links { display: flex; flex-direction: column; gap: 0.85rem; }
+.footer-links a, .footer-links span { color: rgba(255,255,255,0.85); text-decoration: none; font-weight: 600; font-size: 0.95rem; transition: color 0.2s; }
+.footer-links a:hover { color: var(--brand-yellow); }
+.footer-social { display: flex; justify-content: center; gap: 1.25rem; margin-top: 1.5rem; }
+@media (min-width: 768px) { .footer-social { justify-content: flex-start; } }
+.footer-social a { color: var(--brand-yellow); transition: transform 0.2s; }
+.footer-social a:hover { transform: scale(1.1); }
+.footer-bottom { border-top: 1px solid rgba(255,255,255,0.15); padding: 1.5rem 0; text-align: center; font-size: 0.8rem; color: rgba(255,255,255,0.6); display: flex; flex-direction: column; gap: 0.5rem; }
+@media (min-width: 768px) { .footer-bottom { flex-direction: row; justify-content: space-between; text-align: left; } }

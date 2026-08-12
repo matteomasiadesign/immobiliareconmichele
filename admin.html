@@ -4,7 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Pannello Admin - Immobiliare con Michele</title>
-  
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500..700&display=swap" rel="stylesheet">
+
   <!-- LIBRERIE ESTERNE -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
@@ -26,27 +30,30 @@
     html { scroll-behavior: smooth; }
     body { background-color: var(--bg-slate); color: var(--text-slate); min-height: 100vh; max-width: 100%; overflow-x: clip; display: flex; flex-direction: column; }
 
-    .navbar { background-color: var(--brand-blue); border-bottom: 4px solid var(--brand-yellow); height: 80px; display: flex; align-items: center; justify-content: space-between; padding: 0 1rem; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(0,68,255,0.15); width: 100%; }
+    .navbar { background: linear-gradient(120deg, var(--brand-blue), #001f8c); border-bottom: 4px solid var(--brand-yellow); height: 80px; display: flex; align-items: center; justify-content: space-between; padding: 0 1rem; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(0,68,255,0.15); width: 100%; transition: height 0.3s ease, box-shadow 0.3s ease, background 0.3s ease, backdrop-filter 0.3s ease; }
+    /* A riposo la navbar e' piena/solida; il vetro smerigliato si attiva solo
+       allo scroll, quando c'e' davvero contenuto sotto da sfocare (vedi shared.css). */
+    .navbar.scrolled { height: 68px; box-shadow: 0 8px 20px rgba(0,0,0,0.18); background: linear-gradient(120deg, rgba(0,68,255,0.85), rgba(0,31,140,0.88)); backdrop-filter: blur(20px) saturate(180%) brightness(0.75); -webkit-backdrop-filter: blur(20px) saturate(180%) brightness(0.75); }
     .brand { display: flex; align-items: center; text-decoration: none; min-width: 0; z-index: 1001; }
-    .brand-icon-box { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border-radius: 8px; overflow: hidden; background: transparent; }
+    .brand-icon-box { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .brand-text { margin-left: 8px; display: flex; flex-direction: column; line-height: 1.1; min-width: 0; }
     .brand-title { font-size: 1.1rem; font-weight: 900; color: var(--brand-yellow); letter-spacing: -0.025em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .brand-subtitle { font-size: 9px; font-weight: 900; color: var(--white); letter-spacing: 0.05em; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     @media (min-width: 375px) { .navbar { padding: 0 1.5rem; } .brand-text { margin-left: 12px; } .brand-title { font-size: 1.25rem; } .brand-subtitle { font-size: 10px; letter-spacing: 0.1em; } }
-    
+
     .nav-auth { display: flex; align-items: center; gap: 8px; }
     .nav-actions { display: flex; align-items: center; gap: 8px; }
-    .btn-nav-link { background: transparent; color: var(--brand-yellow); text-decoration: none; font-weight: 900; font-size: 11px; text-transform: uppercase; padding: 8px 10px; border-radius: 12px; transition: var(--transition); display: flex; align-items: center; gap: 6px; border: 1px solid rgba(255,217,15,0.3); }
+    .btn-nav-link { background: transparent; color: var(--brand-yellow); text-decoration: none; font-weight: 900; font-size: 11px; text-transform: uppercase; padding: 8px 10px; border-radius: 999px; transition: var(--transition); display: flex; align-items: center; gap: 6px; border: 1px solid rgba(255,217,15,0.3); }
     .btn-nav-link:hover { background: rgba(255,217,15,0.1); }
     .btn-nav-proposta { background: var(--brand-yellow); color: var(--brand-blue); border-color: var(--brand-yellow); }
     .btn-nav-proposta:hover { background: #ffe552; color: var(--brand-blue); }
-    .btn-logout { background-color: rgba(239,68,68,0.1); color: #fca5a5; border: 1px solid rgba(239,68,68,0.3); font-weight: 900; font-size: 11px; text-transform: uppercase; padding: 8px 12px; border-radius: 12px; cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 6px;}
+    .btn-logout { background-color: rgba(239,68,68,0.1); color: #fca5a5; border: 1px solid rgba(239,68,68,0.3); font-weight: 900; font-size: 11px; text-transform: uppercase; padding: 8px 12px; border-radius: 999px; cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 6px;}
     .btn-logout:hover { background-color: #ef4444; color: var(--white); }
 
     .admin-mobile-toggle { display: none; background: none; border: none; cursor: pointer; padding: 6px; line-height: 0; }
-    .admin-mobile-menu { position: fixed; top: 80px; left: 0; width: 100%; background-color: var(--brand-blue); border-bottom: 4px solid var(--brand-yellow); display: flex; flex-direction: column; gap: 10px; padding: 1rem; transform: translateY(-150%); transition: var(--transition); z-index: 999; box-shadow: 0 12px 20px rgba(0,0,0,0.15); }
+    .admin-mobile-menu { position: fixed; top: 80px; left: 0; width: 100%; background: linear-gradient(160deg, rgba(0,68,255,0.75), rgba(0,31,140,0.8)); backdrop-filter: blur(20px) saturate(160%); -webkit-backdrop-filter: blur(20px) saturate(160%); border-bottom: 4px solid var(--brand-yellow); display: flex; flex-direction: column; gap: 10px; padding: 1rem; transform: translateY(-150%); transition: var(--transition); z-index: 999; box-shadow: 0 12px 20px rgba(0,0,0,0.15); }
     .admin-mobile-menu.open { transform: translateY(0); }
-    .mobile-menu-item { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; text-decoration: none; font-weight: 900; font-size: 14px; text-transform: uppercase; letter-spacing: 0.03em; padding: 14px 16px; border-radius: 14px; cursor: pointer; transition: var(--transition); background: transparent; color: var(--brand-yellow); border: 1px solid rgba(255,217,15,0.3); }
+    .mobile-menu-item { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; text-decoration: none; font-weight: 900; font-size: 14px; text-transform: uppercase; letter-spacing: 0.03em; padding: 14px 16px; border-radius: 999px; cursor: pointer; transition: var(--transition); background: transparent; color: var(--brand-yellow); border: 1px solid rgba(255,217,15,0.3); }
     .mobile-menu-item.primary { background: var(--brand-yellow); color: var(--brand-blue); border-color: var(--brand-yellow); }
     .mobile-menu-item.danger { color: #fca5a5; border-color: rgba(239,68,68,0.35); }
     .mobile-menu-item.danger:hover { background: #ef4444; color: var(--white); }
@@ -57,16 +64,17 @@
 
     .login-container { max-width: 400px; margin: 3rem auto; padding: 0 1rem; width: 100%; flex: 1; }
     .login-card { background-color: var(--white); padding: 2rem 1.5rem; border-radius: 24px; border: 1px solid var(--border-color); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); text-align: center; width: 100%; }
-    
+    .login-card h2 { font-family: 'Space Grotesk', -apple-system, sans-serif; }
+
     .dashboard-container { max-width: 1200px; margin: 1.5rem auto; padding: 0 1rem; width: 100%; flex: 1; display: flex; flex-direction: column; }
     .header-bar { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem; }
     @media (min-width: 768px) { .header-bar { flex-direction: row; justify-content: space-between; align-items: center; } }
-    .header-title-box h1 { font-size: 1.5rem; font-weight: 900; color: var(--brand-blue); text-transform: uppercase; }
+    .header-title-box h1 { font-family: 'Space Grotesk', -apple-system, sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--brand-blue); text-transform: uppercase; }
     .header-title-box p { font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 4px; }
-    
+
     .tabs-nav { display: flex; gap: 10px; margin-bottom: 1.5rem; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
     .tabs-nav::-webkit-scrollbar { display: none; }
-    .tab-btn { padding: 12px 20px; background: var(--white); border: 1px solid var(--border-color); border-radius: 16px; font-weight: 900; font-size: 13px; text-transform: uppercase; color: var(--text-muted); cursor: pointer; transition: var(--transition); white-space: nowrap; display: flex; align-items: center; gap: 8px; }
+    .tab-btn { padding: 12px 20px; background: var(--white); border: 1px solid var(--border-color); border-radius: 999px; font-weight: 900; font-size: 13px; text-transform: uppercase; color: var(--text-muted); cursor: pointer; transition: var(--transition); white-space: nowrap; display: flex; align-items: center; gap: 8px; }
     .tab-btn.active { background: var(--brand-blue); color: var(--brand-yellow); border-color: var(--brand-blue); box-shadow: 0 4px 10px rgba(0,68,255,0.2); }
     .tab-content { display: none; animation: fadeIn 0.3s ease; }
     .tab-content.active { display: block; }
@@ -76,7 +84,7 @@
     .form-label { display: block; font-size: 11px; font-weight: 900; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em; margin-bottom: 6px; }
     .form-input, .form-select, .form-textarea { width: 100%; padding: 12px 14px; background-color: #f1f5f9; border: 1px solid var(--border-color); border-radius: 16px; font-size: 14px; font-weight: 500; outline: none; transition: var(--transition); color: var(--text-slate); max-width: 100%; }
     .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--brand-blue); background-color: var(--white); box-shadow: 0 0 0 4px rgba(0,68,255,0.1); }
-    .btn-submit { width: 100%; background-color: var(--brand-blue); color: var(--brand-yellow); border: none; padding: 14px; border-radius: 16px; font-size: 14px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; box-shadow: 0 4px 12px rgba(0,68,255,0.2); transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 8px;}
+    .btn-submit { width: 100%; background-color: var(--brand-blue); color: var(--brand-yellow); border: none; padding: 14px; border-radius: 999px; font-size: 14px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; box-shadow: 0 4px 12px rgba(0,68,255,0.2); transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 8px;}
     .btn-submit:hover { background-color: #0033CC; transform: translateY(-1px); }
     .form-row { display: grid; grid-template-columns: 1fr; gap: 12px; }
     @media (min-width: 480px) { .form-row { grid-template-columns: 1fr 1fr; } }
@@ -84,10 +92,18 @@
     @media (min-width: 480px) { .form-row-3 { grid-template-columns: 1fr 1fr 1fr; } }
 
     .panel-card { background-color: var(--white); padding: 1.25rem; border-radius: 24px; border: 1px solid var(--border-color); box-shadow: 0 4px 20px rgba(0,0,0,0.02); width: 100%; }
-    .panel-title { font-size: 16px; font-weight: 900; text-transform: uppercase; margin-bottom: 1.5rem; color: var(--text-slate); display: flex; align-items: center; gap: 8px; }
+    .panel-title { font-family: 'Space Grotesk', -apple-system, sans-serif; font-size: 17px; font-weight: 700; text-transform: uppercase; margin-bottom: 1.5rem; color: var(--text-slate); display: flex; align-items: center; gap: 8px; }
     
+    /* Vetrina Annunci: su desktop la lista sta a sinistra (colonna stretta) e
+       il form di compilazione a destra, con molto più spazio per lavorarci. */
     .main-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; width: 100%; }
-    @media (min-width: 1024px) { .main-grid { grid-template-columns: 380px 1fr; gap: 2rem; } }
+    @media (min-width: 1024px) {
+      .main-grid { grid-template-columns: 360px 1fr; gap: 2rem; }
+      .main-grid .prop-list-panel { order: 1; }
+      .main-grid .prop-form-panel { order: 2; padding: 2rem 2.5rem; }
+    }
+    .form-section-label { font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; color: var(--brand-blue); margin: 1.75rem 0 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border-color); }
+    .form-section-label:first-of-type { margin-top: 0; }
     .btn-cancel-edit { font-size: 11px; font-weight: 900; text-transform: uppercase; color: #ef4444; background: none; border: none; cursor: pointer; display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
     
     .photo-fields-box { background-color: #f8fafc; padding: 1rem; border-radius: 18px; border: 1px solid var(--border-color); margin-bottom: 1rem; width: 100%; }
@@ -108,7 +124,7 @@
     .checkbox-label { font-size: 13px; font-weight: 700; }
 
     .archive-header { padding: 1.25rem 1rem; border-bottom: 2px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background-color: rgba(0,68,255,0.03); width: 100%; }
-    .archive-header h2 { font-size: 14px; font-weight: 900; text-transform: uppercase; color: var(--brand-blue); }
+    .archive-header h2 { font-family: 'Space Grotesk', -apple-system, sans-serif; font-size: 15px; font-weight: 700; text-transform: uppercase; color: var(--brand-blue); }
     .list-wrapper { display: flex; flex-direction: column; width: 100%; }
     .item-row { padding: 1.25rem 1rem; border-bottom: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 1rem; transition: var(--transition); width: 100%; }
     @media (min-width: 640px) { .item-row { padding: 1.5rem; flex-direction: row; align-items: center; justify-content: space-between; } }
@@ -120,13 +136,21 @@
     .item-actions-box { display: flex; align-items: center; justify-content: space-between; gap: 1rem; border-top: 1px solid var(--border-color); padding-top: 1rem; width: 100%; }
     @media (min-width: 640px) { .item-actions-box { justify-content: flex-end; border-top: none; padding-top: 0; width: auto; gap: 1.5rem; } }
 
-    .year-selector-box { background-color: var(--brand-blue); color: var(--white); padding: 10px 15px; border-radius: 14px; font-weight: 900; display: flex; align-items: center; gap: 10px; font-size: 14px; }
+    /* La lista annunci vive ora in una colonna stretta a fianco del form (vedi
+       .prop-list-panel): a quella larghezza riga+prezzo+bottoni non ci stanno
+       affiancati, quindi qui resta sempre impilata anche su desktop. */
+    @media (min-width: 1024px) {
+      .prop-list-panel .item-row { flex-direction: column; align-items: stretch; }
+      .prop-list-panel .item-actions-box { justify-content: space-between; border-top: 1px solid var(--border-color); padding-top: 1rem; width: 100%; }
+    }
+
+    .year-selector-box { background-color: var(--brand-blue); color: var(--white); padding: 10px 15px; border-radius: 999px; font-weight: 900; display: flex; align-items: center; gap: 10px; font-size: 14px; }
     .year-selector-box select { background: transparent; color: var(--brand-yellow); border: none; font-weight: 900; font-size: 16px; outline: none; cursor: pointer; }
     .year-selector-box select option { color: var(--text-slate); }
     .stats-cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
     @media (min-width: 768px) { .stats-cards-grid { grid-template-columns: repeat(4, 1fr); } }
     .stat-card { background: var(--white); padding: 1.5rem; border-radius: 20px; border: 1px solid var(--border-color); text-align: center; display: flex; flex-direction: column; justify-content: center; }
-    .stat-value { font-size: 1.8rem; font-weight: 900; color: var(--brand-blue); margin-bottom: 4px; line-height: 1; }
+    .stat-value { font-family: 'Space Grotesk', -apple-system, sans-serif; font-size: 1.8rem; font-weight: 700; color: var(--brand-blue); margin-bottom: 4px; line-height: 1; }
     .stat-label { font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--text-muted); }
     
     .charts-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
@@ -164,6 +188,13 @@
     /* --- NUOVI STILI PER MENU A TENDINA (KEBAB MENU) --- */
     .kebab-btn { background: none; border: none; font-size: 22px; cursor: pointer; padding: 4px 10px; color: var(--text-muted); border-radius: 8px; transition: var(--transition); }
     .kebab-btn:hover { background-color: #e2e8f0; color: var(--text-slate); }
+
+    /* Pulsanti icona Modifica/Elimina (lista annunci + menu a tendina) */
+    .action-buttons { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .btn-action { width: 38px; height: 38px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border-radius: 12px; border: 1px solid var(--border-color); background: var(--white); color: var(--text-muted); cursor: pointer; transition: var(--transition); }
+    .btn-action svg { width: 17px; height: 17px; }
+    .btn-action.edit:hover { background: rgba(0,68,255,0.08); border-color: var(--brand-blue); color: var(--brand-blue); }
+    .btn-action.delete:hover { background: #fef2f2; border-color: #ef4444; color: #ef4444; }
     
     /* FIX: Menu Singolo sganciato dalle tabelle */
     .dropdown-menu { 
@@ -180,6 +211,7 @@
     
     .dropdown-menu.show { display: block; animation: fadeIn 0.2s ease; }
     .dropdown-item { display: flex; align-items: center; gap: 8px; padding: 12px 16px; width: 100%; border: none; background: none; text-align: left; font-size: 13px; font-weight: 700; cursor: pointer; color: var(--text-slate); transition: background 0.2s; }
+    .dropdown-item svg { width: 16px; height: 16px; flex-shrink: 0; }
     .dropdown-item:hover { background-color: #f1f5f9; }
     .dropdown-item.delete { color: #ef4444; }
     .dropdown-item.delete:hover { background-color: #fef2f2; }
@@ -271,21 +303,42 @@
 
     <!-- TABS NAV -->
     <div class="tabs-nav">
-      <button class="tab-btn active" onclick="switchTab('tab-vetrina', this)">🏢 Vetrina Annunci</button>
+      <button class="tab-btn active" onclick="switchTab('tab-overview', this)">🏠 Panoramica <span id="tab-overview-badge" class="status-badge bg-red" style="display:none; margin-left:6px;">0</span></button>
+      <button class="tab-btn" onclick="switchTab('tab-vetrina', this)">🏢 Vetrina Annunci</button>
       <button class="tab-btn" onclick="switchTab('tab-stats', this)">📊 Statistiche (CRM)</button>
       <button class="tab-btn" onclick="switchTab('tab-crm', this)">📇 Clienti (Rubrica)</button>
     </div>
 
+    <!-- TAB 0: PANORAMICA -->
+    <div id="tab-overview" class="tab-content active">
+      <div class="stats-cards-grid">
+        <div class="stat-card"><div class="stat-value" id="ov-stat-listings">0</div><div class="stat-label">Annunci Online</div></div>
+        <div class="stat-card"><div class="stat-value" id="ov-stat-active">0</div><div class="stat-label">Incarichi in Corso</div></div>
+        <div class="stat-card"><div class="stat-value" id="ov-stat-expiring" style="color:#ea580c;">0</div><div class="stat-label">In Scadenza (90gg)</div></div>
+        <div class="stat-card"><div class="stat-value" id="ov-stat-revenue" style="color:#10b981;">€0</div><div class="stat-label">Fatturato Anno Corrente</div></div>
+      </div>
+
+      <div class="panel-card" style="padding: 0; overflow: hidden;">
+        <div class="archive-header">
+          <h2>📩 Nuove Richieste dal Sito</h2>
+          <span id="overview-unread-badge" style="background:var(--brand-blue); color:var(--brand-yellow); font-size:11px; font-weight:900; padding:4px 10px; border-radius:20px;">0</span>
+        </div>
+        <div id="overview-leads-list" class="list-wrapper"></div>
+      </div>
+    </div>
+
     <!-- TAB 1: VETRINA (Properties Pubbliche) -->
-    <div id="tab-vetrina" class="tab-content active">
+    <div id="tab-vetrina" class="tab-content">
       <div class="main-grid">
-        <div class="panel-card">
+        <div class="panel-card prop-form-panel">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
             <h2 id="prop-form-title" class="panel-title" style="margin-bottom: 0;">Nuovo Annuncio (Vetrina)</h2>
             <button type="button" id="prop-cancel-btn" onclick="cancelPropEdit()" class="btn-cancel-edit hidden">✕ Annulla</button>
           </div>
           <form onsubmit="handlePropSubmit(event)">
             <input type="hidden" id="prop-id">
+
+            <div class="form-section-label">Informazioni Principali</div>
             <div class="form-group">
               <label class="form-label">Titolo Annuncio</label>
               <input required type="text" id="prop-title" placeholder="es. Bilocale a Porto Torres" class="form-input">
@@ -307,11 +360,15 @@
               <div class="form-group"><label class="form-label">Zona</label><input required type="text" id="prop-zone" class="form-input"></div>
               <div class="form-group"><label class="form-label">Tipologia</label><input required type="text" id="prop-type" class="form-input"></div>
             </div>
+
+            <div class="form-section-label">Caratteristiche</div>
             <div class="form-row-3">
               <div class="form-group"><label class="form-label">Stanze</label><input required type="number" id="prop-rooms" class="form-input" value="1"></div>
               <div class="form-group"><label class="form-label">Bagni</label><input required type="number" id="prop-bathrooms" class="form-input" value="1"></div>
               <div class="form-group"><label class="form-label">Mq</label><input type="number" id="prop-sqm" class="form-input"></div>
             </div>
+
+            <div class="form-section-label">Foto</div>
             <div class="photo-fields-box">
               <label class="form-label">Immagini (Trascina per riordinare)</label>
               <label class="file-input-custom">
@@ -320,17 +377,22 @@
               </label>
               <div id="prop-preview-grid" class="preview-thumbs-grid"></div>
             </div>
+
+            <div class="form-section-label">Descrizione</div>
             <div class="form-group"><label class="form-label">Descrizione</label><textarea required id="prop-desc" rows="3" class="form-textarea"></textarea></div>
             <div class="form-group"><label class="form-label">URL Reel Instagram (Opzionale)</label><input type="url" id="prop-instagram" placeholder="es. https://www.instagram.com/reel/..." class="form-input"></div>
+
+            <div class="form-section-label">Opzioni</div>
             <div class="checkbox-container">
               <label class="checkbox-row"><input type="checkbox" id="prop-parking"><span class="checkbox-label">Parcheggio auto</span></label>
               <label class="checkbox-row"><input type="checkbox" id="prop-featured"><span class="checkbox-label" style="color: var(--brand-blue);">In evidenza (Home)</span></label>
             </div>
+
             <button type="submit" id="prop-submit-btn" class="btn-submit">Pubblica Annuncio 🚀</button>
           </form>
         </div>
 
-        <div style="display: flex; flex-direction: column; gap: 1rem;">
+        <div class="prop-list-panel" style="display: flex; flex-direction: column; gap: 1rem;">
           <div class="panel-card" style="padding: 1rem;">
             <input type="text" id="prop-search" oninput="renderPropertiesList()" placeholder="Cerca immobile in vetrina..." class="form-input">
           </div>
@@ -339,7 +401,7 @@
               <h2>Archivio Annunci Online</h2>
               <span id="prop-count-badge" style="background:var(--brand-blue); color:var(--brand-yellow); font-size:11px; font-weight:900; padding:4px 10px; border-radius:20px;">0</span>
             </div>
-            <div id="properties-list" class="list-wrapper"></div>
+            <div id="properties-list" class="list-wrapper" style="max-height: 600px; overflow-y: auto;"></div>
           </div>
         </div>
       </div>
@@ -587,8 +649,14 @@
 
   <!-- Menu Kebab Globale (Fuori da ogni tabella per prevenire clipping) -->
   <div id="global-kebab-menu" class="dropdown-menu">
-      <button id="global-kebab-edit" class="dropdown-item">✏️ Modifica</button>
-      <button id="global-kebab-delete" class="dropdown-item delete">🗑️ Elimina</button>
+      <button id="global-kebab-edit" class="dropdown-item">
+        <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"/></svg>
+        Modifica
+      </button>
+      <button id="global-kebab-delete" class="dropdown-item delete">
+        <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/></svg>
+        Elimina
+      </button>
   </div>
 
   <script>
@@ -661,15 +729,29 @@
            type === 'trans' ? openDeleteTransModal(id) : openDeleteBuyerModal(id);
        };
 
-       // Mostro il menu
+       // Mostro il menu (prima di misurarlo, cosi' offsetHeight e' quello vero)
        menu.classList.add('show');
-       
+
        // Calcolo la posizione esatta del pulsante "⋮" che ho appena cliccato
        const btnRect = event.target.getBoundingClientRect();
-       
-       // Applico la posizione 'fixed' calcolata per far apparire il menu sotto al pulsante e a sinistra
-       menu.style.top = (btnRect.bottom + 4) + 'px';
-       menu.style.left = (btnRect.right - 140) + 'px'; // 140px è il min-width del menu
+
+       // Applico la posizione 'fixed' calcolata per far apparire il menu sotto al pulsante e a sinistra,
+       // limitata (clamp) perché non esca mai dai bordi dello schermo. Se non c'è spazio sotto
+       // (es. riga vicina al fondo pagina), il menu si apre sopra al pulsante invece che sotto.
+       const menuWidth = 140; // pari al min-width del menu
+       const menuHeight = menu.offsetHeight;
+
+       let leftPos = btnRect.right - menuWidth;
+       leftPos = Math.max(8, Math.min(leftPos, window.innerWidth - menuWidth - 8));
+
+       let topPos = btnRect.bottom + 4;
+       if (topPos + menuHeight > window.innerHeight - 8) {
+           topPos = btnRect.top - menuHeight - 4; // apre sopra al pulsante
+       }
+       topPos = Math.max(8, topPos);
+
+       menu.style.top = topPos + 'px';
+       menu.style.left = leftPos + 'px';
     }
 
     function closeAllDropdowns() {
@@ -695,11 +777,12 @@
     function toggleNotes(id) {
        const notesRow = document.getElementById(`row-buyer-notes-${id}`);
        const notesContent = document.getElementById(`buyer-notes-${id}`);
-       
+
        if (notesRow.style.display === 'none') {
            notesRow.style.display = 'table-row';
            // Piccolo timeout per permettere al browser di registrare il display:table-row prima dell'animazione
            setTimeout(() => notesContent.classList.add('expanded'), 10);
+           markLeadRead(id); // aprire le note di una richiesta dal sito la segna come letta
        } else {
            notesContent.classList.remove('expanded');
            // Attende la fine dell'animazione CSS prima di nascondere la riga
@@ -740,14 +823,22 @@
             e.stopPropagation(); 
             mobileMenu.classList.toggle('open'); 
         });
-        document.addEventListener('click', (e) => { 
-            if (mobileMenu.classList.contains('open') && !mobileMenu.contains(e.target) && !mobileToggle.contains(e.target)) { 
-                mobileMenu.classList.remove('open'); 
-            } 
+        document.addEventListener('click', (e) => {
+            if (mobileMenu.classList.contains('open') && !mobileMenu.contains(e.target) && !mobileToggle.contains(e.target)) {
+                mobileMenu.classList.remove('open');
+            }
         });
       }
 
-      try { 
+      // Navbar: vetro smerigliato solo allo scroll (a riposo resta piena/solida)
+      const navbarEl = document.querySelector('.navbar');
+      if (navbarEl) {
+        const onNavbarScroll = () => navbarEl.classList.toggle('scrolled', window.scrollY > 80);
+        window.addEventListener('scroll', onNavbarScroll, { passive: true });
+        onNavbarScroll();
+      }
+
+      try {
           const { data: { session } } = await _supabase.auth.getSession(); 
           if (session) { 
               handleAuthSuccess(); 
@@ -788,23 +879,25 @@
         await _supabase.auth.signOut(); 
     }
 
-    async function handleAuthSuccess() { 
-        document.getElementById('login-screen').style.display = 'none'; 
-        document.getElementById('admin-dashboard').style.display = 'flex'; 
-        document.getElementById('nav-auth').style.display = 'flex'; 
-        await Promise.all([loadProperties(), loadTransactions(), loadBuyers()]); 
-        hideLoader(); 
+    async function handleAuthSuccess() {
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('admin-dashboard').style.display = 'flex';
+        document.getElementById('nav-auth').style.display = 'flex';
+        await Promise.all([loadProperties(), loadTransactions(), loadBuyers()]);
+        renderOverviewStats();
+        hideLoader();
     }
 
     /* =======================================================
        TAB 1: VETRINA
        ======================================================= */
-    async function loadProperties() { 
-        const { data, error } = await _supabase.from('properties').select('*').order('created_at', { ascending: false }); 
-        if(!error && data) { 
-            properties = data; 
-            renderPropertiesList(); 
-        } 
+    async function loadProperties() {
+        const { data, error } = await _supabase.from('properties').select('*').order('created_at', { ascending: false });
+        if(!error && data) {
+            properties = data;
+            renderPropertiesList();
+            renderOverviewStats();
+        }
     }
 
     async function handleImageSelection(e) { 
@@ -990,8 +1083,12 @@
                 <div class="item-actions-box">
                     <span style="font-weight:900;">€${p.price.toLocaleString('it-IT')}</span>
                     <div class="action-buttons">
-                        <button onclick="startPropEdit('${p.id}')" class="btn-action edit" title="Modifica">✏️</button>
-                        <button onclick="openDeletePropModal('${p.id}')" class="btn-action delete" title="Elimina">🗑️</button>
+                        <button onclick="startPropEdit('${p.id}')" class="btn-action edit" title="Modifica">
+                            <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"/></svg>
+                        </button>
+                        <button onclick="openDeletePropModal('${p.id}')" class="btn-action delete" title="Elimina">
+                            <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/></svg>
+                        </button>
                     </div>
                 </div>
             </div>`; 
@@ -1002,14 +1099,15 @@
     /* =======================================================
        TAB 2: INCARICHI & STATISTICHE
        ======================================================= */
-    async function loadTransactions() { 
-        const { data, error } = await _supabase.from('transactions').select('*').order('acquisition_date', { ascending: false }); 
-        if(!error) { 
-            transactions = data || []; 
-            populateYearDropdown(); 
-            renderTransactionsTable(); 
-            updateDashboardStats(); 
-        } 
+    async function loadTransactions() {
+        const { data, error } = await _supabase.from('transactions').select('*').order('acquisition_date', { ascending: false });
+        if(!error) {
+            transactions = data || [];
+            populateYearDropdown();
+            renderTransactionsTable();
+            updateDashboardStats();
+            renderOverviewStats();
+        }
     }
 
     function populateYearDropdown() { 
@@ -1288,12 +1386,94 @@
     /* =======================================================
        TAB 3: RUBRICA CRM
        ======================================================= */
-    async function loadBuyers() { 
-        const { data, error } = await _supabase.from('buyers').select('*').order('created_at', { ascending: false }); 
-        if(!error) { 
-            buyers = data || []; 
-            renderBuyersList(); 
-        } 
+    async function loadBuyers() {
+        const { data, error } = await _supabase.from('buyers').select('*').order('created_at', { ascending: false });
+        if(!error) {
+            buyers = data || [];
+            renderBuyersList();
+            renderOverviewLeads();
+        }
+    }
+
+    // Segna una richiesta come letta: aggiorna subito la UI (ottimistico) poi persiste su Supabase.
+    async function markLeadRead(id) {
+        const b = buyers.find(x => x.id == id);
+        if (!b || b.source !== 'sito' || b.is_read) return;
+        b.is_read = true;
+        renderOverviewLeads();
+        renderBuyersList();
+        await _supabase.from('buyers').update({ is_read: true }).eq('id', id);
+    }
+
+    // Statistiche rapide della Panoramica: annunci online, incarichi in corso,
+    // incarichi in scadenza entro 90 giorni, fatturato netto dell'anno corrente.
+    function renderOverviewStats() {
+        const listingsEl = document.getElementById('ov-stat-listings');
+        if (!listingsEl) return; // tab non ancora nel DOM
+
+        listingsEl.innerText = properties.length;
+
+        const activeIncarichi = transactions.filter(t => t.status === 'In Vendita').length;
+        document.getElementById('ov-stat-active').innerText = activeIncarichi;
+
+        const today = new Date();
+        let expiringCount = 0;
+        transactions.forEach(t => {
+            if (t.status !== 'In Vendita') return;
+            const durMonths = t.assignment_duration === '1 anno' ? 12 : (t.assignment_duration === '2 anni' ? 24 : 6);
+            const acq = new Date(t.acquisition_date);
+            const exp = new Date(acq);
+            exp.setMonth(exp.getMonth() + durMonths);
+            const daysLeft = Math.ceil((exp - today) / 86400000);
+            if (daysLeft <= 90) expiringCount++;
+        });
+        document.getElementById('ov-stat-expiring').innerText = expiringCount;
+
+        const yr = today.getFullYear();
+        let revYr = 0;
+        transactions.forEach(t => {
+            if (t.status === 'Venduto' && t.sale_date && t.final_price) {
+                if (new Date(t.sale_date).getFullYear() === yr) {
+                    const pV = parseFloat(t.commission_seller_perc) || 0;
+                    const pA = parseFloat(t.commission_buyer_perc) || 0;
+                    revYr += ((t.final_price * pV) / 100) + ((t.final_price * pA) / 100);
+                }
+            }
+        });
+        document.getElementById('ov-stat-revenue').innerText = `€${revYr.toLocaleString('it-IT')}`;
+    }
+
+    // Elenco delle richieste dal sito non ancora lette, in cima alla Panoramica.
+    function renderOverviewLeads() {
+        const list = document.getElementById('overview-leads-list');
+        if (!list) return; // tab non ancora nel DOM
+
+        const unread = buyers.filter(b => b.source === 'sito' && !b.is_read);
+
+        document.getElementById('overview-unread-badge').innerText = unread.length;
+        const tabBadge = document.getElementById('tab-overview-badge');
+        tabBadge.innerText = unread.length;
+        tabBadge.style.display = unread.length > 0 ? 'inline-block' : 'none';
+
+        if (unread.length === 0) {
+            list.innerHTML = `<div style="padding:2rem 1rem; text-align:center; color:var(--text-muted); font-size:13px; font-weight:600;">Nessuna nuova richiesta al momento 🎉</div>`;
+            return;
+        }
+
+        list.innerHTML = unread.map(b => `
+            <div class="item-row">
+                <div class="item-info">
+                    <div class="item-texts">
+                        <p class="item-title">${escapeHtml(b.full_name)} <span class="status-badge bg-red" style="margin-left:6px;">Nuovo</span></p>
+                        <p class="item-details-text">📞 ${escapeHtml(b.phone)} — ${b.created_at ? new Date(b.created_at).toLocaleDateString('it-IT') : ''}</p>
+                        <p class="item-details-text" style="margin-top:6px; white-space:pre-line;">${escapeHtml(b.notes || '')}</p>
+                    </div>
+                </div>
+                <div class="item-actions-box">
+                    <button onclick="markLeadRead('${b.id}')" class="btn-submit" style="width:auto; padding:10px 18px;">✓ Segna come letto</button>
+                </div>
+            </div>
+        `).join('');
     }
 
     function renderBuyersList() {
@@ -1305,14 +1485,16 @@
       
       filtered.forEach(b => {
         let badge = b.status==='Attivo'?'<span class="status-badge bg-blue">In Ricerca</span>':(b.status==='Trovato'?'<span class="status-badge bg-green">Trovato</span>':'<span class="status-badge bg-red">Non Int.</span>');
-        
+        const isNewLead = b.source === 'sito' && !b.is_read;
+        const leadTags = (isNewLead ? ' <span class="status-badge bg-red">Nuovo</span>' : '') + (b.source === 'sito' ? ' <span class="status-badge bg-orange">Dal Sito</span>' : '');
+
         let notesHTML = b.notes ? escapeHtml(b.notes).replace(/\n/g, '<br>') : '<i>Nessuna nota presente.</i>';
 
         list.innerHTML += `
         <!-- Riga Cliccabile -->
         <tr class="clickable-row" onclick="toggleNotes('${b.id}')" title="Clicca per visualizzare le note">
           <td>${badge}</td>
-          <td style="font-weight:600;">${escapeHtml(b.full_name)}<br><span style="font-size:11px;color:gray;">📞 ${escapeHtml(b.phone)}</span></td>
+          <td style="font-weight:600;">${escapeHtml(b.full_name)}${leadTags}<br><span style="font-size:11px;color:gray;">📞 ${escapeHtml(b.phone)}</span></td>
           <td>${escapeHtml(b.desired_type||'-')} <span style="font-size:11px;color:gray;">(${escapeHtml(b.desired_zone||'Ovunque')})</span></td>
           <td>${b.max_budget ? '€'+b.max_budget.toLocaleString('it-IT') : '-'}</td>
           <td style="text-align:center;" onclick="event.stopPropagation()">
