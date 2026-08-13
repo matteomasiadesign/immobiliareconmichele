@@ -218,8 +218,17 @@ function creaPdfKit(doc) {
         doc.save(filename);
     }
 
+    // ---- accesso alla posizione verticale corrente ----
+    // Espone "y" a chi disegna intestazioni personalizzate fuori dagli
+    // helper qui sopra (es. il box titolo in incarico.html/proposta.html),
+    // cosi' restano sincronizzati con lo stesso contatore usato da sezione/
+    // campo/paragrafo invece di avere una propria variabile "y" scollegata.
+    function getY() { return y; }
+    function setY(v) { y = v; }
+
     return {
         BLU, GIALLO, NERO, GRIGIO, PW, PH, M, CW, FOOTER_Y,
-        ensure, addFooter, sezione, campo, campoDoppio, paragrafo, checkLine, firma, numeroInLettere, finalize
+        ensure, addFooter, sezione, campo, campoDoppio, paragrafo, checkLine, firma, numeroInLettere, finalize,
+        getY, setY
     };
 }

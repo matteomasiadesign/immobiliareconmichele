@@ -12,6 +12,10 @@
 -- "buyers" che contengono dati personali di clienti e proprietari.
 --
 -- COME APPLICARLA
+-- 0) IMPORTANTE: esegui prima supabase-immobili-incarichi-upgrade.sql
+--    (crea la vista "properties_public" che il sito pubblico usa). Se lo
+--    fai dopo questo file, index.html/catalogo.html smettono di mostrare
+--    annunci finche' non esegui anche quello.
 -- 1) Apri la dashboard Supabase del progetto -> SQL Editor.
 -- 2) Incolla l'intero contenuto di questo file ed esegui (Run).
 -- 3) Verifica poi che tutto funzioni ancora: apri index.html/catalogo.html
@@ -24,8 +28,13 @@
 --    rispondere con un array vuoto [] (nessuna riga leggibile da anonimo).
 --
 -- NOTE
--- - "properties" resta leggibile pubblicamente (serve al sito pubblico),
---   ma scrivibile solo da utenti autenticati (il pannello admin).
+-- - "properties" NON e' piu' leggibile in modo anonimo: contiene anche le
+--   date di acquisizione/scadenza riservate al gestionale. Il sito
+--   pubblico legge invece dalla vista "properties_public" (creata da
+--   supabase-immobili-incarichi-upgrade.sql), che espone solo gli
+--   annunci con is_visible = true e nessuna colonna riservata.
+--   "properties" resta scrivibile solo da utenti autenticati (il
+--   pannello admin).
 -- - "transactions" NON e' leggibile ne' scrivibile in modo anonimo: solo
 --   un utente autenticato (chi ha fatto login in admin.html) puo'
 --   leggerla e modificarla.
@@ -45,15 +54,17 @@
 
 
 -- ---------------------------------------------------------------------
--- 1) PROPERTIES: lettura pubblica, scrittura solo autenticati
+-- 1) PROPERTIES: lettura solo autenticati (il sito pubblico legge dalla
+--    vista "properties_public", non da questa tabella), scrittura solo
+--    autenticati.
 -- ---------------------------------------------------------------------
 ALTER TABLE public.properties ENABLE ROW LEVEL SECURITY;
 
 DROP POLICY IF EXISTS "properties_public_read" ON public.properties;
-CREATE POLICY "properties_public_read"
+CREATE POLICY "properties_auth_read"
   ON public.properties
   FOR SELECT
-  TO anon, authenticated
+  TO authenticated
   USING (true);
 
 DROP POLICY IF EXISTS "properties_auth_insert" ON public.properties;

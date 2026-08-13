@@ -197,6 +197,22 @@ function initSectionAnimations() {
 function initCardStagger(selector = '.card') {
     if (!motionOK) return;
 
+    // Pulisce i ScrollTrigger la cui card animata è ormai fuori dal DOM.
+    // renderGrid()/renderVetrina() rimpiazzano la griglia con innerHTML a ogni
+    // cambio filtro/slider e richiamano questa funzione: il "trigger" di ogni
+    // ScrollTrigger è il contenitore (card.parentElement), che resta sempre
+    // nel DOM, quindi va controllato il target dell'animazione (la card
+    // stessa) e non il trigger. Senza questa pulizia ogni render aggiunge
+    // nuovi trigger senza mai rimuovere i vecchi, con un leak che cresce a
+    // ogni interazione nella stessa sessione di navigazione.
+    ScrollTrigger.getAll().forEach(st => {
+        const targets = st.animation ? st.animation.targets() : [];
+        if (targets.length && targets.every(t => !t.isConnected)) {
+            st.animation.kill();
+            st.kill();
+        }
+    });
+
     const cards = document.querySelectorAll(selector);
 
     cards.forEach((card, index) => {

@@ -94,14 +94,47 @@
     .panel-card { background-color: var(--white); padding: 1.25rem; border-radius: 24px; border: 1px solid var(--border-color); box-shadow: 0 4px 20px rgba(0,0,0,0.02); width: 100%; }
     .panel-title { font-family: 'Space Grotesk', -apple-system, sans-serif; font-size: 17px; font-weight: 700; text-transform: uppercase; margin-bottom: 1.5rem; color: var(--text-slate); display: flex; align-items: center; gap: 8px; }
     
-    /* Vetrina Annunci: su desktop la lista sta a sinistra (colonna stretta) e
-       il form di compilazione a destra, con molto più spazio per lavorarci. */
-    .main-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; width: 100%; }
-    @media (min-width: 1024px) {
-      .main-grid { grid-template-columns: 360px 1fr; gap: 2rem; }
-      .main-grid .prop-list-panel { order: 1; }
-      .main-grid .prop-form-panel { order: 2; padding: 2rem 2.5rem; }
-    }
+    /* Immobili: barra di ricerca/filtri + pulsante aggiungi in alto, sotto
+       la lista a piena larghezza (griglia di card responsive). Il form di
+       compilazione vive in un overlay a schermo intero (vedi .fullscreen-modal). */
+    .immobili-filters-bar { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+    @media (min-width: 768px) { .immobili-filters-bar { flex-direction: row; align-items: center; } }
+    .immobili-filters-bar .form-input, .immobili-filters-bar .form-select { margin: 0; }
+    .immobili-filters-bar .filter-search { flex: 2; min-width: 0; }
+    .immobili-filters-bar .filter-select { flex: 1; min-width: 0; }
+    .btn-add-immobile { width: auto; flex-shrink: 0; padding: 12px 22px; white-space: nowrap; }
+
+    .properties-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; padding: 1rem; width: 100%; }
+    @media (min-width: 640px) { .properties-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 1100px) { .properties-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (min-width: 1500px) { .properties-grid { grid-template-columns: repeat(4, 1fr); } }
+
+    .property-card { border: 1px solid var(--border-color); border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; background: var(--white); transition: var(--transition); }
+    .property-card:hover { box-shadow: 0 8px 20px rgba(0,0,0,0.06); }
+    .property-card.is-hidden { opacity: 0.6; }
+    .property-card-img-box { position: relative; aspect-ratio: 4/3; background: #f1f5f9; overflow: hidden; }
+    .property-card-img-box img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+    .property-card-badges { position: absolute; top: 8px; left: 8px; display: flex; flex-wrap: wrap; gap: 4px; max-width: calc(100% - 16px); }
+    .property-card-body { padding: 14px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+    .property-card-price { font-weight: 900; font-size: 16px; color: var(--brand-blue); }
+    .property-card-meta { font-size: 11px; color: var(--text-muted); font-weight: 700; }
+    .property-card-gestionale { font-size: 11px; color: var(--text-muted); background: #f8fafc; border: 1px solid var(--border-color); border-radius: 10px; padding: 6px 8px; display: flex; flex-direction: column; gap: 2px; }
+    .property-card-actions { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-top: auto; padding-top: 10px; border-top: 1px solid var(--border-color); }
+    .property-card-actions .action-buttons { gap: 6px; }
+
+    .btn-toggle-visibility { border-radius: 999px; border: 1px solid var(--border-color); background: var(--white); font-size: 10px; font-weight: 900; text-transform: uppercase; padding: 8px 12px; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: var(--transition); }
+    .btn-toggle-visibility.visible { color: #059669; border-color: #a7f3d0; background: #ecfdf5; }
+    .btn-toggle-visibility.hidden-state { color: #64748b; border-color: var(--border-color); background: #f1f5f9; }
+    .btn-star-featured { width: 34px; height: 34px; flex-shrink: 0; border-radius: 10px; border: 1px solid var(--border-color); background: var(--white); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; transition: var(--transition); }
+    .btn-star-featured.active { background: #fffbeb; border-color: var(--brand-yellow); }
+
+    /* Form Immobile a schermo intero */
+    .fullscreen-modal { position: fixed; inset: 0; background: var(--bg-slate); z-index: 2500; display: none; flex-direction: column; overflow-y: auto; }
+    .fullscreen-modal.open { display: flex; }
+    .fullscreen-modal-header { position: sticky; top: 0; background: var(--white); border-bottom: 1px solid var(--border-color); padding: 1rem 1.25rem; display: flex; justify-content: space-between; align-items: center; z-index: 5; }
+    .fullscreen-modal-header h2 { font-family: 'Space Grotesk', -apple-system, sans-serif; font-size: 16px; font-weight: 700; text-transform: uppercase; color: var(--brand-blue); }
+    .fullscreen-modal-body { flex: 1; width: 100%; max-width: 760px; margin: 0 auto; padding: 1.5rem 1.25rem 4rem; }
+
     .form-section-label { font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; color: var(--brand-blue); margin: 1.75rem 0 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border-color); }
     .form-section-label:first-of-type { margin-top: 0; }
     .btn-cancel-edit { font-size: 11px; font-weight: 900; text-transform: uppercase; color: #ef4444; background: none; border: none; cursor: pointer; display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
@@ -135,14 +168,6 @@
     .item-details-text { font-size: 12px; font-weight: 600; color: var(--text-muted); margin-top: 2px; }
     .item-actions-box { display: flex; align-items: center; justify-content: space-between; gap: 1rem; border-top: 1px solid var(--border-color); padding-top: 1rem; width: 100%; }
     @media (min-width: 640px) { .item-actions-box { justify-content: flex-end; border-top: none; padding-top: 0; width: auto; gap: 1.5rem; } }
-
-    /* La lista annunci vive ora in una colonna stretta a fianco del form (vedi
-       .prop-list-panel): a quella larghezza riga+prezzo+bottoni non ci stanno
-       affiancati, quindi qui resta sempre impilata anche su desktop. */
-    @media (min-width: 1024px) {
-      .prop-list-panel .item-row { flex-direction: column; align-items: stretch; }
-      .prop-list-panel .item-actions-box { justify-content: space-between; border-top: 1px solid var(--border-color); padding-top: 1rem; width: 100%; }
-    }
 
     .year-selector-box { background-color: var(--brand-blue); color: var(--white); padding: 10px 15px; border-radius: 999px; font-weight: 900; display: flex; align-items: center; gap: 10px; font-size: 14px; }
     .year-selector-box select { background: transparent; color: var(--brand-yellow); border: none; font-weight: 900; font-size: 16px; outline: none; cursor: pointer; }
@@ -241,7 +266,7 @@
   <nav class="navbar">
     <div class="brand">
       <div class="brand-icon-box">
-        <img src="icona.webp" alt="Logo" style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px;" onerror="this.outerHTML='<div style=\'width: 40px; height: 40px; background: var(--brand-yellow); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--brand-blue); font-weight: bold;\'>ME</div>'">
+        <img src="logo.svg" alt="Logo" style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px;" onerror="this.outerHTML='<div style=\'width: 40px; height: 40px; background: var(--brand-yellow); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--brand-blue); font-weight: bold;\'>ME</div>'">
       </div>
       <div class="brand-text">
         <span class="brand-title">MICHELE ERRE</span>
@@ -304,9 +329,10 @@
     <!-- TABS NAV -->
     <div class="tabs-nav">
       <button class="tab-btn active" onclick="switchTab('tab-overview', this)">🏠 Panoramica <span id="tab-overview-badge" class="status-badge bg-red" style="display:none; margin-left:6px;">0</span></button>
-      <button class="tab-btn" onclick="switchTab('tab-vetrina', this)">🏢 Vetrina Annunci</button>
+      <button class="tab-btn" onclick="switchTab('tab-vetrina', this)">🏢 Immobili</button>
       <button class="tab-btn" onclick="switchTab('tab-stats', this)">📊 Statistiche (CRM)</button>
       <button class="tab-btn" onclick="switchTab('tab-crm', this)">📇 Clienti (Rubrica)</button>
+      <button class="tab-btn" onclick="switchTab('tab-documenti', this)">📄 Documenti</button>
     </div>
 
     <!-- TAB 0: PANORAMICA -->
@@ -327,83 +353,31 @@
       </div>
     </div>
 
-    <!-- TAB 1: VETRINA (Properties Pubbliche) -->
+    <!-- TAB 1: IMMOBILI (Properties Pubbliche) -->
     <div id="tab-vetrina" class="tab-content">
-      <div class="main-grid">
-        <div class="panel-card prop-form-panel">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-            <h2 id="prop-form-title" class="panel-title" style="margin-bottom: 0;">Nuovo Annuncio (Vetrina)</h2>
-            <button type="button" id="prop-cancel-btn" onclick="cancelPropEdit()" class="btn-cancel-edit hidden">✕ Annulla</button>
-          </div>
-          <form onsubmit="handlePropSubmit(event)">
-            <input type="hidden" id="prop-id">
-
-            <div class="form-section-label">Informazioni Principali</div>
-            <div class="form-group">
-              <label class="form-label">Titolo Annuncio</label>
-              <input required type="text" id="prop-title" placeholder="es. Bilocale a Porto Torres" class="form-input">
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">Contratto</label>
-                <select id="prop-status" class="form-select">
-                  <option value="Vendita">Vendita</option>
-                  <option value="Affitto">Affitto</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Prezzo (€)</label>
-                <input required type="number" id="prop-price" class="form-input">
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group"><label class="form-label">Zona</label><input required type="text" id="prop-zone" class="form-input"></div>
-              <div class="form-group"><label class="form-label">Tipologia</label><input required type="text" id="prop-type" class="form-input"></div>
-            </div>
-
-            <div class="form-section-label">Caratteristiche</div>
-            <div class="form-row-3">
-              <div class="form-group"><label class="form-label">Stanze</label><input required type="number" id="prop-rooms" class="form-input" value="1"></div>
-              <div class="form-group"><label class="form-label">Bagni</label><input required type="number" id="prop-bathrooms" class="form-input" value="1"></div>
-              <div class="form-group"><label class="form-label">Mq</label><input type="number" id="prop-sqm" class="form-input"></div>
-            </div>
-
-            <div class="form-section-label">Foto</div>
-            <div class="photo-fields-box">
-              <label class="form-label">Immagini (Trascina per riordinare)</label>
-              <label class="file-input-custom">
-                📷 Trascina o tocca per aggiungere foto...
-                <input type="file" id="prop-file-uploader" accept="image/*" multiple onchange="handleImageSelection(event)" style="display: none;">
-              </label>
-              <div id="prop-preview-grid" class="preview-thumbs-grid"></div>
-            </div>
-
-            <div class="form-section-label">Descrizione</div>
-            <div class="form-group"><label class="form-label">Descrizione</label><textarea required id="prop-desc" rows="3" class="form-textarea"></textarea></div>
-            <div class="form-group"><label class="form-label">URL Reel Instagram (Opzionale)</label><input type="url" id="prop-instagram" placeholder="es. https://www.instagram.com/reel/..." class="form-input"></div>
-
-            <div class="form-section-label">Opzioni</div>
-            <div class="checkbox-container">
-              <label class="checkbox-row"><input type="checkbox" id="prop-parking"><span class="checkbox-label">Parcheggio auto</span></label>
-              <label class="checkbox-row"><input type="checkbox" id="prop-featured"><span class="checkbox-label" style="color: var(--brand-blue);">In evidenza (Home)</span></label>
-            </div>
-
-            <button type="submit" id="prop-submit-btn" class="btn-submit">Pubblica Annuncio 🚀</button>
-          </form>
+      <div class="panel-card" style="padding: 1rem; margin-bottom: 1.5rem;">
+        <div class="immobili-filters-bar">
+          <input type="text" id="prop-search" oninput="renderPropertiesList()" placeholder="Cerca per titolo o zona..." class="form-input filter-search">
+          <select id="prop-filter-status" onchange="renderPropertiesList()" class="form-select filter-select">
+            <option value="">Tutti i contratti</option>
+            <option value="Vendita">Vendita</option>
+            <option value="Affitto">Affitto</option>
+          </select>
+          <select id="prop-filter-visibility" onchange="renderPropertiesList()" class="form-select filter-select">
+            <option value="">Visibili e non visibili</option>
+            <option value="visible">Solo visibili sul sito</option>
+            <option value="hidden">Solo nascosti</option>
+          </select>
+          <button type="button" onclick="openPropertyForm()" class="btn-submit btn-add-immobile">+ Aggiungi Immobile</button>
         </div>
+      </div>
 
-        <div class="prop-list-panel" style="display: flex; flex-direction: column; gap: 1rem;">
-          <div class="panel-card" style="padding: 1rem;">
-            <input type="text" id="prop-search" oninput="renderPropertiesList()" placeholder="Cerca immobile in vetrina..." class="form-input">
-          </div>
-          <div class="panel-card" style="padding: 0; overflow: hidden;">
-            <div class="archive-header">
-              <h2>Archivio Annunci Online</h2>
-              <span id="prop-count-badge" style="background:var(--brand-blue); color:var(--brand-yellow); font-size:11px; font-weight:900; padding:4px 10px; border-radius:20px;">0</span>
-            </div>
-            <div id="properties-list" class="list-wrapper" style="max-height: 600px; overflow-y: auto;"></div>
-          </div>
+      <div class="panel-card" style="padding: 0; overflow: hidden;">
+        <div class="archive-header">
+          <h2>Archivio Immobili</h2>
+          <span id="prop-count-badge" style="background:var(--brand-blue); color:var(--brand-yellow); font-size:11px; font-weight:900; padding:4px 10px; border-radius:20px;">0</span>
         </div>
+        <div id="properties-list" class="properties-grid"></div>
       </div>
     </div>
 
@@ -413,7 +387,10 @@
         <div class="year-selector-box">
           📅 Anno Fiscale: <select id="stats-year" onchange="updateDashboardStats()"></select>
         </div>
-        <button onclick="openTransactionModal()" class="btn-submit" style="width: auto; padding: 12px 24px;">+ Nuovo Incarico 📝</button>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button onclick="syncActiveIncarichi(true)" class="btn-submit" style="width: auto; padding: 12px 20px; background:#f1f5f9; color:var(--text-slate); box-shadow:none;">🔄 Sincronizza con Immobili</button>
+          <button onclick="openTransactionModal()" class="btn-submit" style="width: auto; padding: 12px 24px;">+ Nuovo Incarico 📝</button>
+        </div>
       </div>
 
       <div class="stats-cards-grid">
@@ -485,6 +462,110 @@
          </div>
       </div>
     </div>
+
+    <!-- TAB 4: DOCUMENTI (Bozze Incarichi/Proposte) -->
+    <div id="tab-documenti" class="tab-content">
+      <div class="panel-card flex-wrap" style="padding: 0;">
+         <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap:wrap; gap:10px;">
+            <h3 style="font-size: 14px; font-weight: 900; color: var(--text-slate); text-transform: uppercase;">Bozze Incarichi &amp; Proposte</h3>
+            <div style="display:flex; gap:10px; flex: 1; min-width: 260px;">
+              <input type="text" id="doc-search" oninput="renderDocumentiList()" placeholder="Cerca per titolo..." class="form-input" style="flex: 1; min-width: 0; padding: 8px 12px;">
+              <select id="doc-filter-tipo" onchange="renderDocumentiList()" class="form-select" style="flex: 0 0 auto; width: auto; padding: 8px 12px;">
+                <option value="">Tutti i tipi</option>
+                <option value="incarico">Incarichi</option>
+                <option value="proposta">Proposte</option>
+              </select>
+            </div>
+         </div>
+         <div class="data-table-container" style="border:none; max-height: 600px; overflow-y: auto;">
+           <table class="data-table">
+             <thead>
+               <tr>
+                 <th>Tipo</th>
+                 <th>Titolo</th>
+                 <th>Ultimo Salvataggio</th>
+                 <th style="text-align:center;">Azioni</th>
+               </tr>
+             </thead>
+             <tbody id="documenti-list"></tbody>
+           </table>
+         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form Immobile (schermo intero) -->
+  <div id="modal-property-form" class="fullscreen-modal">
+    <div class="fullscreen-modal-header">
+      <h2 id="prop-form-title">Nuovo Immobile</h2>
+      <button type="button" onclick="closePropertyForm()" class="btn-close-modal" style="font-size:26px;">✕</button>
+    </div>
+    <div class="fullscreen-modal-body">
+      <form onsubmit="handlePropSubmit(event)">
+        <input type="hidden" id="prop-id">
+
+        <div class="form-section-label">Informazioni Principali</div>
+        <div class="form-group">
+          <label class="form-label">Titolo Annuncio</label>
+          <input required type="text" id="prop-title" placeholder="es. Bilocale a Porto Torres" class="form-input">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Contratto</label>
+            <select id="prop-status" class="form-select">
+              <option value="Vendita">Vendita</option>
+              <option value="Affitto">Affitto</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Prezzo (€)</label>
+            <input required type="number" id="prop-price" class="form-input">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Zona</label><input required type="text" id="prop-zone" class="form-input"></div>
+          <div class="form-group"><label class="form-label">Tipologia</label><input required type="text" id="prop-type" class="form-input"></div>
+        </div>
+
+        <div class="form-section-label">Caratteristiche</div>
+        <div class="form-row-3">
+          <div class="form-group"><label class="form-label">Stanze</label><input required type="number" id="prop-rooms" class="form-input" value="1"></div>
+          <div class="form-group"><label class="form-label">Bagni</label><input required type="number" id="prop-bathrooms" class="form-input" value="1"></div>
+          <div class="form-group"><label class="form-label">Mq</label><input type="number" id="prop-sqm" class="form-input"></div>
+        </div>
+
+        <div class="form-section-label">Foto</div>
+        <div class="photo-fields-box">
+          <label class="form-label">Immagini (Trascina per riordinare)</label>
+          <label class="file-input-custom">
+            📷 Trascina o tocca per aggiungere foto...
+            <input type="file" id="prop-file-uploader" accept="image/*" multiple onchange="handleImageSelection(event)" style="display: none;">
+          </label>
+          <div id="prop-preview-grid" class="preview-thumbs-grid"></div>
+        </div>
+
+        <div class="form-section-label">Descrizione</div>
+        <div class="form-group"><label class="form-label">Descrizione</label><textarea required id="prop-desc" rows="3" class="form-textarea"></textarea></div>
+        <div class="form-group"><label class="form-label">URL Reel Instagram (Opzionale)</label><input type="url" id="prop-instagram" placeholder="es. https://www.instagram.com/reel/..." class="form-input"></div>
+
+        <div class="form-section-label">Opzioni</div>
+        <div class="checkbox-container">
+          <label class="checkbox-row"><input type="checkbox" id="prop-parking"><span class="checkbox-label">Parcheggio auto</span></label>
+          <label class="checkbox-row"><input type="checkbox" id="prop-featured"><span class="checkbox-label" style="color: var(--brand-blue);">In evidenza / Mostra per primi</span></label>
+        </div>
+
+        <div class="form-section-label">Gestionale (uso interno, non visibile ai clienti sul sito)</div>
+        <div class="checkbox-container">
+          <label class="checkbox-row"><input type="checkbox" id="prop-visible" checked><span class="checkbox-label" style="color:#059669;">Visibile sul sito</span></label>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Data acquisizione incarico</label><input type="date" id="prop-acq-date" class="form-input"></div>
+          <div class="form-group"><label class="form-label">Data scadenza incarico</label><input type="date" id="prop-exp-date" class="form-input"></div>
+        </div>
+
+        <button type="submit" id="prop-submit-btn" class="btn-submit">Pubblica Immobile 🚀</button>
+      </form>
+    </div>
   </div>
 
   <!-- Modali Eliminazione -->
@@ -521,6 +602,17 @@
     </div>
   </div>
 
+  <div id="modal-delete-doc" class="modal-overlay">
+    <div class="modal-content" style="max-width:360px; text-align:center;">
+      <h3 style="font-size:18px; font-weight:900; color:var(--text-slate); margin-bottom:10px;">Elimina Bozza</h3>
+      <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Questa bozza verrà eliminata definitivamente dal gestionale.</p>
+      <div style="display:flex; gap:10px;">
+        <button onclick="closeModals()" class="btn-submit" style="background:#f1f5f9; color:var(--text-slate);">Annulla</button>
+        <button id="confirm-delete-doc-btn" class="btn-submit" style="background:#ef4444; color:white;">Elimina</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Modal Incarico -->
   <div id="modal-transaction" class="modal-overlay">
     <div class="modal-content">
@@ -530,6 +622,12 @@
       </div>
       <form onsubmit="handleTransactionSubmit(event)">
         <input type="hidden" id="trans-id">
+        <div class="form-group">
+          <label class="form-label">Collega Immobile (opzionale)</label>
+          <select id="trans-property-link" class="form-select" onchange="onTransactionPropertyLinkChange()">
+            <option value="">— Nessuno (incarico manuale) —</option>
+          </select>
+        </div>
         <div class="form-group">
           <label class="form-label">Stato dell'Incarico</label>
           <select id="trans-status" class="form-select" required onchange="toggleTransactionFields()" style="font-weight: 900;">
@@ -676,6 +774,8 @@
     let mainChartInstance = null; 
     let pieChartInstance = null;
     let buyers = [];
+    let documenti = [];
+    let docToDelete = null;
 
     // Sfugge i caratteri HTML pericolosi nei dati provenienti dal database
     // prima di inserirli in innerHTML, per evitare XSS.
@@ -883,7 +983,8 @@
         document.getElementById('login-screen').style.display = 'none';
         document.getElementById('admin-dashboard').style.display = 'flex';
         document.getElementById('nav-auth').style.display = 'flex';
-        await Promise.all([loadProperties(), loadTransactions(), loadBuyers()]);
+        await Promise.all([loadProperties(), loadTransactions(), loadBuyers(), loadDocumenti()]);
+        await syncActiveIncarichi();
         renderOverviewStats();
         hideLoader();
     }
@@ -977,69 +1078,125 @@
     }
 
     async function handlePropSubmit(e) {
-        e.preventDefault(); 
-        if(uploadedImageUrls.length===0) return alert("Inserisci almeno una foto!"); 
-        showLoader("Salvataggio Vetrina..."); 
-        const id = document.getElementById('prop-id').value; 
-        
-        // MODIFICA QUI: instagram_url rinominato in reel_url per combaciare con Supabase
-        const payload = { 
-            title: document.getElementById('prop-title').value, 
-            status: document.getElementById('prop-status').value, 
-            price: Number(document.getElementById('prop-price').value), 
-            zone: document.getElementById('prop-zone').value, 
-            property_type: document.getElementById('prop-type').value, 
-            rooms: Number(document.getElementById('prop-rooms').value), 
-            bathrooms: Number(document.getElementById('prop-bathrooms').value), 
-            sqm: Number(document.getElementById('prop-sqm').value) || null, 
-            description: document.getElementById('prop-desc').value, 
-            reel_url: document.getElementById('prop-instagram').value || null, // <-- RIGHE AGGIORNATE
-            has_parking: document.getElementById('prop-parking').checked, 
-            is_featured: document.getElementById('prop-featured').checked, 
-            images: uploadedImageUrls 
-        }; 
-        const res = id ? await _supabase.from('properties').update(payload).eq('id', id) : await _supabase.from('properties').insert([payload]); 
-        
+        e.preventDefault();
+        if(uploadedImageUrls.length===0) return alert("Inserisci almeno una foto!");
+        showLoader("Salvataggio Immobile...");
+        const id = document.getElementById('prop-id').value;
+
+        const payload = {
+            title: document.getElementById('prop-title').value,
+            status: document.getElementById('prop-status').value,
+            price: Number(document.getElementById('prop-price').value),
+            zone: document.getElementById('prop-zone').value,
+            property_type: document.getElementById('prop-type').value,
+            rooms: Number(document.getElementById('prop-rooms').value),
+            bathrooms: Number(document.getElementById('prop-bathrooms').value),
+            sqm: Number(document.getElementById('prop-sqm').value) || null,
+            description: document.getElementById('prop-desc').value,
+            reel_url: document.getElementById('prop-instagram').value || null,
+            has_parking: document.getElementById('prop-parking').checked,
+            is_featured: document.getElementById('prop-featured').checked,
+            images: uploadedImageUrls,
+            is_visible: document.getElementById('prop-visible').checked,
+            acquisition_date: document.getElementById('prop-acq-date').value || null,
+            expiry_date: document.getElementById('prop-exp-date').value || null
+        };
+        const res = id
+            ? await _supabase.from('properties').update(payload).eq('id', id).select().single()
+            : await _supabase.from('properties').insert([payload]).select().single();
+
         if(res.error) {
-            alert("Errore: " + res.error.message); 
-        } else { 
-            cancelPropEdit(); 
-            await loadProperties(); 
-        } 
-        hideLoader(); 
+            alert("Errore: " + res.error.message);
+            hideLoader();
+            return;
+        }
+
+        if (payload.is_visible && res.data) {
+            await ensurePropertyTransaction(res.data);
+        }
+
+        closePropertyForm();
+        await loadProperties();
+        hideLoader();
     }
 
-    function startPropEdit(id) { 
-        const p = properties.find(x => x.id == id); 
-        if(!p) return; 
-        document.getElementById('prop-id').value = p.id; 
-        document.getElementById('prop-title').value = p.title; 
-        document.getElementById('prop-status').value = p.status; 
-        document.getElementById('prop-price').value = p.price; 
-        document.getElementById('prop-zone').value = p.zone; 
-        document.getElementById('prop-type').value = p.property_type; 
-        document.getElementById('prop-rooms').value = p.rooms; 
-        document.getElementById('prop-bathrooms').value = p.bathrooms; 
-        document.getElementById('prop-sqm').value = p.sqm||''; 
-        document.getElementById('prop-desc').value = p.description; 
-        // MODIFICA QUI: legge il dato da p.reel_url anziché p.instagram_url
-        document.getElementById('prop-instagram').value = p.reel_url || ''; // <-- RIGA AGGIORNATA
-        document.getElementById('prop-parking').checked = p.has_parking; 
-        document.getElementById('prop-featured').checked = p.is_featured; 
-        uploadedImageUrls = [...p.images]; 
-        renderImagePreviews(); 
-        document.getElementById('prop-form-title').innerText = "Modifica Annuncio"; 
-        document.getElementById('prop-cancel-btn').classList.remove('hidden'); 
-        window.scrollTo({top:0, behavior:'smooth'}); 
+    // Se un immobile e' visibile sul sito, il suo incarico collegato deve
+    // risultare "attivo" (In Vendita) nel gestionale: lo crea se manca,
+    // oppure lo riattiva se era rimasto in un altro stato.
+    async function ensurePropertyTransaction(property) {
+        const existing = transactions.find(t => t.property_id == property.id);
+        if (existing) {
+            const updates = {};
+            if (existing.status !== 'In Vendita') updates.status = 'In Vendita';
+            if (existing.property_title !== property.title) updates.property_title = property.title;
+            if (Object.keys(updates).length > 0) {
+                await _supabase.from('transactions').update(updates).eq('id', existing.id);
+            }
+        } else {
+            await _supabase.from('transactions').insert([{
+                status: 'In Vendita',
+                property_title: property.title,
+                owner_name: '',
+                assignment_duration: '6 mesi',
+                acquisition_date: property.acquisition_date || new Date().toISOString().split('T')[0],
+                initial_price: property.price,
+                commission_seller_perc: 0,
+                commission_buyer_perc: 0,
+                property_id: property.id
+            }]);
+        }
+        await loadTransactions();
     }
 
-    function cancelPropEdit() { 
-        document.getElementById('prop-id').value = ""; 
-        document.getElementById('prop-form-title').innerText = "Nuovo Annuncio (Vetrina)"; 
-        document.getElementById('prop-cancel-btn').classList.add('hidden'); 
-        document.querySelector('#tab-vetrina form').reset(); 
-        uploadedImageUrls = []; 
-        renderImagePreviews(); 
+    function startPropEdit(id) {
+        const p = properties.find(x => x.id == id);
+        if(!p) return;
+        document.getElementById('prop-id').value = p.id;
+        document.getElementById('prop-title').value = p.title;
+        document.getElementById('prop-status').value = p.status;
+        document.getElementById('prop-price').value = p.price;
+        document.getElementById('prop-zone').value = p.zone;
+        document.getElementById('prop-type').value = p.property_type;
+        document.getElementById('prop-rooms').value = p.rooms;
+        document.getElementById('prop-bathrooms').value = p.bathrooms;
+        document.getElementById('prop-sqm').value = p.sqm||'';
+        document.getElementById('prop-desc').value = p.description;
+        document.getElementById('prop-instagram').value = p.reel_url || '';
+        document.getElementById('prop-parking').checked = p.has_parking;
+        document.getElementById('prop-featured').checked = p.is_featured;
+        document.getElementById('prop-visible').checked = p.is_visible !== false;
+        document.getElementById('prop-acq-date').value = p.acquisition_date || '';
+        document.getElementById('prop-exp-date').value = p.expiry_date || '';
+        uploadedImageUrls = [...p.images];
+        renderImagePreviews();
+        document.getElementById('prop-form-title').innerText = "Modifica Immobile";
+    }
+
+    // Apre il form a schermo intero: senza id crea un nuovo immobile,
+    // con id lo precompila per la modifica.
+    function openPropertyForm(id) {
+        resetPropForm();
+        if (id) {
+            startPropEdit(id);
+        } else {
+            document.getElementById('prop-form-title').innerText = "Nuovo Immobile";
+        }
+        document.getElementById('modal-property-form').classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closePropertyForm() {
+        document.getElementById('modal-property-form').classList.remove('open');
+        document.body.style.overflow = '';
+        resetPropForm();
+    }
+
+    function resetPropForm() {
+        document.getElementById('prop-id').value = "";
+        document.querySelector('#modal-property-form form').reset();
+        document.getElementById('prop-visible').checked = true;
+        uploadedImageUrls = [];
+        renderImagePreviews();
     }
 
     function openDeletePropModal(id) { 
@@ -1059,40 +1216,105 @@
         hideLoader();
     };
 
-    function renderPropertiesList() { 
-        const search = document.getElementById('prop-search').value.toLowerCase(); 
-        const list = document.getElementById('properties-list'); 
-        list.innerHTML = ""; 
-        const filtered = properties.filter(p => p.title.toLowerCase().includes(search) || p.zone.toLowerCase().includes(search)); 
-        document.getElementById('prop-count-badge').innerText = filtered.length; 
-        
-        filtered.forEach(p => { 
-            list.innerHTML += `
-            <div class="item-row">
-                <div class="item-info">
-                    <img src="${p.images[0]||'https://via.placeholder.com/80'}" class="item-thumbnail">
-                    <div class="item-texts">
-                        <p class="item-title">${escapeHtml(p.title)}</p>
-                        <p class="item-details-text">${escapeHtml(p.zone)} • ${escapeHtml(p.property_type)}</p>
-                        <div style="display:flex; gap:6px; margin-top:4px;">
-                            <span class="status-badge ${p.status==='Vendita'?'bg-blue':'bg-green'}">${p.status}</span>
-                            ${p.is_featured ? '<span class="status-badge bg-yellow">★ Vetrina</span>' : ''}
+    function renderPropertiesList() {
+        const search = document.getElementById('prop-search').value.toLowerCase();
+        const statusFilter = document.getElementById('prop-filter-status').value;
+        const visFilter = document.getElementById('prop-filter-visibility').value;
+        const list = document.getElementById('properties-list');
+        list.innerHTML = "";
+
+        let filtered = properties.filter(p => {
+            const matchesSearch = p.title.toLowerCase().includes(search) || p.zone.toLowerCase().includes(search);
+            const matchesStatus = !statusFilter || p.status === statusFilter;
+            const matchesVis = !visFilter || (visFilter === 'visible' ? p.is_visible !== false : p.is_visible === false);
+            return matchesSearch && matchesStatus && matchesVis;
+        });
+
+        // Gli immobili "in evidenza" (mostra per primi) vengono sempre prima
+        filtered = filtered.sort((a, b) => (b.is_featured === true) - (a.is_featured === true));
+
+        document.getElementById('prop-count-badge').innerText = filtered.length;
+
+        if (filtered.length === 0) {
+            list.innerHTML = `<div style="grid-column:1/-1; padding:2rem 1rem; text-align:center; color:var(--text-muted); font-size:13px; font-weight:600;">Nessun immobile trovato.</div>`;
+            return;
+        }
+
+        list.innerHTML = filtered.map(p => {
+            const isVisible = p.is_visible !== false;
+            const today = new Date(); today.setHours(0,0,0,0);
+            let expiryHTML = '';
+            if (p.expiry_date) {
+                const exp = new Date(p.expiry_date);
+                const isPast = exp < today;
+                expiryHTML = `<span style="${isPast ? 'color:#dc2626;font-weight:900;' : ''}">Scadenza: ${exp.toLocaleDateString('it-IT')}</span>`;
+            }
+            return `
+            <div class="property-card ${isVisible ? '' : 'is-hidden'}">
+                <div class="property-card-img-box">
+                    <img src="${p.images[0]||'https://via.placeholder.com/300x225'}" loading="lazy">
+                    <div class="property-card-badges">
+                        <span class="status-badge ${p.status==='Vendita'?'bg-blue':'bg-green'}">${p.status}</span>
+                        ${p.is_featured ? '<span class="status-badge bg-yellow">★ Primi</span>' : ''}
+                    </div>
+                </div>
+                <div class="property-card-body">
+                    <p class="item-title">${escapeHtml(p.title)}</p>
+                    <p class="property-card-meta">${escapeHtml(p.zone)} • ${escapeHtml(p.property_type)}</p>
+                    <span class="property-card-price">€${p.price.toLocaleString('it-IT')}</span>
+                    ${(p.acquisition_date || p.expiry_date) ? `
+                    <div class="property-card-gestionale">
+                        ${p.acquisition_date ? `<span>Acquisizione: ${new Date(p.acquisition_date).toLocaleDateString('it-IT')}</span>` : ''}
+                        ${expiryHTML}
+                    </div>` : ''}
+                    <div class="property-card-actions">
+                        <button onclick="togglePropertyVisibility('${p.id}')" class="btn-toggle-visibility ${isVisible ? 'visible' : 'hidden-state'}" title="${isVisible ? 'Visibile sul sito: clicca per nascondere' : 'Nascosto: clicca per pubblicare'}">
+                            ${isVisible ? '👁️ Visibile' : '🚫 Nascosto'}
+                        </button>
+                        <div class="action-buttons">
+                            <button onclick="togglePropertyFeatured('${p.id}')" class="btn-star-featured ${p.is_featured ? 'active' : ''}" title="Mostra per primi">★</button>
+                            <button onclick="openPropertyForm('${p.id}')" class="btn-action edit" title="Modifica">
+                                <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"/></svg>
+                            </button>
+                            <button onclick="openDeletePropModal('${p.id}')" class="btn-action delete" title="Elimina">
+                                <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/></svg>
+                            </button>
                         </div>
                     </div>
                 </div>
-                <div class="item-actions-box">
-                    <span style="font-weight:900;">€${p.price.toLocaleString('it-IT')}</span>
-                    <div class="action-buttons">
-                        <button onclick="startPropEdit('${p.id}')" class="btn-action edit" title="Modifica">
-                            <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"/></svg>
-                        </button>
-                        <button onclick="openDeletePropModal('${p.id}')" class="btn-action delete" title="Elimina">
-                            <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/></svg>
-                        </button>
-                    </div>
-                </div>
-            </div>`; 
-        }); 
+            </div>`;
+        }).join('');
+    }
+
+    // Pulsante "visibile/invisibile": controlla se l'immobile compare sul
+    // sito pubblico. Quando torna visibile, l'incarico collegato viene
+    // segnato come attivo (vedi ensurePropertyTransaction).
+    async function togglePropertyVisibility(id) {
+        const p = properties.find(x => x.id == id);
+        if (!p) return;
+        const newVal = !(p.is_visible !== false);
+        showLoader(newVal ? "Pubblicazione in corso..." : "Rimozione dal sito...");
+        const { data, error } = await _supabase.from('properties').update({ is_visible: newVal }).eq('id', id).select().single();
+        if (error) {
+            alert("Errore: " + error.message);
+            hideLoader();
+            return;
+        }
+        if (newVal && data) await ensurePropertyTransaction(data);
+        await loadProperties();
+        hideLoader();
+    }
+
+    // Pulsante stella: flagga l'immobile da mostrare per primi (stesso
+    // campo usato per la sezione "In evidenza" della home page).
+    async function togglePropertyFeatured(id) {
+        const p = properties.find(x => x.id == id);
+        if (!p) return;
+        showLoader("Aggiornamento...");
+        const { error } = await _supabase.from('properties').update({ is_featured: !p.is_featured }).eq('id', id);
+        if (error) alert("Errore: " + error.message);
+        await loadProperties();
+        hideLoader();
     }
 
 
@@ -1271,7 +1493,7 @@
         list.innerHTML += `
         <tr>
           <td>${b}</td>
-          <td style="font-weight:600;">${escapeHtml(t.property_title)}<br><span style="font-size:10px;color:gray;">Prop: ${escapeHtml(t.owner_name||'-')}</span></td>
+          <td style="font-weight:600;">${escapeHtml(t.property_title)}${t.property_id ? ' <span class="status-badge bg-blue" title="Collegato a un immobile in vetrina">🔗 Vetrina</span>' : ''}<br><span style="font-size:10px;color:gray;">Prop: ${escapeHtml(t.owner_name||'-')}</span></td>
           <td>Acq: <b>${acq.toLocaleDateString('it-IT')}</b> <span style="font-size:10px;color:gray;">(${t.assignment_duration||'-'})</span><br>Giorni: <b style="color:var(--brand-blue)">${days>=0?days:0} gg</b></td>
           <td>${pStr}<br><span style="font-size:11px;">Provv: ${cStr}</span></td>
           <td style="text-align:center;">
@@ -1303,69 +1525,152 @@
         } 
     }
 
-    function openTransactionModal() { 
-        document.getElementById('trans-id').value = ""; 
-        document.querySelector('#modal-transaction form').reset(); 
-        document.getElementById('trans-status').value = "In Vendita"; 
-        document.getElementById('trans-acq-date').value = new Date().toISOString().split('T')[0]; 
-        document.getElementById('trans-duration').value = "6 mesi"; 
-        document.getElementById('trans-modal-title').innerText = "Nuovo Incarico"; 
-        toggleTransactionFields(); 
-        document.getElementById('modal-transaction').style.display = 'flex'; 
+    // Riempie la tendina "Collega Immobile" del modal Incarico con tutti
+    // gli immobili in vetrina, mantenendo la selezione passata (se c'e').
+    function renderPropertyLinkOptions(selectedId) {
+        const sel = document.getElementById('trans-property-link');
+        sel.innerHTML = '<option value="">— Nessuno (incarico manuale) —</option>' +
+            properties.map(p => `<option value="${p.id}">${escapeHtml(p.title)} (${escapeHtml(p.zone)})</option>`).join('');
+        sel.value = selectedId || "";
     }
 
-    function editTransaction(id) { 
-        const t = transactions.find(x => x.id == id); 
-        if(!t) return; 
-        
-        document.getElementById('trans-id').value = t.id; 
-        document.getElementById('trans-status').value = t.status; 
-        document.getElementById('trans-title').value = t.property_title; 
-        document.getElementById('trans-owner').value = t.owner_name||""; 
-        document.getElementById('trans-duration').value = t.assignment_duration||"6 mesi"; 
-        document.getElementById('trans-acq-date').value = t.acquisition_date; 
-        document.getElementById('trans-initial-price').value = t.initial_price||""; 
-        document.getElementById('trans-comm-seller').value = t.commission_seller_perc||""; 
-        document.getElementById('trans-comm-buyer').value = t.commission_buyer_perc||""; 
-        document.getElementById('trans-sale-date').value = t.sale_date||""; 
-        document.getElementById('trans-final-price').value = t.final_price||""; 
-        document.getElementById('trans-modal-title').innerText = "Modifica Incarico"; 
-        
-        toggleTransactionFields(); 
-        document.getElementById('modal-transaction').style.display = 'flex'; 
+    // Selezionando un immobile dalla tendina, precompilo titolo/prezzo/data
+    // acquisizione (restano comunque modificabili a mano).
+    function onTransactionPropertyLinkChange() {
+        const propId = document.getElementById('trans-property-link').value;
+        if (!propId) return;
+        const p = properties.find(x => x.id == propId);
+        if (!p) return;
+        document.getElementById('trans-title').value = p.title;
+        document.getElementById('trans-initial-price').value = p.price;
+        if (p.acquisition_date) document.getElementById('trans-acq-date').value = p.acquisition_date;
     }
 
-    async function handleTransactionSubmit(e) { 
-        e.preventDefault(); 
-        showLoader("Salvataggio Incarico..."); 
-        
-        const id = document.getElementById('trans-id').value; 
-        const status = document.getElementById('trans-status').value; 
-        
-        const payload = { 
-            status: status, 
-            property_title: document.getElementById('trans-title').value, 
-            owner_name: document.getElementById('trans-owner').value, 
-            assignment_duration: document.getElementById('trans-duration').value, 
-            acquisition_date: document.getElementById('trans-acq-date').value, 
-            initial_price: Number(document.getElementById('trans-initial-price').value), 
-            commission_seller_perc: Number(document.getElementById('trans-comm-seller').value), 
-            commission_buyer_perc: Number(document.getElementById('trans-comm-buyer').value), 
-            sale_date: status === 'Venduto' ? document.getElementById('trans-sale-date').value : null, 
-            final_price: status === 'Venduto' ? Number(document.getElementById('trans-final-price').value) : null 
-        }; 
-        
-        try { 
-            const res = id ? await _supabase.from('transactions').update(payload).eq('id', id) : await _supabase.from('transactions').insert([payload]); 
-            if(res.error) { throw res.error; } 
-            
-            closeModals(); 
-            await loadTransactions(); 
-        } catch (err) { 
-            alert("ERRORE SALVATAGGIO:\n" + err.message); 
-        } finally { 
-            hideLoader(); 
-        } 
+    function openTransactionModal() {
+        document.getElementById('trans-id').value = "";
+        document.querySelector('#modal-transaction form').reset();
+        document.getElementById('trans-status').value = "In Vendita";
+        document.getElementById('trans-acq-date').value = new Date().toISOString().split('T')[0];
+        document.getElementById('trans-duration').value = "6 mesi";
+        document.getElementById('trans-modal-title').innerText = "Nuovo Incarico";
+        renderPropertyLinkOptions();
+        toggleTransactionFields();
+        document.getElementById('modal-transaction').style.display = 'flex';
+    }
+
+    function editTransaction(id) {
+        const t = transactions.find(x => x.id == id);
+        if(!t) return;
+
+        document.getElementById('trans-id').value = t.id;
+        document.getElementById('trans-status').value = t.status;
+        document.getElementById('trans-title').value = t.property_title;
+        document.getElementById('trans-owner').value = t.owner_name||"";
+        document.getElementById('trans-duration').value = t.assignment_duration||"6 mesi";
+        document.getElementById('trans-acq-date').value = t.acquisition_date;
+        document.getElementById('trans-initial-price').value = t.initial_price||"";
+        document.getElementById('trans-comm-seller').value = t.commission_seller_perc||"";
+        document.getElementById('trans-comm-buyer').value = t.commission_buyer_perc||"";
+        document.getElementById('trans-sale-date').value = t.sale_date||"";
+        document.getElementById('trans-final-price').value = t.final_price||"";
+        document.getElementById('trans-modal-title').innerText = "Modifica Incarico";
+
+        renderPropertyLinkOptions(t.property_id);
+        toggleTransactionFields();
+        document.getElementById('modal-transaction').style.display = 'flex';
+    }
+
+    async function handleTransactionSubmit(e) {
+        e.preventDefault();
+        showLoader("Salvataggio Incarico...");
+
+        const id = document.getElementById('trans-id').value;
+        const status = document.getElementById('trans-status').value;
+
+        const payload = {
+            status: status,
+            property_title: document.getElementById('trans-title').value,
+            owner_name: document.getElementById('trans-owner').value,
+            assignment_duration: document.getElementById('trans-duration').value,
+            acquisition_date: document.getElementById('trans-acq-date').value,
+            initial_price: Number(document.getElementById('trans-initial-price').value),
+            commission_seller_perc: Number(document.getElementById('trans-comm-seller').value),
+            commission_buyer_perc: Number(document.getElementById('trans-comm-buyer').value),
+            sale_date: status === 'Venduto' ? document.getElementById('trans-sale-date').value : null,
+            final_price: status === 'Venduto' ? Number(document.getElementById('trans-final-price').value) : null,
+            property_id: document.getElementById('trans-property-link').value || null
+        };
+
+        try {
+            const res = id ? await _supabase.from('transactions').update(payload).eq('id', id) : await _supabase.from('transactions').insert([payload]);
+            if(res.error) { throw res.error; }
+
+            closeModals();
+            await loadTransactions();
+        } catch (err) {
+            alert("ERRORE SALVATAGGIO:\n" + err.message);
+        } finally {
+            hideLoader();
+        }
+    }
+
+    // Tiene allineati "Immobili" e "Incarichi": ogni immobile che è
+    // visibile sul sito, non ha una scadenza già passata (o non ne ha
+    // affatto) e non risulta venduto deve comparire tra gli incarichi in
+    // corso. Crea l'incarico collegato se manca, e riattiva quelli che
+    // erano finiti in un altro stato (es. "Scaduto") ma non sono venduti.
+    // Gira automaticamente ad ogni accesso al pannello, ed è richiamabile
+    // a mano dal pulsante "Sincronizza con Immobili".
+    async function syncActiveIncarichi(showAlert = false) {
+        const today = new Date(); today.setHours(0, 0, 0, 0);
+        const toCreate = [];
+        const toReactivate = [];
+
+        properties.forEach(p => {
+            const isVisible = p.is_visible !== false;
+            const notExpired = !p.expiry_date || new Date(p.expiry_date) >= today;
+            if (!isVisible || !notExpired) return; // non deve risultare "in corso"
+
+            const linked = transactions.find(t => t.property_id == p.id);
+            if (!linked) {
+                toCreate.push({
+                    status: 'In Vendita',
+                    property_title: p.title,
+                    owner_name: '',
+                    assignment_duration: '6 mesi',
+                    acquisition_date: p.acquisition_date || (p.created_at ? p.created_at.split('T')[0] : new Date().toISOString().split('T')[0]),
+                    initial_price: p.price,
+                    commission_seller_perc: 0,
+                    commission_buyer_perc: 0,
+                    property_id: p.id
+                });
+            } else if (linked.status !== 'In Vendita' && linked.status !== 'Venduto') {
+                toReactivate.push(linked.id);
+            }
+        });
+
+        if (toCreate.length === 0 && toReactivate.length === 0) {
+            if (showAlert) alert("Tutti gli immobili idonei sono già tra gli incarichi in corso.");
+            return;
+        }
+
+        if (showAlert) showLoader("Sincronizzazione in corso...");
+        try {
+            if (toCreate.length > 0) {
+                const { error } = await _supabase.from('transactions').insert(toCreate);
+                if (error) throw error;
+            }
+            if (toReactivate.length > 0) {
+                const { error } = await _supabase.from('transactions').update({ status: 'In Vendita' }).in('id', toReactivate);
+                if (error) throw error;
+            }
+            await loadTransactions();
+            if (showAlert) alert(`Sincronizzati ${toCreate.length + toReactivate.length} incarichi (${toCreate.length} creati, ${toReactivate.length} riattivati).`);
+        } catch (err) {
+            if (showAlert) alert("Errore sincronizzazione: " + err.message);
+        } finally {
+            if (showAlert) hideLoader();
+        }
     }
 
     function openDeleteTransModal(id) { 
@@ -1411,7 +1716,7 @@
         const listingsEl = document.getElementById('ov-stat-listings');
         if (!listingsEl) return; // tab non ancora nel DOM
 
-        listingsEl.innerText = properties.length;
+        listingsEl.innerText = properties.filter(p => p.is_visible !== false).length;
 
         const activeIncarichi = transactions.filter(t => t.status === 'In Vendita').length;
         document.getElementById('ov-stat-active').innerText = activeIncarichi;
@@ -1570,14 +1875,74 @@
         document.getElementById('modal-delete-buyer').style.display = 'flex'; 
     }
 
-    document.getElementById('confirm-delete-buyer-btn').onclick = async () => { 
-        if(!buyerToDelete) return; 
-        showLoader("Eliminazione..."); 
-        await _supabase.from('buyers').delete().eq('id', buyerToDelete); 
-        buyerToDelete = null; 
-        closeModals(); 
-        await loadBuyers(); 
-        hideLoader(); 
+    document.getElementById('confirm-delete-buyer-btn').onclick = async () => {
+        if(!buyerToDelete) return;
+        showLoader("Eliminazione...");
+        await _supabase.from('buyers').delete().eq('id', buyerToDelete);
+        buyerToDelete = null;
+        closeModals();
+        await loadBuyers();
+        hideLoader();
+    };
+
+    /* =======================================================
+       TAB 4: DOCUMENTI (Bozze Incarichi/Proposte)
+       ======================================================= */
+    async function loadDocumenti() {
+        const { data, error } = await _supabase.from('documenti_bozze').select('*').order('updated_at', { ascending: false });
+        if (!error) {
+            documenti = data || [];
+            renderDocumentiList();
+        }
+    }
+
+    function renderDocumentiList() {
+        const searchEl = document.getElementById('doc-search');
+        const filterEl = document.getElementById('doc-filter-tipo');
+        if (!searchEl || !filterEl) return; // tab non ancora nel DOM
+
+        const s = searchEl.value.toLowerCase();
+        const tipoFilter = filterEl.value;
+        const list = document.getElementById('documenti-list');
+
+        const filtered = documenti.filter(d => (!tipoFilter || d.tipo === tipoFilter) && (d.titolo || '').toLowerCase().includes(s));
+
+        if (filtered.length === 0) {
+            list.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:2rem 1rem; color:var(--text-muted); font-size:13px; font-weight:600;">Nessuna bozza salvata.</td></tr>`;
+            return;
+        }
+
+        list.innerHTML = filtered.map(d => `
+        <tr>
+          <td><span class="status-badge ${d.tipo === 'incarico' ? 'bg-blue' : 'bg-yellow'}">${d.tipo === 'incarico' ? 'Incarico' : 'Proposta'}</span></td>
+          <td style="font-weight:600;">${escapeHtml(d.titolo || 'Senza titolo')}</td>
+          <td>${d.updated_at ? new Date(d.updated_at).toLocaleString('it-IT') : '-'}</td>
+          <td style="text-align:center;">
+            <div class="action-buttons" style="justify-content:center;">
+              <a href="${d.tipo}.html?id=${encodeURIComponent(d.id)}" class="btn-action edit" title="Apri e modifica">
+                <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"/></svg>
+              </a>
+              <button onclick="openDeleteDocModal('${d.id}')" class="btn-action delete" title="Elimina">
+                <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/></svg>
+              </button>
+            </div>
+          </td>
+        </tr>`).join('');
+    }
+
+    function openDeleteDocModal(id) {
+        docToDelete = id;
+        document.getElementById('modal-delete-doc').style.display = 'flex';
+    }
+
+    document.getElementById('confirm-delete-doc-btn').onclick = async () => {
+        if (!docToDelete) return;
+        showLoader("Eliminazione...");
+        await _supabase.from('documenti_bozze').delete().eq('id', docToDelete);
+        docToDelete = null;
+        closeModals();
+        await loadDocumenti();
+        hideLoader();
     };
 
   </script>

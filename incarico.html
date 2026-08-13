@@ -322,6 +322,25 @@
             flex: 1;
         }
 
+        .btn-save {
+            background: #f0f0f0;
+            color: #1E5FD9;
+            border: 2px solid #1E5FD9;
+            flex: 1;
+        }
+
+        .btn-save:hover {
+            background: #eaf1ff;
+        }
+
+        .draft-status {
+            text-align: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: #6e6e6e;
+            margin-top: 10px;
+        }
+
         .btn-reset:hover {
             background: #e5e5e5;
         }
@@ -971,9 +990,11 @@
                 </div>
 
                 <div class="actions">
-                    <button type="submit" class="btn-generate">📥 Genera PDF</button>
+                    <button type="button" class="btn-save" onclick="salvaBozza()">💾 Salva</button>
+                    <button type="submit" class="btn-generate">📄 Esporta PDF</button>
                     <button type="reset" class="btn-reset">🔄 Ripristina</button>
                 </div>
+                <div id="draft-status" class="draft-status"></div>
             </form>
         </div>
     </div>
@@ -1002,6 +1023,10 @@
                     loading.classList.remove('active');
                     // Ripristina il testo del loader per quando verrà generato il PDF
                     document.getElementById('loading-text').innerText = "Generazione PDF in corso...";
+
+                    // Se l'URL contiene ?id=..., stiamo riaprendo una bozza salvata
+                    const draftId = new URLSearchParams(window.location.search).get('id');
+                    if (draftId) await caricaBozza(draftId);
                 }
             } catch (err) {
                 console.error('Errore autenticazione:', err);
@@ -1096,6 +1121,77 @@
             alert('✅ Dati compilati! Clicca "Genera PDF" per il risultato.');
         }
 
+        // ====== SALVATAGGIO BOZZA (gestionale) ======
+        // Ogni incarico creato viene salvato in "documenti_bozze" (Supabase),
+        // a prescindere dal fatto che venga anche esportato in PDF: resta
+        // cosi' modificabile/eliminabile in seguito dal tab "Documenti" di
+        // admin.html, come una bozza.
+        let currentDraftId = null;
+
+        function ricavaTitoloBozza(data) {
+            const nome = (data.propNome || '').trim();
+            const luogo = (data.immUbicazione || '').split('\n')[0].trim();
+            if (nome && luogo) return `${nome} — ${luogo}`;
+            return nome || luogo || 'Incarico senza titolo';
+        }
+
+        // Ripopola il form da un oggetto {name: valore}: per checkbox/radio
+        // confronta il value dell'input (funziona perche' quei campi usano
+        // name condivisi con value distinti, es. name="planimetria").
+        function popolaForm(data) {
+            form.reset();
+            Object.entries(data || {}).forEach(([name, value]) => {
+                form.querySelectorAll(`[name="${CSS.escape(name)}"]`).forEach(el => {
+                    if (el.type === 'checkbox' || el.type === 'radio') {
+                        el.checked = (el.value === value);
+                    } else {
+                        el.value = value;
+                    }
+                });
+            });
+            toggleConditionals();
+        }
+
+        async function caricaBozza(id) {
+            const { data, error } = await _supabase.from('documenti_bozze').select('*').eq('id', id).eq('tipo', 'incarico').single();
+            if (error || !data) {
+                alert('Bozza non trovata (potrebbe essere stata eliminata).');
+                return;
+            }
+            currentDraftId = data.id;
+            popolaForm(data.dati || {});
+            document.getElementById('draft-status').innerText = `📝 Stai modificando una bozza salvata (ultimo salvataggio: ${new Date(data.updated_at).toLocaleString('it-IT')})`;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        async function salvaBozza(showAlert = true) {
+            const data = Object.fromEntries(new FormData(form));
+            const nowIso = new Date().toISOString();
+            const payload = { tipo: 'incarico', titolo: ricavaTitoloBozza(data), dati: data, updated_at: nowIso };
+
+            try {
+                if (currentDraftId) {
+                    const { error } = await _supabase.from('documenti_bozze').update(payload).eq('id', currentDraftId);
+                    if (error) throw error;
+                } else {
+                    payload.created_at = nowIso;
+                    const { data: inserted, error } = await _supabase.from('documenti_bozze').insert([payload]).select().single();
+                    if (error) throw error;
+                    currentDraftId = inserted.id;
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('id', currentDraftId);
+                    window.history.replaceState({}, '', url);
+                }
+                document.getElementById('draft-status').innerText = `💾 Bozza salvata nel gestionale (${new Date().toLocaleString('it-IT')})`;
+                if (showAlert) alert('💾 Bozza salvata nel gestionale!');
+                return true;
+            } catch (err) {
+                console.error('Errore salvataggio bozza:', err);
+                if (showAlert) alert('❌ Errore nel salvataggio della bozza: ' + err.message);
+                return false;
+            }
+        }
+
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
@@ -1109,7 +1205,8 @@
             try {
                 const data = Object.fromEntries(new FormData(form));
                 generaPDF(data);
-                alert('✅ PDF generato con successo!');
+                await salvaBozza(false);
+                alert('✅ PDF generato e bozza salvata nel gestionale!');
             } catch (error) {
                 console.error('Errore:', error);
                 alert('❌ Errore nella generazione: ' + error.message);
@@ -1122,7 +1219,7 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
 
-            const { PW, PH, M, CW, FOOTER_Y, BLU, GIALLO, NERO, GRIGIO, sezione, campo, campoDoppio, paragrafo, checkLine, firma, numeroInLettere, finalize } = creaPdfKit(doc);
+            const { PW, PH, M, CW, FOOTER_Y, BLU, GIALLO, NERO, GRIGIO, sezione, campo, campoDoppio, paragrafo, checkLine, firma, numeroInLettere, finalize, getY, setY } = creaPdfKit(doc);
 
             const fmt = (n) => (!n ? '—' : '€ ' + Number(n).toLocaleString('it-IT', { minimumFractionDigits: 2 }));
             const fmtData = (d) => {
@@ -1135,8 +1232,8 @@
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(9);
             doc.setTextColor(...BLU);
-            doc.text('INCARICO DI MEDIAZIONE PER LA VENDITA', PW / 2, y, { align: 'center' });
-            y += 7;
+            doc.text('INCARICO DI MEDIAZIONE PER LA VENDITA', PW / 2, getY(), { align: 'center' });
+            setY(getY() + 7);
 
             // box titolo con cornice gialla arrotondata
             doc.setFont('helvetica', 'bold');
@@ -1147,22 +1244,22 @@
             const boxX = (PW - boxW) / 2;
             doc.setDrawColor(...GIALLO);
             doc.setLineWidth(0.9);
-            doc.roundedRect(boxX, y - 5.5, boxW, 11, 2.5, 2.5, 'S');
+            doc.roundedRect(boxX, getY() - 5.5, boxW, 11, 2.5, 2.5, 'S');
             doc.setTextColor(...BLU);
-            doc.text(tit, PW / 2, y, { align: 'center', baseline: 'middle' });
-            y += 11;
+            doc.text(tit, PW / 2, getY(), { align: 'center', baseline: 'middle' });
+            setY(getY() + 11);
 
             doc.setFont('helvetica', 'normal');
             doc.setFontSize(8);
             doc.setTextColor(...GRIGIO);
-            doc.text('REA: SS-227691  |  P.IVA: 03076110901  |  Via Libio 80, Porto Torres', PW / 2, y, { align: 'center' });
-            y += 4;
-            doc.text('Tel. 3348576926  |  infoerreimmobili@gmail.com  |  PEC: erremichele12@pec.it', PW / 2, y, { align: 'center' });
-            y += 5;
+            doc.text('REA: SS-227691  |  P.IVA: 03076110901  |  Via Libio 80, Porto Torres', PW / 2, getY(), { align: 'center' });
+            setY(getY() + 4);
+            doc.text('Tel. 3348576926  |  infoerreimmobili@gmail.com  |  PEC: erremichele12@pec.it', PW / 2, getY(), { align: 'center' });
+            setY(getY() + 5);
             doc.setDrawColor(...GIALLO);
             doc.setLineWidth(1.2);
-            doc.line(M, y, PW - M, y);
-            y += 7;
+            doc.line(M, getY(), PW - M, getY());
+            setY(getY() + 7);
 
             // ============ VENDITORE ============
             sezione('VENDITORE');
@@ -1177,7 +1274,7 @@
             campoDoppio('Telefono', data.propTel, 'Cellulare', data.propCell);
             campo('Email', data.propEmail);
 
-            y += 2;
+            setY(getY() + 2);
             paragrafo('Il soggetto sopra indicato, di seguito denominato "VENDITORE", conferisce — tramite Michele Erre, regolarmente iscritto al ruolo degli Agenti di Affari in Mediazione presso la C.C.I.A.A. di Sassari al n. 227691, di seguito denominato "AGENTE IMMOBILIARE" — incarico di mediazione per la vendita dell\'immobile di seguito descritto, alle condizioni qui indicate.', { gap: 3 });
 
             // ============ 1. DESCRIZIONE IMMOBILE ============

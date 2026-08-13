@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Livello_2" data-name="Livello 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30.24 30.24">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+        stroke: #ffd90f;
+        stroke-miterlimit: 10;
+        stroke-width: .24px;
+      }
+
+      .cls-2 {
+        fill: #ffd90f;
+        font-family: Gotham-Black, 'Gotham Black';
+        font-size: 9.07px;
+        font-weight: 800;
+      }
+
+      .cls-3 {
+        fill: #04f;
+      }
+    </style>
+  </defs>
+  <g id="Livello_1-2" data-name="Livello 1">
+    <path class="cls-3" d="m30.12,15.12c0,8.28-6.72,15-15,15S.12,23.4.12,15.12,6.84.12,15.12.12s15,6.71,15,15Z"/>
+    <text class="cls-2" transform="translate(2.55 18.19)"><tspan x="0" y="0">ERRE</tspan></text>
+    <path class="cls-1" d="m30.12,15.12c0,8.28-6.72,15-15,15S.12,23.4.12,15.12,6.84.12,15.12.12s15,6.71,15,15Z"/>
+  </g>
+</svg>
