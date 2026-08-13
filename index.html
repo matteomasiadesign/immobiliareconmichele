@@ -72,18 +72,76 @@
 
     /* Griglia annunci e card: vedi shared.css */
 
-    /* SEZIONE SERVIZI - fascia con sfondo alternato + trattamento editoriale */
+    /* SEZIONE SERVIZI - fascia con sfondo alternato + una sezione intera per ogni servizio */
     .servizi-band { background-color: rgba(0,68,255,0.03); }
-    .services-grid { display: grid; grid-template-columns: 1fr; gap: 2.5rem; }
-    @media (min-width: 768px) { .services-grid { grid-template-columns: repeat(3, 1fr); gap: 2.5rem; } }
-    .service-card { position: relative; text-align: left; padding-top: 1.75rem; border-top: 3px solid var(--brand-yellow); transition: var(--transition); }
-    .service-card:nth-child(2) { border-top-color: var(--brand-blue); }
-    .service-card:nth-child(3) { border-top-color: var(--text-slate); }
-    .service-number { position: absolute; top: -0.1em; right: 0; font-size: 3.5rem; font-weight: 900; color: rgba(0,68,255,0.07); line-height: 1; pointer-events: none; user-select: none; }
-    .service-icon-wrapper { width: 56px; height: 56px; background-color: rgba(0,68,255,0.06); color: var(--brand-blue); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; transition: var(--transition); }
-    .service-card:hover .service-icon-wrapper { background-color: var(--brand-blue); color: var(--white); }
-    .service-title { font-size: 1.2rem; font-weight: 900; color: var(--text-slate); margin-bottom: 0.75rem; text-transform: uppercase; }
-    .service-desc { font-size: 0.95rem; color: var(--text-muted); line-height: 1.6; font-weight: 500; max-width: 32ch; }
+
+    .service-block { position: relative; background: var(--white); border-radius: 28px; padding: 2rem 1.5rem 2.25rem; margin-bottom: 2rem; border-top: 4px solid var(--brand-yellow); box-shadow: 0 16px 40px -22px rgba(15,23,42,0.18); overflow: hidden; }
+    .service-block:last-child { margin-bottom: 0; }
+    .service-block.accent-blue { border-top-color: var(--brand-blue); }
+    .service-block.accent-green { border-top-color: #10b981; background: linear-gradient(180deg, rgba(16,185,129,0.08), rgba(16,185,129,0) 40%), var(--white); }
+    @media (min-width: 768px) { .service-block { padding: 2.75rem 3rem 3rem; } }
+
+    .service-block-num { position: absolute; top: 0.25rem; right: 1.25rem; font-size: 4.5rem; font-weight: 900; color: rgba(0,68,255,0.06); line-height: 1; pointer-events: none; user-select: none; }
+    @media (min-width: 768px) { .service-block-num { font-size: 6rem; right: 2rem; } }
+
+    .service-block-top { position: relative; display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.75rem; flex-wrap: wrap; }
+    .service-block-icon { width: 56px; height: 56px; border-radius: 16px; background-color: var(--brand-blue); color: var(--white); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .service-block-icon svg { width: 28px; height: 28px; }
+    .service-block-heading { flex: 1; min-width: 200px; }
+    .service-block-title-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 0.5rem; }
+    .service-block-title { font-size: 1.4rem; font-weight: 900; color: var(--text-slate); text-transform: uppercase; letter-spacing: -0.01em; }
+    @media (min-width: 768px) { .service-block-title { font-size: 1.85rem; } }
+    .service-block-live-dot { width: 11px; height: 11px; box-shadow: 0 0 0 4px rgba(16,185,129,0.15), 0 2px 8px rgba(16,185,129,0.6); }
+    .service-block-tagline { font-size: 0.95rem; color: var(--text-muted); font-weight: 500; line-height: 1.6; max-width: 48ch; }
+
+    .service-block-body { position: relative; display: flex; flex-direction: column; gap: 1.5rem; }
+    @media (min-width: 900px) { .service-block-body { flex-direction: row; align-items: flex-start; gap: 2.5rem; } .service-block-body .service-spotlight { flex: 0 0 300px; } .service-journey { flex: 1; padding-top: 0.25rem; } }
+
+    .service-journey { display: flex; flex-direction: column; }
+    .service-journey-step { position: relative; display: flex; gap: 1rem; padding-bottom: 1.5rem; }
+    .service-journey-step:last-child { padding-bottom: 0; }
+    .service-journey-step::before { content: ''; position: absolute; left: 15px; top: 36px; bottom: -4px; width: 2px; background: var(--border-color); }
+    .service-journey-step:last-child::before { display: none; }
+    .service-journey-icon { position: relative; z-index: 1; flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%; background-color: rgba(0,68,255,0.07); color: var(--brand-blue); display: flex; align-items: center; justify-content: center; }
+    .service-journey-icon svg { width: 16px; height: 16px; }
+    .service-feature-text strong { display: block; font-size: 14px; font-weight: 800; color: var(--text-slate); margin-bottom: 3px; }
+    .service-feature-text p { font-size: 13px; color: var(--text-muted); line-height: 1.55; font-weight: 500; }
+
+    .service-block-extra { position: relative; margin-top: 1.75rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color); }
+    .service-block-extra-title { display: block; font-size: 11px; font-weight: 900; color: var(--brand-blue); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.85rem; }
+    .service-block-extra-items { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+    .service-block-extra-item { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 700; color: var(--text-slate); background-color: rgba(0,68,255,0.05); padding: 8px 14px; border-radius: 999px; }
+    .service-block-extra-item svg { width: 14px; height: 14px; color: var(--brand-blue); flex-shrink: 0; }
+
+    .service-block-cta { position: relative; display: inline-flex; align-items: center; gap: 8px; margin-top: 2rem; background-color: var(--brand-blue); color: var(--white); font-weight: 900; font-size: 13px; text-transform: uppercase; letter-spacing: 0.03em; padding: 14px 26px; border-radius: 999px; text-decoration: none; transition: var(--transition); }
+    .service-block-cta:hover { background-color: #0033CC; gap: 12px; }
+    .service-block-cta svg { width: 14px; height: 14px; }
+    .service-block-cta.cta-strong { display: flex; width: 100%; justify-content: center; background-color: var(--brand-yellow); color: var(--brand-blue); border: 3px solid var(--brand-blue); font-size: 14px; padding: 16px 30px; }
+    .service-block-cta.cta-strong:hover { background-color: #ffe14d; }
+
+    /* SERVIZI: mini-card "spotlight" per far risaltare la leva di forza di ogni servizio */
+    .service-spotlight { position: relative; overflow: hidden; background: var(--brand-blue); border: 3px solid var(--brand-yellow); border-radius: 18px; padding: 1.1rem 1.2rem 1.25rem; display: flex; flex-direction: column; gap: 0.85rem; }
+    .service-spotlight::after { content: ''; position: absolute; top: -30px; right: -30px; width: 100px; height: 100px; background: rgba(255,217,15,0.15); border-radius: 50%; pointer-events: none; }
+    .service-spotlight-eyebrow { position: relative; display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.06em; color: var(--brand-yellow); }
+    .service-spotlight-eyebrow svg { width: 14px; height: 14px; flex-shrink: 0; }
+    .service-spotlight-stats { position: relative; display: flex; align-items: center; gap: 1rem; }
+    .service-spotlight-number { font-size: 2rem; font-weight: 900; line-height: 1; color: var(--white); }
+    .service-spotlight-number small { display: block; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: rgba(255,255,255,0.65); margin-top: 5px; }
+    .service-spotlight-divider { width: 1px; align-self: stretch; background: rgba(255,255,255,0.25); }
+    .service-spotlight-social { display: flex; flex-direction: column; gap: 6px; }
+    .service-spotlight-social-row { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.9); }
+    .service-spotlight-social-row svg { width: 14px; height: 14px; flex-shrink: 0; }
+    /* Loghi social reali: chip circolari affiancati accanto al contatore */
+    .service-spotlight-brands { display: flex; align-items: center; gap: 8px; }
+    .service-spotlight-brand { width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.12); color: var(--white); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .service-spotlight-brand svg { width: 16px; height: 16px; fill: currentColor; }
+    .service-spotlight-btn { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 8px; margin-top: 0.25rem; background: var(--brand-yellow); color: var(--brand-blue); font-size: 11.5px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.04em; padding: 11px 18px; border-radius: 999px; text-decoration: none; transition: var(--transition); }
+    .service-spotlight-btn:hover { background: #ffe14d; gap: 12px; }
+    .service-spotlight-btn svg { width: 15px; height: 15px; fill: currentColor; flex-shrink: 0; }
+    .service-spotlight-copy { position: relative; font-size: 12.5px; line-height: 1.55; font-weight: 500; color: rgba(255,255,255,0.92); }
+    .service-spotlight-copy strong { color: var(--brand-yellow); font-weight: 800; }
+    .service-spotlight-credit { position: relative; display: flex; align-items: center; gap: 6px; font-size: 10.5px; font-weight: 700; color: rgba(255,255,255,0.65); }
+    .service-spotlight-credit svg { width: 12px; height: 12px; flex-shrink: 0; color: var(--brand-yellow); }
 
     /* CTA CONTATTI - REIMPAGINATA CON IMMAGINE */
     .cta-box { background: var(--brand-blue); border-radius: 32px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,68,255,0.2); width: 100%; display: flex; flex-direction: column; border: 4px solid var(--brand-yellow); }
@@ -204,39 +262,192 @@
             <span class="section-label">Cosa faccio per te</span>
             <h2 class="section-title">I Miei Servizi</h2>
           </div>
-          <div class="services-grid">
-            <div class="service-card reveal">
-              <span class="service-number">01</span>
-              <div class="service-icon-wrapper">
-                <svg style="width: 28px; height: 28px; flex-shrink: 0;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
-                </svg>
+
+          <!-- 01 COMPRAVENDITA -->
+          <div class="service-block reveal">
+            <span class="service-block-num">01</span>
+            <div class="service-block-top">
+              <div class="service-block-icon">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
               </div>
-              <h3 class="service-title">Compravendita</h3>
-              <p class="service-desc">Ti accompagno in ogni singola fase dell'acquisto o della vendita della tua casa. Dalla prima visita fino al momento della firma dal notaio, senza brutte sorprese.</p>
+              <div class="service-block-heading">
+                <div class="service-block-title-row">
+                  <h3 class="service-block-title">Compravendita</h3>
+                </div>
+                <p class="service-block-tagline">Vuoi vendere o comprare casa? Scopri come pubblicizzo il tuo immobile o ti guido nella ricerca della casa ideale.</p>
+              </div>
             </div>
 
-            <div class="service-card reveal">
-              <span class="service-number">02</span>
-              <div class="service-icon-wrapper">
-                <svg style="width: 28px; height: 28px; flex-shrink: 0;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"></path>
-                </svg>
+            <div class="service-block-body">
+              <div class="service-spotlight">
+                <span class="service-spotlight-eyebrow">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+                  Un metodo vincente
+                </span>
+                <div class="service-spotlight-stats">
+                  <div class="service-spotlight-number"><span class="count-up" data-count-to="300" data-count-suffix="K+">300K+</span><small>views al mese</small></div>
+                  <span class="service-spotlight-divider"></span>
+                  <div class="service-spotlight-brands">
+                    <span class="service-spotlight-brand" title="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></span>
+                    <span class="service-spotlight-brand" title="Facebook"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z"/></svg></span>
+                    <span class="service-spotlight-brand" title="TikTok"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg></span>
+                  </div>
+                </div>
+                <p class="service-spotlight-copy">Il tuo immobile visto da <strong>centinaia di migliaia di persone</strong>. Fotografie, video e pubblicazione sui principali social media e portali.</p>
+                <span class="service-spotlight-credit">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                  Un marketing professionale, coinvolgente e moderno che bussa alla porta.
+                </span>
+                <a href="https://www.instagram.com/immobiliareconmichele/" target="_blank" rel="noopener" class="service-spotlight-btn">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                  Seguici su Instagram
+                </a>
               </div>
-              <h3 class="service-title">Locazioni Sicure</h3>
-              <p class="service-desc">Cerchi un inquilino affidabile o una casa in affitto? Seleziono attentamente i profili migliori e gestisco tutta la burocrazia del contratto per farti dormire sereno.</p>
+
+              <div class="service-journey">
+                <div class="service-journey-step">
+                  <span class="service-journey-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg></span>
+                  <div class="service-feature-text">
+                    <strong>Trattativa dedicata</strong>
+                    <p>Gestisco le visite e la trattativa per portarti la migliore offerta reale.</p>
+                  </div>
+                </div>
+                <div class="service-journey-step">
+                  <span class="service-journey-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"></path></svg></span>
+                  <div class="service-feature-text">
+                    <strong>Pratiche fino al rogito</strong>
+                    <p>Proposta, preliminare e assistenza in studio notarile, passo dopo passo.</p>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <div class="service-card reveal">
-              <span class="service-number">03</span>
-              <div class="service-icon-wrapper">
-                <svg style="width: 28px; height: 28px; flex-shrink: 0;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-                </svg>
+            <div class="service-block-extra">
+              <span class="service-block-extra-title">Anche se compri</span>
+              <div class="service-block-extra-items">
+                <span class="service-block-extra-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"></path></svg> Ricerca su misura</span>
+                <span class="service-block-extra-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg> Verifiche pre-acquisto</span>
+                <span class="service-block-extra-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg> Fino alle chiavi in mano</span>
               </div>
-              <h3 class="service-title">Valutazioni</h3>
-              <p class="service-desc">Vuoi sapere quanto vale oggi il tuo immobile sul mercato reale? Ti offro una stima professionale e gratuita, basata sui dati concreti della tua zona.</p>
             </div>
+
+            <a href="#contatti" class="service-block-cta">Parliamone insieme <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg></a>
+          </div>
+
+          <!-- 02 LOCAZIONI SICURE -->
+          <div class="service-block accent-blue reveal">
+            <span class="service-block-num">02</span>
+            <div class="service-block-top">
+              <div class="service-block-icon">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"></path></svg>
+              </div>
+              <div class="service-block-heading">
+                <div class="service-block-title-row">
+                  <h3 class="service-block-title">Locazioni Sicure</h3>
+                </div>
+                <p class="service-block-tagline">Cerchi un inquilino affidabile o una casa in affitto? Seleziono attentamente i profili migliori e gestisco tutta la burocrazia del contratto per farti dormire sereno.</p>
+              </div>
+            </div>
+
+            <div class="service-block-body">
+              <div class="service-journey">
+                <div class="service-journey-step">
+                  <span class="service-journey-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"></path></svg></span>
+                  <div class="service-feature-text">
+                    <strong>Selezione inquilini</strong>
+                    <p>Verifico referenze, garanzie e affidabilità prima di ogni contratto.</p>
+                  </div>
+                </div>
+                <div class="service-journey-step">
+                  <span class="service-journey-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg></span>
+                  <div class="service-feature-text">
+                    <strong>Contratto a norma</strong>
+                    <p>Redigo e registro il contratto secondo la normativa vigente.</p>
+                  </div>
+                </div>
+                <div class="service-journey-step">
+                  <span class="service-journey-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg></span>
+                  <div class="service-feature-text">
+                    <strong>Consegna e cauzione</strong>
+                    <p>Gestisco consegna chiavi, verbale d'ingresso e deposito cauzionale.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="service-block-extra">
+              <span class="service-block-extra-title">Anche se cerchi casa</span>
+              <div class="service-block-extra-items">
+                <span class="service-block-extra-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"></path></svg> Ti aiuto a trovare l'affitto giusto, zona e budget compresi</span>
+              </div>
+            </div>
+
+            <a href="#contatti" class="service-block-cta">Parliamone insieme <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg></a>
+          </div>
+
+          <!-- 03 VALUTAZIONE GRATUITA -->
+          <div class="service-block accent-green reveal">
+            <span class="service-block-num">03</span>
+            <div class="service-block-top">
+              <div class="service-block-icon">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+              </div>
+              <div class="service-block-heading">
+                <div class="service-block-title-row">
+                  <h3 class="service-block-title">Valutazione Gratuita</h3>
+                  <span class="pulse-dot service-block-live-dot"></span>
+                </div>
+                <p class="service-block-tagline">Ti dico quanto vale il tuo immobile basandomi sul mercato attuale: insieme troviamo il prezzo giusto.</p>
+              </div>
+            </div>
+
+            <div class="service-block-body">
+              <div class="service-spotlight">
+                <span class="service-spotlight-eyebrow">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+                  Zero costi, zero pensieri
+                </span>
+                <div class="service-spotlight-stats">
+                  <div class="service-spotlight-number">100%<small>gratuita</small></div>
+                  <span class="service-spotlight-divider"></span>
+                  <div class="service-spotlight-social">
+                    <span class="service-spotlight-social-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg> Nessun obbligo</span>
+                    <span class="service-spotlight-social-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Risposta rapida</span>
+                  </div>
+                </div>
+                <p class="service-spotlight-copy">Ricevi una stima <strong>chiara e onesta</strong>, basata sui dati reali della tua zona: nessun costo, nessuna sorpresa.</p>
+                <span class="service-spotlight-credit">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                  Sopralluogo e report scritto inclusi
+                </span>
+              </div>
+
+              <div class="service-journey">
+                <div class="service-journey-step">
+                  <span class="service-journey-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg></span>
+                  <div class="service-feature-text">
+                    <strong>Sopralluogo dell'immobile</strong>
+                    <p>Analizzo stato, superfici, finiture e punti di forza della casa.</p>
+                  </div>
+                </div>
+                <div class="service-journey-step">
+                  <span class="service-journey-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg></span>
+                  <div class="service-feature-text">
+                    <strong>Analisi comparativa di zona</strong>
+                    <p>Confronto con immobili simili venduti o in vendita nella tua zona.</p>
+                  </div>
+                </div>
+                <div class="service-journey-step">
+                  <span class="service-journey-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg></span>
+                  <div class="service-feature-text">
+                    <strong>Report scritto</strong>
+                    <p>Ricevi una stima chiara con un prezzo di vendita consigliato.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <a href="#contatti" class="service-block-cta cta-strong">Richiedi la tua valutazione gratuita <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg></a>
           </div>
         </section>
       </div>
@@ -501,10 +712,37 @@
       }
     }
 
+    // Fa salire da zero il contatore delle views quando la card entra nel
+    // viewport. Il valore finale resta scritto nel markup, così chi non vede
+    // l'animazione (JS a terra o "riduci movimento") legge comunque il numero.
+    function initCountUp(selector = '.count-up') {
+      if (!motionOK) return;
+      document.querySelectorAll(selector).forEach(el => {
+        const target = Number(el.dataset.countTo);
+        if (!Number.isFinite(target)) return;
+        const suffix = el.dataset.countSuffix || '';
+        el.textContent = '0' + suffix;
+        // Il tween va creato dentro onEnter, non agganciato allo ScrollTrigger:
+        // con "once" il trigger si autodistrugge e porterebbe via anche il tween
+        // prima che parta, lasciando il contatore fermo a zero.
+        ScrollTrigger.create({
+          trigger: el, start: 'top 90%', once: true,
+          onEnter: () => {
+            const counter = { value: 0 };
+            gsap.to(counter, {
+              value: target, duration: 1.8, ease: 'power2.out',
+              onUpdate: () => { el.textContent = Math.round(counter.value) + suffix; }
+            });
+          }
+        });
+      });
+    }
+
     animateHero();
     initScrollReveals();
     initScrollSpy();
     initCardStagger();
+    initCountUp();
 
     window.addEventListener('DOMContentLoaded', async () => {
       try {
