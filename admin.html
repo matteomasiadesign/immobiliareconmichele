@@ -313,7 +313,7 @@
       <form onsubmit="handleLogin(event)">
         <div class="form-group"><label class="form-label">Email</label><input type="email" id="login-email" class="form-input" required></div>
         <div class="form-group"><label class="form-label">Password</label><input type="password" id="login-password" class="form-input" required></div>
-        <button type="submit" class="btn-submit">Accedi al Pannello 🚀</button>
+        <button type="submit" class="btn-submit">Accedi al Pannello</button>
       </form>
     </div>
   </div>
@@ -322,17 +322,17 @@
     <div class="header-bar">
       <div class="header-title-box">
         <h1>Pannello Gestionale</h1>
-        <p>Workspace Privato - Michele Erre 🛠️</p>
+        <p>Workspace Privato - Michele Erre</p>
       </div>
     </div>
 
     <!-- TABS NAV -->
     <div class="tabs-nav">
-      <button class="tab-btn active" onclick="switchTab('tab-overview', this)">🏠 Panoramica <span id="tab-overview-badge" class="status-badge bg-red" style="display:none; margin-left:6px;">0</span></button>
-      <button class="tab-btn" onclick="switchTab('tab-vetrina', this)">🏢 Immobili</button>
-      <button class="tab-btn" onclick="switchTab('tab-stats', this)">📊 Statistiche (CRM)</button>
-      <button class="tab-btn" onclick="switchTab('tab-crm', this)">📇 Clienti (Rubrica)</button>
-      <button class="tab-btn" onclick="switchTab('tab-documenti', this)">📄 Documenti</button>
+      <button class="tab-btn active" onclick="switchTab('tab-overview', this)">Panoramica <span id="tab-overview-badge" class="status-badge bg-red" style="display:none; margin-left:6px;">0</span></button>
+      <button class="tab-btn" onclick="switchTab('tab-vetrina', this)">Immobili</button>
+      <button class="tab-btn" onclick="switchTab('tab-stats', this)">Statistiche (CRM)</button>
+      <button class="tab-btn" onclick="switchTab('tab-crm', this)">Clienti (Rubrica)</button>
+      <button class="tab-btn" onclick="switchTab('tab-documenti', this)">Documenti</button>
     </div>
 
     <!-- TAB 0: PANORAMICA -->
@@ -346,7 +346,7 @@
 
       <div class="panel-card" style="padding: 0; overflow: hidden;">
         <div class="archive-header">
-          <h2>📩 Nuove Richieste dal Sito</h2>
+          <h2>Nuove Richieste dal Sito</h2>
           <span id="overview-unread-badge" style="background:var(--brand-blue); color:var(--brand-yellow); font-size:11px; font-weight:900; padding:4px 10px; border-radius:20px;">0</span>
         </div>
         <div id="overview-leads-list" class="list-wrapper"></div>
@@ -385,11 +385,11 @@
     <div id="tab-stats" class="tab-content">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 15px;">
         <div class="year-selector-box">
-          📅 Anno Fiscale: <select id="stats-year" onchange="updateDashboardStats()"></select>
+          Anno Fiscale: <select id="stats-year" onchange="updateDashboardStats()"></select>
         </div>
         <div style="display:flex; gap:10px; flex-wrap:wrap;">
-          <button onclick="syncActiveIncarichi(true)" class="btn-submit" style="width: auto; padding: 12px 20px; background:#f1f5f9; color:var(--text-slate); box-shadow:none;">🔄 Sincronizza con Immobili</button>
-          <button onclick="openTransactionModal()" class="btn-submit" style="width: auto; padding: 12px 24px;">+ Nuovo Incarico 📝</button>
+          <button onclick="syncActiveIncarichi(true)" class="btn-submit" style="width: auto; padding: 12px 20px; background:#f1f5f9; color:var(--text-slate); box-shadow:none;">Sincronizza con Immobili</button>
+          <button onclick="openTransactionModal()" class="btn-submit" style="width: auto; padding: 12px 24px;">+ Nuovo Incarico</button>
         </div>
       </div>
 
@@ -538,7 +538,7 @@
         <div class="photo-fields-box">
           <label class="form-label">Immagini (Trascina per riordinare)</label>
           <label class="file-input-custom">
-            📷 Trascina o tocca per aggiungere foto...
+            Trascina o tocca per aggiungere foto...
             <input type="file" id="prop-file-uploader" accept="image/*" multiple onchange="handleImageSelection(event)" style="display: none;">
           </label>
           <div id="prop-preview-grid" class="preview-thumbs-grid"></div>
@@ -563,7 +563,7 @@
           <div class="form-group"><label class="form-label">Data scadenza incarico</label><input type="date" id="prop-exp-date" class="form-input"></div>
         </div>
 
-        <button type="submit" id="prop-submit-btn" class="btn-submit">Pubblica Immobile 🚀</button>
+        <button type="submit" id="prop-submit-btn" class="btn-submit">Pubblica Immobile</button>
       </form>
     </div>
   </div>
@@ -631,9 +631,9 @@
         <div class="form-group">
           <label class="form-label">Stato dell'Incarico</label>
           <select id="trans-status" class="form-select" required onchange="toggleTransactionFields()" style="font-weight: 900;">
-            <option value="In Vendita">🟢 In Vendita (Attivo)</option>
-            <option value="Venduto">🤝 Venduto (Chiuso)</option>
-            <option value="Scaduto">🔴 Scaduto / Ritirato</option>
+            <option value="In Vendita">In Vendita (Attivo)</option>
+            <option value="Venduto">Venduto (Chiuso)</option>
+            <option value="Scaduto">Scaduto / Ritirato</option>
           </select>
         </div>
         <div class="form-group">
@@ -676,7 +676,7 @@
         </div>
         
         <div id="group-sale-details" style="display:none; background-color: #f0fdf4; padding: 1rem; border-radius: 16px; border: 1px solid #bbf7d0; margin-bottom: 1rem;">
-          <h4 style="font-size: 11px; font-weight: 900; text-transform: uppercase; color: #166534; margin-bottom: 10px;">💸 Dettagli Chiusura</h4>
+          <h4 style="font-size: 11px; font-weight: 900; text-transform: uppercase; color: #166534; margin-bottom: 10px;">Dettagli Chiusura</h4>
           <div class="form-row">
             <div class="form-group" style="margin-bottom: 0;">
               <label class="form-label" style="color: #166534;">Data di Vendita</label>
@@ -1269,7 +1269,7 @@
                     </div>` : ''}
                     <div class="property-card-actions">
                         <button onclick="togglePropertyVisibility('${p.id}')" class="btn-toggle-visibility ${isVisible ? 'visible' : 'hidden-state'}" title="${isVisible ? 'Visibile sul sito: clicca per nascondere' : 'Nascosto: clicca per pubblicare'}">
-                            ${isVisible ? '👁️ Visibile' : '🚫 Nascosto'}
+                            ${isVisible ? 'Visibile' : 'Nascosto'}
                         </button>
                         <div class="action-buttons">
                             <button onclick="togglePropertyFeatured('${p.id}')" class="btn-star-featured ${p.is_featured ? 'active' : ''}" title="Mostra per primi">★</button>
@@ -1456,10 +1456,10 @@
         
         // Logica Scadenze
         if (t.status === 'Venduto') {
-            b = '<span class="status-badge bg-green">🤝 Venduto</span>';
+            b = '<span class="status-badge bg-green">Venduto</span>';
             if(t.sale_date) days = Math.ceil((new Date(t.sale_date) - acq)/86400000);
         } else if (t.status === 'Scaduto') {
-            b = '<span class="status-badge bg-red">🔴 Scaduto</span>';
+            b = '<span class="status-badge bg-red">Scaduto</span>';
             days = Math.ceil((today - acq)/86400000);
         } else { 
             // In Vendita
@@ -1472,11 +1472,11 @@
             let daysLeft = Math.ceil((exp - today)/86400000);
             
             if (daysLeft < 0) {
-                b = `<span class="status-badge bg-red" title="Scaduto il ${exp.toLocaleDateString('it-IT')}">🔴 Scaduto (${Math.abs(daysLeft)} gg fa)</span>`;
+                b = `<span class="status-badge bg-red" title="Scaduto il ${exp.toLocaleDateString('it-IT')}">Scaduto (${Math.abs(daysLeft)} gg fa)</span>`;
             } else if (daysLeft <= 90) {
-                b = `<span class="status-badge bg-orange" title="Scade il ${exp.toLocaleDateString('it-IT')}">🟠 Scade tra ${daysLeft} gg</span>`;
+                b = `<span class="status-badge bg-orange" title="Scade il ${exp.toLocaleDateString('it-IT')}">Scade tra ${daysLeft} gg</span>`;
             } else {
-                b = '<span class="status-badge bg-blue">🟢 In Corso</span>';
+                b = '<span class="status-badge bg-blue">In Corso</span>';
             }
         }
         
@@ -1493,7 +1493,7 @@
         list.innerHTML += `
         <tr>
           <td>${b}</td>
-          <td style="font-weight:600;">${escapeHtml(t.property_title)}${t.property_id ? ' <span class="status-badge bg-blue" title="Collegato a un immobile in vetrina">🔗 Vetrina</span>' : ''}<br><span style="font-size:10px;color:gray;">Prop: ${escapeHtml(t.owner_name||'-')}</span></td>
+          <td style="font-weight:600;">${escapeHtml(t.property_title)}${t.property_id ? ' <span class="status-badge bg-blue" title="Collegato a un immobile in vetrina">Vetrina</span>' : ''}<br><span style="font-size:10px;color:gray;">Prop: ${escapeHtml(t.owner_name||'-')}</span></td>
           <td>Acq: <b>${acq.toLocaleDateString('it-IT')}</b> <span style="font-size:10px;color:gray;">(${t.assignment_duration||'-'})</span><br>Giorni: <b style="color:var(--brand-blue)">${days>=0?days:0} gg</b></td>
           <td>${pStr}<br><span style="font-size:11px;">Provv: ${cStr}</span></td>
           <td style="text-align:center;">
@@ -1761,7 +1761,7 @@
         tabBadge.style.display = unread.length > 0 ? 'inline-block' : 'none';
 
         if (unread.length === 0) {
-            list.innerHTML = `<div style="padding:2rem 1rem; text-align:center; color:var(--text-muted); font-size:13px; font-weight:600;">Nessuna nuova richiesta al momento 🎉</div>`;
+            list.innerHTML = `<div style="padding:2rem 1rem; text-align:center; color:var(--text-muted); font-size:13px; font-weight:600;">Nessuna nuova richiesta al momento</div>`;
             return;
         }
 
@@ -1770,12 +1770,12 @@
                 <div class="item-info">
                     <div class="item-texts">
                         <p class="item-title">${escapeHtml(b.full_name)} <span class="status-badge bg-red" style="margin-left:6px;">Nuovo</span></p>
-                        <p class="item-details-text">📞 ${escapeHtml(b.phone)} — ${b.created_at ? new Date(b.created_at).toLocaleDateString('it-IT') : ''}</p>
+                        <p class="item-details-text">${escapeHtml(b.phone)} — ${b.created_at ? new Date(b.created_at).toLocaleDateString('it-IT') : ''}</p>
                         <p class="item-details-text" style="margin-top:6px; white-space:pre-line;">${escapeHtml(b.notes || '')}</p>
                     </div>
                 </div>
                 <div class="item-actions-box">
-                    <button onclick="markLeadRead('${b.id}')" class="btn-submit" style="width:auto; padding:10px 18px;">✓ Segna come letto</button>
+                    <button onclick="markLeadRead('${b.id}')" class="btn-submit" style="width:auto; padding:10px 18px;">Segna come letto</button>
                 </div>
             </div>
         `).join('');
@@ -1799,7 +1799,7 @@
         <!-- Riga Cliccabile -->
         <tr class="clickable-row" onclick="toggleNotes('${b.id}')" title="Clicca per visualizzare le note">
           <td>${badge}</td>
-          <td style="font-weight:600;">${escapeHtml(b.full_name)}${leadTags}<br><span style="font-size:11px;color:gray;">📞 ${escapeHtml(b.phone)}</span></td>
+          <td style="font-weight:600;">${escapeHtml(b.full_name)}${leadTags}<br><span style="font-size:11px;color:gray;">${escapeHtml(b.phone)}</span></td>
           <td>${escapeHtml(b.desired_type||'-')} <span style="font-size:11px;color:gray;">(${escapeHtml(b.desired_zone||'Ovunque')})</span></td>
           <td>${b.max_budget ? '€'+b.max_budget.toLocaleString('it-IT') : '-'}</td>
           <td style="text-align:center;" onclick="event.stopPropagation()">
@@ -1811,7 +1811,7 @@
           <td colspan="5" style="padding: 0; border: none;">
             <div id="buyer-notes-${b.id}" class="notes-content">
                <div style="margin: 0 16px 16px 16px; padding: 12px 16px; background-color: #fffbeb; font-size: 13px; color: var(--text-slate); border-left: 4px solid var(--brand-yellow); border-radius: 6px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);">
-                 <b>📝 Note di ${escapeHtml(b.full_name.split(' ')[0])}:</b><br><br>${notesHTML}
+                 <b>Note di ${escapeHtml(b.full_name.split(' ')[0])}:</b><br><br>${notesHTML}
                </div>
             </div>
           </td>

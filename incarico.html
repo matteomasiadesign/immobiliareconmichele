@@ -451,7 +451,7 @@
 
             <div class="button-area">
                 <button type="button" class="btn-example" onclick="compilaDatiEsempio()">
-                    🧪 Compila Dati di Esempio
+                    Compila Dati di Esempio
                 </button>
             </div>
 
@@ -990,9 +990,9 @@
                 </div>
 
                 <div class="actions">
-                    <button type="button" class="btn-save" onclick="salvaBozza()">💾 Salva</button>
-                    <button type="submit" class="btn-generate">📄 Esporta PDF</button>
-                    <button type="reset" class="btn-reset">🔄 Ripristina</button>
+                    <button type="button" class="btn-save" onclick="salvaBozza()">Salva</button>
+                    <button type="submit" class="btn-generate">Esporta PDF</button>
+                    <button type="reset" class="btn-reset">Ripristina</button>
                 </div>
                 <div id="draft-status" class="draft-status"></div>
             </form>
@@ -1118,7 +1118,7 @@
 
             toggleConditionals();
             window.scrollTo({ top: 0, behavior: 'smooth' });
-            alert('✅ Dati compilati! Clicca "Genera PDF" per il risultato.');
+            alert('Dati compilati! Clicca "Genera PDF" per il risultato.');
         }
 
         // ====== SALVATAGGIO BOZZA (gestionale) ======
@@ -1160,7 +1160,7 @@
             }
             currentDraftId = data.id;
             popolaForm(data.dati || {});
-            document.getElementById('draft-status').innerText = `📝 Stai modificando una bozza salvata (ultimo salvataggio: ${new Date(data.updated_at).toLocaleString('it-IT')})`;
+            document.getElementById('draft-status').innerText = `Stai modificando una bozza salvata (ultimo salvataggio: ${new Date(data.updated_at).toLocaleString('it-IT')})`;
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -1182,12 +1182,12 @@
                     url.searchParams.set('id', currentDraftId);
                     window.history.replaceState({}, '', url);
                 }
-                document.getElementById('draft-status').innerText = `💾 Bozza salvata nel gestionale (${new Date().toLocaleString('it-IT')})`;
-                if (showAlert) alert('💾 Bozza salvata nel gestionale!');
+                document.getElementById('draft-status').innerText = `Bozza salvata nel gestionale (${new Date().toLocaleString('it-IT')})`;
+                if (showAlert) alert('Bozza salvata nel gestionale!');
                 return true;
             } catch (err) {
                 console.error('Errore salvataggio bozza:', err);
-                if (showAlert) alert('❌ Errore nel salvataggio della bozza: ' + err.message);
+                if (showAlert) alert('Errore nel salvataggio della bozza: ' + err.message);
                 return false;
             }
         }
@@ -1206,10 +1206,10 @@
                 const data = Object.fromEntries(new FormData(form));
                 generaPDF(data);
                 await salvaBozza(false);
-                alert('✅ PDF generato e bozza salvata nel gestionale!');
+                alert('PDF generato e bozza salvata nel gestionale!');
             } catch (error) {
                 console.error('Errore:', error);
-                alert('❌ Errore nella generazione: ' + error.message);
+                alert('Errore nella generazione: ' + error.message);
             } finally {
                 loading.classList.remove('active');
             }
