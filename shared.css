@@ -21,9 +21,13 @@
    Il top di 0.1em recupera lo squilibrio del Teko: l'ascendente vale 0.94em
    e il discendente 0.47em, ma in maiuscolo non c'e' niente sotto la linea di
    base, quindi align-items:center centra la riga di testo e non le lettere,
-   che senza correzione restano 2px troppo in alto rispetto al logo. */
-.brand-title { font-family: 'Teko', 'Space Grotesk', sans-serif; font-size: 1rem; font-weight: 700; color: var(--white); text-transform: uppercase; letter-spacing: 0.02em; line-height: 1; white-space: nowrap; position: relative; top: 0.1em; }
-@media (min-width: 480px) { .brand-title { font-size: 1.2rem; } }
+   che senza correzione restano 2px troppo in alto rispetto al logo.
+   Il corpo cresce con lo schermo perche' da mobile la scritta sta fra logo e
+   hamburger: la clamp la tiene sempre dentro lo spazio libero senza dover
+   scrivere una misura per ogni breakpoint. A 1.6rem l'altezza delle maiuscole
+   e' 17px contro i 40px del logo (43%), la proporzione che regge il confronto;
+   a 1rem erano 11px (28%) e la scritta spariva accanto all'icona. */
+.brand-title { font-family: 'Teko', 'Space Grotesk', sans-serif; font-size: clamp(1.05rem, 5.4vw, 1.6rem); font-weight: 700; color: var(--white); text-transform: uppercase; letter-spacing: 0.02em; line-height: 1; white-space: nowrap; position: relative; top: 0.1em; }
 
 /* MOBILE: logo a sinistra, nome al centro, hamburger a destra.
    Il nome esce dal flusso e si aggancia al centro della navbar, cosi' resta
@@ -31,7 +35,7 @@
    Vale solo per le pagine pubbliche (a.brand): nel gestionale la barra ha
    altri elementi a destra e il marchio resta accanto al logo. */
 @media (max-width: 999px) {
-  a.brand .brand-text { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); margin-left: 0; max-width: calc(100vw - 8.5rem); }
+  a.brand .brand-text { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); margin-left: 0; max-width: calc(100vw - 7.5rem); }
   a.brand .brand-title { overflow: hidden; text-overflow: ellipsis; }
 }
 
