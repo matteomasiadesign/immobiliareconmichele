@@ -21,6 +21,16 @@
 .brand-title { font-family: 'Teko', 'Space Grotesk', sans-serif; font-size: 1rem; font-weight: 700; color: var(--brand-yellow); letter-spacing: -0.01em; line-height: 1; white-space: nowrap; }
 @media (min-width: 480px) { .brand-title { font-size: 1.2rem; } }
 
+/* MOBILE: logo a sinistra, nome al centro, hamburger a destra.
+   Il nome esce dal flusso e si aggancia al centro della navbar, cosi' resta
+   centrato sullo schermo e non sulla porzione libera tra logo e hamburger.
+   Vale solo per le pagine pubbliche (a.brand): nel gestionale la barra ha
+   altri elementi a destra e il marchio resta accanto al logo. */
+@media (max-width: 999px) {
+  a.brand .brand-text { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); margin-left: 0; max-width: calc(100vw - 8.5rem); }
+  a.brand .brand-title { overflow: hidden; text-overflow: ellipsis; }
+}
+
 /* Il menu esteso compare solo da 1000px: sotto quella soglia logo, tre voci e
    due pulsanti non ci stanno e vanno a capo, quindi resta l'hamburger. */
 .nav-links { display: none; gap: 1.5rem; align-items: center; list-style: none; }
