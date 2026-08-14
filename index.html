@@ -31,10 +31,6 @@
     html, body { background-color: var(--bg-slate); color: var(--text-slate); max-width: 100%; overflow-x: clip; display: flex; flex-direction: column; min-height: 100vh; }
 
     /* Navbar, menu mobile, FAB, card annunci, modale e logo: vedi shared.css */
-    .btn-catalog-nav { background-color: var(--brand-yellow); color: var(--brand-blue); padding: 10px 20px; border-radius: 999px; text-decoration: none; font-weight: 900; font-size: 12px; text-transform: uppercase; }
-    /* Verde come la sezione "Valutazione Gratuita": lega il pulsante al servizio */
-    .btn-valuation-nav { background-color: #10b981; color: var(--white); padding: 10px 20px; border-radius: 999px; text-decoration: none; font-weight: 900; font-size: 12px; text-transform: uppercase; white-space: nowrap; transition: var(--transition); }
-    .btn-valuation-nav:hover { background-color: #059669; }
 
     /* MAIN CONTENT FLEX GROW PER RISOLVERE SCROLL BIANCO */
     .main-content { flex: 1 0 auto; display: flex; flex-direction: column; }
@@ -213,7 +209,7 @@
 <body>
 
   <!-- NAVBAR CON HAMBURGER -->
-  <nav class="navbar">
+  <nav class="navbar" aria-label="Navigazione principale">
     <a href="index.html" class="brand">
       <div class="brand-icon-box">
         <img src="logo.svg" alt="Icona Michele Erre" style="width: 100%; height: 100%; object-fit: contain;">
@@ -224,30 +220,30 @@
       </div>
     </a>
     
-    <div class="nav-links">
-      <a href="#vetrina" class="nav-link">Vetrina</a>
-      <a href="#servizi" class="nav-link">Servizi</a>
-      <a href="#contatti" class="nav-link">Contatti</a>
-      <a href="valutazione.html" class="btn-valuation-nav magnetic">Valutazione Gratuita</a>
-      <a href="catalogo.html" class="btn-catalog-nav magnetic">Sfoglia Catalogo</a>
-    </div>
+    <ul class="nav-links">
+      <li><a href="#home" class="nav-link">Home</a></li>
+      <li><a href="#servizi" class="nav-link">Servizi</a></li>
+      <li><a href="#contatti" class="nav-link">Contatti</a></li>
+      <li><a href="catalogo.html" class="btn-catalog-nav">Catalogo</a></li>
+      <li><a href="valutazione.html" class="btn-valuation-nav">Valutazione</a></li>
+    </ul>
 
-    <button id="mobile-toggle" class="mobile-toggle">
+    <button id="mobile-toggle" class="mobile-toggle" aria-label="Apri il menu" aria-expanded="false" aria-controls="mobile-menu">
       <svg width="28" height="28" fill="none" stroke="var(--brand-yellow)" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path></svg>
     </button>
   </nav>
 
   <div id="mobile-menu" class="mobile-menu">
-    <a href="#vetrina" class="nav-link">Vetrina</a>
+    <a href="#home" class="nav-link">Home</a>
     <a href="#servizi" class="nav-link">Servizi</a>
     <a href="#contatti" class="nav-link">Contatti</a>
-    <a href="valutazione.html" class="btn-valuation-nav">Valutazione Gratuita</a>
-    <a href="catalogo.html" class="btn-catalog-nav">Sfoglia Catalogo Completo</a>
+    <a href="catalogo.html" class="btn-catalog-nav">Catalogo</a>
+    <a href="valutazione.html" class="btn-valuation-nav">Valutazione</a>
   </div>
 
   <main class="main-content">
       <!-- HERO -->
-      <section class="hero">
+      <section id="home" class="hero">
         <div class="hero-overlay"></div>
         <div class="hero-content">
           <div class="hero-badge">
@@ -677,7 +673,7 @@
     // Evidenzia nella navbar (desktop e mobile) la voce corrispondente
     // alla sezione attualmente al centro dello schermo durante lo scroll.
     function initScrollSpy() {
-      const sections = ['vetrina', 'servizi', 'contatti'].map(id => document.getElementById(id)).filter(Boolean);
+      const sections = ['home', 'servizi', 'contatti'].map(id => document.getElementById(id)).filter(Boolean);
       const navLinks = document.querySelectorAll('.nav-link[href^="#"]');
       if (!sections.length || !navLinks.length) return;
 

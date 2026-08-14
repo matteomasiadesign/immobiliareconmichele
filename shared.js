@@ -255,8 +255,37 @@ if (document.readyState === 'loading') {
 // GESTIONE HAMBURGER MENU
 const mobileToggle = document.getElementById('mobile-toggle');
 const mobileMenu = document.getElementById('mobile-menu');
-mobileToggle.addEventListener('click', () => { mobileMenu.classList.toggle('open'); });
-mobileMenu.querySelectorAll('a').forEach(link => { link.addEventListener('click', () => mobileMenu.classList.remove('open')); });
+
+// Lo stato aperto/chiuso va annunciato anche a chi usa uno screen reader:
+// senza aria-expanded il bottone verrebbe letto come un comando muto.
+function setMobileMenu(open) {
+    mobileMenu.classList.toggle('open', open);
+    mobileToggle.setAttribute('aria-expanded', String(open));
+    mobileToggle.setAttribute('aria-label', open ? 'Chiudi il menu' : 'Apri il menu');
+}
+mobileToggle.addEventListener('click', () => setMobileMenu(!mobileMenu.classList.contains('open')));
+mobileMenu.querySelectorAll('a').forEach(link => { link.addEventListener('click', () => setMobileMenu(false)); });
+// Esc chiude il menu e riporta il focus sull'hamburger, come ci si aspetta
+// da un pannello a comparsa.
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && mobileMenu.classList.contains('open')) { setMobileMenu(false); mobileToggle.focus(); }
+});
+
+// Evidenzia nella navbar la pagina in cui ci si trova. Il confronto ignora
+// l'estensione .html perche' l'hosting puo' servire /catalogo al posto di
+// /catalogo.html, e salta i link a un'ancora (li gestisce lo scroll-spy).
+function initCurrentPageNav() {
+    const clean = (s) => s.split('#')[0].split('/').pop().replace(/\.html$/, '') || 'index';
+    const current = clean(location.pathname);
+    document.querySelectorAll('.nav-links a, .mobile-menu a').forEach(a => {
+        const href = a.getAttribute('href') || '';
+        if (!href || href.startsWith('#') || /^(https?:|tel:|mailto:)/.test(href)) return;
+        if (clean(href) !== current) return;
+        a.classList.add('is-current');
+        a.setAttribute('aria-current', 'page');
+    });
+}
+initCurrentPageNav();
 
 // GESTIONE FLOATING MENU
 function toggleFab() {

@@ -19,22 +19,49 @@
 .brand-title { font-size: 1.25rem; font-weight: 900; color: var(--brand-yellow); letter-spacing: -0.025em; }
 .brand-subtitle { font-size: 10px; font-weight: 900; color: var(--white); letter-spacing: 0.1em; margin-top: 2px; }
 
-.nav-links { display: none; gap: 1.5rem; align-items: center; }
-@media (min-width: 768px) { .nav-links { display: flex; } .navbar { padding: 0 2rem; } }
+/* Il menu esteso compare solo da 1000px: sotto quella soglia logo, tre voci e
+   due pulsanti non ci stanno e vanno a capo, quindi resta l'hamburger. */
+.nav-links { display: none; gap: 1.5rem; align-items: center; list-style: none; }
+@media (min-width: 1000px) { .nav-links { display: flex; } .navbar { padding: 0 2rem; } }
 /* Sottolineatura che si attiva sulla sezione attualmente in vista (scroll-spy) */
 .nav-link { position: relative; color: var(--brand-yellow); text-decoration: none; font-weight: 900; font-size: 13px; text-transform: uppercase; transition: var(--transition); }
 .nav-link:hover { color: var(--white); }
 .nav-link::after { content: ''; position: absolute; left: 0; right: 0; bottom: -6px; height: 2px; background: var(--brand-yellow); border-radius: 2px; transform: scaleX(0); transition: transform 0.25s ease; }
-.nav-link.active::after { transform: scaleX(1); }
+.nav-link.active::after, .nav-link.is-current::after { transform: scaleX(1); }
+
+/* PULSANTI DELLA NAVBAR
+   Definiti qui una volta sola: prima ogni pagina se li ridichiarava e lo
+   stesso "Catalogo" appariva giallo sulla home e bianco slavato altrove. */
+.btn-catalog-nav, .btn-valuation-nav { padding: 10px 20px; border-radius: 999px; text-decoration: none; font-weight: 900; font-size: 12px; text-transform: uppercase; white-space: nowrap; border: none; transition: var(--transition); }
+.btn-catalog-nav { background-color: var(--brand-yellow); color: var(--brand-blue); }
+.btn-catalog-nav:hover { background-color: #ffe14d; }
+.btn-valuation-nav { background-color: #10b981; color: var(--white); }
+.btn-valuation-nav:hover { background-color: #059669; }
+
+/* Pagina in cui ti trovi: alone chiaro attorno al pulsante corrispondente */
+.nav-links .btn-catalog-nav.is-current, .nav-links .btn-valuation-nav.is-current,
+.mobile-menu .btn-catalog-nav.is-current, .mobile-menu .btn-valuation-nav.is-current { box-shadow: 0 0 0 3px rgba(255,255,255,0.6); }
+
+/* Contorno di messa a fuoco visibile per chi naviga da tastiera */
+.navbar a:focus-visible, .navbar button:focus-visible, .mobile-menu a:focus-visible { outline: 3px solid var(--white); outline-offset: 3px; border-radius: 6px; }
 
 /* HAMBURGER MENU (MOBILE) */
 .mobile-toggle { display: block; background: none; border: none; cursor: pointer; z-index: 1001; }
-@media (min-width: 768px) { .mobile-toggle { display: none; } }
+@media (min-width: 1000px) { .mobile-toggle { display: none; } }
 
-.mobile-menu { position: fixed; top: 80px; left: 0; width: 100%; background: linear-gradient(160deg, rgba(0,68,255,0.75), rgba(0,31,140,0.8)); backdrop-filter: blur(20px) saturate(160%); -webkit-backdrop-filter: blur(20px) saturate(160%); border-bottom: 4px solid var(--brand-yellow); display: flex; flex-direction: column; align-items: center; gap: 1.5rem; padding: 2rem 1rem; transform: translateY(-150%); transition: var(--transition); z-index: 999; box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
+.mobile-menu { position: fixed; top: 80px; left: 0; width: 100%; background: linear-gradient(160deg, #0044FF, #001f8c); border-bottom: 4px solid var(--brand-yellow); display: flex; flex-direction: column; align-items: center; gap: 0.75rem; padding: 1.5rem 1rem 1.75rem; transform: translateY(-150%); transition: transform 0.3s ease, top 0.3s ease; z-index: 999; box-shadow: 0 14px 24px rgba(0,0,0,0.22); }
 .mobile-menu.open { transform: translateY(0); }
-.mobile-menu .nav-link { font-size: 1.1rem; }
-.mobile-menu .btn-catalog-nav { font-size: 1.1rem; padding: 14px 28px; }
+/* La navbar si accorcia scrollando (80px -> 64px): il menu deve seguirla,
+   altrimenti resta sospeso e si vede la pagina nel mezzo. */
+.navbar.scrolled ~ .mobile-menu { top: 64px; }
+
+/* Tutte le voci come pillole: le sezioni in trasparenza, le due pagine
+   dedicate a colore pieno per farle risaltare come azioni principali. */
+.mobile-menu .nav-link,
+.mobile-menu .btn-catalog-nav,
+.mobile-menu .btn-valuation-nav { width: 100%; max-width: 320px; text-align: center; font-size: 1rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.04em; padding: 14px 28px; border-radius: 999px; }
+.mobile-menu .nav-link { background: rgba(255,255,255,0.12); border: 1.5px solid rgba(255,255,255,0.28); }
+.mobile-menu .nav-link:hover, .mobile-menu .nav-link.active { background: rgba(255,255,255,0.2); }
 
 /* GRID IMMOBILI */
 .properties-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
