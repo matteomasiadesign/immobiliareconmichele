@@ -16,9 +16,13 @@
 .brand { display: flex; align-items: center; text-decoration: none; z-index: 1001; }
 .brand-icon-box { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
 .brand-text { margin-left: 12px; display: flex; align-items: center; line-height: 1.1; }
-/* "Immobiliare con Michele" su una riga sola, centrata sull'altezza del logo:
-   niente maiuscolo forzato, si tiene la capitalizzazione naturale. */
-.brand-title { font-family: 'Teko', 'Space Grotesk', sans-serif; font-size: 1rem; font-weight: 700; color: var(--brand-yellow); letter-spacing: -0.01em; line-height: 1; white-space: nowrap; }
+/* "IMMOBILIARE CON MICHELE" su una riga sola, centrata sull'altezza del logo:
+   tutto maiuscolo e in bianco, cosi' il giallo resta solo del logo.
+   Il top di 0.1em recupera lo squilibrio del Teko: l'ascendente vale 0.94em
+   e il discendente 0.47em, ma in maiuscolo non c'e' niente sotto la linea di
+   base, quindi align-items:center centra la riga di testo e non le lettere,
+   che senza correzione restano 2px troppo in alto rispetto al logo. */
+.brand-title { font-family: 'Teko', 'Space Grotesk', sans-serif; font-size: 1rem; font-weight: 700; color: var(--white); text-transform: uppercase; letter-spacing: 0.02em; line-height: 1; white-space: nowrap; position: relative; top: 0.1em; }
 @media (min-width: 480px) { .brand-title { font-size: 1.2rem; } }
 
 /* MOBILE: logo a sinistra, nome al centro, hamburger a destra.
@@ -74,6 +78,10 @@
 .mobile-menu .btn-valuation-nav { width: 100%; max-width: 320px; text-align: center; font-size: 1rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.04em; padding: 14px 28px; border-radius: 999px; }
 .mobile-menu .nav-link { background: rgba(255,255,255,0.12); border: 1.5px solid rgba(255,255,255,0.28); }
 .mobile-menu .nav-link:hover, .mobile-menu .nav-link.active { background: rgba(255,255,255,0.2); }
+/* Qui la sezione corrente si vede gia' dalla pillola piu' chiara: la
+   sottolineatura gialla della navbar, ereditata da .nav-link::after, sotto una
+   pillola tonda restava staccata e larga quanto tutta la voce. Via. */
+.mobile-menu .nav-link::after { display: none; }
 
 /* GRID IMMOBILI */
 .properties-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
