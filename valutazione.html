@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Valutazione Gratuita - Immobiliare con Michele</title>
+  <meta name="description" content="Scopri quanto vale il tuo immobile a Porto Torres e nel Nord Sardegna. Valutazione gratuita, senza impegno, con sopralluogo e report scritto.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500..700&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="gsap.min.js"></script>
+  <script src="scrolltrigger.min.js"></script>
+  <script src="lenis.min.js"></script>
+  <link rel="stylesheet" href="shared.css">
+
+  <style>
+    :root {
+      --brand-blue: #0044FF;
+      --brand-yellow: #FFD90F;
+      --brand-green: #10b981;
+      --bg-slate: #f8fafc;
+      --text-slate: #1e293b;
+      --text-muted: #64748b;
+      --white: #ffffff;
+      --border-color: #e2e8f0;
+      --transition: all 0.2s ease-in-out;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    html, body { background-color: var(--bg-slate); color: var(--text-slate); min-height: 100vh; max-width: 100%; overflow-x: clip; display: flex; flex-direction: column; }
+
+    /* Navbar, menu mobile, FAB e logo: vedi shared.css */
+    .btn-catalog-nav { background-color: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 999px; text-decoration: none; font-weight: bold; font-size: 11px; text-transform: uppercase; }
+
+    .valuation-container { max-width: 900px; margin: 0 auto; padding: 2rem 1rem 3rem; flex: 1 0 auto; width: 100%; }
+    @media (min-width: 768px) { .valuation-container { padding: 3rem 1.5rem 4rem; } }
+
+    /* INTESTAZIONE */
+    .val-head { text-align: center; margin-bottom: 2rem; }
+    .val-badge { display: inline-flex; align-items: center; gap: 9px; background: rgba(16,185,129,0.1); color: #059669; font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.08em; padding: 8px 16px; border-radius: 999px; margin-bottom: 1.25rem; }
+    .val-title { font-family: 'Space Grotesk', -apple-system, sans-serif; font-size: 2rem; font-weight: 700; color: var(--text-slate); text-transform: uppercase; letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 1rem; }
+    @media (min-width: 768px) { .val-title { font-size: 3rem; } }
+    .val-title span { color: var(--brand-blue); }
+    .val-intro { font-size: 1rem; color: var(--text-muted); font-weight: 500; line-height: 1.6; max-width: 60ch; margin: 0 auto; }
+
+    /* TRE PUNTI DI RASSICURAZIONE */
+    .val-perks { display: grid; grid-template-columns: 1fr; gap: 0.75rem; margin: 2rem 0; }
+    @media (min-width: 640px) { .val-perks { grid-template-columns: repeat(3, 1fr); } }
+    .val-perk { display: flex; align-items: center; gap: 10px; background: var(--white); border: 1px solid var(--border-color); border-radius: 16px; padding: 14px 16px; }
+    .val-perk-icon { width: 32px; height: 32px; border-radius: 10px; background: rgba(16,185,129,0.1); color: var(--brand-green); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .val-perk-icon svg { width: 16px; height: 16px; }
+    .val-perk strong { display: block; font-size: 13px; font-weight: 800; color: var(--text-slate); }
+    .val-perk span { font-size: 11.5px; color: var(--text-muted); font-weight: 500; }
+
+    /* FORM */
+    .val-card { background: var(--white); border-radius: 28px; padding: 1.75rem 1.5rem; border: 1px solid var(--border-color); border-top: 4px solid var(--brand-green); box-shadow: 0 16px 40px -22px rgba(15,23,42,0.18); }
+    @media (min-width: 768px) { .val-card { padding: 2.5rem 3rem; } }
+
+    .val-section { margin-bottom: 2rem; }
+    .val-section:last-of-type { margin-bottom: 1.5rem; }
+    .val-section-title { display: flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 900; color: var(--brand-blue); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 1rem; }
+    .val-step-num { width: 22px; height: 22px; border-radius: 50%; background: var(--brand-blue); color: var(--white); display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 900; flex-shrink: 0; }
+
+    .val-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+    @media (min-width: 640px) { .val-grid { grid-template-columns: 1fr 1fr; } }
+    .val-field { display: flex; flex-direction: column; gap: 6px; }
+    .val-field.full { grid-column: 1 / -1; }
+    .val-label { font-size: 11.5px; font-weight: 800; color: var(--text-slate); }
+    .val-label .req { color: #dc2626; }
+    .val-label .opt { color: var(--text-muted); font-weight: 600; }
+    .val-input { width: 100%; padding: 14px 16px; background: #f1f5f9; border: 1px solid var(--border-color); border-radius: 14px; font-size: 14px; font-weight: 500; font-family: inherit; color: var(--text-slate); outline: none; transition: var(--transition); appearance: none; }
+    .val-input:focus { border-color: var(--brand-blue); background: var(--white); box-shadow: 0 0 0 4px rgba(0,68,255,0.1); }
+    .val-input:invalid:not(:placeholder-shown) { border-color: #fca5a5; }
+    select.val-input { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' stroke='%2364748b' stroke-width='2.5' viewBox='0 0 24 24'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; background-size: 16px; padding-right: 40px; }
+    textarea.val-input { resize: vertical; min-height: 90px; }
+
+    /* CARATTERISTICHE: checkbox come pillole selezionabili */
+    .val-hint { font-size: 12px; color: var(--text-muted); font-weight: 500; margin-bottom: 0.9rem; }
+    .val-checks { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+    .val-check { position: relative; }
+    .val-check input { position: absolute; opacity: 0; width: 0; height: 0; }
+    .val-check span { display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 700; color: var(--text-slate); background: #f1f5f9; border: 1.5px solid var(--border-color); padding: 9px 15px; border-radius: 999px; cursor: pointer; transition: var(--transition); user-select: none; }
+    .val-check span::before { content: ''; width: 14px; height: 14px; border-radius: 5px; border: 1.5px solid #cbd5e1; background: var(--white); flex-shrink: 0; transition: var(--transition); }
+    .val-check input:checked + span { background: rgba(16,185,129,0.1); border-color: var(--brand-green); color: #047857; }
+    .val-check input:checked + span::before { background: var(--brand-green); border-color: var(--brand-green); box-shadow: inset 0 0 0 2px var(--white); }
+    .val-check input:focus-visible + span { outline: 2px solid var(--brand-blue); outline-offset: 3px; }
+    .val-check span:hover { border-color: var(--brand-green); }
+
+    .val-submit { width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 8px; background-color: var(--brand-yellow); color: var(--brand-blue); border: 3px solid var(--brand-blue); font-weight: 900; font-size: 14px; text-transform: uppercase; letter-spacing: 0.03em; padding: 17px 30px; border-radius: 999px; cursor: pointer; font-family: inherit; transition: var(--transition); }
+    .val-submit:hover:not(:disabled) { background-color: #ffe14d; }
+    .val-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+    .val-submit svg { width: 15px; height: 15px; }
+    .val-privacy { font-size: 11.5px; color: var(--text-muted); font-weight: 500; text-align: center; margin-top: 1rem; line-height: 1.5; }
+    .val-status { font-size: 13.5px; font-weight: 700; text-align: center; margin-top: 1rem; min-height: 1.2em; }
+    .val-status.success { color: #059669; }
+    .val-status.error { color: #dc2626; }
+
+    /* SCHERMATA DI CONFERMA (sostituisce il form a invio riuscito) */
+    .val-done { display: none; text-align: center; padding: 1rem 0 0.5rem; }
+    .val-done.show { display: block; }
+    .val-done-icon { width: 64px; height: 64px; border-radius: 50%; background: rgba(16,185,129,0.12); color: var(--brand-green); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem; }
+    .val-done-icon svg { width: 32px; height: 32px; }
+    .val-done h2 { font-family: 'Space Grotesk', -apple-system, sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--text-slate); text-transform: uppercase; margin-bottom: 0.75rem; }
+    .val-done p { font-size: 14px; color: var(--text-muted); font-weight: 500; line-height: 1.6; max-width: 46ch; margin: 0 auto 1.5rem; }
+    .val-done-actions { display: flex; flex-direction: column; gap: 0.75rem; align-items: center; }
+    @media (min-width: 560px) { .val-done-actions { flex-direction: row; justify-content: center; } }
+    .val-done-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 26px; border-radius: 999px; font-weight: 900; font-size: 13px; text-transform: uppercase; text-decoration: none; transition: var(--transition); }
+    .val-done-btn.primary { background: #25D366; color: var(--white); }
+    .val-done-btn.secondary { background: rgba(0,68,255,0.07); color: var(--brand-blue); }
+    .val-done-btn:hover { gap: 12px; }
+    .val-done-btn svg { width: 16px; height: 16px; }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="index.html" class="brand">
+      <div class="brand-icon-box">
+        <img src="logo.svg" alt="Icona Michele Erre" style="width: 100%; height: 100%; object-fit: contain;">
+      </div>
+      <div class="brand-text">
+        <span class="brand-title">MICHELE ERRE</span>
+        <span class="brand-subtitle">Agente immobiliare</span>
+      </div>
+    </a>
+
+    <div class="nav-links">
+      <a href="index.html#vetrina" class="nav-link">Vetrina</a>
+      <a href="index.html#servizi" class="nav-link">Servizi</a>
+      <a href="index.html#contatti" class="nav-link">Contatti</a>
+      <a href="index.html" class="btn-catalog-nav magnetic">Torna alla Home</a>
+    </div>
+
+    <button id="mobile-toggle" class="mobile-toggle">
+      <svg width="28" height="28" fill="none" stroke="var(--brand-yellow)" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+    </button>
+  </nav>
+
+  <div id="mobile-menu" class="mobile-menu">
+    <a href="index.html#vetrina" class="nav-link">Vetrina</a>
+    <a href="index.html#servizi" class="nav-link">Servizi</a>
+    <a href="index.html#contatti" class="nav-link">Contatti</a>
+    <a href="catalogo.html" class="btn-catalog-nav">Sfoglia Catalogo Completo</a>
+    <a href="index.html" class="btn-catalog-nav">Torna alla Home</a>
+  </div>
+
+  <main class="valuation-container">
+    <div class="val-head reveal">
+      <span class="val-badge"><span class="pulse-dot"></span> 100% Gratuita, senza impegno</span>
+      <h1 class="val-title">Quanto vale <span>il tuo immobile?</span></h1>
+      <p class="val-intro">Raccontami in un minuto com'è fatto: ti richiamo io per fissare il sopralluogo e ti consegno una stima chiara, basata sui dati reali della tua zona.</p>
+    </div>
+
+    <div class="val-perks reveal">
+      <div class="val-perk">
+        <span class="val-perk-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg></span>
+        <div><strong>Nessun costo</strong><span>Non paghi nulla, mai</span></div>
+      </div>
+      <div class="val-perk">
+        <span class="val-perk-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></span>
+        <div><strong>Ti rispondo entro 24h</strong><span>Di persona, non un bot</span></div>
+      </div>
+      <div class="val-perk">
+        <span class="val-perk-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg></span>
+        <div><strong>Report scritto</strong><span>Con prezzo consigliato</span></div>
+      </div>
+    </div>
+
+    <div class="val-card reveal">
+      <form id="valuation-form" onsubmit="handleValuationSubmit(event)" novalidate>
+        <div class="val-section">
+          <div class="val-section-title"><span class="val-step-num">1</span> I tuoi contatti</div>
+          <div class="val-grid">
+            <div class="val-field">
+              <label class="val-label" for="val-name">Nome e cognome <span class="req">*</span></label>
+              <input type="text" id="val-name" class="val-input" placeholder="Mario Rossi" required>
+            </div>
+            <div class="val-field">
+              <label class="val-label" for="val-phone">Numero di telefono <span class="req">*</span></label>
+              <input type="tel" id="val-phone" class="val-input" placeholder="333 123 4567" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="val-section">
+          <div class="val-section-title"><span class="val-step-num">2</span> L'immobile da valutare</div>
+          <div class="val-grid">
+            <div class="val-field">
+              <label class="val-label" for="val-zone">Zona <span class="req">*</span></label>
+              <input type="text" id="val-zone" class="val-input" placeholder="Es. Porto Torres, centro" required>
+            </div>
+            <div class="val-field">
+              <label class="val-label" for="val-type">Tipologia immobiliare <span class="req">*</span></label>
+              <select id="val-type" class="val-input" required onchange="toggleOtherType()">
+                <option value="">Seleziona...</option>
+                <option value="Appartamento">Appartamento</option>
+                <option value="Casa indipendente">Casa indipendente</option>
+                <option value="Villa / Villetta">Villa / Villetta</option>
+                <option value="Terreno">Terreno</option>
+                <option value="Locale commerciale / Struttura">Locale commerciale / Struttura</option>
+                <option value="Garage / Box">Garage / Box</option>
+                <option value="Altro">Altro (specifica)</option>
+              </select>
+            </div>
+            <div class="val-field full" id="val-type-other-field" style="display:none;">
+              <label class="val-label" for="val-type-other">Specifica la tipologia <span class="req">*</span></label>
+              <input type="text" id="val-type-other" class="val-input" placeholder="Descrivi che tipo di immobile è">
+            </div>
+            <div class="val-field">
+              <label class="val-label" for="val-sqm">Superficie indicativa <span class="opt">(facoltativo)</span></label>
+              <input type="number" id="val-sqm" class="val-input" placeholder="Es. 95" min="1" max="100000">
+            </div>
+          </div>
+        </div>
+
+        <div class="val-section">
+          <div class="val-section-title"><span class="val-step-num">3</span> Caratteristiche</div>
+          <p class="val-hint">Seleziona tutto quello che si applica: più dettagli mi dai, più la stima sarà precisa.</p>
+          <div class="val-checks" id="val-features">
+            <label class="val-check"><input type="checkbox" value="Ristrutturato"><span>Ristrutturato</span></label>
+            <label class="val-check"><input type="checkbox" value="Da ristrutturare"><span>Da ristrutturare</span></label>
+            <label class="val-check"><input type="checkbox" value="Ascensore"><span>Ascensore</span></label>
+            <label class="val-check"><input type="checkbox" value="Box / Posto auto"><span>Box / Posto auto</span></label>
+            <label class="val-check"><input type="checkbox" value="Terrazzo / Balcone"><span>Terrazzo / Balcone</span></label>
+            <label class="val-check"><input type="checkbox" value="Giardino"><span>Giardino</span></label>
+            <label class="val-check"><input type="checkbox" value="Vista mare"><span>Vista mare</span></label>
+            <label class="val-check"><input type="checkbox" value="Cantina / Soffitta"><span>Cantina / Soffitta</span></label>
+            <label class="val-check"><input type="checkbox" value="Riscaldamento autonomo"><span>Riscaldamento autonomo</span></label>
+            <label class="val-check"><input type="checkbox" value="Aria condizionata"><span>Aria condizionata</span></label>
+            <label class="val-check"><input type="checkbox" value="Arredato"><span>Arredato</span></label>
+            <label class="val-check"><input type="checkbox" value="Ultimo piano"><span>Ultimo piano</span></label>
+            <label class="val-check"><input type="checkbox" value="Piano terra"><span>Piano terra</span></label>
+            <label class="val-check"><input type="checkbox" value="Fotovoltaico"><span>Fotovoltaico</span></label>
+            <label class="val-check"><input type="checkbox" value="Attualmente affittato"><span>Attualmente affittato</span></label>
+          </div>
+        </div>
+
+        <div class="val-section">
+          <div class="val-field full">
+            <label class="val-label" for="val-notes">Vuoi aggiungere altro? <span class="opt">(facoltativo)</span></label>
+            <textarea id="val-notes" class="val-input" placeholder="Es. piano, anno di costruzione, se è libero o abitato, tempistiche che hai in mente..."></textarea>
+          </div>
+        </div>
+
+        <button type="submit" id="val-submit-btn" class="val-submit">
+          Richiedi la valutazione gratuita
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+        </button>
+        <div id="val-status" class="val-status"></div>
+        <p class="val-privacy">I dati che inserisci servono solo a ricontattarti per la valutazione. Nessuno spam, nessuna cessione a terzi.</p>
+      </form>
+
+      <div id="val-done" class="val-done">
+        <div class="val-done-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+        </div>
+        <h2>Richiesta inviata!</h2>
+        <p>Grazie, ho ricevuto tutto. Ti ricontatto entro 24 ore per fissare il sopralluogo e prepararti la stima. Se hai fretta, scrivimi pure su WhatsApp.</p>
+        <div class="val-done-actions">
+          <a href="https://wa.me/393348576926" target="_blank" rel="noopener" class="val-done-btn primary">
+            <svg fill="currentColor" viewBox="0 0 16 16"><path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/></svg>
+            Scrivimi su WhatsApp
+          </a>
+          <a href="index.html" class="val-done-btn secondary">Torna alla Home</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div class="footer-col reveal">
+          <h3 class="footer-brand-title">Michele Erre</h3>
+          <p class="footer-tagline">Ti aiuto a comprare, vendere o affittare casa a Porto Torres e nel Nord Sardegna, in modo trasparente e senza stress.</p>
+          <div class="footer-social">
+            <a href="https://www.instagram.com/immobiliareconmichele/" target="_blank" aria-label="Instagram">
+              <svg width="26" height="26" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            </a>
+            <a href="https://www.facebook.com/profile.php?id=61589075136306" target="_blank" aria-label="Facebook">
+              <svg width="26" height="26" fill="currentColor" viewBox="0 0 24 24"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="footer-col reveal">
+          <h4 class="footer-heading">Link Rapidi</h4>
+          <div class="footer-links">
+            <a href="index.html#vetrina">Vetrina</a>
+            <a href="index.html#servizi">Servizi</a>
+            <a href="index.html#contatti">Contatti</a>
+            <a href="catalogo.html">Catalogo Completo</a>
+          </div>
+        </div>
+
+        <div class="footer-col reveal">
+          <h4 class="footer-heading">Contatti</h4>
+          <div class="footer-links">
+            <a href="tel:+393348576926">+39 334 857 6926</a>
+            <a href="mailto:infoerreimmobili@gmail.com">infoerreimmobili@gmail.com</a>
+            <span>Porto Torres (SS)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>P.IVA: 03076110901 | REA: SS - 227691 | PEC: erremichele12@pec.it</span>
+        <span>&copy; 2026 Immobiliare con Michele. Tutti i diritti riservati.</span>
+      </div>
+    </div>
+  </footer>
+
+  <div class="fab-container" id="fab-container">
+      <div class="fab-menu" id="fab-menu">
+          <a href="https://wa.me/393348576926" target="_blank" class="fab-action fab-wa">
+              <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16"><path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/></svg>
+              <span>Scrivi su WhatsApp</span>
+          </a>
+          <a href="tel:+393348576926" class="fab-action fab-call">
+              <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+              <span>Chiama Ora</span>
+          </a>
+      </div>
+      <button class="fab-main magnetic" onclick="toggleFab()">
+          <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+      </button>
+  </div>
+
+  <script src="shared.js"></script>
+  <script>
+    initScrollReveals();
+    initMagneticButtons();
+
+    // "Altro" apre un campo libero: la tipologia serve a Michele per capire
+    // subito cosa sta valutando, quindi non deve restare un'etichetta vaga.
+    function toggleOtherType() {
+      const isOther = document.getElementById('val-type').value === 'Altro';
+      const field = document.getElementById('val-type-other');
+      document.getElementById('val-type-other-field').style.display = isOther ? 'flex' : 'none';
+      field.required = isOther;
+      if (!isOther) field.value = '';
+    }
+
+    // Validazione manuale (il form e' novalidate) per poter mostrare un
+    // messaggio unico in italiano e portare il focus sul primo campo mancante,
+    // invece dei tooltip nativi che su mobile spesso restano invisibili.
+    function firstMissingField() {
+      const required = [
+        ['val-name', 'il tuo nome e cognome'],
+        ['val-phone', 'il tuo numero di telefono'],
+        ['val-zone', 'la zona in cui si trova l\'immobile'],
+        ['val-type', 'la tipologia dell\'immobile']
+      ];
+      if (document.getElementById('val-type').value === 'Altro') {
+        required.push(['val-type-other', 'che tipo di immobile è']);
+      }
+      for (const [id, label] of required) {
+        if (!document.getElementById(id).value.trim()) return { id, label };
+      }
+      return null;
+    }
+
+    async function handleValuationSubmit(e) {
+      e.preventDefault();
+      const btn = document.getElementById('val-submit-btn');
+      const statusEl = document.getElementById('val-status');
+      statusEl.textContent = '';
+      statusEl.classList.remove('success', 'error');
+
+      const missing = firstMissingField();
+      if (missing) {
+        statusEl.textContent = 'Manca ' + missing.label + '.';
+        statusEl.classList.add('error');
+        document.getElementById(missing.id).focus();
+        return;
+      }
+
+      const name = document.getElementById('val-name').value.trim();
+      const phone = document.getElementById('val-phone').value.trim();
+      const zone = document.getElementById('val-zone').value.trim();
+      const typeSel = document.getElementById('val-type').value;
+      const type = typeSel === 'Altro' ? document.getElementById('val-type-other').value.trim() : typeSel;
+      const sqm = document.getElementById('val-sqm').value.trim();
+      const notes = document.getElementById('val-notes').value.trim();
+      const features = Array.from(document.querySelectorAll('#val-features input:checked')).map(c => c.value);
+
+      btn.disabled = true;
+      btn.textContent = 'Invio in corso...';
+
+      // Riassunto leggibile: e' quello che Michele vede in Panoramica e
+      // nelle note della rubrica, quindi va scritto per essere letto a colpo
+      // d'occhio dal telefono, non come dump di campi.
+      const noteParts = ['Richiesta di VALUTAZIONE GRATUITA dal sito'];
+      const scheda = [`Zona: ${zone}`, `Tipologia: ${type}`];
+      if (sqm) scheda.push(`Superficie: ${sqm} mq`);
+      if (features.length) scheda.push(`Caratteristiche: ${features.join(', ')}`);
+      noteParts.push(scheda.join('\n'));
+      if (notes) noteParts.push(`Note del cliente:\n${notes}`);
+
+      const { error } = await _supabase.from('buyers').insert([{
+        full_name: name,
+        phone: phone,
+        status: 'Attivo',
+        desired_zone: zone,
+        desired_type: type,
+        notes: noteParts.join('\n\n'),
+        source: 'sito',
+        is_read: false,
+        request_type: 'valutazione'
+      }]);
+
+      if (error) {
+        btn.disabled = false;
+        btn.innerHTML = 'Richiedi la valutazione gratuita <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>';
+        statusEl.textContent = "Errore nell'invio. Riprova o scrivimi su WhatsApp.";
+        statusEl.classList.add('error');
+        console.error(error);
+        return;
+      }
+
+      document.getElementById('valuation-form').style.display = 'none';
+      document.getElementById('val-done').classList.add('show');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>

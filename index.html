@@ -32,6 +32,9 @@
 
     /* Navbar, menu mobile, FAB, card annunci, modale e logo: vedi shared.css */
     .btn-catalog-nav { background-color: var(--brand-yellow); color: var(--brand-blue); padding: 10px 20px; border-radius: 999px; text-decoration: none; font-weight: 900; font-size: 12px; text-transform: uppercase; }
+    /* Verde come la sezione "Valutazione Gratuita": lega il pulsante al servizio */
+    .btn-valuation-nav { background-color: #10b981; color: var(--white); padding: 10px 20px; border-radius: 999px; text-decoration: none; font-weight: 900; font-size: 12px; text-transform: uppercase; white-space: nowrap; transition: var(--transition); }
+    .btn-valuation-nav:hover { background-color: #059669; }
 
     /* MAIN CONTENT FLEX GROW PER RISOLVERE SCROLL BIANCO */
     .main-content { flex: 1 0 auto; display: flex; flex-direction: column; }
@@ -88,14 +91,28 @@
     .service-block-icon { width: 56px; height: 56px; border-radius: 16px; background-color: var(--brand-blue); color: var(--white); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .service-block-icon svg { width: 28px; height: 28px; }
     .service-block-heading { flex: 1; min-width: 200px; }
-    .service-block-title-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 0.5rem; }
+    .service-block-title-row { margin-bottom: 0.5rem; }
     .service-block-title { font-size: 1.4rem; font-weight: 900; color: var(--text-slate); text-transform: uppercase; letter-spacing: -0.01em; }
     @media (min-width: 768px) { .service-block-title { font-size: 1.85rem; } }
-    .service-block-live-dot { width: 11px; height: 11px; box-shadow: 0 0 0 4px rgba(16,185,129,0.15), 0 2px 8px rgba(16,185,129,0.6); }
+    /* Inline-block dentro al titolo: se il titolo va a capo su mobile il pallino
+       resta attaccato all'ultima parola invece di finire da solo su una riga. */
+    .service-block-live-dot { display: inline-block; vertical-align: middle; width: 11px; height: 11px; margin-left: 10px; box-shadow: 0 0 0 4px rgba(16,185,129,0.15), 0 2px 8px rgba(16,185,129,0.6); }
     .service-block-tagline { font-size: 0.95rem; color: var(--text-muted); font-weight: 500; line-height: 1.6; max-width: 48ch; }
 
     .service-block-body { position: relative; display: flex; flex-direction: column; gap: 1.5rem; }
-    @media (min-width: 900px) { .service-block-body { flex-direction: row; align-items: flex-start; gap: 2.5rem; } .service-block-body .service-spotlight { flex: 0 0 300px; } .service-journey { flex: 1; padding-top: 0.25rem; } }
+    /* Da desktop la spotlight si allarga e le due colonne si allungano alla
+       stessa altezza: gli step si centrano accanto alla card invece di
+       lasciare un buco sotto quando sono pochi. */
+    @media (min-width: 900px) {
+      .service-block-body { flex-direction: row; align-items: stretch; gap: 3rem; }
+      .service-block-body .service-spotlight { flex: 0 0 380px; padding: 1.5rem 1.6rem 1.65rem; gap: 1rem; }
+      .service-journey { flex: 1; justify-content: center; }
+      .service-block-body .service-spotlight-number { font-size: 2.6rem; }
+      .service-block-body .service-spotlight-copy { font-size: 13.5px; }
+      .service-journey .service-feature-text strong { font-size: 15px; }
+      .service-journey .service-feature-text p { font-size: 13.5px; }
+      .service-journey-step { padding-bottom: 2rem; }
+    }
 
     .service-journey { display: flex; flex-direction: column; }
     .service-journey-step { position: relative; display: flex; gap: 1rem; padding-bottom: 1.5rem; }
@@ -107,7 +124,13 @@
     .service-feature-text strong { display: block; font-size: 14px; font-weight: 800; color: var(--text-slate); margin-bottom: 3px; }
     .service-feature-text p { font-size: 13px; color: var(--text-muted); line-height: 1.55; font-weight: 500; }
 
-    .service-block-extra { position: relative; margin-top: 1.75rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color); }
+    /* Piede della card: da desktop le pillole "anche se..." stanno a sinistra
+       e la CTA si allinea in basso a destra, cosi' la riga finale occupa tutta
+       la larghezza invece di lasciare il vuoto a destra. */
+    .service-block-foot { position: relative; margin-top: 1.75rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 1.5rem; }
+    @media (min-width: 900px) { .service-block-foot { flex-direction: row; align-items: flex-end; justify-content: space-between; gap: 2.5rem; } }
+    .service-block-foot .service-block-cta { margin-top: 0; flex-shrink: 0; }
+    .service-block-extra { position: relative; flex: 1; }
     .service-block-extra-title { display: block; font-size: 11px; font-weight: 900; color: var(--brand-blue); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.85rem; }
     .service-block-extra-items { display: flex; flex-wrap: wrap; gap: 0.6rem; }
     .service-block-extra-item { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 700; color: var(--text-slate); background-color: rgba(0,68,255,0.05); padding: 8px 14px; border-radius: 999px; }
@@ -174,10 +197,7 @@
     @media (min-width: 640px) { .contact-form-header { flex-direction: row; align-items: center; justify-content: space-between; } }
     .contact-form-header h3 { font-family: 'Space Grotesk', -apple-system, sans-serif; font-size: 1.3rem; font-weight: 700; text-transform: uppercase; color: var(--text-slate); }
     .response-badge { display: inline-flex; align-items: center; gap: 9px; background: rgba(16,185,129,0.08); color: #059669; font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; padding: 8px 14px; border-radius: 20px; white-space: nowrap; }
-    .pulse-dot { width: 8px; height: 8px; border-radius: 50%; background: #10b981; position: relative; flex-shrink: 0; }
-    .pulse-dot::after { content: ''; position: absolute; inset: -4px; border-radius: 50%; background: #10b981; opacity: 0.55; animation: pulse-dot-anim 1.8s ease-out infinite; }
-    @keyframes pulse-dot-anim { 0% { transform: scale(0.6); opacity: 0.55; } 100% { transform: scale(2.4); opacity: 0; } }
-    @media (prefers-reduced-motion: reduce) { .pulse-dot::after { animation: none; opacity: 0; } }
+    /* .pulse-dot: vedi shared.css (usato anche in valutazione.html) */
 
     .contact-form-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
     @media (min-width: 640px) { .contact-form-grid { grid-template-columns: 1fr 1fr; } }
@@ -208,6 +228,7 @@
       <a href="#vetrina" class="nav-link">Vetrina</a>
       <a href="#servizi" class="nav-link">Servizi</a>
       <a href="#contatti" class="nav-link">Contatti</a>
+      <a href="valutazione.html" class="btn-valuation-nav magnetic">Valutazione Gratuita</a>
       <a href="catalogo.html" class="btn-catalog-nav magnetic">Sfoglia Catalogo</a>
     </div>
 
@@ -220,6 +241,7 @@
     <a href="#vetrina" class="nav-link">Vetrina</a>
     <a href="#servizi" class="nav-link">Servizi</a>
     <a href="#contatti" class="nav-link">Contatti</a>
+    <a href="valutazione.html" class="btn-valuation-nav">Valutazione Gratuita</a>
     <a href="catalogo.html" class="btn-catalog-nav">Sfoglia Catalogo Completo</a>
   </div>
 
@@ -322,16 +344,17 @@
               </div>
             </div>
 
-            <div class="service-block-extra">
-              <span class="service-block-extra-title">Anche se compri</span>
-              <div class="service-block-extra-items">
-                <span class="service-block-extra-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"></path></svg> Ricerca su misura</span>
-                <span class="service-block-extra-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg> Verifiche pre-acquisto</span>
-                <span class="service-block-extra-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg> Fino alle chiavi in mano</span>
+            <div class="service-block-foot">
+              <div class="service-block-extra">
+                <span class="service-block-extra-title">Anche se compri</span>
+                <div class="service-block-extra-items">
+                  <span class="service-block-extra-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"></path></svg> Ricerca su misura</span>
+                  <span class="service-block-extra-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg> Verifiche pre-acquisto</span>
+                  <span class="service-block-extra-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg> Fino alle chiavi in mano</span>
+                </div>
               </div>
+              <a href="#contatti" class="service-block-cta">Parliamone insieme <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg></a>
             </div>
-
-            <a href="#contatti" class="service-block-cta">Parliamone insieme <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg></a>
           </div>
 
           <!-- 02 LOCAZIONI SICURE -->
@@ -375,14 +398,15 @@
               </div>
             </div>
 
-            <div class="service-block-extra">
-              <span class="service-block-extra-title">Anche se cerchi casa</span>
-              <div class="service-block-extra-items">
-                <span class="service-block-extra-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"></path></svg> Ti aiuto a trovare l'affitto giusto, zona e budget compresi</span>
+            <div class="service-block-foot">
+              <div class="service-block-extra">
+                <span class="service-block-extra-title">Anche se cerchi casa</span>
+                <div class="service-block-extra-items">
+                  <span class="service-block-extra-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"></path></svg> Ti aiuto a trovare l'affitto giusto, zona e budget compresi</span>
+                </div>
               </div>
+              <a href="#contatti" class="service-block-cta">Parliamone insieme <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg></a>
             </div>
-
-            <a href="#contatti" class="service-block-cta">Parliamone insieme <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg></a>
           </div>
 
           <!-- 03 VALUTAZIONE GRATUITA -->
@@ -394,8 +418,7 @@
               </div>
               <div class="service-block-heading">
                 <div class="service-block-title-row">
-                  <h3 class="service-block-title">Valutazione Gratuita</h3>
-                  <span class="pulse-dot service-block-live-dot"></span>
+                  <h3 class="service-block-title">Valutazione Gratuita<span class="pulse-dot service-block-live-dot"></span></h3>
                 </div>
                 <p class="service-block-tagline">Ti dico quanto vale il tuo immobile basandomi sul mercato attuale: insieme troviamo il prezzo giusto.</p>
               </div>
@@ -447,7 +470,7 @@
               </div>
             </div>
 
-            <a href="#contatti" class="service-block-cta cta-strong">Richiedi la tua valutazione gratuita <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg></a>
+            <a href="valutazione.html" class="service-block-cta cta-strong">Richiedi la tua valutazione gratuita <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg></a>
           </div>
         </section>
       </div>

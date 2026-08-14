@@ -172,3 +172,14 @@
 .footer-social a:hover { transform: scale(1.1); }
 .footer-bottom { border-top: 1px solid rgba(255,255,255,0.15); padding: 1.5rem 0; text-align: center; font-size: 0.8rem; color: rgba(255,255,255,0.6); display: flex; flex-direction: column; gap: 0.5rem; }
 @media (min-width: 768px) { .footer-bottom { flex-direction: row; justify-content: space-between; text-align: left; } }
+
+/* PALLINO VERDE LAMPEGGIANTE
+   Segnala "sono disponibile / e' attivo" accanto a un'etichetta.
+   Usato nel badge "Rispondo entro 24h" e sulla sezione Valutazione Gratuita
+   della home, e nell'intestazione di valutazione.html. */
+.pulse-dot { width: 8px; height: 8px; border-radius: 50%; background: #10b981; position: relative; flex-shrink: 0; }
+.pulse-dot::after { content: ''; position: absolute; inset: -4px; border-radius: 50%; background: #10b981; opacity: 0.55; animation: pulse-dot-anim 1.8s ease-out infinite; }
+@keyframes pulse-dot-anim { 0% { transform: scale(0.6); opacity: 0.55; } 100% { transform: scale(2.4); opacity: 0; } }
+/* Niente stop con "riduci movimento": come per le altre animazioni del sito
+   (vedi motionOK in shared.js) il pallino deve lampeggiare sempre, altrimenti
+   su molti telefoni - che hanno il risparmio energetico attivo - sparisce. */

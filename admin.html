@@ -1769,7 +1769,7 @@
             <div class="item-row">
                 <div class="item-info">
                     <div class="item-texts">
-                        <p class="item-title">${escapeHtml(b.full_name)} <span class="status-badge bg-red" style="margin-left:6px;">Nuovo</span></p>
+                        <p class="item-title">${escapeHtml(b.full_name)} <span class="status-badge bg-red" style="margin-left:6px;">Nuovo</span>${b.request_type === 'valutazione' ? ' <span class="status-badge bg-green">Valutazione</span>' : ''}</p>
                         <p class="item-details-text">${escapeHtml(b.phone)} — ${b.created_at ? new Date(b.created_at).toLocaleDateString('it-IT') : ''}</p>
                         <p class="item-details-text" style="margin-top:6px; white-space:pre-line;">${escapeHtml(b.notes || '')}</p>
                     </div>
@@ -1791,7 +1791,9 @@
       filtered.forEach(b => {
         let badge = b.status==='Attivo'?'<span class="status-badge bg-blue">In Ricerca</span>':(b.status==='Trovato'?'<span class="status-badge bg-green">Trovato</span>':'<span class="status-badge bg-red">Non Int.</span>');
         const isNewLead = b.source === 'sito' && !b.is_read;
-        const leadTags = (isNewLead ? ' <span class="status-badge bg-red">Nuovo</span>' : '') + (b.source === 'sito' ? ' <span class="status-badge bg-orange">Dal Sito</span>' : '');
+        const leadTags = (isNewLead ? ' <span class="status-badge bg-red">Nuovo</span>' : '')
+          + (b.request_type === 'valutazione' ? ' <span class="status-badge bg-green">Valutazione</span>' : '')
+          + (b.source === 'sito' ? ' <span class="status-badge bg-orange">Dal Sito</span>' : '');
 
         let notesHTML = b.notes ? escapeHtml(b.notes).replace(/\n/g, '<br>') : '<i>Nessuna nota presente.</i>';
 
