@@ -18,7 +18,7 @@
 .brand-text { margin-left: 12px; display: flex; align-items: center; line-height: 1.1; }
 /* "Immobiliare con Michele" su una riga sola, centrata sull'altezza del logo:
    niente maiuscolo forzato, si tiene la capitalizzazione naturale. */
-.brand-title { font-family: 'Space Grotesk', -apple-system, sans-serif; font-size: 1rem; font-weight: 700; color: var(--brand-yellow); letter-spacing: -0.01em; line-height: 1; white-space: nowrap; }
+.brand-title { font-family: 'Teko', 'Space Grotesk', sans-serif; font-size: 1rem; font-weight: 700; color: var(--brand-yellow); letter-spacing: -0.01em; line-height: 1; white-space: nowrap; }
 @media (min-width: 480px) { .brand-title { font-size: 1.2rem; } }
 
 /* Il menu esteso compare solo da 1000px: sotto quella soglia logo, tre voci e

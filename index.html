@@ -7,7 +7,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500..700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500..700&family=Teko:wght@400..700&display=swap" rel="stylesheet">
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="gsap.min.js"></script>
@@ -35,9 +35,19 @@
     /* MAIN CONTENT FLEX GROW PER RISOLVERE SCROLL BIANCO */
     .main-content { flex: 1 0 auto; display: flex; flex-direction: column; }
 
-    /* HERO */
-    .hero { position: relative; min-height: 90vh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 0 1rem; background-image: url('header.webp'); background-size: cover; background-position: center; }
-    .hero-overlay { position: absolute; inset: 0; background-color: rgba(15, 23, 42, 0.7); }
+    /* HERO
+       Su mobile la foto e' ritagliata alta e stretta: centrandola il viso di
+       Michele finiva esattamente dietro al titolo. Alzando il punto di fuoco
+       la testa scende sotto il blocco di testo, cosi' si legge il titolo E si
+       vede lui. Il testo sta in alto e la figura ha tutta la parte bassa. */
+    /* Il padding in basso non e' decorativo: senza, su schermi bassi (telefono
+       in orizzontale, portatili piccoli) i bottoni finivano appiccicati al
+       bordo dell'hero e venivano tagliati dalla sezione successiva. Con il
+       padding l'hero cresce quel tanto che basta e i bottoni restano dentro. */
+    .hero { position: relative; min-height: 88vh; display: flex; align-items: flex-start; justify-content: center; text-align: center; padding: 2.5rem 1rem 3rem; background-image: url('header.webp'); background-size: cover; background-position: 50% 18%; }
+    /* Velo sfumato invece che piatto: denso in alto dove corre il testo, si
+       apre in basso per non spegnere la figura. */
+    .hero-overlay { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(15,23,42,0.86) 0%, rgba(15,23,42,0.82) 42%, rgba(15,23,42,0.55) 72%, rgba(15,23,42,0.42) 100%); }
     .hero-content { position: relative; z-index: 10; max-width: 800px; }
     /* La frase e' piu' lunga di un'etichetta breve: niente maiuscolo forzato,
        spaziatura ridotta e a capo consentito per non sfondare su schermi stretti. */
@@ -48,10 +58,10 @@
        tiene insieme il blocco invece di lasciarlo sbilanciato a destra.
        Il font va ripetuto sugli span perche' la regola "*" in cima al foglio
        li riporterebbe al sans di sistema. */
-    .hero-title { font-family: 'Space Grotesk', -apple-system, sans-serif; font-size: clamp(3rem, 11vw, 7.2rem); font-weight: 700; color: var(--white); line-height: 0.88; letter-spacing: -0.03em; margin-bottom: 1.75rem; }
+    .hero-title { font-family: 'Teko', 'Space Grotesk', sans-serif; font-size: clamp(3.4rem, 13vw, 8.4rem); font-weight: 700; color: var(--white); line-height: 0.86; letter-spacing: -0.02em; margin-bottom: 1.75rem; }
     .hero-title span { font-family: inherit; }
     .hero-line1 { display: block; text-transform: uppercase; }
-    .hero-line2 { display: block; font-size: 1.62em; color: var(--brand-yellow); letter-spacing: -0.04em; }
+    .hero-line2 { display: block; font-size: 1.57em; color: var(--brand-yellow); letter-spacing: -0.03em; }
     .hero-up { text-transform: uppercase; }
     .hero-text { font-size: 1.1rem; color: #e2e8f0; font-weight: 500; margin-bottom: 2.5rem; line-height: 1.6; }
     .hero-buttons { display: flex; flex-direction: column; gap: 1rem; align-items: center; justify-content: center; }
@@ -63,8 +73,11 @@
     .hero-buttons .btn-secondary:hover { box-shadow: 0 0 22px rgba(255,217,15,0.5); border-color: rgba(255,217,15,0.5); }
 
     /* HERO DESKTOP: layout asimmetrico invece di tutto centrato */
+    /* Da desktop il ritaglio della foto e' largo, non alto: la figura sta gia'
+       sulla destra e il testo alla sua sinistra, quindi si torna alla foto
+       centrata, al testo centrato in verticale e al velo sfumato in orizzontale. */
     @media (min-width: 992px) {
-      .hero { justify-content: flex-start; text-align: left; padding-left: 6vw; }
+      .hero { min-height: 90vh; align-items: center; justify-content: flex-start; text-align: left; padding: 3rem 1rem 3rem 6vw; background-position: center; }
       .hero-overlay { background: linear-gradient(100deg, rgba(15,23,42,0.88) 0%, rgba(15,23,42,0.6) 42%, rgba(15,23,42,0.15) 68%, rgba(15,23,42,0) 85%); }
       .hero-content { max-width: 640px; }
       .hero-buttons { justify-content: flex-start; }
@@ -76,7 +89,7 @@
     .section-header { text-align: center; margin-bottom: 2rem; }
     @media (min-width: 768px) { .section-header { margin-bottom: 3rem; } }
     .section-label { color: var(--brand-blue); font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; background-color: rgba(0,68,255,0.05); padding: 6px 12px; border-radius: 20px; display: inline-block; margin-bottom: 1rem; }
-    .section-title { font-family: 'Space Grotesk', -apple-system, sans-serif; font-size: 1.8rem; font-weight: 700; color: var(--text-slate); text-transform: uppercase; letter-spacing: -0.02em; margin-bottom: 1rem; }
+    .section-title { font-family: 'Teko', 'Space Grotesk', -apple-system, sans-serif; font-size: 1.8rem; font-weight: 700; color: var(--text-slate); text-transform: uppercase; letter-spacing: -0.02em; margin-bottom: 1rem; }
     @media (min-width: 768px) { .section-title { font-size: 3rem; } }
 
     /* Griglia annunci e card: vedi shared.css */
@@ -180,7 +193,7 @@
     .cta-image { width: 100%; height: 100%; object-fit: cover; }
     .cta-content { padding: 2.5rem 1.5rem; text-align: center; color: white; flex: 1; display: flex; flex-direction: column; justify-content: center; }
     @media (min-width: 768px) { .cta-content { padding: 4rem 3rem; text-align: left; } }
-    .cta-title { font-family: 'Space Grotesk', -apple-system, sans-serif; font-size: 1.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: -0.02em; margin-bottom: 1rem; }
+    .cta-title { font-family: 'Teko', 'Space Grotesk', sans-serif; font-size: 1.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: -0.02em; margin-bottom: 1rem; }
     @media (min-width: 768px) { .cta-title { font-size: 2rem; } }
     .cta-text { font-size: 1rem; color: #e2e8f0; margin-bottom: 2rem; max-width: 600px; line-height: 1.5; }
     @media (max-width: 767px) { .cta-text { margin-left: auto; margin-right: auto; } }
@@ -260,7 +273,7 @@
             Niente giacca e cravatta. Solo case giuste.
           </div>
           <h1 class="hero-title"><span class="hero-line1">Benvenuti</span><span class="hero-line2">a <span class="hero-up">Casa</span></span></h1>
-          <p class="hero-text">Sono Michele Erre, professionista del settore immobiliare. Da oltre dieci anni aiuto famiglie e imprenditori nella mediazione immobiliare a Porto Torres e in tutto il Nord Sardegna.</p>
+          <p class="hero-text">Sono Michele Erre, professionista immobiliare. Da oltre dieci anni affianco famiglie e imprenditori a Porto Torres e in tutto il Nord Sardegna.</p>
           <div class="hero-buttons">
             <a href="catalogo.html" class="btn-primary">Vedi gli Annunci</a>
             <a href="#contatti" class="btn-secondary">Parla con Michele</a>
