@@ -15,12 +15,11 @@
 .navbar.scrolled { height: 64px; box-shadow: 0 8px 20px rgba(0,0,0,0.18); background: linear-gradient(120deg, rgba(0,68,255,0.85), rgba(0,31,140,0.88)); backdrop-filter: blur(20px) saturate(180%) brightness(0.75); -webkit-backdrop-filter: blur(20px) saturate(180%) brightness(0.75); }
 .brand { display: flex; align-items: center; text-decoration: none; z-index: 1001; }
 .brand-icon-box { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
-.brand-text { margin-left: 12px; display: flex; flex-direction: column; line-height: 1.1; }
-/* "Immobiliare con Michele": il sans maiuscolo tiene la parte istituzionale,
-   il serif corsivo firma il nome. Il contrasto tra i due evita il blocco
-   unico e tutto maiuscolo di prima. */
-.brand-title { font-family: 'Space Grotesk', -apple-system, sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--brand-yellow); letter-spacing: 0.02em; text-transform: uppercase; line-height: 1; }
-.brand-subtitle { font-family: 'Instrument Serif', Georgia, 'Times New Roman', serif; font-style: italic; font-size: 1.15rem; font-weight: 400; color: var(--white); letter-spacing: 0; margin-top: 1px; line-height: 1.05; }
+.brand-text { margin-left: 12px; display: flex; align-items: center; line-height: 1.1; }
+/* "Immobiliare con Michele" su una riga sola, centrata sull'altezza del logo:
+   niente maiuscolo forzato, si tiene la capitalizzazione naturale. */
+.brand-title { font-family: 'Space Grotesk', -apple-system, sans-serif; font-size: 1rem; font-weight: 700; color: var(--brand-yellow); letter-spacing: -0.01em; line-height: 1; white-space: nowrap; }
+@media (min-width: 480px) { .brand-title { font-size: 1.2rem; } }
 
 /* Il menu esteso compare solo da 1000px: sotto quella soglia logo, tre voci e
    due pulsanti non ci stanno e vanno a capo, quindi resta l'hamburger. */
