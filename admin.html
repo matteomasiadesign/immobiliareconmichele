@@ -7,7 +7,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500..700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@500..700&display=swap" rel="stylesheet">
 
   <!-- LIBRERIE ESTERNE -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -37,9 +37,11 @@
     .brand { display: flex; align-items: center; text-decoration: none; min-width: 0; z-index: 1001; }
     .brand-icon-box { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .brand-text { margin-left: 8px; display: flex; flex-direction: column; line-height: 1.1; min-width: 0; }
-    .brand-title { font-size: 1.1rem; font-weight: 900; color: var(--brand-yellow); letter-spacing: -0.025em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .brand-subtitle { font-size: 9px; font-weight: 900; color: var(--white); letter-spacing: 0.05em; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    @media (min-width: 375px) { .navbar { padding: 0 1.5rem; } .brand-text { margin-left: 12px; } .brand-title { font-size: 1.25rem; } .brand-subtitle { font-size: 10px; letter-spacing: 0.1em; } }
+    /* Stesso trattamento sans + serif della vetrina (vedi shared.css), qui
+       un filo piu' stretto perche' la barra del gestionale ha meno spazio. */
+    .brand-title { font-size: 0.95rem; font-weight: 900; color: var(--brand-yellow); letter-spacing: 0.02em; text-transform: uppercase; line-height: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .brand-subtitle { font-family: 'Instrument Serif', Georgia, 'Times New Roman', serif; font-style: italic; font-size: 1.05rem; font-weight: 400; color: var(--white); letter-spacing: 0; margin-top: 1px; line-height: 1.05; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    @media (min-width: 375px) { .navbar { padding: 0 1.5rem; } .brand-text { margin-left: 12px; } .brand-title { font-size: 1.05rem; } .brand-subtitle { font-size: 1.15rem; } }
 
     .nav-auth { display: flex; align-items: center; gap: 8px; }
     .nav-actions { display: flex; align-items: center; gap: 8px; }
@@ -269,8 +271,8 @@
         <img src="logo.svg" alt="Logo" style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px;" onerror="this.outerHTML='<div style=\'width: 40px; height: 40px; background: var(--brand-yellow); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--brand-blue); font-weight: bold;\'>ME</div>'">
       </div>
       <div class="brand-text">
-        <span class="brand-title">MICHELE ERRE</span>
-        <span class="brand-subtitle">Agente immobiliare</span>
+        <span class="brand-title">Immobiliare</span>
+        <span class="brand-subtitle">con Michele</span>
       </div>
     </div>
     

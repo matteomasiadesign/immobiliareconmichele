@@ -16,8 +16,11 @@
 .brand { display: flex; align-items: center; text-decoration: none; z-index: 1001; }
 .brand-icon-box { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
 .brand-text { margin-left: 12px; display: flex; flex-direction: column; line-height: 1.1; }
-.brand-title { font-size: 1.25rem; font-weight: 900; color: var(--brand-yellow); letter-spacing: -0.025em; }
-.brand-subtitle { font-size: 10px; font-weight: 900; color: var(--white); letter-spacing: 0.1em; margin-top: 2px; }
+/* "Immobiliare con Michele": il sans maiuscolo tiene la parte istituzionale,
+   il serif corsivo firma il nome. Il contrasto tra i due evita il blocco
+   unico e tutto maiuscolo di prima. */
+.brand-title { font-family: 'Space Grotesk', -apple-system, sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--brand-yellow); letter-spacing: 0.02em; text-transform: uppercase; line-height: 1; }
+.brand-subtitle { font-family: 'Instrument Serif', Georgia, 'Times New Roman', serif; font-style: italic; font-size: 1.15rem; font-weight: 400; color: var(--white); letter-spacing: 0; margin-top: 1px; line-height: 1.05; }
 
 /* Il menu esteso compare solo da 1000px: sotto quella soglia logo, tre voci e
    due pulsanti non ci stanno e vanno a capo, quindi resta l'hamburger. */
