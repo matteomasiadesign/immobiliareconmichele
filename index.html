@@ -58,7 +58,14 @@
        in orizzontale, portatili piccoli) i bottoni finivano appiccicati al
        bordo dell'hero e venivano tagliati dalla sezione successiva. Con il
        padding l'hero cresce quel tanto che basta e i bottoni restano dentro. */
-    .hero { position: relative; min-height: 88vh; display: flex; align-items: flex-start; justify-content: center; text-align: center; padding: 2.5rem 1rem 3rem; background-image: url('michele.webp'); background-size: cover; background-position: 50% 18%; }
+    /* L'altezza non e' una percentuale a occhio ma "tutto lo schermo meno la
+       navbar" (80px, vedi shared.css): la navbar e' sticky ma resta nel flusso
+       sopra l'hero, quindi con un valore tipo 88vh la somma navbar + hero non
+       arrivava a fondo finestra e all'apertura si intravedeva una striscia
+       bianca della sezione sotto. Su mobile 100vh e' il viewport GRANDE (barra
+       degli indirizzi nascosta), percio' all'apertura - con la barra ancora
+       visibile - l'hero e' semmai un filo piu' alto del visibile: mai bianco. */
+    .hero { position: relative; min-height: calc(100vh - 80px); display: flex; align-items: flex-start; justify-content: center; text-align: center; padding: 2.5rem 1rem 3rem; background-image: url('michele.webp'); background-size: cover; background-position: 50% 18%; }
     /* Velo sfumato invece che piatto: denso in alto dove corre il testo, si
        apre in basso per non spegnere la figura. */
     .hero-overlay { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(15,23,42,0.86) 0%, rgba(15,23,42,0.82) 42%, rgba(15,23,42,0.55) 72%, rgba(15,23,42,0.42) 100%); }
@@ -91,7 +98,7 @@
        sulla destra e il testo alla sua sinistra, quindi si torna alla foto
        centrata, al testo centrato in verticale e al velo sfumato in orizzontale. */
     @media (min-width: 992px) {
-      .hero { min-height: 90vh; align-items: center; justify-content: flex-start; text-align: left; padding: 3rem 1rem 3rem 6vw; background-position: center; }
+      .hero { min-height: calc(100vh - 80px); align-items: center; justify-content: flex-start; text-align: left; padding: 3rem 1rem 3rem 6vw; background-position: center; }
       .hero-overlay { background: linear-gradient(100deg, rgba(15,23,42,0.88) 0%, rgba(15,23,42,0.6) 42%, rgba(15,23,42,0.15) 68%, rgba(15,23,42,0) 85%); }
       .hero-content { max-width: 640px; }
       .hero-buttons { justify-content: flex-start; }
@@ -107,6 +114,39 @@
     @media (min-width: 768px) { .section-title { font-size: 3rem; } }
 
     /* Griglia annunci e card: vedi shared.css */
+
+    /* VETRINA "IN EVIDENZA": CAROSELLO ORIZZONTALE SU MOBILE
+       Da telefono le tre proposte impilate in colonna costringevano a scorrere
+       mezza pagina per vederle tutte, con la terza praticamente ignorata. Qui
+       la griglia diventa una fila che si sfoglia col dito, con lo snap che
+       ferma ogni card in posizione. La regola e' volutamente legata a
+       #featured-grid e non a .properties-grid: il catalogo usa la stessa
+       classe, ma li' gli annunci possono essere decine e la colonna verticale
+       resta la lettura giusta. Sopra i 768px torna la griglia di shared.css. */
+    @media (max-width: 767px) {
+      #featured-grid {
+        display: flex;
+        gap: 1rem;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        /* Margine negativo + padding uguale e contrario: la fila scorre da
+           bordo a bordo dello schermo (cosi' la card successiva "sbuca" e si
+           capisce che c'e' altro), ma la prima resta allineata al titolo. */
+        margin-inline: -1rem;
+        padding-inline: 1rem;
+        scroll-padding-inline-start: 1rem;
+        /* Respiro verticale per non tagliare l'ombra sotto le card: aprendo
+           l'overflow orizzontale il browser ritaglia anche in verticale. */
+        padding-block: 4px 1rem;
+        /* Evita che lo swipe oltre l'ultima card faccia rimbalzare la pagina
+           o attivi il gesto "indietro" del browser. */
+        overscroll-behavior-x: contain;
+        scrollbar-width: none;
+      }
+      #featured-grid::-webkit-scrollbar { display: none; }
+      /* min-width:0 perche' i figli flex non si stringano oltre il contenuto. */
+      #featured-grid > .card { flex: 0 0 min(82%, 330px); min-width: 0; scroll-snap-align: start; }
+    }
 
     /* SEZIONE SERVIZI - fascia con sfondo alternato + una sezione intera per ogni servizio */
     .servizi-band { background-color: rgba(0,68,255,0.03); }
