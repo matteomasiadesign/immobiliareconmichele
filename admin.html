@@ -720,6 +720,17 @@
       font-family: var(--mono); font-size: 10px; color: var(--ink-3); border: 1px solid var(--line);
       border-bottom-width: 2px; border-radius: 5px; padding: 1px 5px; background: var(--surface-2); flex-shrink: 0;
     }
+    /* Sempre visibile, anche da desktop: l'Esc lo sa chi lo sa, il tasto lo
+       vedono tutti. Il suggerimento della scorciatoia resta accanto. */
+    .cmdk-close {
+      flex-shrink: 0; width: 30px; height: 30px; border-radius: 8px;
+      border: 1px solid var(--line); background: var(--surface-2); color: var(--ink-2);
+      display: flex; align-items: center; justify-content: center; cursor: pointer;
+      transition: var(--transition); padding: 0;
+    }
+    .cmdk-close:hover { background: var(--surface-3); color: var(--ink); border-color: var(--ink-3); }
+    .cmdk-close svg { width: 14px; height: 14px; }
+
     .cmdk-results { overflow-y: auto; padding: 6px; }
     .cmdk-group { font-family: var(--mono); font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); padding: 10px 10px 5px; }
     .cmdk-item {
@@ -808,7 +819,10 @@
       .cmdk-panel { margin-top: 3vh; max-height: 85vh; }
       .cmdk-search { padding: 11px 12px; }
       .cmdk-search input { font-size: 16px; }
-      .cmdk-search kbd { display: none; }
+      .cmdk-search kbd { display: none; }   /* niente tastiera fisica, niente Esc */
+      /* Bersaglio piu' grande per il dito: qui e' l'unica via d'uscita. */
+      .cmdk-close { width: 36px; height: 36px; }
+      .cmdk-close svg { width: 16px; height: 16px; }
       .cmdk-item { padding: 11px 10px; }
     }
   </style>
@@ -1411,6 +1425,12 @@
         <svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path stroke-linecap="round" d="M20 20l-3.5-3.5"></path></svg>
         <input type="text" id="cmdk-input" placeholder="Cerca un cliente, un immobile, una bozza…" autocomplete="off" spellcheck="false" aria-controls="cmdk-results">
         <kbd>Esc</kbd>
+        <!-- Su telefono l'Esc non esiste e, con la tastiera aperta, il pannello
+             copre quasi tutto lo schermo: senza questo tasto non c'e' modo di
+             uscire dalla ricerca. -->
+        <button type="button" class="cmdk-close" onclick="closeCmdk()" aria-label="Chiudi la ricerca" title="Chiudi la ricerca">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path stroke-linecap="round" d="M6 6l12 12M18 6L6 18"></path></svg>
+        </button>
       </div>
       <div class="cmdk-results" id="cmdk-results" role="listbox"></div>
     </div>
