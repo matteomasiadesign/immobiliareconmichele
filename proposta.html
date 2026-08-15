@@ -401,7 +401,10 @@
         .app-navbar { background-color: #0044FF; border-bottom: 4px solid #FFD90F; height: 80px; display: flex; align-items: center; justify-content: space-between; padding: 0 1rem; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(0,68,255,0.15); }
         @media (min-width: 768px) { .app-navbar { padding: 0 2rem; } }
         .app-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-        .app-brand-icon { width: 48px; height: 48px; border-radius: 50%; border: 2px solid #FFD90F; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; }
+        /* Nessun bordo ne' ritaglio circolare: il cerchio con l'anello giallo
+           fa gia' parte di logo.svg, aggiungerne un altro raddoppiava l'anello.
+           Stesso trattamento (e stessa misura) di .brand-icon-box in shared.css. */
+        .app-brand-icon { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .app-brand-icon img { width: 100%; height: 100%; object-fit: contain; }
         .app-brand-title { font-size: 1.1rem; font-weight: 900; color: #FFD90F; letter-spacing: -0.025em; line-height: 1.1; }
         .app-brand-sub { font-size: 10px; font-weight: 800; color: #ffffff; text-transform: uppercase; letter-spacing: 0.05em; }
