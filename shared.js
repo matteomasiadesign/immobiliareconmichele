@@ -97,7 +97,15 @@ if (motionOK) gsap.registerPlugin(ScrollTrigger);
 // animazioni legate allo scroll restano ancorate alla posizione nativa.
 let lenis = null;
 if (motionOK && typeof Lenis !== 'undefined') {
-    lenis = new Lenis({ duration: 1.1, smoothWheel: true });
+    // allowNestedScroll: senza, Lenis intercetta OGNI evento della rotellina
+    // (anche del trackpad) e ci fa lo scroll verticale della pagina, chiamando
+    // preventDefault: i contenitori scrollabili interni, come il carosello
+    // "In Evidenza" della home, non ricevevano mai il gesto orizzontale e la
+    // componente verticale del dito finiva per far scivolare la pagina in su.
+    // Con l'opzione attiva Lenis controlla se sotto al puntatore c'e' un
+    // elemento che puo' davvero scorrere in quella direzione e in quel caso
+    // si tira indietro, lasciando fare al browser.
+    lenis = new Lenis({ duration: 1.1, smoothWheel: true, allowNestedScroll: true });
     lenis.on('scroll', ScrollTrigger.update);
     gsap.ticker.add((time) => lenis.raf(time * 1000));
     gsap.ticker.lagSmoothing(0);
@@ -131,23 +139,6 @@ function initScrollReveals(selector = '.reveal') {
         });
     });
     ScrollTrigger.refresh();
-}
-
-// Effetto "magnetico": il bottone segue leggermente il cursore entro un
-// piccolo raggio e torna al centro quando il mouse esce. Solo su dispositivi
-// con puntatore preciso (mouse/trackpad): su touch non ha alcun effetto.
-function initMagneticButtons(selector = '.magnetic') {
-    if (!motionOK || !window.matchMedia('(pointer: fine)').matches) return;
-    document.querySelectorAll(selector).forEach(el => {
-        const moveX = gsap.quickTo(el, 'x', { duration: 0.4, ease: 'power3.out' });
-        const moveY = gsap.quickTo(el, 'y', { duration: 0.4, ease: 'power3.out' });
-        el.addEventListener('mousemove', (e) => {
-            const rect = el.getBoundingClientRect();
-            moveX((e.clientX - rect.left - rect.width / 2) * 0.35);
-            moveY((e.clientY - rect.top - rect.height / 2) * 0.35);
-        });
-        el.addEventListener('mouseleave', () => { moveX(0); moveY(0); });
-    });
 }
 
 // Navbar più compatta e con ombra più marcata dopo un piccolo scroll.
@@ -255,7 +246,6 @@ function initCardStagger(selector = '.card') {
     ScrollTrigger.refresh();
 }
 
-initMagneticButtons();
 initNavbarScroll();
 
 // Inizializza le animazioni quando il DOM è pronto
