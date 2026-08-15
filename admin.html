@@ -746,6 +746,71 @@
     .btn-cmdk:hover { background: rgba(255, 255, 255, .2); color: #fff; }
     .btn-cmdk kbd { font-family: var(--mono); font-size: 10px; border: 1px solid rgba(255, 255, 255, .3); border-radius: 4px; padding: 0 4px; }
     @media (min-width: 861px) { .btn-cmdk { display: flex; } }
+
+    /* ============================================================
+       ADATTAMENTI MOBILE
+       Quello che sopra i 1000px sta comodo, sotto va rimisurato: cinque
+       voci in una barra da 360px, schede statistiche a due colonne e una
+       palette comandi che deve convivere con la tastiera a schermo.
+       ============================================================ */
+
+    .mobile-menu-item svg { flex-shrink: 0; }
+
+    /* Un contenitore vuoto in un flex con gap lascia comunque il suo spazio:
+       finche' non c'e' un filtro attivo, deve sparire del tutto. */
+    #trans-active-filter:empty { display: none; }
+
+    @media (max-width: 640px) {
+      /* La pillola del filtro va a capo e prende tutta la riga, invece di
+         schiacciare il campo di ricerca accanto. */
+      .filter-chip { width: 100%; justify-content: space-between; }
+      /* Il titolo del pannello e il conteggio restano sulla stessa riga. */
+      .archive-header { flex-wrap: wrap; }
+      /* Grafici piu' bassi: su uno schermo stretto tre riquadri da 310px
+         diventano uno scroll lungo senza guadagnare leggibilita'. */
+      .chart-container { height: 265px; padding: 1rem; }
+      .chart-container.short { height: 195px; }
+      .stat-value { font-size: 1.45rem; }
+    }
+
+    @media (max-width: 430px) {
+      /* Una colonna sola: a due colonne il valore e il suo confronto
+         andavano a capo l'uno sotto l'altro e la scheda perdeva senso. */
+      .stats-cards-grid { grid-template-columns: 1fr; gap: 8px; }
+      .stat-card { padding: 12px 13px 11px; }
+      .stat-spark { height: 24px; }
+      /* Le schede immobile a piena larghezza vogliono meno cornice. */
+      .properties-grid { padding: .75rem; gap: .75rem; }
+    }
+
+    @media (max-width: 380px) {
+      /* Cinque etichette in 320-380px: senza questo "Panoramica" e
+         "Statistiche" venivano troncate con i puntini. */
+      .nav-item { font-size: 9.5px; padding: 6px 1px; gap: 2px; }
+      .nav-item svg { width: 18px; height: 18px; }
+      /* Voci piu' strette: la pastiglia va riavvicinata al centro o esce. */
+      .nav-item .nav-dot { transform: translateX(11px); }
+      .navbar { padding: 0 .75rem; }
+      .btn-theme { width: 30px; height: 30px; }
+    }
+
+    /* Il tocco non ha :hover, quindi la scheda cliccabile deve rispondere
+       al dito in un altro modo. */
+    @media (hover: none) {
+      .stat-card.is-clickable:active { transform: scale(.985); border-color: var(--warn); }
+      .nav-item:active { background: var(--surface-2); }
+    }
+
+    /* Palette comandi con la tastiera a schermo aperta: piu' in alto e piu'
+       alta, altrimenti resta un ritaglio di due risultati. */
+    @media (max-width: 640px) {
+      .cmdk-overlay { padding: .5rem; }
+      .cmdk-panel { margin-top: 3vh; max-height: 85vh; }
+      .cmdk-search { padding: 11px 12px; }
+      .cmdk-search input { font-size: 16px; }
+      .cmdk-search kbd { display: none; }
+      .cmdk-item { padding: 11px 10px; }
+    }
   </style>
 
   <script>
@@ -812,6 +877,12 @@
 
   <!-- Menu Mobile -->
   <div id="admin-mobile-menu" class="admin-mobile-menu">
+    <!-- Su telefono non c'e' Ctrl+K e il pulsante "Cerca" della barra non
+         entra: senza questa voce la palette comandi sarebbe irraggiungibile. -->
+    <button type="button" onclick="openCmdk()" class="mobile-menu-item">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path stroke-linecap="round" d="M20 20l-3.5-3.5"></path></svg>
+      Cerca ovunque
+    </button>
     <a href="incarico.html" class="mobile-menu-item primary">Incarico di Mediazione</a>
     <a href="proposta.html" class="mobile-menu-item primary">Proposta d'Acquisto</a>
     <a href="index.html" class="mobile-menu-item">Torna al Sito</a>
@@ -3037,6 +3108,9 @@
     };
 
     function openCmdk() {
+        // Se arriva dal menu hamburger, quello va chiuso: altrimenti resta
+        // aperto sotto la palette e lo si ritrova tornando indietro.
+        document.getElementById('admin-mobile-menu')?.classList.remove('open');
         const box = document.getElementById('cmdk');
         box.classList.add('open');
         const input = document.getElementById('cmdk-input');
