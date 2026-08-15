@@ -4,8 +4,11 @@
  * Estratto per evitare la duplicazione del motore di impaginazione.
  */
 function creaPdfKit(doc) {
-    const BLU = [30, 95, 217];
-    const GIALLO = [255, 215, 0];
+    // Colori di marca, gli stessi del sito: #0044FF e #FFD90F. Vanno tenuti
+    // allineati al CSS di incarico.html/proposta.html, altrimenti il documento
+    // a schermo e il PDF che ne esce hanno due blu diversi.
+    const BLU = [0, 68, 255];
+    const GIALLO = [255, 217, 15];
     const NERO = [34, 34, 34];
     const GRIGIO = [110, 110, 110];
 
