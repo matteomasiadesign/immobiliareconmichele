@@ -338,6 +338,13 @@
       }
       .nav-item .nav-dot { position: static; transform: none; margin-left: auto; }
       .nav-item .nav-dot.on + .nav-count { display: none; }
+      /* "Documenti" e' l'unica voce fuori dal gruppo di lavoro: al posto di
+         un'intestazione che ripeterebbe la stessa parola, una riga di stacco. */
+      .nav-item-sep { margin-top: 8px; padding-top: 14px; position: relative; }
+      .nav-item-sep::before {
+        content: ""; position: absolute; top: 0; left: 10px; right: 10px;
+        height: 1px; background: var(--line);
+      }
     }
 
     .app-main { min-width: 0; }
@@ -430,6 +437,29 @@
     .stat-foot { font-size: 11.5px; color: var(--ink-2); line-height: 1.35; }
     .stat-foot b { font-weight: 600; color: var(--warn); }
     .stat-spark { display: block; width: 100%; height: 28px; margin-top: auto; }
+
+    /* Scheda che apre un elenco. L'invito compare solo quando la scheda e'
+       davvero cliccabile (vedi is-clickable in renderOverviewStats). */
+    .stat-link { display: none; }
+    .stat-card.is-clickable { cursor: pointer; transition: border-color var(--transition), box-shadow var(--transition); }
+    .stat-card.is-clickable:hover { border-color: var(--warn); box-shadow: var(--shadow-2); }
+    .stat-card.is-clickable .stat-link {
+      display: flex; align-items: center; gap: 4px; margin-top: auto; padding-top: 4px;
+      font-size: 11.5px; font-weight: 550; color: var(--warn);
+    }
+    .stat-card.is-clickable .stat-link svg { width: 12px; height: 12px; flex-shrink: 0; }
+    .stat-card.is-clickable:hover .stat-link { gap: 7px; }
+
+    /* Pillola del filtro attivo sopra lo storico */
+    .filter-chip {
+      display: inline-flex; align-items: center; gap: 7px; padding: 5px 8px 5px 11px;
+      border-radius: 999px; border: 1px solid color-mix(in oklab, var(--warn) 35%, var(--line));
+      background: var(--warn-bg); color: var(--warn); font-size: 12px; font-weight: 550;
+      cursor: pointer; font-family: inherit; transition: var(--transition);
+    }
+    .filter-chip:hover { border-color: var(--warn); }
+    .filter-chip svg { width: 13px; height: 13px; flex-shrink: 0; opacity: .75; }
+    .filter-chip:hover svg { opacity: 1; }
 
     /* ---------- SCHEDE IMMOBILE ---------- */
     .properties-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; padding: 1rem; width: 100%; }
@@ -825,10 +855,9 @@
         <span class="nav-text">Clienti</span>
         <span class="nav-count" id="nav-count-clienti"></span>
       </button>
-      <span class="eyebrow nav-group-label">Documenti</span>
-      <button type="button" class="nav-item" data-tab="tab-documenti" onclick="switchTab('tab-documenti', this)">
+      <button type="button" class="nav-item nav-item-sep" data-tab="tab-documenti" onclick="switchTab('tab-documenti', this)">
         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 3H7a1 1 0 00-1 1v16a1 1 0 001 1h10a1 1 0 001-1V7z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M14 3v4h4"></path></svg>
-        <span class="nav-text">Bozze</span>
+        <span class="nav-text">Documenti</span>
         <span class="nav-count" id="nav-count-bozze"></span>
       </button>
     </nav>
@@ -854,10 +883,13 @@
           <div class="stat-row"><span class="stat-value" id="ov-stat-active">0</span><span class="stat-delta flat" id="ov-delta-active"></span></div>
           <div class="stat-foot" id="ov-foot-active"></div>
         </div>
-        <div class="stat-card" id="ov-card-expiring">
+        <div class="stat-card" id="ov-card-expiring" onclick="apriIncarichiInScadenza()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();apriIncarichiInScadenza();}">
           <span class="stat-label">In scadenza · 90 gg</span>
           <div class="stat-row"><span class="stat-value" id="ov-stat-expiring">0</span><span class="stat-delta flat" id="ov-delta-expiring"></span></div>
           <div class="stat-foot" id="ov-foot-expiring"></div>
+          <span class="stat-link">Vedi l'elenco
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+          </span>
         </div>
         <div class="stat-card" id="ov-card-revenue">
           <span class="stat-label">Fatturato · <span id="ov-label-year">anno</span></span>
@@ -968,6 +1000,7 @@
       <div class="panel-card" style="padding: 0;">
         <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
           <h3 class="panel-title" style="margin:0;">Storico incarichi</h3>
+          <div id="trans-active-filter"></div>
           <div style="flex: 1; min-width: 200px;">
               <input type="text" id="trans-search" oninput="renderTransactionsTable()" placeholder="Cerca per immobile o proprietario..." class="form-input" style="width: 100%; padding: 8px 12px;">
           </div>
@@ -1021,7 +1054,7 @@
     <div id="tab-documenti" class="tab-content">
       <div class="panel-card" style="padding: 0;">
          <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap:wrap; gap:10px;">
-            <h3 class="panel-title" style="margin:0;">Bozze incarichi e proposte</h3>
+            <h3 class="panel-title" style="margin:0;">Incarichi e proposte salvati</h3>
             <div style="display:flex; gap:10px; flex: 1; min-width: 260px;">
               <input type="text" id="doc-search" oninput="renderDocumentiList()" placeholder="Cerca per titolo..." class="form-input" style="flex: 1; min-width: 0; padding: 8px 12px;">
               <select id="doc-filter-tipo" onchange="renderDocumentiList()" class="form-select" style="flex: 0 0 auto; width: auto; padding: 8px 12px;">
@@ -1533,7 +1566,7 @@
       'tab-vetrina':   { title: 'Immobili',    sub: 'Quello che vedono i clienti sul sito' },
       'tab-stats':     { title: 'Statistiche', sub: 'Incarichi, vendite e fatturato' },
       'tab-crm':       { title: 'Clienti',     sub: 'Rubrica e richieste arrivate dal sito' },
-      'tab-documenti': { title: 'Bozze',       sub: 'Incarichi e proposte salvati' }
+      'tab-documenti': { title: 'Documenti',   sub: 'Incarichi e proposte salvati' }
     };
 
     function switchTab(tabId, btn) {
@@ -2243,18 +2276,51 @@
         });
     }
     
+    /* Filtro "solo in scadenza": si accende cliccando la scheda della
+       panoramica, e resta visibile come pillola sopra la tabella perche'
+       una lista filtrata senza che si veda il filtro sembra una lista corta. */
+    let transFilterScadenza = false;
+
+    function apriIncarichiInScadenza() {
+        transFilterScadenza = true;
+        document.getElementById('trans-search').value = '';
+        switchTab('tab-stats');
+        renderTransactionsTable();
+    }
+
+    function togliFiltroScadenza() {
+        transFilterScadenza = false;
+        renderTransactionsTable();
+    }
+
+    function renderFiltroScadenza() {
+        const box = document.getElementById('trans-active-filter');
+        if (!box) return;
+        if (!transFilterScadenza) { box.innerHTML = ''; return; }
+        const n = transactions.filter(isInScadenza).length;
+        box.innerHTML = `<button type="button" class="filter-chip" onclick="togliFiltroScadenza()" title="Mostra tutti gli incarichi">
+            In scadenza entro 90 giorni · ${n}
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path stroke-linecap="round" d="M6 6l12 12M18 6L6 18"></path></svg>
+          </button>`;
+    }
+
     function renderTransactionsTable() {
       const s = document.getElementById('trans-search').value.toLowerCase();
-      const list = document.getElementById('transactions-list'); 
+      const list = document.getElementById('transactions-list');
       list.innerHTML = "";
-      
-      const filtered = transactions.filter(t => t.property_title.toLowerCase().includes(s) || (t.owner_name||'').toLowerCase().includes(s));
+      renderFiltroScadenza();
+
+      const filtered = transactions
+        .filter(t => !transFilterScadenza || isInScadenza(t))
+        .filter(t => t.property_title.toLowerCase().includes(s) || (t.owner_name||'').toLowerCase().includes(s));
       const today = new Date();
 
       if (filtered.length === 0) {
-        list.innerHTML = s
-          ? emptyState({ titolo: 'Nessun incarico trovato', testo: `Nessun immobile o proprietario corrisponde a "${s}".`, azione: 'Azzera la ricerca', onAzione: 'resetTransSearch()', colspan: 5 })
-          : emptyState({ titolo: 'Nessun incarico nello storico', testo: 'Gli incarichi compaiono qui quando pubblichi un immobile o li aggiungi a mano.', azione: '+ Nuovo incarico', onAzione: 'openTransactionModal()', colspan: 5 });
+        list.innerHTML = transFilterScadenza
+          ? emptyState({ titolo: 'Nessun incarico in scadenza', testo: 'Nessun incarico attivo scade entro 90 giorni.', azione: 'Mostra tutti gli incarichi', onAzione: 'togliFiltroScadenza()', colspan: 5 })
+          : (s
+            ? emptyState({ titolo: 'Nessun incarico trovato', testo: `Nessun immobile o proprietario corrisponde a "${s}".`, azione: 'Azzera la ricerca', onAzione: 'resetTransSearch()', colspan: 5 })
+            : emptyState({ titolo: 'Nessun incarico nello storico', testo: 'Gli incarichi compaiono qui quando pubblichi un immobile o li aggiungi a mano.', azione: '+ Nuovo incarico', onAzione: 'openTransactionModal()', colspan: 5 }));
         return;
       }
 
@@ -2587,6 +2653,19 @@
         return exp;
     }
 
+    // Giorni che mancano alla scadenza (negativi se e' gia' passata).
+    function giorniAllaScadenza(t) {
+        const oggi = new Date(); oggi.setHours(0, 0, 0, 0);
+        return Math.ceil((expiryOf(t) - oggi) / 86400000);
+    }
+
+    /* Un solo posto a decidere cosa vuol dire "in scadenza", usato sia dal
+       numero nella panoramica sia dall'elenco che si apre cliccandolo: se le
+       due regole divergessero, la scheda direbbe 3 e la lista ne mostrerebbe 2. */
+    function isInScadenza(t) {
+        return t.status === 'In Vendita' && giorniAllaScadenza(t) <= 90;
+    }
+
     // Scrive un "chip" di confronto accanto a un numero. Un numero da solo non
     // dice se e' un buon numero: serve sempre un "rispetto a cosa".
     function setDelta(id, testo, tipo) {
@@ -2641,7 +2720,8 @@
         const inEvidenza = properties.filter(p => p.is_featured && p.is_visible !== false).length;
         const nascosti = properties.length - online;
         listingsEl.innerText = online;
-        setDelta('ov-delta-listings', nascosti > 0 ? `${nascosti} nascosti` : '', 'flat');
+        setDelta('ov-delta-listings',
+                 nascosti > 0 ? `${nascosti} nascost${nascosti === 1 ? 'o' : 'i'}` : '', 'flat');
         setText('ov-foot-listings', inEvidenza > 0 ? `di cui ${inEvidenza} in evidenza` : 'nessuno in evidenza');
 
         /* --- incarichi in corso --- */
@@ -2651,7 +2731,12 @@
             return d.getFullYear() === yr && d.getMonth() === today.getMonth();
         }).length;
         document.getElementById('ov-stat-active').innerText = attivi;
-        setDelta('ov-delta-active', presiQuestoMese > 0 ? `+${presiQuestoMese}` : '', presiQuestoMese > 0 ? 'up' : 'flat');
+        // "+1" da solo non dice +1 rispetto a cosa: il chip si porta dietro il
+        // suo termine di paragone, perche' il piede qui sotto puo' essere
+        // occupato dall'avviso sulle provvigioni mancanti.
+        setDelta('ov-delta-active',
+                 presiQuestoMese > 0 ? `+${presiQuestoMese} questo mese` : '',
+                 presiQuestoMese > 0 ? 'up' : 'flat');
 
         // Se ci sono incarichi senza provvigione il piede lo dice al posto del
         // conteggio del mese: e' l'informazione che chiede di fare qualcosa.
@@ -2667,24 +2752,27 @@
         }
 
         /* --- in scadenza entro 90 giorni --- */
-        let inScadenza = 0;
-        let giorniMin = null;
-        transactions.forEach(t => {
-            if (t.status !== 'In Vendita') return;
-            const daysLeft = Math.ceil((expiryOf(t) - today) / 86400000);
-            if (daysLeft <= 90) {
-                inScadenza++;
-                if (giorniMin === null || daysLeft < giorniMin) giorniMin = daysLeft;
-            }
-        });
+        const scadenza = transactions.filter(isInScadenza);
+        const inScadenza = scadenza.length;
+        const giorniMin = inScadenza > 0 ? Math.min(...scadenza.map(giorniAllaScadenza)) : null;
+
         document.getElementById('ov-stat-expiring').innerText = inScadenza;
-        document.getElementById('ov-card-expiring').classList.toggle('is-alert', inScadenza > 0);
+        const cardScad = document.getElementById('ov-card-expiring');
+        cardScad.classList.toggle('is-alert', inScadenza > 0);
         setDelta('ov-delta-expiring', inScadenza > 0 ? 'da rinnovare' : '', 'warn');
         setText('ov-foot-expiring', inScadenza === 0
             ? 'nessun incarico in scadenza'
             : (giorniMin < 0
                 ? `il più vecchio è scaduto da <b>${Math.abs(giorniMin)} giorni</b>`
                 : `il più vicino: <b>fra ${giorniMin} giorni</b>`));
+
+        // La scheda diventa cliccabile solo se c'e' davvero qualcosa da
+        // vedere: un riquadro che si apre su una lista vuota e' una promessa
+        // non mantenuta.
+        cardScad.classList.toggle('is-clickable', inScadenza > 0);
+        cardScad.setAttribute('role', inScadenza > 0 ? 'button' : 'presentation');
+        cardScad.setAttribute('tabindex', inScadenza > 0 ? '0' : '-1');
+        cardScad.setAttribute('title', inScadenza > 0 ? 'Apri l\'elenco degli incarichi in scadenza' : '');
 
         /* --- fatturato dell'anno, confrontato con l'anno prima --- */
         const perMese = Array(12).fill(0);
@@ -2700,10 +2788,13 @@
         document.getElementById('ov-stat-revenue').innerText = `€${Math.round(revYr).toLocaleString('it-IT')}`;
         if (revPrec > 0) {
             const pct = Math.round(((revYr - revPrec) / revPrec) * 100);
-            setDelta('ov-delta-revenue', pct === 0 ? '=' : `${pct > 0 ? '+' : ''}${pct}%`,
+            // Anche qui il paragone va scritto: la sparkline occupa il posto
+            // del piede, quindi il chip e' l'unico punto dove dirlo.
+            setDelta('ov-delta-revenue',
+                     pct === 0 ? `come nel ${yr - 1}` : `${pct > 0 ? '+' : ''}${pct}% sul ${yr - 1}`,
                      pct > 0 ? 'up' : (pct < 0 ? 'down' : 'flat'));
         } else {
-            setDelta('ov-delta-revenue', revYr > 0 ? 'primo anno' : '', 'flat');
+            setDelta('ov-delta-revenue', revYr > 0 ? 'primo anno con incassi' : '', 'flat');
         }
         drawSparkline('ov-spark-revenue', perMese);
 
@@ -2873,6 +2964,7 @@
 
     function resetTransSearch() {
         document.getElementById('trans-search').value = '';
+        transFilterScadenza = false;
         renderTransactionsTable();
     }
 
@@ -2973,7 +3065,7 @@
             { gruppo: 'Vai a', tipo: 'vai', tag: 'sezione', nome: 'Immobili', run: () => switchTab('tab-vetrina') },
             { gruppo: 'Vai a', tipo: 'vai', tag: 'sezione', nome: 'Statistiche', run: () => switchTab('tab-stats') },
             { gruppo: 'Vai a', tipo: 'vai', tag: 'sezione', nome: 'Clienti', run: () => switchTab('tab-crm') },
-            { gruppo: 'Vai a', tipo: 'vai', tag: 'sezione', nome: 'Bozze', run: () => switchTab('tab-documenti') }
+            { gruppo: 'Vai a', tipo: 'vai', tag: 'sezione', nome: 'Documenti', run: () => switchTab('tab-documenti') }
         ];
 
         buyers.filter(b => !query || match(b.full_name) || match(b.phone) || match(b.desired_zone))
@@ -2990,7 +3082,7 @@
 
         documenti.filter(d => !query || match(d.titolo))
             .slice(0, 6).forEach(d => out.push({
-                gruppo: 'Bozze', tipo: 'bozza', tag: d.tipo, nome: d.titolo || 'Senza titolo',
+                gruppo: 'Documenti', tipo: 'bozza', tag: d.tipo, nome: d.titolo || 'Senza titolo',
                 run: () => { location.href = `${d.tipo}.html?id=${encodeURIComponent(d.id)}`; }
             }));
 
