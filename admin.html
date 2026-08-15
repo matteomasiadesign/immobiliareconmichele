@@ -2290,13 +2290,24 @@
             }
         }
         
+        // Incarico nato in automatico e mai completato: senza percentuali non
+        // produrra' fatturato nemmeno da venduto.
+        const incompleto = t.status !== 'Scaduto' && isIncaricoIncompleto(t);
+        if (incompleto) {
+          b += ' <span class="status-badge bg-orange" title="Provvigioni a 0%: questo incarico non genera fatturato. Apri e completalo.">Da completare</span>';
+        }
+
         let pStr = `Partenza: €${(t.initial_price||0).toLocaleString('it-IT')}`;
-        let cStr = `V: ${t.commission_seller_perc||0}% | A: ${t.commission_buyer_perc||0}%`;
-        
+        let cStr = incompleto
+          ? '<b style="color:var(--warn);">da inserire</b>'
+          : `V: ${t.commission_seller_perc||0}% | A: ${t.commission_buyer_perc||0}%`;
+
         if(t.status==='Venduto' && t.final_price) {
           pStr = `Chiusura: <b>€${t.final_price.toLocaleString('it-IT')}</b>`;
-          const tot = ((t.final_price*(t.commission_seller_perc||0))/100) + ((t.final_price*(t.commission_buyer_perc||0))/100);
-          cStr = `<b style="color:#10b981">Netto: €${tot.toLocaleString('it-IT')}</b>`;
+          const tot = commissionOf(t);
+          cStr = incompleto
+            ? '<b style="color:var(--warn);">Netto: €0 — provvigioni mancanti</b>'
+            : `<b style="color:var(--good);">Netto: €${tot.toLocaleString('it-IT')}</b>`;
         }
 
         // Il Menu Kebab è stampato tramite il Singleton toggleDropdown
@@ -2392,10 +2403,29 @@
 
     async function handleTransactionSubmit(e) {
         e.preventDefault();
-        showLoader("Salvataggio Incarico...");
 
         const id = document.getElementById('trans-id').value;
         const status = document.getElementById('trans-status').value;
+
+        // Chiudere una vendita con le provvigioni a zero e' quasi sempre una
+        // dimenticanza: il prezzo di chiusura viene registrato ma l'incasso
+        // resta 0, e il fatturato dell'anno non se ne accorge. Meglio
+        // chiederlo adesso che scoprirlo a fine anno.
+        const commV = Number(document.getElementById('trans-comm-seller').value) || 0;
+        const commA = Number(document.getElementById('trans-comm-buyer').value) || 0;
+        if (status === 'Venduto' && commV === 0 && commA === 0) {
+            const proc = confirm(
+                'Le provvigioni sono a 0%.\n\n' +
+                'Questa vendita verrà registrata con un incasso di €0 e non comparirà nel fatturato dell\'anno.\n\n' +
+                'Vuoi salvare comunque?'
+            );
+            if (!proc) {
+                document.getElementById('trans-comm-seller').focus();
+                return;
+            }
+        }
+
+        showLoader("Salvataggio Incarico...");
 
         const payload = {
             status: status,
@@ -2528,6 +2558,27 @@
         return ((t.final_price * pV) / 100) + ((t.final_price * pA) / 100);
     }
 
+    /* Un incarico creato in automatico (pubblicando un immobile, oppure dalla
+       sincronizzazione che gira a ogni accesso) nasce con le provvigioni a
+       zero: serve a tenere il conto degli incarichi in corso, ma non porta
+       nessun dato economico.
+
+       Finche' resta cosi', quella casa vale 0 euro di fatturato anche se la
+       vendi davvero e inserisci il prezzo di chiusura. Zero su ENTRAMBE le
+       percentuali: 0% solo lato acquirente e' normale (paga solo il venditore),
+       ed e' un incarico completo a tutti gli effetti. */
+    function isIncaricoIncompleto(t) {
+        const pV = parseFloat(t.commission_seller_perc) || 0;
+        const pA = parseFloat(t.commission_buyer_perc) || 0;
+        return pV === 0 && pA === 0;
+    }
+
+    // Solo quelli ancora aperti: su un incarico gia' scaduto e mai andato in
+    // porto non c'e' niente da recuperare.
+    function incarichiDaCompletare() {
+        return transactions.filter(t => t.status !== 'Scaduto' && isIncaricoIncompleto(t));
+    }
+
     // Data di scadenza di un incarico, dedotta dalla durata scelta.
     function expiryOf(t) {
         const months = t.assignment_duration === '1 anno' ? 12 : (t.assignment_duration === '2 anni' ? 24 : 6);
@@ -2601,9 +2652,19 @@
         }).length;
         document.getElementById('ov-stat-active').innerText = attivi;
         setDelta('ov-delta-active', presiQuestoMese > 0 ? `+${presiQuestoMese}` : '', presiQuestoMese > 0 ? 'up' : 'flat');
-        setText('ov-foot-active', presiQuestoMese > 0
-            ? `${presiQuestoMese} acquisit${presiQuestoMese === 1 ? 'o' : 'i'} questo mese`
-            : 'nessuno acquisito questo mese');
+
+        // Se ci sono incarichi senza provvigione il piede lo dice al posto del
+        // conteggio del mese: e' l'informazione che chiede di fare qualcosa.
+        const daCompletare = incarichiDaCompletare();
+        document.getElementById('ov-card-active').classList.toggle('is-alert', daCompletare.length > 0);
+        if (daCompletare.length > 0) {
+            setText('ov-foot-active',
+                `<b>${daCompletare.length} senza provvigione</b>: non contano nel fatturato`);
+        } else {
+            setText('ov-foot-active', presiQuestoMese > 0
+                ? `${presiQuestoMese} acquisit${presiQuestoMese === 1 ? 'o' : 'i'} questo mese`
+                : 'nessuno acquisito questo mese');
+        }
 
         /* --- in scadenza entro 90 giorni --- */
         let inScadenza = 0;
