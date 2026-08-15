@@ -1,0 +1,417 @@
+/*
+ * Stili condivisi dai moduli documento (incarico.html, proposta.html):
+ * intestazione, sezioni del form, campi, pulsanti, loader.
+ *
+ * Le due pagine erano identiche al 96% su questa parte: qualsiasi ritocco
+ * grafico andava fatto due volte, e bastava dimenticarne una per far
+ * divergere l'aspetto dei due documenti. Qui la regola e' una sola.
+ *
+ * Quello che resta nel <style> di ogni pagina e' solo cio' che le distingue
+ * davvero (il padding del body, il logo in testata dell'incarico, i campi
+ * condizionali, il gate di accesso della proposta): se una regola vale per
+ * entrambe va aggiunta qui, non duplicata.
+ *
+ * NB: i colori sono scritti a mano (#0044FF / #FFD90F) e non come variabili
+ * perche' questi due file finiscono in un PDF generato con html2canvas +
+ * jsPDF, dove il contenuto deve restare identico a com'e' oggi.
+ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Il padding non e' qui: l'incarico stacca il foglio dal bordo finestra,
+   la proposta lo delega a #app-content perche' ha la navbar sopra. */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+    background: #f5f5f7;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+/* ===== INTESTAZIONE DEL DOCUMENTO ===== */
+
+.header {
+    padding: 40px 40px 30px;
+    border-bottom: 1px solid #f0f0f0;
+    background: #ffffff;
+    text-align: center;
+}
+
+.header-title-box {
+    border: 3px solid #FFD90F;
+    border-radius: 12px;
+    padding: 20px 30px;
+    display: inline-block;
+    margin-bottom: 15px;
+}
+
+.header-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #0044FF;
+    margin: 0;
+    letter-spacing: -0.5px;
+}
+
+.header-subtitle {
+    font-size: 13px;
+    font-weight: 600;
+    color: #0044FF;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.header-details {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    font-size: 12px;
+    color: #666;
+    line-height: 1.8;
+    text-align: left;
+}
+
+.detail-row {
+    display: flex;
+    gap: 30px;
+}
+
+.detail-col {
+    flex: 1;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: #0044FF;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-bottom: 4px;
+}
+
+.detail-value {
+    color: #333;
+    font-size: 12px;
+}
+
+/* ===== CORPO ===== */
+
+.content {
+    padding: 40px;
+}
+
+.info-box {
+    background: #f0f7ff;
+    border-left: 3px solid #0044FF;
+    padding: 14px 16px;
+    margin-bottom: 30px;
+    border-radius: 6px;
+    font-size: 12px;
+    color: #0044FF;
+    line-height: 1.6;
+}
+
+.button-area {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.btn-example {
+    background: linear-gradient(135deg, #FFD90F 0%, #FFC700 100%);
+    color: #0044FF;
+    padding: 12px 28px;
+    font-size: 13px;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-example:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 217, 15, 0.3);
+}
+
+.section {
+    margin-bottom: 30px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.section-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #0044FF;
+    margin-bottom: 18px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #FFD90F;
+}
+
+/* ===== CAMPI ===== */
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 18px;
+}
+
+.form-row.full {
+    grid-template-columns: 1fr;
+}
+
+.form-row.half {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #0044FF;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="date"],
+input[type="number"],
+textarea,
+select {
+    padding: 10px 12px;
+    border: 1px solid #e5e5e5;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: inherit;
+    transition: all 0.2s ease;
+    background: #fafafa;
+    color: #333;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="tel"]:focus,
+input[type="date"]:focus,
+input[type="number"]:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: #0044FF;
+    background: white;
+    box-shadow: 0 0 0 2px rgba(0, 68, 255, 0.1);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 70px;
+}
+
+.checkbox-group,
+.radio-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.checkbox-item,
+.radio-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+    accent-color: #0044FF;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+/* L'etichetta di una casella e' testo scorrevole, non un'intestazione:
+   annulla maiuscolo e spaziatura ereditati da `label`. */
+.checkbox-item label,
+.radio-item label {
+    margin: 0;
+    letter-spacing: normal;
+    font-weight: 400;
+    cursor: pointer;
+    font-size: 12px;
+    color: #333;
+    text-transform: none;
+}
+
+.amount-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+    align-items: center;
+}
+
+.amount-row input {
+    width: 100%;
+}
+
+.currency {
+    font-size: 13px;
+    font-weight: 600;
+    color: #0044FF;
+}
+
+/* ===== AZIONI ===== */
+
+.actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 1px solid #f0f0f0;
+}
+
+button {
+    padding: 11px 26px;
+    font-size: 13px;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-generate {
+    background: linear-gradient(135deg, #0044FF 0%, #001f8c 100%);
+    color: white;
+    flex: 1;
+}
+
+.btn-generate:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 68, 255, 0.3);
+}
+
+.btn-reset {
+    background: #f0f0f0;
+    color: #333;
+    flex: 1;
+}
+
+.btn-reset:hover {
+    background: #e5e5e5;
+}
+
+.btn-save {
+    background: #f0f0f0;
+    color: #0044FF;
+    border: 2px solid #0044FF;
+    flex: 1;
+}
+
+.btn-save:hover {
+    background: #eaf1ff;
+}
+
+/* Riga sotto i pulsanti: "bozza salvata alle ..." (vedi documenti.js) */
+.draft-status {
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: #6e6e6e;
+    margin-top: 10px;
+}
+
+.required {
+    color: #e74c3c;
+}
+
+/* ===== LOADER ===== */
+
+.loading {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.8);
+    padding: 30px;
+    border-radius: 12px;
+    color: white;
+    text-align: center;
+    z-index: 1000;
+}
+
+.loading.active {
+    display: block;
+}
+
+.spinner {
+    border: 3px solid rgba(255, 217, 15, 0.2);
+    border-top: 3px solid #FFD90F;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 15px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+    .form-row.half {
+        grid-template-columns: 1fr;
+    }
+
+    .header-details {
+        grid-template-columns: 1fr;
+    }
+
+    .actions {
+        flex-direction: column;
+    }
+
+    .header {
+        padding: 30px 20px;
+    }
+
+    .content {
+        padding: 20px;
+    }
+}

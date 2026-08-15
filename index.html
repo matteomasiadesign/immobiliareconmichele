@@ -23,6 +23,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500..700&family=Teko:wght@400..700&display=swap" rel="stylesheet">
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
   <script src="gsap.min.js"></script>
   <script src="scrolltrigger.min.js"></script>
   <script src="lenis.min.js"></script>
@@ -57,7 +58,7 @@
        in orizzontale, portatili piccoli) i bottoni finivano appiccicati al
        bordo dell'hero e venivano tagliati dalla sezione successiva. Con il
        padding l'hero cresce quel tanto che basta e i bottoni restano dentro. */
-    .hero { position: relative; min-height: 88vh; display: flex; align-items: flex-start; justify-content: center; text-align: center; padding: 2.5rem 1rem 3rem; background-image: url('header.webp'); background-size: cover; background-position: 50% 18%; }
+    .hero { position: relative; min-height: 88vh; display: flex; align-items: flex-start; justify-content: center; text-align: center; padding: 2.5rem 1rem 3rem; background-image: url('michele.webp'); background-size: cover; background-position: 50% 18%; }
     /* Velo sfumato invece che piatto: denso in alto dove corre il testo, si
        apre in basso per non spegnere la figura. */
     .hero-overlay { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(15,23,42,0.86) 0%, rgba(15,23,42,0.82) 42%, rgba(15,23,42,0.55) 72%, rgba(15,23,42,0.42) 100%); }
@@ -514,7 +515,10 @@
         </div>
         <div class="cta-box reveal">
           <div class="cta-image-container">
-            <img src="contatti.webp" alt="Contatta Michele Erre" class="cta-image" onerror="this.src='https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=800&q=80'">
+            <!-- Stesso ritratto dell'intestazione (prima duplicato in
+                 contatti.webp, byte per byte): un file solo, quindi il browser
+                 lo scarica una volta e qui lo riprende dalla cache. -->
+            <img src="michele.webp" alt="Contatta Michele Erre" class="cta-image" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=800&q=80'">
           </div>
           <div class="cta-content">
             <h2 class="cta-title">Pronto a trovare casa?</h2>

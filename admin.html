@@ -18,10 +18,15 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500..700&family=Teko:wght@400..700&display=swap" rel="stylesheet">
 
-  <!-- LIBRERIE ESTERNE -->
+  <!-- LIBRERIE ESTERNE
+       Versioni fissate di proposito: con "@latest" (o senza versione) un
+       aggiornamento della libreria puo' rompere il gestionale senza che sia
+       stata toccata una riga di questo progetto. Per aggiornare si alza il
+       numero qui, dopo aver provato. -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.min.js"></script>
+  <script src="config.js"></script>
 
   <style>
     :root {
@@ -767,8 +772,7 @@
   </div>
 
   <script>
-    const SUPABASE_URL = "https://svdfgejkjvkbajmqoqjz.supabase.co";
-    const SUPABASE_ANON_KEY = "sb_publishable_aGoAYeXnUtVMe4bIc20wIQ_2EM4LTSG";
+    // SUPABASE_URL e SUPABASE_ANON_KEY arrivano da config.js.
     const { createClient } = supabase;
     const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
