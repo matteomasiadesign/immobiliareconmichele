@@ -96,9 +96,14 @@
 .card-img-container { position: relative; aspect-ratio: 4/3; width: 100%; overflow: hidden; background: #e2e8f0; }
 .card-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease, opacity 0.5s ease; }
 .card:hover .card-img { transform: scale(1.06); }
-/* Se l'annuncio ha più di una foto, la seconda appare al passaggio del mouse */
+/* Se l'annuncio ha più di una foto, la seconda appare al passaggio del mouse.
+   La seconda immagine viene semplicemente accesa SOPRA la prima (stesso
+   riquadro, stessa dimensione, ed è dopo nel DOM quindi copre): la prima non
+   va spenta. Spegnendola, sugli annunci con una foto sola - dove la seconda
+   immagine non esiste proprio - non restava nulla da mostrare e si vedeva il
+   grigio del contenitore vuoto. Su touch il :hover scatta appoggiando il dito,
+   quindi la card diventava grigia durante lo scorrimento. */
 .card-img-hover { opacity: 0; }
-.card:hover .card-img-primary { opacity: 0; }
 .card:hover .card-img-hover { opacity: 1; }
 .card-content { padding: 1.25rem; flex: 1; display: flex; flex-direction: column; position: relative; }
 @media (min-width: 768px) { .card-content { padding: 1.5rem; } }
