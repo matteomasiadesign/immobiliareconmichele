@@ -229,7 +229,11 @@
    Le due liste vanno a sinistra e non centrate: e' l'allineamento che le
    rende leggibili una accanto all'altra. Il blocco identita' invece resta
    centrato, vedi sotto. */
-.footer-grid { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 2.25rem 1.25rem; padding-bottom: 2.25rem; text-align: left; }
+.footer-grid { display: grid; grid-template-columns: 0.78fr 1.22fr; gap: 2.25rem 1rem; padding-bottom: 2.25rem; text-align: left; }
+/* Sotto i 360px due colonne diventano troppo strette perche' l'email ci stia
+   su una riga, e sono comunque anguste per qualsiasi contenuto: li' si torna
+   a una colonna sola. Riguarda pochissimi telefoni molto vecchi. */
+@media (max-width: 359px) { .footer-grid { grid-template-columns: 1fr; } }
 /* Il blocco identita' fa eccezione e resta centrato: prende tutta la
    larghezza, quindi allinearlo a sinistra come le due liste sotto lo
    lasciava sbilanciato. Logo, nome, frase e social si centrano insieme.
@@ -255,12 +259,21 @@
 
 .footer-heading { font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; color: var(--brand-yellow); margin-bottom: 1rem; }
 .footer-links { display: flex; flex-direction: column; gap: 0.8rem; }
-/* overflow-wrap: l'email e' piu' lunga della colonna sui telefoni stretti e
-   senza questo sfonderebbe invece di andare a capo. align-items flex-start
-   tiene l'icona sulla prima riga quando il testo si spezza. */
-.footer-links a, .footer-links span { color: rgba(255,255,255,0.85); text-decoration: none; font-weight: 600; font-size: 0.92rem; line-height: 1.45; transition: color 0.2s; display: flex; align-items: flex-start; gap: 9px; overflow-wrap: anywhere; }
+/* overflow-wrap resta come rete di sicurezza: se una voce non ci sta va a
+   capo invece di sfondare la colonna. align-items flex-start tiene l'icona
+   sulla prima riga nel caso il testo si spezzi davvero. */
+.footer-links a, .footer-links span { color: rgba(255,255,255,0.85); text-decoration: none; font-weight: 600; font-size: 0.88rem; line-height: 1.45; transition: color 0.2s; display: flex; align-items: flex-start; gap: 8px; overflow-wrap: anywhere; }
+@media (min-width: 768px) { .footer-links a, .footer-links span { font-size: 0.92rem; gap: 9px; } }
 .footer-links a:hover { color: var(--brand-yellow); }
-.footer-links svg { width: 15px; height: 15px; flex-shrink: 0; color: var(--brand-yellow); opacity: 0.8; margin-top: 0.2em; }
+.footer-links svg { width: 14px; height: 14px; flex-shrink: 0; color: var(--brand-yellow); opacity: 0.8; margin-top: 0.25em; }
+@media (min-width: 768px) { .footer-links svg { width: 15px; height: 15px; } }
+/* L'email e' di gran lunga la voce piu' lunga del footer: 26 caratteri, il
+   doppio di qualsiasi altra. Nella colonna stretta del telefono andava a
+   capo, e una email spezzata a meta' e' brutta da vedere e scomoda da
+   leggere. Rimpicciolita solo lei - e solo da telefono - ci sta su una riga.
+   Il selettore sull'href evita di dover aggiungere una classe nelle tre
+   pagine che duplicano questo footer. */
+@media (max-width: 767px) { .footer-links a[href^="mailto:"] { font-size: 0.78rem; } }
 
 /* Pastiglie tonde da 44px invece delle icone nude: 44px e' la misura minima
    di un bersaglio toccabile, e prima erano due icone da 26px senza area
