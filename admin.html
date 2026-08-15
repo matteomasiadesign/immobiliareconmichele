@@ -29,247 +29,706 @@
   <script src="config.js"></script>
 
   <style>
+    /* ============================================================
+       TOKEN
+       Ogni colore passa da qui: e' quello che rende possibile il tema
+       scuro senza riscrivere le regole. Tre stati da coprire, non due:
+       :root            -> tema chiaro (default)
+       prefers-color-scheme: dark, senza scelta esplicita -> scuro
+       [data-theme]     -> la scelta manuale, che vince su entrambi
+       ============================================================ */
     :root {
+      color-scheme: light;
+
       --brand-blue: #0044FF;
       --brand-yellow: #FFD90F;
-      --bg-slate: #f8fafc;
-      --text-slate: #1e293b;
-      --text-muted: #64748b;
-      --white: #ffffff;
-      --border-color: #e2e8f0;
-      --transition: all 0.3s ease-in-out;
+
+      --ground: #f4f6fa;        /* fondo pagina */
+      --surface: #ffffff;       /* schede e pannelli */
+      --surface-2: #f7f9fc;     /* intestazioni, righe alternate */
+      --surface-3: #eef1f7;     /* campi, stati inattivi */
+      --line: #e2e7f0;
+      --line-soft: #eef1f7;
+
+      --ink: #151a2b;           /* testo principale */
+      --ink-2: #59617a;         /* testo secondario */
+      --ink-3: #8b93a8;         /* etichette, note */
+
+      --accent: #0044FF;        /* interattivo */
+      --accent-ink: #0038d1;    /* accento su fondo chiaro */
+      --accent-soft: rgba(0, 68, 255, 0.08);
+
+      /* Colori di stato: riservati: dicono se una cosa va bene o male.
+         Non vanno mai usati per distinguere una serie da un'altra. */
+      --good: #0f7a5c;
+      --good-bg: #e6f4ef;
+      --warn: #b2650a;
+      --warn-bg: #fbf1e3;
+      --crit: #c0332b;
+      --crit-bg: #fdeceb;
+      --info: #2b57db;
+      --info-bg: #e9eefc;
+
+      /* Palette dei grafici: passata al validatore (banda di luminosita',
+         croma, separazione per daltonismo, contrasto sul fondo). */
+      --series-1: #2B57DB;
+      --series-2: #B87A00;
+      --series-3: #12907F;
+      --series-4: #6B4BC4;
+      --grid-line: #e6eaf2;
+
+      --shadow-1: 0 1px 2px rgba(21, 26, 43, .05);
+      --shadow-2: 0 1px 3px rgba(21, 26, 43, .06), 0 10px 28px -14px rgba(21, 26, 43, .22);
+      --shadow-3: 0 20px 50px -20px rgba(21, 26, 43, .35);
+
+      --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, system-ui, sans-serif;
+      --display: 'Space Grotesk', -apple-system, sans-serif;
+      /* Il monospace fa due lavori: allinea le cifre in colonna e da' alle
+         micro-etichette l'aria dello strumento invece che del modulo. */
+      --mono: ui-monospace, SFMono-Regular, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+
+      --radius: 12px;
+      --radius-lg: 16px;
+      --transition: 160ms ease;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    html { scroll-behavior: smooth; }
-    body { background-color: var(--bg-slate); color: var(--text-slate); min-height: 100vh; max-width: 100%; overflow-x: clip; display: flex; flex-direction: column; }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        color-scheme: dark;
+        --ground: #0b0e15;
+        --surface: #141926;
+        --surface-2: #1a2130;
+        --surface-3: #212938;
+        --line: #29313f;
+        --line-soft: #1f2634;
+        --ink: #e9ecf4;
+        --ink-2: #a4acbf;
+        --ink-3: #798195;
+        --accent: #7396ff;
+        --accent-ink: #9db4ff;
+        --accent-soft: rgba(115, 150, 255, 0.14);
+        --good: #3fb98f;
+        --good-bg: rgba(63, 185, 143, .13);
+        --warn: #d9932e;
+        --warn-bg: rgba(217, 147, 46, .14);
+        --crit: #e8635a;
+        --crit-bg: rgba(232, 99, 90, .14);
+        --info: #6f92f0;
+        --info-bg: rgba(111, 146, 240, .14);
+        --series-1: #4C79F0;
+        --series-2: #C98500;
+        --series-3: #16A38F;
+        --series-4: #8A6FE0;
+        --grid-line: #262e3d;
+        --shadow-1: 0 1px 2px rgba(0, 0, 0, .3);
+        --shadow-2: 0 1px 3px rgba(0, 0, 0, .35), 0 10px 28px -14px rgba(0, 0, 0, .6);
+        --shadow-3: 0 20px 50px -20px rgba(0, 0, 0, .75);
+      }
+    }
 
-    .navbar { background: linear-gradient(120deg, var(--brand-blue), #001f8c); border-bottom: 4px solid var(--brand-yellow); height: 80px; display: flex; align-items: center; justify-content: space-between; padding: 0 1rem; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(0,68,255,0.15); width: 100%; transition: height 0.3s ease, box-shadow 0.3s ease, background 0.3s ease, backdrop-filter 0.3s ease; }
-    /* A riposo la navbar e' piena/solida; il vetro smerigliato si attiva solo
-       allo scroll, quando c'e' davvero contenuto sotto da sfocare (vedi shared.css). */
-    .navbar.scrolled { height: 68px; box-shadow: 0 8px 20px rgba(0,0,0,0.18); background: linear-gradient(120deg, rgba(0,68,255,0.85), rgba(0,31,140,0.88)); backdrop-filter: blur(20px) saturate(180%) brightness(0.75); -webkit-backdrop-filter: blur(20px) saturate(180%) brightness(0.75); }
-    .brand { display: flex; align-items: center; text-decoration: none; min-width: 0; z-index: 1001; }
-    .brand-icon-box { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .brand-text { margin-left: 8px; display: flex; flex-direction: column; line-height: 1.1; min-width: 0; }
-    /* Stesso marchio su una riga della vetrina (vedi shared.css), qui un filo
-       piu' piccolo perche' la barra del gestionale ha meno spazio. */
-    .brand-title { font-family: 'Teko', 'Space Grotesk', sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--white); text-transform: uppercase; letter-spacing: 0.02em; line-height: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; position: relative; top: 0.1em; }
-    @media (min-width: 375px) { .navbar { padding: 0 1.5rem; } .brand-text { margin-left: 12px; } .brand-title { font-size: 1.25rem; } }
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+      --ground: #0b0e15;
+      --surface: #141926;
+      --surface-2: #1a2130;
+      --surface-3: #212938;
+      --line: #29313f;
+      --line-soft: #1f2634;
+      --ink: #e9ecf4;
+      --ink-2: #a4acbf;
+      --ink-3: #798195;
+      --accent: #7396ff;
+      --accent-ink: #9db4ff;
+      --accent-soft: rgba(115, 150, 255, 0.14);
+      --good: #3fb98f;
+      --good-bg: rgba(63, 185, 143, .13);
+      --warn: #d9932e;
+      --warn-bg: rgba(217, 147, 46, .14);
+      --crit: #e8635a;
+      --crit-bg: rgba(232, 99, 90, .14);
+      --info: #6f92f0;
+      --info-bg: rgba(111, 146, 240, .14);
+      --series-1: #4C79F0;
+      --series-2: #C98500;
+      --series-3: #16A38F;
+      --series-4: #8A6FE0;
+      --grid-line: #262e3d;
+      --shadow-1: 0 1px 2px rgba(0, 0, 0, .3);
+      --shadow-2: 0 1px 3px rgba(0, 0, 0, .35), 0 10px 28px -14px rgba(0, 0, 0, .6);
+      --shadow-3: 0 20px 50px -20px rgba(0, 0, 0, .75);
+    }
+
+    /* Compatibilita': i vecchi nomi restano come alias dei token nuovi, cosi'
+       gli stili inline sparsi nel markup continuano a funzionare. */
+    :root {
+      --bg-slate: var(--ground);
+      --text-slate: var(--ink);
+      --text-muted: var(--ink-2);
+      --white: var(--surface);
+      --border-color: var(--line);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--sans); }
+    html { scroll-behavior: smooth; }
+    body {
+      background-color: var(--ground);
+      color: var(--ink);
+      min-height: 100vh;
+      max-width: 100%;
+      overflow-x: clip;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+
+    /* micro-etichetta: l'unico posto dove sopravvive il maiuscolo */
+    .eyebrow {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      font-weight: 500;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+    }
+    .num { font-variant-numeric: tabular-nums; }
+
+    /* ---------- NAVBAR ---------- */
+    .navbar {
+      background: linear-gradient(120deg, var(--brand-blue), #001f8c);
+      border-bottom: 3px solid var(--brand-yellow);
+      height: 64px; display: flex; align-items: center; justify-content: space-between;
+      padding: 0 1rem; position: sticky; top: 0; z-index: 1000; width: 100%;
+      box-shadow: 0 2px 12px rgba(0, 68, 255, .18);
+    }
+    .brand { display: flex; align-items: center; text-decoration: none; min-width: 0; }
+    .brand-icon-box { width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .brand-text { margin-left: 10px; display: flex; flex-direction: column; line-height: 1.1; min-width: 0; }
+    .brand-title {
+      font-family: 'Teko', 'Space Grotesk', sans-serif; font-size: 1.15rem; font-weight: 700;
+      color: #fff; text-transform: uppercase; letter-spacing: .02em; line-height: 1;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; position: relative; top: .1em;
+    }
+    @media (min-width: 375px) { .navbar { padding: 0 1.25rem; } }
 
     .nav-auth { display: flex; align-items: center; gap: 8px; }
-    .nav-actions { display: flex; align-items: center; gap: 8px; }
-    .btn-nav-link { background: transparent; color: var(--brand-yellow); text-decoration: none; font-weight: 900; font-size: 11px; text-transform: uppercase; padding: 8px 10px; border-radius: 999px; transition: var(--transition); display: flex; align-items: center; gap: 6px; border: 1px solid rgba(255,217,15,0.3); }
-    .btn-nav-link:hover { background: rgba(255,217,15,0.1); }
-    .btn-nav-proposta { background: var(--brand-yellow); color: var(--brand-blue); border-color: var(--brand-yellow); }
-    .btn-nav-proposta:hover { background: #ffe552; color: var(--brand-blue); }
-    .btn-logout { background-color: rgba(239,68,68,0.1); color: #fca5a5; border: 1px solid rgba(239,68,68,0.3); font-weight: 900; font-size: 11px; text-transform: uppercase; padding: 8px 12px; border-radius: 999px; cursor: pointer; transition: var(--transition); display: flex; align-items: center; gap: 6px;}
-    .btn-logout:hover { background-color: #ef4444; color: var(--white); }
+    .nav-actions { display: flex; align-items: center; gap: 6px; }
+    .btn-nav-link {
+      background: rgba(255, 255, 255, .1); color: #fff; text-decoration: none;
+      font-weight: 550; font-size: 12.5px; padding: 7px 12px; border-radius: 8px;
+      transition: background var(--transition); display: flex; align-items: center; gap: 6px;
+      border: 1px solid rgba(255, 255, 255, .16); cursor: pointer;
+    }
+    .btn-nav-link:hover { background: rgba(255, 255, 255, .2); }
+    .btn-nav-proposta { background: var(--brand-yellow); color: #0038d1; border-color: var(--brand-yellow); font-weight: 600; }
+    .btn-nav-proposta:hover { background: #ffe552; }
+    .btn-logout {
+      background: rgba(239, 68, 68, .16); color: #ffd9d9; border: 1px solid rgba(239, 68, 68, .35);
+      font-weight: 550; font-size: 12.5px; padding: 7px 12px; border-radius: 8px; cursor: pointer;
+      transition: background var(--transition); display: flex; align-items: center; gap: 6px;
+    }
+    .btn-logout:hover { background: #ef4444; color: #fff; }
 
-    .admin-mobile-toggle { display: none; background: none; border: none; cursor: pointer; padding: 6px; line-height: 0; }
-    .admin-mobile-menu { position: fixed; top: 80px; left: 0; width: 100%; background: linear-gradient(160deg, rgba(0,68,255,0.75), rgba(0,31,140,0.8)); backdrop-filter: blur(20px) saturate(160%); -webkit-backdrop-filter: blur(20px) saturate(160%); border-bottom: 4px solid var(--brand-yellow); display: flex; flex-direction: column; gap: 10px; padding: 1rem; transform: translateY(-150%); transition: var(--transition); z-index: 999; box-shadow: 0 12px 20px rgba(0,0,0,0.15); }
+    /* interruttore del tema */
+    .btn-theme {
+      background: rgba(255, 255, 255, .1); border: 1px solid rgba(255, 255, 255, .16);
+      color: #fff; width: 34px; height: 34px; border-radius: 8px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      transition: background var(--transition);
+    }
+    .btn-theme:hover { background: rgba(255, 255, 255, .2); }
+    .btn-theme .i-sun { display: none; }
+    .btn-theme .i-moon { display: block; }
+    :root[data-theme="dark"] .btn-theme .i-sun { display: block; }
+    :root[data-theme="dark"] .btn-theme .i-moon { display: none; }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) .btn-theme .i-sun { display: block; }
+      :root:not([data-theme="light"]) .btn-theme .i-moon { display: none; }
+    }
+
+    .admin-mobile-toggle { display: none; background: none; border: none; cursor: pointer; padding: 4px; line-height: 0; }
+    .admin-mobile-menu {
+      position: fixed; top: 64px; left: 0; width: 100%;
+      background: linear-gradient(160deg, rgba(0, 68, 255, .95), rgba(0, 31, 140, .97));
+      backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+      border-bottom: 3px solid var(--brand-yellow); display: flex; flex-direction: column; gap: 8px;
+      padding: 1rem; transform: translateY(-160%); transition: transform var(--transition);
+      z-index: 999; box-shadow: 0 12px 20px rgba(0, 0, 0, .18);
+    }
     .admin-mobile-menu.open { transform: translateY(0); }
-    .mobile-menu-item { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; text-decoration: none; font-weight: 900; font-size: 14px; text-transform: uppercase; letter-spacing: 0.03em; padding: 14px 16px; border-radius: 999px; cursor: pointer; transition: var(--transition); background: transparent; color: var(--brand-yellow); border: 1px solid rgba(255,217,15,0.3); }
-    .mobile-menu-item.primary { background: var(--brand-yellow); color: var(--brand-blue); border-color: var(--brand-yellow); }
-    .mobile-menu-item.danger { color: #fca5a5; border-color: rgba(239,68,68,0.35); }
-    .mobile-menu-item.danger:hover { background: #ef4444; color: var(--white); }
-    
-    @media (max-width: 820px) { .nav-actions { display: none; } .admin-mobile-toggle { display: flex; } }
-    @media (min-width: 821px) { .admin-mobile-menu { display: none; } }
-    @media (max-width: 380px) { .hide-mobile { display: none; } .btn-nav-link { padding: 8px; } }
+    .mobile-menu-item {
+      display: flex; align-items: center; gap: 10px; width: 100%; text-align: left;
+      text-decoration: none; font-weight: 550; font-size: 14px; padding: 12px 14px;
+      border-radius: 10px; cursor: pointer; transition: background var(--transition);
+      background: rgba(255, 255, 255, .08); color: #fff; border: 1px solid rgba(255, 255, 255, .16);
+    }
+    .mobile-menu-item.primary { background: var(--brand-yellow); color: #0038d1; border-color: var(--brand-yellow); font-weight: 600; }
+    .mobile-menu-item.danger { color: #ffd9d9; border-color: rgba(239, 68, 68, .4); }
+    .mobile-menu-item.danger:hover { background: #ef4444; }
 
-    .login-container { max-width: 400px; margin: 3rem auto; padding: 0 1rem; width: 100%; flex: 1; }
-    .login-card { background-color: var(--white); padding: 2rem 1.5rem; border-radius: 24px; border: 1px solid var(--border-color); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); text-align: center; width: 100%; }
-    .login-card h2 { font-family: 'Space Grotesk', -apple-system, sans-serif; }
+    @media (max-width: 860px) { .nav-actions { display: none; } .admin-mobile-toggle { display: flex; } }
+    @media (min-width: 861px) { .admin-mobile-menu { display: none; } }
+    @media (max-width: 400px) { .hide-mobile { display: none; } .btn-nav-link { padding: 7px 9px; } }
 
-    .dashboard-container { max-width: 1200px; margin: 1.5rem auto; padding: 0 1rem; width: 100%; flex: 1; display: flex; flex-direction: column; }
-    .header-bar { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem; }
-    @media (min-width: 768px) { .header-bar { flex-direction: row; justify-content: space-between; align-items: center; } }
-    .header-title-box h1 { font-family: 'Space Grotesk', -apple-system, sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--brand-blue); text-transform: uppercase; }
-    .header-title-box p { font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 4px; }
+    /* ---------- LOGIN ---------- */
+    .login-container { max-width: 380px; margin: 3rem auto; padding: 0 1rem; width: 100%; flex: 1; }
+    .login-card {
+      background: var(--surface); padding: 2rem 1.5rem; border-radius: var(--radius-lg);
+      border: 1px solid var(--line); box-shadow: var(--shadow-2); text-align: center; width: 100%;
+    }
+    .login-card h2 { font-family: var(--display); font-size: 1.3rem; font-weight: 600; color: var(--ink); }
 
-    .tabs-nav { display: flex; gap: 10px; margin-bottom: 1.5rem; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
-    .tabs-nav::-webkit-scrollbar { display: none; }
-    .tab-btn { padding: 12px 20px; background: var(--white); border: 1px solid var(--border-color); border-radius: 999px; font-weight: 900; font-size: 13px; text-transform: uppercase; color: var(--text-muted); cursor: pointer; transition: var(--transition); white-space: nowrap; display: flex; align-items: center; gap: 8px; }
-    .tab-btn.active { background: var(--brand-blue); color: var(--brand-yellow); border-color: var(--brand-blue); box-shadow: 0 4px 10px rgba(0,68,255,0.2); }
-    .tab-content { display: none; animation: fadeIn 0.3s ease; }
-    .tab-content.active { display: block; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    /* ============================================================
+       IMPALCATURA: colonna laterale + contenuto
+       Da 1040px in su la navigazione e' una colonna che resta ferma:
+       da' orientamento e tiene i contatori sempre sott'occhio.
+       Sotto, diventa una barra in basso, dove arriva il pollice.
+       ============================================================ */
+    .app-shell { flex: 1; width: 100%; max-width: 1400px; margin: 0 auto; padding: 1.25rem 1rem 5.5rem; display: block; }
+    @media (min-width: 1040px) {
+      .app-shell { display: grid; grid-template-columns: 216px minmax(0, 1fr); gap: 1.5rem; padding: 1.5rem 1.5rem 2.5rem; align-items: start; }
+    }
 
-    .form-group { margin-bottom: 1.25rem; text-align: left; }
-    .form-label { display: block; font-size: 11px; font-weight: 900; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em; margin-bottom: 6px; }
-    .form-input, .form-select, .form-textarea { width: 100%; padding: 12px 14px; background-color: #f1f5f9; border: 1px solid var(--border-color); border-radius: 16px; font-size: 14px; font-weight: 500; outline: none; transition: var(--transition); color: var(--text-slate); max-width: 100%; }
-    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--brand-blue); background-color: var(--white); box-shadow: 0 0 0 4px rgba(0,68,255,0.1); }
-    .btn-submit { width: 100%; background-color: var(--brand-blue); color: var(--brand-yellow); border: none; padding: 14px; border-radius: 999px; font-size: 14px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; box-shadow: 0 4px 12px rgba(0,68,255,0.2); transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 8px;}
-    .btn-submit:hover { background-color: #0033CC; transform: translateY(-1px); }
+    .app-nav {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 900;
+      display: flex; background: var(--surface); border-top: 1px solid var(--line);
+      padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px));
+      box-shadow: 0 -2px 14px rgba(21, 26, 43, .07);
+    }
+    .app-nav .nav-group-label { display: none; }
+    .nav-item {
+      flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 3px; padding: 7px 2px; border: none; background: none; cursor: pointer; border-radius: 10px;
+      color: var(--ink-2); font-size: 10.5px; font-weight: 550; position: relative; min-width: 0;
+      transition: color var(--transition), background var(--transition);
+    }
+    .nav-item svg { width: 19px; height: 19px; flex-shrink: 0; }
+    .nav-item .nav-text { overflow: hidden; text-overflow: ellipsis; max-width: 100%; white-space: nowrap; }
+    .nav-item .nav-count { display: none; }
+    .nav-item.active { color: var(--accent-ink); background: var(--accent-soft); }
+    .nav-item .nav-dot {
+      position: absolute; top: 5px; right: 50%; transform: translateX(15px);
+      min-width: 15px; height: 15px; padding: 0 4px; border-radius: 999px;
+      background: var(--crit); color: #fff; font-family: var(--mono); font-size: 9.5px;
+      font-weight: 600; display: none; align-items: center; justify-content: center; line-height: 1;
+    }
+    .nav-item .nav-dot.on { display: flex; }
+
+    @media (min-width: 1040px) {
+      .app-nav {
+        position: sticky; top: 80px; bottom: auto; left: auto; right: auto;
+        flex-direction: column; gap: 1px; padding: 8px; border: 1px solid var(--line);
+        border-radius: var(--radius-lg); box-shadow: var(--shadow-1);
+      }
+      .app-nav .nav-group-label { display: block; padding: 12px 10px 5px; }
+      .app-nav .nav-group-label:first-child { padding-top: 4px; }
+      .nav-item {
+        flex: none; flex-direction: row; justify-content: flex-start; gap: 10px;
+        padding: 9px 10px; font-size: 13.5px; border-radius: 9px; width: 100%;
+      }
+      .nav-item:hover { background: var(--surface-2); color: var(--ink); }
+      .nav-item.active { background: var(--accent-soft); color: var(--accent-ink); font-weight: 600; }
+      .nav-item .nav-count {
+        display: block; margin-left: auto; font-family: var(--mono); font-size: 11px;
+        color: var(--ink-3); font-variant-numeric: tabular-nums;
+      }
+      .nav-item .nav-dot { position: static; transform: none; margin-left: auto; }
+      .nav-item .nav-dot.on + .nav-count { display: none; }
+    }
+
+    .app-main { min-width: 0; }
+    .page-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+    .page-head h1 { font-family: var(--display); font-size: 1.4rem; font-weight: 600; color: var(--ink); letter-spacing: -.02em; }
+    .page-head .page-sub { font-size: 13px; color: var(--ink-2); margin-top: 2px; }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; animation: fadeIn .22s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+    /* ---------- CAMPI ---------- */
+    .form-group { margin-bottom: 1.1rem; text-align: left; }
+    .form-label {
+      display: block; font-family: var(--mono); font-size: 10.5px; font-weight: 500;
+      text-transform: uppercase; color: var(--ink-3); letter-spacing: .08em; margin-bottom: 6px;
+    }
+    .form-input, .form-select, .form-textarea {
+      width: 100%; padding: 10px 12px; background-color: var(--surface-3);
+      border: 1px solid var(--line); border-radius: 10px; font-size: 14px; font-weight: 450;
+      outline: none; transition: border-color var(--transition), background var(--transition), box-shadow var(--transition);
+      color: var(--ink); max-width: 100%;
+    }
+    .form-input::placeholder, .form-textarea::placeholder { color: var(--ink-3); }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--accent); background-color: var(--surface); box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+    .btn-submit {
+      width: 100%; background-color: var(--accent); color: #fff; border: none; padding: 11px 16px;
+      border-radius: 10px; font-size: 13.5px; font-weight: 600; cursor: pointer;
+      box-shadow: var(--shadow-1); transition: filter var(--transition), transform var(--transition);
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-submit:hover { filter: brightness(1.08); transform: translateY(-1px); }
+    .btn-quiet { background: var(--surface-3); color: var(--ink); box-shadow: none; }
+    .btn-quiet:hover { background: var(--line); filter: none; }
     .form-row { display: grid; grid-template-columns: 1fr; gap: 12px; }
     @media (min-width: 480px) { .form-row { grid-template-columns: 1fr 1fr; } }
     .form-row-3 { display: grid; grid-template-columns: 1fr; gap: 12px; }
-    @media (min-width: 480px) { .form-row-3 { grid-template-columns: 1fr 1fr 1fr; } }
+    @media (min-width: 480px) { .form-row-3 { grid-template-columns: repeat(3, 1fr); } }
 
-    .panel-card { background-color: var(--white); padding: 1.25rem; border-radius: 24px; border: 1px solid var(--border-color); box-shadow: 0 4px 20px rgba(0,0,0,0.02); width: 100%; }
-    .panel-title { font-family: 'Space Grotesk', -apple-system, sans-serif; font-size: 17px; font-weight: 700; text-transform: uppercase; margin-bottom: 1.5rem; color: var(--text-slate); display: flex; align-items: center; gap: 8px; }
-    
-    /* Immobili: barra di ricerca/filtri + pulsante aggiungi in alto, sotto
-       la lista a piena larghezza (griglia di card responsive). Il form di
-       compilazione vive in un overlay a schermo intero (vedi .fullscreen-modal). */
+    /* ---------- PANNELLI ---------- */
+    .panel-card {
+      background-color: var(--surface); padding: 1.15rem; border-radius: var(--radius-lg);
+      border: 1px solid var(--line); box-shadow: var(--shadow-1); width: 100%;
+    }
+    .panel-title { font-family: var(--display); font-size: 15px; font-weight: 600; margin-bottom: 1.1rem; color: var(--ink); display: flex; align-items: center; gap: 8px; }
+
+    .archive-header {
+      padding: .9rem 1.1rem; border-bottom: 1px solid var(--line); display: flex;
+      justify-content: space-between; align-items: baseline; gap: 10px; background: var(--surface-2); width: 100%;
+    }
+    .archive-header h2 { font-family: var(--display); font-size: 15px; font-weight: 600; color: var(--ink); letter-spacing: -.01em; }
+    .count-pill { font-family: var(--mono); font-size: 11.5px; color: var(--ink-2); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
     .immobili-filters-bar { display: flex; flex-direction: column; gap: 10px; width: 100%; }
     @media (min-width: 768px) { .immobili-filters-bar { flex-direction: row; align-items: center; } }
-    .immobili-filters-bar .form-input, .immobili-filters-bar .form-select { margin: 0; }
     .immobili-filters-bar .filter-search { flex: 2; min-width: 0; }
     .immobili-filters-bar .filter-select { flex: 1; min-width: 0; }
-    .btn-add-immobile { width: auto; flex-shrink: 0; padding: 12px 22px; white-space: nowrap; }
+    .btn-add-immobile { width: auto; flex-shrink: 0; padding: 10px 18px; white-space: nowrap; }
 
+    /* ---------- SCHEDE STATISTICHE ----------
+       Ogni riquadro porta un confronto: un numero da solo non dice se e'
+       un buon numero. La fascia laterale compare solo quando c'e' qualcosa
+       da fare, ed e' l'unico uso del colore di stato qui. */
+    .stats-cards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 1.25rem; }
+    @media (min-width: 900px) { .stats-cards-grid { grid-template-columns: repeat(4, 1fr); } }
+    .stat-card {
+      position: relative; background: var(--surface); padding: 13px 14px 12px;
+      border-radius: var(--radius); border: 1px solid var(--line); box-shadow: var(--shadow-1);
+      display: flex; flex-direction: column; gap: 8px; overflow: hidden; min-width: 0;
+    }
+    .stat-card::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 3px; background: transparent; }
+    .stat-card.is-alert::before { background: var(--warn); }
+    .stat-card.is-good::before { background: var(--good); }
+    .stat-label { font-family: var(--mono); font-size: 10px; font-weight: 500; letter-spacing: .085em; text-transform: uppercase; color: var(--ink-3); }
+    .stat-row { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+    .stat-value {
+      font-family: var(--display); font-size: 1.6rem; font-weight: 600; color: var(--ink);
+      line-height: 1; letter-spacing: -.02em; font-variant-numeric: tabular-nums;
+    }
+    .stat-delta {
+      font-family: var(--mono); font-size: 11px; font-weight: 500; padding: .15em .45em;
+      border-radius: 5px; white-space: nowrap; font-variant-numeric: tabular-nums;
+    }
+    .stat-delta.up { color: var(--good); background: var(--good-bg); }
+    .stat-delta.down { color: var(--crit); background: var(--crit-bg); }
+    .stat-delta.flat { color: var(--ink-2); background: var(--surface-3); }
+    .stat-delta.warn { color: var(--warn); background: var(--warn-bg); }
+    .stat-foot { font-size: 11.5px; color: var(--ink-2); line-height: 1.35; }
+    .stat-foot b { font-weight: 600; color: var(--warn); }
+    .stat-spark { display: block; width: 100%; height: 28px; margin-top: auto; }
+
+    /* ---------- SCHEDE IMMOBILE ---------- */
     .properties-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; padding: 1rem; width: 100%; }
     @media (min-width: 640px) { .properties-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (min-width: 1100px) { .properties-grid { grid-template-columns: repeat(3, 1fr); } }
-    @media (min-width: 1500px) { .properties-grid { grid-template-columns: repeat(4, 1fr); } }
+    @media (min-width: 1240px) { .properties-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (min-width: 1600px) { .properties-grid { grid-template-columns: repeat(4, 1fr); } }
 
-    .property-card { border: 1px solid var(--border-color); border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; background: var(--white); transition: var(--transition); }
-    .property-card:hover { box-shadow: 0 8px 20px rgba(0,0,0,0.06); }
-    .property-card.is-hidden { opacity: 0.6; }
-    .property-card-img-box { position: relative; aspect-ratio: 4/3; background: #f1f5f9; overflow: hidden; }
+    .property-card {
+      border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; display: flex;
+      flex-direction: column; background: var(--surface); transition: box-shadow var(--transition), transform var(--transition);
+    }
+    .property-card:hover { box-shadow: var(--shadow-2); transform: translateY(-2px); }
+    .property-card.is-hidden { opacity: .62; }
+    .property-card-img-box { position: relative; aspect-ratio: 4/3; background: var(--surface-3); overflow: hidden; }
     .property-card-img-box img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
     .property-card-badges { position: absolute; top: 8px; left: 8px; display: flex; flex-wrap: wrap; gap: 4px; max-width: calc(100% - 16px); }
-    .property-card-body { padding: 14px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
-    .property-card-price { font-weight: 900; font-size: 16px; color: var(--brand-blue); }
-    .property-card-meta { font-size: 11px; color: var(--text-muted); font-weight: 700; }
-    .property-card-gestionale { font-size: 11px; color: var(--text-muted); background: #f8fafc; border: 1px solid var(--border-color); border-radius: 10px; padding: 6px 8px; display: flex; flex-direction: column; gap: 2px; }
-    .property-card-actions { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-top: auto; padding-top: 10px; border-top: 1px solid var(--border-color); }
-    .property-card-actions .action-buttons { gap: 6px; }
+    .property-card-body { padding: 12px 13px; display: flex; flex-direction: column; gap: 7px; flex: 1; }
+    .property-card-price { font-family: var(--display); font-weight: 600; font-size: 16px; color: var(--ink); font-variant-numeric: tabular-nums; }
+    .property-card-meta { font-size: 12px; color: var(--ink-2); }
+    .property-card-gestionale {
+      font-family: var(--mono); font-size: 10.5px; color: var(--ink-2); background: var(--surface-2);
+      border: 1px solid var(--line-soft); border-radius: 8px; padding: 6px 8px;
+      display: flex; flex-direction: column; gap: 2px;
+    }
+    .property-card-actions {
+      display: flex; align-items: center; justify-content: space-between; gap: 6px;
+      margin-top: auto; padding-top: 10px; border-top: 1px solid var(--line-soft);
+    }
+    .btn-toggle-visibility {
+      border-radius: 8px; border: 1px solid var(--line); background: var(--surface);
+      font-size: 11.5px; font-weight: 550; padding: 7px 11px; cursor: pointer;
+      display: flex; align-items: center; gap: 6px; transition: var(--transition); color: var(--ink-2);
+    }
+    .btn-toggle-visibility.visible { color: var(--good); border-color: color-mix(in oklab, var(--good) 32%, var(--line)); background: var(--good-bg); }
+    .btn-toggle-visibility.hidden-state { color: var(--ink-2); background: var(--surface-3); }
+    .btn-star-featured {
+      width: 32px; height: 32px; flex-shrink: 0; border-radius: 8px; border: 1px solid var(--line);
+      background: var(--surface); cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-size: 15px; transition: var(--transition); color: var(--ink-3);
+    }
+    .btn-star-featured.active { background: var(--warn-bg); border-color: color-mix(in oklab, var(--warn) 32%, var(--line)); color: var(--warn); }
 
-    .btn-toggle-visibility { border-radius: 999px; border: 1px solid var(--border-color); background: var(--white); font-size: 10px; font-weight: 900; text-transform: uppercase; padding: 8px 12px; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: var(--transition); }
-    .btn-toggle-visibility.visible { color: #059669; border-color: #a7f3d0; background: #ecfdf5; }
-    .btn-toggle-visibility.hidden-state { color: #64748b; border-color: var(--border-color); background: #f1f5f9; }
-    .btn-star-featured { width: 34px; height: 34px; flex-shrink: 0; border-radius: 10px; border: 1px solid var(--border-color); background: var(--white); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; transition: var(--transition); }
-    .btn-star-featured.active { background: #fffbeb; border-color: var(--brand-yellow); }
-
-    /* Form Immobile a schermo intero */
-    .fullscreen-modal { position: fixed; inset: 0; background: var(--bg-slate); z-index: 2500; display: none; flex-direction: column; overflow-y: auto; }
+    /* ---------- FORM IMMOBILE A SCHERMO INTERO ---------- */
+    .fullscreen-modal { position: fixed; inset: 0; background: var(--ground); z-index: 2500; display: none; flex-direction: column; overflow-y: auto; }
     .fullscreen-modal.open { display: flex; }
-    .fullscreen-modal-header { position: sticky; top: 0; background: var(--white); border-bottom: 1px solid var(--border-color); padding: 1rem 1.25rem; display: flex; justify-content: space-between; align-items: center; z-index: 5; }
-    .fullscreen-modal-header h2 { font-family: 'Space Grotesk', -apple-system, sans-serif; font-size: 16px; font-weight: 700; text-transform: uppercase; color: var(--brand-blue); }
-    .fullscreen-modal-body { flex: 1; width: 100%; max-width: 760px; margin: 0 auto; padding: 1.5rem 1.25rem 4rem; }
-
-    .form-section-label { font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; color: var(--brand-blue); margin: 1.75rem 0 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border-color); }
+    .fullscreen-modal-header {
+      position: sticky; top: 0; background: var(--surface); border-bottom: 1px solid var(--line);
+      padding: .9rem 1.15rem; display: flex; justify-content: space-between; align-items: center; z-index: 5;
+    }
+    .fullscreen-modal-header h2 { font-family: var(--display); font-size: 16px; font-weight: 600; color: var(--ink); }
+    .fullscreen-modal-body { flex: 1; width: 100%; max-width: 760px; margin: 0 auto; padding: 1.5rem 1.15rem 4rem; }
+    .form-section-label {
+      font-family: var(--mono); font-size: 10.5px; font-weight: 500; text-transform: uppercase;
+      letter-spacing: .09em; color: var(--ink-3); margin: 1.75rem 0 .9rem;
+      padding-bottom: .5rem; border-bottom: 1px solid var(--line);
+    }
     .form-section-label:first-of-type { margin-top: 0; }
-    .btn-cancel-edit { font-size: 11px; font-weight: 900; text-transform: uppercase; color: #ef4444; background: none; border: none; cursor: pointer; display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
-    
-    .photo-fields-box { background-color: #f8fafc; padding: 1rem; border-radius: 18px; border: 1px solid var(--border-color); margin-bottom: 1rem; width: 100%; }
-    .file-input-custom { border: 2px dashed var(--border-color); padding: 20px; border-radius: 16px; text-align: center; background-color: var(--white); cursor: pointer; transition: var(--transition); font-size: 12px; font-weight: 700; color: var(--text-muted); display: block;}
-    .file-input-custom:hover { border-color: var(--brand-blue); background-color: rgba(0,68,255,0.02); }
+    .btn-cancel-edit { font-size: 12.5px; font-weight: 550; color: var(--crit); background: none; border: none; cursor: pointer; display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+
+    .photo-fields-box { background-color: var(--surface-2); padding: 1rem; border-radius: var(--radius); border: 1px solid var(--line); margin-bottom: 1rem; width: 100%; }
+    .file-input-custom {
+      border: 1.5px dashed var(--line); padding: 20px; border-radius: 10px; text-align: center;
+      background-color: var(--surface); cursor: pointer; transition: var(--transition);
+      font-size: 12.5px; font-weight: 500; color: var(--ink-2); display: block;
+    }
+    .file-input-custom:hover { border-color: var(--accent); background-color: var(--accent-soft); color: var(--accent-ink); }
     .preview-thumbs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(75px, 1fr)); gap: 12px; margin-top: 15px; }
     .preview-thumb-container { position: relative; aspect-ratio: 4/3; cursor: grab; }
     .preview-thumb-container:active { cursor: grabbing; }
-    .preview-thumb { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-color); transition: border 0.2s; }
-    .preview-thumb.cover-img { border: 3px solid var(--brand-yellow); box-shadow: 0 4px 10px rgba(255, 217, 15, 0.3); }
-    .cover-badge { position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%); background-color: var(--brand-yellow); color: var(--brand-blue); font-size: 8px; font-weight: 900; padding: 2px 6px; border-radius: 12px; pointer-events: none; white-space: nowrap; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-    .btn-set-cover { position: absolute; top: -8px; left: -8px; background-color: var(--white); color: #f59e0b; border: 2px solid #f59e0b; border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.25); z-index: 10; }
-    .btn-remove-thumb { position: absolute; top: -8px; right: -8px; background-color: #ef4444; color: var(--white); border: 2px solid white; border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 12px; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.25); z-index: 10; }
-    
-    .checkbox-container { background-color: #f1f5f9; padding: 1rem; border-radius: 18px; border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 12px; width: 100%; margin-bottom: 1rem;}
+    .preview-thumb { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; border: 1px solid var(--line); transition: border .2s; }
+    .preview-thumb.cover-img { border: 2.5px solid var(--brand-yellow); box-shadow: 0 3px 10px rgba(255, 217, 15, .3); }
+    .cover-badge {
+      position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%);
+      background-color: var(--brand-yellow); color: #0038d1; font-family: var(--mono); font-size: 8px;
+      font-weight: 600; padding: 2px 6px; border-radius: 12px; pointer-events: none; white-space: nowrap;
+      letter-spacing: .05em; text-transform: uppercase;
+    }
+    .btn-set-cover, .btn-remove-thumb {
+      position: absolute; top: -8px; width: 24px; height: 24px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; cursor: pointer;
+      font-size: 11px; box-shadow: var(--shadow-1); z-index: 10; border: 2px solid var(--surface);
+    }
+    .btn-set-cover { left: -8px; background-color: var(--surface); color: var(--warn); border-color: var(--warn); }
+    .btn-remove-thumb { right: -8px; background-color: var(--crit); color: #fff; font-weight: bold; }
+
+    .checkbox-container {
+      background-color: var(--surface-2); padding: 1rem; border-radius: var(--radius);
+      border: 1px solid var(--line); display: flex; flex-direction: column; gap: 12px;
+      width: 100%; margin-bottom: 1rem;
+    }
     .checkbox-row { display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
-    .checkbox-row input { width: 18px; height: 18px; accent-color: var(--brand-blue); flex-shrink: 0; }
-    .checkbox-label { font-size: 13px; font-weight: 700; }
+    .checkbox-row input { width: 17px; height: 17px; accent-color: var(--accent); flex-shrink: 0; }
+    .checkbox-label { font-size: 13.5px; font-weight: 500; color: var(--ink); }
 
-    .archive-header { padding: 1.25rem 1rem; border-bottom: 2px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background-color: rgba(0,68,255,0.03); width: 100%; }
-    .archive-header h2 { font-family: 'Space Grotesk', -apple-system, sans-serif; font-size: 15px; font-weight: 700; text-transform: uppercase; color: var(--brand-blue); }
+    /* ---------- LISTE ---------- */
     .list-wrapper { display: flex; flex-direction: column; width: 100%; }
-    .item-row { padding: 1.25rem 1rem; border-bottom: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 1rem; transition: var(--transition); width: 100%; }
-    @media (min-width: 640px) { .item-row { padding: 1.5rem; flex-direction: row; align-items: center; justify-content: space-between; } }
+    .item-row { padding: 1rem 1.1rem; border-bottom: 1px solid var(--line-soft); display: flex; flex-direction: column; gap: 1rem; width: 100%; }
+    .item-row:last-child { border-bottom: 0; }
+    @media (min-width: 640px) { .item-row { padding: 1.1rem 1.15rem; flex-direction: row; align-items: center; justify-content: space-between; } }
     .item-info { display: flex; align-items: center; gap: 12px; width: 100%; min-width: 0; }
-    .item-thumbnail { width: 70px; height: 55px; border-radius: 12px; object-fit: cover; box-shadow: 0 2px 6px rgba(0,0,0,0.05); border: 1px solid var(--border-color); flex-shrink: 0; background-color: #f1f5f9; }
+    .item-thumbnail { width: 64px; height: 50px; border-radius: 8px; object-fit: cover; border: 1px solid var(--line); flex-shrink: 0; background-color: var(--surface-3); }
     .item-texts { min-width: 0; flex: 1; }
-    .item-title { font-size: 14px; font-weight: 800; color: var(--text-slate); word-break: break-word; }
-    .item-details-text { font-size: 12px; font-weight: 600; color: var(--text-muted); margin-top: 2px; }
-    .item-actions-box { display: flex; align-items: center; justify-content: space-between; gap: 1rem; border-top: 1px solid var(--border-color); padding-top: 1rem; width: 100%; }
-    @media (min-width: 640px) { .item-actions-box { justify-content: flex-end; border-top: none; padding-top: 0; width: auto; gap: 1.5rem; } }
+    .item-title { font-size: 14px; font-weight: 600; color: var(--ink); word-break: break-word; }
+    .item-details-text { font-size: 12.5px; color: var(--ink-2); margin-top: 2px; }
+    .item-actions-box { display: flex; align-items: center; justify-content: space-between; gap: 1rem; border-top: 1px solid var(--line-soft); padding-top: 1rem; width: 100%; }
+    @media (min-width: 640px) { .item-actions-box { justify-content: flex-end; border-top: none; padding-top: 0; width: auto; gap: 1.25rem; } }
 
-    .year-selector-box { background-color: var(--brand-blue); color: var(--white); padding: 10px 15px; border-radius: 999px; font-weight: 900; display: flex; align-items: center; gap: 10px; font-size: 14px; }
-    .year-selector-box select { background: transparent; color: var(--brand-yellow); border: none; font-weight: 900; font-size: 16px; outline: none; cursor: pointer; }
-    .year-selector-box select option { color: var(--text-slate); }
-    .stats-cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
-    @media (min-width: 768px) { .stats-cards-grid { grid-template-columns: repeat(4, 1fr); } }
-    .stat-card { background: var(--white); padding: 1.5rem; border-radius: 20px; border: 1px solid var(--border-color); text-align: center; display: flex; flex-direction: column; justify-content: center; }
-    .stat-value { font-family: 'Space Grotesk', -apple-system, sans-serif; font-size: 1.8rem; font-weight: 700; color: var(--brand-blue); margin-bottom: 4px; line-height: 1; }
-    .stat-label { font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--text-muted); }
-    
-    .charts-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
-    @media (min-width: 1024px) { .charts-grid { grid-template-columns: 2fr 1fr; } }
-    .chart-container { background: var(--white); padding: 1.5rem; border-radius: 20px; border: 1px solid var(--border-color); display: flex; flex-direction: column; height: 350px; overflow: hidden; }
-    .chart-header { font-size: 12px; font-weight: 900; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; flex-shrink: 0; }
-    .chart-wrapper { position: relative; flex-grow: 1; min-height: 0; width: 100%; } 
+    /* ---------- STATISTICHE ---------- */
+    .year-selector-box {
+      background-color: var(--surface); border: 1px solid var(--line); color: var(--ink-2);
+      padding: 7px 12px; border-radius: 10px; font-size: 13px; display: flex; align-items: center; gap: 8px;
+    }
+    .year-selector-box select {
+      background: transparent; color: var(--ink); border: none; font-weight: 600; font-size: 14px;
+      outline: none; cursor: pointer; font-family: var(--mono); font-variant-numeric: tabular-nums;
+    }
+    .year-selector-box select option { color: var(--ink); background: var(--surface); }
 
-    .data-table-container { background: var(--white); border-radius: 20px; border: 1px solid var(--border-color); overflow-x: auto; /* Consente lo scroll orizzontale su mobile */ }
-    .data-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; min-width: 600px;}
-    
-    /* NUOVO: Sticky Header per le tabelle */
-    .data-table th { position: sticky; top: 0; z-index: 10; background: #f8fafc; padding: 1rem; font-weight: 900; text-transform: uppercase; font-size: 11px; color: var(--text-muted); border-bottom: 2px solid var(--border-color); white-space: nowrap; }
-    
-    .data-table td { padding: 1rem; border-bottom: 1px solid var(--border-color); color: var(--text-slate); vertical-align: middle; }
-    .data-table tr:hover td { background-color: #f1f5f9; }
-    
-    .status-badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: 900; text-transform: uppercase; }
-    .bg-green { background: #d1fae5; color: #059669; }
-    .bg-blue { background: #dbeafe; color: #2563eb; }
-    .bg-red { background: #fee2e2; color: #dc2626; }
-    .bg-yellow { background: #fef3c7; color: #d97706; }
-    .bg-orange { background: #ffedd5; color: #ea580c; } /* Nuova classe per alert scadenze */
-    
-    .loader-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(15,23,42,0.8); backdrop-filter: blur(4px); z-index: 3000; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; color: var(--white); font-weight: 700; font-size: 14px; }
-    .spinner { border: 4px solid rgba(255,255,255,0.1); width: 48px; height: 48px; border-radius: 50%; border-left-color: var(--brand-yellow); animation: spin 1s linear infinite; }
+    .charts-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; margin-bottom: 1.25rem; }
+    @media (min-width: 1000px) { .charts-grid { grid-template-columns: 1fr 1fr; } }
+    .chart-container {
+      background: var(--surface); padding: 1.1rem 1.15rem 1rem; border-radius: var(--radius-lg);
+      border: 1px solid var(--line); box-shadow: var(--shadow-1); display: flex; flex-direction: column;
+      height: 310px; overflow: hidden;
+    }
+    .chart-container.wide { grid-column: 1 / -1; }
+    .chart-container.short { height: 210px; }
+    .chart-header { margin-bottom: 10px; flex-shrink: 0; }
+    .chart-header h3 { font-family: var(--display); font-size: 14px; font-weight: 600; color: var(--ink); letter-spacing: -.01em; }
+    .chart-header p { font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); letter-spacing: .05em; margin-top: 2px; }
+    .chart-wrapper { position: relative; flex-grow: 1; min-height: 0; width: 100%; }
+
+    /* ---------- TABELLE ---------- */
+    .data-table-container { background: var(--surface); border-radius: var(--radius-lg); border: 1px solid var(--line); overflow-x: auto; }
+    .data-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; min-width: 600px; }
+    .data-table th {
+      position: sticky; top: 0; z-index: 10; background: var(--surface-2); padding: .8rem 1rem;
+      font-family: var(--mono); font-weight: 500; text-transform: uppercase; font-size: 10.5px;
+      letter-spacing: .08em; color: var(--ink-3); border-bottom: 1px solid var(--line); white-space: nowrap;
+    }
+    .data-table td { padding: .85rem 1rem; border-bottom: 1px solid var(--line-soft); color: var(--ink); vertical-align: middle; word-break: break-word; }
+    .data-table tr:hover td { background-color: var(--surface-2); }
+
+    .status-badge {
+      display: inline-block; padding: 3px 9px; border-radius: 999px; font-size: 10.5px;
+      font-weight: 600; white-space: nowrap;
+    }
+    .bg-green { background: var(--good-bg); color: var(--good); }
+    .bg-blue { background: var(--info-bg); color: var(--info); }
+    .bg-red { background: var(--crit-bg); color: var(--crit); }
+    .bg-yellow { background: var(--warn-bg); color: var(--warn); }
+    .bg-orange { background: var(--warn-bg); color: var(--warn); }
+
+    /* ---------- SCHELETRI E STATI VUOTI ----------
+       Il velo nero su tutta la pagina faceva aspettare al buio: lo scheletro
+       mostra dove comparira' il contenuto e l'attesa sembra piu' breve. */
+    .sk-line, .sk-box {
+      background: linear-gradient(90deg, var(--surface-3) 25%, var(--surface-2) 37%, var(--surface-3) 63%);
+      background-size: 400% 100%; border-radius: 6px; animation: skGlow 1.4s ease infinite;
+    }
+    @keyframes skGlow { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
+    @media (prefers-reduced-motion: reduce) { .sk-line, .sk-box { animation: none; } }
+    .sk-card { border: 1px solid var(--line); border-radius: var(--radius); padding: 12px; display: flex; flex-direction: column; gap: 9px; background: var(--surface); }
+    .sk-row { display: flex; align-items: center; gap: 12px; padding: 1rem 1.1rem; border-bottom: 1px solid var(--line-soft); }
+
+    .empty-state { text-align: center; padding: 2.4rem 1.25rem; grid-column: 1 / -1; }
+    .empty-state svg { width: 34px; height: 34px; color: var(--ink-3); margin-bottom: 10px; }
+    .empty-state h4 { font-size: 14.5px; font-weight: 600; color: var(--ink); margin-bottom: 4px; }
+    .empty-state p { font-size: 12.5px; color: var(--ink-2); margin-bottom: 14px; max-width: 40ch; margin-left: auto; margin-right: auto; }
+    .empty-state button {
+      font: inherit; font-size: 12.5px; font-weight: 550; padding: 8px 15px; border-radius: 9px;
+      border: 1px solid var(--line); background: var(--surface); color: var(--accent-ink); cursor: pointer;
+      transition: var(--transition);
+    }
+    .empty-state button:hover { background: var(--accent-soft); border-color: var(--accent); }
+
+    /* ---------- LOADER (solo per le scritture) ---------- */
+    .loader-overlay {
+      position: fixed; inset: 0; background-color: rgba(11, 14, 21, .72); backdrop-filter: blur(3px);
+      z-index: 3000; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 14px; color: #fff; font-weight: 550; font-size: 13.5px;
+    }
+    .spinner { border: 3px solid rgba(255, 255, 255, .18); width: 40px; height: 40px; border-radius: 50%; border-left-color: var(--brand-yellow); animation: spin 1s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
     .hidden { display: none !important; }
 
-    .modal-overlay { position: fixed; inset: 0; background-color: rgba(15,23,42,0.6); backdrop-filter: blur(4px); z-index: 2000; display: none; align-items: center; justify-content: center; padding: 1rem; overflow-y: auto; }
-    .modal-content { background-color: var(--white); border-radius: 24px; padding: 1.5rem; max-width: 500px; width: 100%; border: 1px solid var(--border-color); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); margin: auto; }
-    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
-    .btn-close-modal { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted); }
-
-    /* --- NUOVI STILI PER MENU A TENDINA (KEBAB MENU) --- */
-    .kebab-btn { background: none; border: none; font-size: 22px; cursor: pointer; padding: 4px 10px; color: var(--text-muted); border-radius: 8px; transition: var(--transition); }
-    .kebab-btn:hover { background-color: #e2e8f0; color: var(--text-slate); }
-
-    /* Pulsanti icona Modifica/Elimina (lista annunci + menu a tendina) */
-    .action-buttons { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-    .btn-action { width: 38px; height: 38px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border-radius: 12px; border: 1px solid var(--border-color); background: var(--white); color: var(--text-muted); cursor: pointer; transition: var(--transition); }
-    .btn-action svg { width: 17px; height: 17px; }
-    .btn-action.edit:hover { background: rgba(0,68,255,0.08); border-color: var(--brand-blue); color: var(--brand-blue); }
-    .btn-action.delete:hover { background: #fef2f2; border-color: #ef4444; color: #ef4444; }
-    
-    /* FIX: Menu Singolo sganciato dalle tabelle */
-    .dropdown-menu { 
-      display: none; 
-      position: fixed; 
-      background: var(--white); 
-      min-width: 140px; 
-      box-shadow: 0 10px 25px rgba(0,0,0,0.15); 
-      border-radius: 12px; 
-      border: 1px solid var(--border-color); 
-      z-index: 9999; 
-      overflow: hidden; 
+    /* ---------- MODALI ---------- */
+    .modal-overlay {
+      position: fixed; inset: 0; background-color: rgba(11, 14, 21, .55); backdrop-filter: blur(3px);
+      z-index: 2000; display: none; align-items: center; justify-content: center; padding: 1rem; overflow-y: auto;
     }
-    
-    .dropdown-menu.show { display: block; animation: fadeIn 0.2s ease; }
-    .dropdown-item { display: flex; align-items: center; gap: 8px; padding: 12px 16px; width: 100%; border: none; background: none; text-align: left; font-size: 13px; font-weight: 700; cursor: pointer; color: var(--text-slate); transition: background 0.2s; }
-    .dropdown-item svg { width: 16px; height: 16px; flex-shrink: 0; }
-    .dropdown-item:hover { background-color: #f1f5f9; }
-    .dropdown-item.delete { color: #ef4444; }
-    .dropdown-item.delete:hover { background-color: #fef2f2; }
+    .modal-content {
+      background-color: var(--surface); border-radius: var(--radius-lg); padding: 1.4rem; max-width: 500px;
+      width: 100%; border: 1px solid var(--line); box-shadow: var(--shadow-3); margin: auto;
+    }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; }
+    .btn-close-modal { background: none; border: none; font-size: 19px; cursor: pointer; color: var(--ink-3); line-height: 1; }
+    .btn-close-modal:hover { color: var(--ink); }
+    .modal-title-sm { font-family: var(--display); font-size: 16px; font-weight: 600; color: var(--ink); margin-bottom: 8px; }
+    .modal-text-sm { font-size: 13px; color: var(--ink-2); margin-bottom: 18px; }
 
-    /* --- NUOVI STILI PER ACCORDION NOTE --- */
-    .clickable-row { cursor: pointer; transition: background 0.2s; }
-    .notes-content { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-in-out; }
+    /* ---------- MENU A TENDINA ---------- */
+    .kebab-btn { background: none; border: none; font-size: 19px; cursor: pointer; padding: 3px 9px; color: var(--ink-3); border-radius: 7px; transition: var(--transition); }
+    .kebab-btn:hover { background-color: var(--surface-3); color: var(--ink); }
+    .action-buttons { display: flex; align-items: center; gap: 7px; flex-shrink: 0; }
+    .btn-action {
+      width: 34px; height: 34px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+      border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink-2);
+      cursor: pointer; transition: var(--transition);
+    }
+    .btn-action svg { width: 16px; height: 16px; }
+    .btn-action.edit:hover { background: var(--accent-soft); border-color: var(--accent); color: var(--accent-ink); }
+    .btn-action.delete:hover { background: var(--crit-bg); border-color: var(--crit); color: var(--crit); }
+
+    .dropdown-menu {
+      display: none; position: fixed; background: var(--surface); min-width: 140px;
+      box-shadow: var(--shadow-3); border-radius: 10px; border: 1px solid var(--line); z-index: 9999; overflow: hidden;
+    }
+    .dropdown-menu.show { display: block; animation: fadeIn .18s ease; }
+    .dropdown-item {
+      display: flex; align-items: center; gap: 8px; padding: 10px 14px; width: 100%; border: none;
+      background: none; text-align: left; font-size: 13px; font-weight: 500; cursor: pointer;
+      color: var(--ink); transition: background var(--transition);
+    }
+    .dropdown-item svg { width: 15px; height: 15px; flex-shrink: 0; }
+    .dropdown-item:hover { background-color: var(--surface-2); }
+    .dropdown-item.delete { color: var(--crit); }
+    .dropdown-item.delete:hover { background-color: var(--crit-bg); }
+
+    .clickable-row { cursor: pointer; }
+    .notes-content { max-height: 0; overflow: hidden; transition: max-height .35s ease-in-out; }
     .notes-content.expanded { max-height: 300px; }
-    
-    /* --- FIX OVERFLOW MOBILE PRECEDENTI --- */
-    @media (max-width: 380px) {
-      .stats-cards-grid { grid-template-columns: 1fr; }
-      .stat-card { padding: 1rem; }
+    .notes-box {
+      margin: 0 16px 16px; padding: 12px 16px; background-color: var(--surface-2); font-size: 13px;
+      color: var(--ink); border-left: 3px solid var(--brand-yellow); border-radius: 8px;
     }
-    .data-table td { word-break: break-word; }
-    .panel-card .flex-wrap { width: 100%; }
-    .panel-card .flex-wrap > div { flex: 1; width: 100%; }
+
+    /* ============================================================
+       PALETTE COMANDI (⌘K / Ctrl+K)
+       Cercare un cliente per nome era: apri scheda, vai al tab, campo
+       cerca, scorri. Qui e' una scorciatoia e tre lettere.
+       ============================================================ */
+    .cmdk-overlay {
+      position: fixed; inset: 0; background: rgba(11, 14, 21, .5); backdrop-filter: blur(3px);
+      z-index: 4000; display: none; align-items: flex-start; justify-content: center; padding: 1rem;
+    }
+    .cmdk-overlay.open { display: flex; }
+    .cmdk-panel {
+      background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-3); width: 100%; max-width: 560px; margin-top: 10vh; overflow: hidden;
+      display: flex; flex-direction: column; max-height: 70vh;
+    }
+    .cmdk-search { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-bottom: 1px solid var(--line); flex-shrink: 0; }
+    .cmdk-search svg { width: 16px; height: 16px; color: var(--ink-3); flex-shrink: 0; }
+    .cmdk-search input { flex: 1; border: none; background: none; outline: none; font-size: 15px; color: var(--ink); min-width: 0; }
+    .cmdk-search input::placeholder { color: var(--ink-3); }
+    .cmdk-search kbd {
+      font-family: var(--mono); font-size: 10px; color: var(--ink-3); border: 1px solid var(--line);
+      border-bottom-width: 2px; border-radius: 5px; padding: 1px 5px; background: var(--surface-2); flex-shrink: 0;
+    }
+    .cmdk-results { overflow-y: auto; padding: 6px; }
+    .cmdk-group { font-family: var(--mono); font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); padding: 10px 10px 5px; }
+    .cmdk-item {
+      display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 8px;
+      font-size: 13.5px; color: var(--ink); cursor: pointer; width: 100%; border: none;
+      background: none; text-align: left; font-family: inherit;
+    }
+    .cmdk-item svg { width: 15px; height: 15px; flex-shrink: 0; color: var(--ink-3); }
+    .cmdk-item .cmdk-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .cmdk-item .cmdk-tag {
+      margin-left: auto; font-family: var(--mono); font-size: 10px; color: var(--ink-3);
+      border: 1px solid var(--line); border-radius: 5px; padding: 1px 5px; flex-shrink: 0;
+    }
+    .cmdk-item[aria-selected="true"] { background: var(--accent-soft); color: var(--accent-ink); }
+    .cmdk-item[aria-selected="true"] svg { color: var(--accent-ink); }
+    .cmdk-empty { padding: 26px 14px; text-align: center; font-size: 13px; color: var(--ink-2); }
+
+    .btn-cmdk {
+      display: none; align-items: center; gap: 7px; background: rgba(255, 255, 255, .1);
+      border: 1px solid rgba(255, 255, 255, .16); color: rgba(255, 255, 255, .85);
+      padding: 7px 11px; border-radius: 8px; cursor: pointer; font-size: 12.5px;
+      transition: background var(--transition);
+    }
+    .btn-cmdk:hover { background: rgba(255, 255, 255, .2); color: #fff; }
+    .btn-cmdk kbd { font-family: var(--mono); font-size: 10px; border: 1px solid rgba(255, 255, 255, .3); border-radius: 4px; padding: 0 4px; }
+    @media (min-width: 861px) { .btn-cmdk { display: flex; } }
   </style>
+
+  <script>
+    // Applicato qui, prima che il body venga disegnato: se aspettasse il resto
+    // degli script si vedrebbe un lampo di tema chiaro a ogni caricamento.
+    // Nessuna scelta salvata = si segue il sistema operativo.
+    (function () {
+      try {
+        const t = localStorage.getItem('admin-theme');
+        if (t === 'dark' || t === 'light') document.documentElement.setAttribute('data-theme', t);
+      } catch (e) { /* localStorage negato (navigazione privata): resta il tema di sistema */ }
+    })();
+  </script>
 </head>
 <body>
 
@@ -307,6 +766,14 @@
           <span class="hide-mobile">Esci</span>
         </button>
       </div>
+      <button type="button" class="btn-cmdk" onclick="openCmdk()" title="Cerca ovunque">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path stroke-linecap="round" d="M20 20l-3.5-3.5"></path></svg>
+        Cerca <kbd>Ctrl K</kbd>
+      </button>
+      <button type="button" id="btn-theme" class="btn-theme" onclick="toggleTheme()" title="Cambia tema chiaro/scuro" aria-label="Cambia tema chiaro/scuro">
+        <svg class="i-moon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path></svg>
+        <svg class="i-sun" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"></circle><path stroke-linecap="round" d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4l1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>
+      </button>
       <button id="admin-mobile-toggle" class="admin-mobile-toggle" style="pointer-events: auto;">
         <svg style="pointer-events: none;" width="32" height="32" fill="none" stroke="var(--brand-yellow)" stroke-width="2.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path></svg>
       </button>
@@ -332,36 +799,77 @@
     </div>
   </div>
 
-  <div id="admin-dashboard" class="dashboard-container" style="display: none;">
-    <div class="header-bar">
-      <div class="header-title-box">
-        <h1>Pannello Gestionale</h1>
-        <p>Workspace Privato - Michele Erre</p>
-      </div>
-    </div>
+  <div id="admin-dashboard" class="app-shell" style="display: none;">
 
-    <!-- TABS NAV -->
-    <div class="tabs-nav">
-      <button class="tab-btn active" onclick="switchTab('tab-overview', this)">Panoramica <span id="tab-overview-badge" class="status-badge bg-red" style="display:none; margin-left:6px;">0</span></button>
-      <button class="tab-btn" onclick="switchTab('tab-vetrina', this)">Immobili</button>
-      <button class="tab-btn" onclick="switchTab('tab-stats', this)">Statistiche (CRM)</button>
-      <button class="tab-btn" onclick="switchTab('tab-crm', this)">Clienti (Rubrica)</button>
-      <button class="tab-btn" onclick="switchTab('tab-documenti', this)">Documenti</button>
+    <!-- NAVIGAZIONE: colonna a sinistra da 1040px, barra in basso sotto -->
+    <nav class="app-nav" id="app-nav" aria-label="Sezioni del gestionale">
+      <span class="eyebrow nav-group-label">Lavoro</span>
+      <button type="button" class="nav-item active" data-tab="tab-overview" onclick="switchTab('tab-overview', this)">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="3" width="7" height="7" rx="1.5"></rect><rect x="3" y="14" width="7" height="7" rx="1.5"></rect><rect x="14" y="14" width="7" height="7" rx="1.5"></rect></svg>
+        <span class="nav-text">Panoramica</span>
+        <span class="nav-dot" id="tab-overview-badge">0</span>
+        <span class="nav-count" id="nav-count-overview"></span>
+      </button>
+      <button type="button" class="nav-item" data-tab="tab-vetrina" onclick="switchTab('tab-vetrina', this)">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10l9-7 9 7v10a1 1 0 01-1 1H4a1 1 0 01-1-1z"></path></svg>
+        <span class="nav-text">Immobili</span>
+        <span class="nav-count" id="nav-count-immobili"></span>
+      </button>
+      <button type="button" class="nav-item" data-tab="tab-stats" onclick="switchTab('tab-stats', this)">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M4 20V10M10 20V4M16 20v-7M22 20H2"></path></svg>
+        <span class="nav-text">Statistiche</span>
+        <span class="nav-count" id="nav-count-stats"></span>
+      </button>
+      <button type="button" class="nav-item" data-tab="tab-crm" onclick="switchTab('tab-crm', this)">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.2"></circle><path stroke-linecap="round" d="M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6"></path></svg>
+        <span class="nav-text">Clienti</span>
+        <span class="nav-count" id="nav-count-clienti"></span>
+      </button>
+      <span class="eyebrow nav-group-label">Documenti</span>
+      <button type="button" class="nav-item" data-tab="tab-documenti" onclick="switchTab('tab-documenti', this)">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 3H7a1 1 0 00-1 1v16a1 1 0 001 1h10a1 1 0 001-1V7z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M14 3v4h4"></path></svg>
+        <span class="nav-text">Bozze</span>
+        <span class="nav-count" id="nav-count-bozze"></span>
+      </button>
+    </nav>
+
+    <div class="app-main">
+    <div class="page-head">
+      <div>
+        <h1 id="page-title">Panoramica</h1>
+        <p class="page-sub" id="page-sub">Michele Erre · spazio privato</p>
+      </div>
     </div>
 
     <!-- TAB 0: PANORAMICA -->
     <div id="tab-overview" class="tab-content active">
       <div class="stats-cards-grid">
-        <div class="stat-card"><div class="stat-value" id="ov-stat-listings">0</div><div class="stat-label">Annunci Online</div></div>
-        <div class="stat-card"><div class="stat-value" id="ov-stat-active">0</div><div class="stat-label">Incarichi in Corso</div></div>
-        <div class="stat-card"><div class="stat-value" id="ov-stat-expiring" style="color:#ea580c;">0</div><div class="stat-label">In Scadenza (90gg)</div></div>
-        <div class="stat-card"><div class="stat-value" id="ov-stat-revenue" style="color:#10b981;">€0</div><div class="stat-label">Fatturato Anno Corrente</div></div>
+        <div class="stat-card" id="ov-card-listings">
+          <span class="stat-label">Annunci online</span>
+          <div class="stat-row"><span class="stat-value" id="ov-stat-listings">0</span><span class="stat-delta flat" id="ov-delta-listings"></span></div>
+          <div class="stat-foot" id="ov-foot-listings"></div>
+        </div>
+        <div class="stat-card" id="ov-card-active">
+          <span class="stat-label">Incarichi in corso</span>
+          <div class="stat-row"><span class="stat-value" id="ov-stat-active">0</span><span class="stat-delta flat" id="ov-delta-active"></span></div>
+          <div class="stat-foot" id="ov-foot-active"></div>
+        </div>
+        <div class="stat-card" id="ov-card-expiring">
+          <span class="stat-label">In scadenza · 90 gg</span>
+          <div class="stat-row"><span class="stat-value" id="ov-stat-expiring">0</span><span class="stat-delta flat" id="ov-delta-expiring"></span></div>
+          <div class="stat-foot" id="ov-foot-expiring"></div>
+        </div>
+        <div class="stat-card" id="ov-card-revenue">
+          <span class="stat-label">Fatturato · <span id="ov-label-year">anno</span></span>
+          <div class="stat-row"><span class="stat-value" id="ov-stat-revenue">€0</span><span class="stat-delta flat" id="ov-delta-revenue"></span></div>
+          <svg class="stat-spark" id="ov-spark-revenue" viewBox="0 0 120 30" preserveAspectRatio="none" aria-hidden="true"></svg>
+        </div>
       </div>
 
       <div class="panel-card" style="padding: 0; overflow: hidden;">
         <div class="archive-header">
-          <h2>Nuove Richieste dal Sito</h2>
-          <span id="overview-unread-badge" style="background:var(--brand-blue); color:var(--brand-yellow); font-size:11px; font-weight:900; padding:4px 10px; border-radius:20px;">0</span>
+          <h2>Nuove richieste dal sito</h2>
+          <span id="overview-unread-badge" class="count-pill">0</span>
         </div>
         <div id="overview-leads-list" class="list-wrapper"></div>
       </div>
@@ -388,8 +896,8 @@
 
       <div class="panel-card" style="padding: 0; overflow: hidden;">
         <div class="archive-header">
-          <h2>Archivio Immobili</h2>
-          <span id="prop-count-badge" style="background:var(--brand-blue); color:var(--brand-yellow); font-size:11px; font-weight:900; padding:4px 10px; border-radius:20px;">0</span>
+          <h2>Archivio immobili</h2>
+          <span id="prop-count-badge" class="count-pill">0</span>
         </div>
         <div id="properties-list" class="properties-grid"></div>
       </div>
@@ -397,37 +905,69 @@
 
     <!-- TAB 2: STATISTICHE E STORICO -->
     <div id="tab-stats" class="tab-content">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 15px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 12px;">
         <div class="year-selector-box">
-          Anno Fiscale: <select id="stats-year" onchange="updateDashboardStats()"></select>
+          <span class="eyebrow">Anno fiscale</span> <select id="stats-year" onchange="updateDashboardStats()"></select>
         </div>
         <div style="display:flex; gap:10px; flex-wrap:wrap;">
-          <button onclick="syncActiveIncarichi(true)" class="btn-submit" style="width: auto; padding: 12px 20px; background:#f1f5f9; color:var(--text-slate); box-shadow:none;">Sincronizza con Immobili</button>
-          <button onclick="openTransactionModal()" class="btn-submit" style="width: auto; padding: 12px 24px;">+ Nuovo Incarico</button>
+          <button onclick="syncActiveIncarichi(true)" class="btn-submit btn-quiet" style="width: auto;">Sincronizza con immobili</button>
+          <button onclick="openTransactionModal()" class="btn-submit" style="width: auto;">+ Nuovo incarico</button>
         </div>
       </div>
 
       <div class="stats-cards-grid">
-        <div class="stat-card"><div class="stat-value" id="stat-active">0</div><div class="stat-label">Incarichi in Corso (Globale)</div></div>
-        <div class="stat-card"><div class="stat-value" id="stat-sold">0</div><div class="stat-label">Vendite Concluse (Anno)</div></div>
-        <div class="stat-card"><div class="stat-value" id="stat-revenue" style="color: #10b981;">€0</div><div class="stat-label">Fatturato Netto (Anno)</div></div>
-        <div class="stat-card"><div class="stat-value" id="stat-days">0 gg</div><div class="stat-label">Tempo Medio di Vendita</div></div>
+        <div class="stat-card">
+          <span class="stat-label">Incarichi in corso</span>
+          <div class="stat-row"><span class="stat-value" id="stat-active">0</span></div>
+          <div class="stat-foot">su tutti gli anni</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Vendite concluse</span>
+          <div class="stat-row"><span class="stat-value" id="stat-sold">0</span><span class="stat-delta flat" id="stat-delta-sold"></span></div>
+          <div class="stat-foot" id="stat-foot-sold"></div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Fatturato netto</span>
+          <div class="stat-row"><span class="stat-value" id="stat-revenue">€0</span><span class="stat-delta flat" id="stat-delta-revenue"></span></div>
+          <div class="stat-foot" id="stat-foot-revenue"></div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Tempo medio di vendita</span>
+          <div class="stat-row"><span class="stat-value" id="stat-days">0 gg</span></div>
+          <div class="stat-foot" id="stat-foot-days"></div>
+        </div>
       </div>
 
+      <!-- Volumi e fatturato erano un grafico solo con due assi (uno a sinistra
+           per le case, uno a destra per gli euro): due scale nello stesso
+           riquadro fanno sembrare correlate curve che non lo sono. Separati. -->
       <div class="charts-grid">
         <div class="chart-container">
-          <div class="chart-header">Andamento Volumi e Fatturato (Anno)</div>
+          <div class="chart-header">
+            <h3>Incarichi presi e immobili venduti</h3>
+            <p id="chart-vol-sub">numero di case</p>
+          </div>
           <div class="chart-wrapper"><canvas id="mainChart"></canvas></div>
         </div>
         <div class="chart-container">
-          <div class="chart-header">Tasso di Successo Incarichi (Anno)</div>
-          <div class="chart-wrapper"><canvas id="pieChart"></canvas></div>
+          <div class="chart-header">
+            <h3>Fatturato netto</h3>
+            <p id="chart-rev-sub">euro incassati</p>
+          </div>
+          <div class="chart-wrapper"><canvas id="revenueChart"></canvas></div>
+        </div>
+        <div class="chart-container short wide">
+          <div class="chart-header">
+            <h3>Esito degli incarichi</h3>
+            <p id="chart-esito-sub">incarichi presi nell'anno</p>
+          </div>
+          <div class="chart-wrapper"><canvas id="esitoChart"></canvas></div>
         </div>
       </div>
 
-      <div class="panel-card flex-wrap" style="padding: 0;">
+      <div class="panel-card" style="padding: 0;">
         <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-          <h3 style="font-size: 14px; font-weight: 900; color: var(--text-slate); text-transform: uppercase;">Storico Incarichi</h3>
+          <h3 class="panel-title" style="margin:0;">Storico incarichi</h3>
           <div style="flex: 1; min-width: 200px;">
               <input type="text" id="trans-search" oninput="renderTransactionsTable()" placeholder="Cerca per immobile o proprietario..." class="form-input" style="width: 100%; padding: 8px 12px;">
           </div>
@@ -452,9 +992,9 @@
 
     <!-- TAB 3: CRM RUBRICA -->
     <div id="tab-crm" class="tab-content">
-      <div class="panel-card flex-wrap" style="padding: 0;">
+      <div class="panel-card" style="padding: 0;">
          <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap:wrap; gap:10px;">
-            <h3 style="font-size: 14px; font-weight: 900; color: var(--text-slate); text-transform: uppercase;">Rubrica Clienti</h3>
+            <h3 class="panel-title" style="margin:0;">Rubrica clienti</h3>
             <div style="display:flex; gap:10px; flex: 1; min-width: 200px;">
               <input type="text" id="buyer-search" oninput="renderBuyersList()" placeholder="Cerca cliente..." class="form-input" style="flex: 1; min-width: 0; padding: 8px 12px;">
               <button onclick="openBuyerModal()" class="btn-submit" style="width: auto; padding: 8px 16px; flex-shrink: 0;">+ Aggiungi</button>
@@ -479,9 +1019,9 @@
 
     <!-- TAB 4: DOCUMENTI (Bozze Incarichi/Proposte) -->
     <div id="tab-documenti" class="tab-content">
-      <div class="panel-card flex-wrap" style="padding: 0;">
+      <div class="panel-card" style="padding: 0;">
          <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap:wrap; gap:10px;">
-            <h3 style="font-size: 14px; font-weight: 900; color: var(--text-slate); text-transform: uppercase;">Bozze Incarichi &amp; Proposte</h3>
+            <h3 class="panel-title" style="margin:0;">Bozze incarichi e proposte</h3>
             <div style="display:flex; gap:10px; flex: 1; min-width: 260px;">
               <input type="text" id="doc-search" oninput="renderDocumentiList()" placeholder="Cerca per titolo..." class="form-input" style="flex: 1; min-width: 0; padding: 8px 12px;">
               <select id="doc-filter-tipo" onchange="renderDocumentiList()" class="form-select" style="flex: 0 0 auto; width: auto; padding: 8px 12px;">
@@ -506,6 +1046,7 @@
          </div>
       </div>
     </div>
+    </div><!-- /.app-main -->
   </div>
 
   <!-- Form Immobile (schermo intero) -->
@@ -585,44 +1126,44 @@
   <!-- Modali Eliminazione -->
   <div id="modal-delete-prop" class="modal-overlay">
     <div class="modal-content" style="max-width:360px; text-align:center;">
-      <h3 style="font-size:18px; font-weight:900; color:var(--text-slate); margin-bottom:10px;">Sei sicuro?</h3>
-      <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Eliminerai definitivamente questo annuncio dalla vetrina.</p>
+      <h3 class="modal-title-sm">Sei sicuro?</h3>
+      <p class="modal-text-sm">Eliminerai definitivamente questo annuncio dalla vetrina.</p>
       <div style="display:flex; gap:10px;">
-        <button onclick="closeModals()" class="btn-submit" style="background:#f1f5f9; color:var(--text-slate);">Annulla</button>
-        <button id="confirm-delete-prop-btn" class="btn-submit" style="background:#ef4444; color:white;">Elimina</button>
+        <button onclick="closeModals()" class="btn-submit btn-quiet">Annulla</button>
+        <button id="confirm-delete-prop-btn" class="btn-submit" style="background:var(--crit);">Elimina</button>
       </div>
     </div>
   </div>
   
   <div id="modal-delete-trans" class="modal-overlay">
     <div class="modal-content" style="max-width:360px; text-align:center;">
-      <h3 style="font-size:18px; font-weight:900; color:var(--text-slate); margin-bottom:10px;">Attenzione!</h3>
-      <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Stai per eliminare questo incarico dallo storico.</p>
+      <h3 class="modal-title-sm">Attenzione!</h3>
+      <p class="modal-text-sm">Stai per eliminare questo incarico dallo storico.</p>
       <div style="display:flex; gap:10px;">
-        <button onclick="closeModals()" class="btn-submit" style="background:#f1f5f9; color:var(--text-slate);">Annulla</button>
-        <button id="confirm-delete-trans-btn" class="btn-submit" style="background:#ef4444; color:white;">Elimina</button>
+        <button onclick="closeModals()" class="btn-submit btn-quiet">Annulla</button>
+        <button id="confirm-delete-trans-btn" class="btn-submit" style="background:var(--crit);">Elimina</button>
       </div>
     </div>
   </div>
   
   <div id="modal-delete-buyer" class="modal-overlay">
     <div class="modal-content" style="max-width:360px; text-align:center;">
-      <h3 style="font-size:18px; font-weight:900; color:var(--text-slate); margin-bottom:10px;">Elimina Cliente</h3>
-      <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Vuoi rimuovere questo potenziale cliente?</p>
+      <h3 class="modal-title-sm">Elimina Cliente</h3>
+      <p class="modal-text-sm">Vuoi rimuovere questo potenziale cliente?</p>
       <div style="display:flex; gap:10px;">
-        <button onclick="closeModals()" class="btn-submit" style="background:#f1f5f9; color:var(--text-slate);">Annulla</button>
-        <button id="confirm-delete-buyer-btn" class="btn-submit" style="background:#ef4444; color:white;">Elimina</button>
+        <button onclick="closeModals()" class="btn-submit btn-quiet">Annulla</button>
+        <button id="confirm-delete-buyer-btn" class="btn-submit" style="background:var(--crit);">Elimina</button>
       </div>
     </div>
   </div>
 
   <div id="modal-delete-doc" class="modal-overlay">
     <div class="modal-content" style="max-width:360px; text-align:center;">
-      <h3 style="font-size:18px; font-weight:900; color:var(--text-slate); margin-bottom:10px;">Elimina Bozza</h3>
-      <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Questa bozza verrà eliminata definitivamente dal gestionale.</p>
+      <h3 class="modal-title-sm">Elimina Bozza</h3>
+      <p class="modal-text-sm">Questa bozza verrà eliminata definitivamente dal gestionale.</p>
       <div style="display:flex; gap:10px;">
-        <button onclick="closeModals()" class="btn-submit" style="background:#f1f5f9; color:var(--text-slate);">Annulla</button>
-        <button id="confirm-delete-doc-btn" class="btn-submit" style="background:#ef4444; color:white;">Elimina</button>
+        <button onclick="closeModals()" class="btn-submit btn-quiet">Annulla</button>
+        <button id="confirm-delete-doc-btn" class="btn-submit" style="background:var(--crit);">Elimina</button>
       </div>
     </div>
   </div>
@@ -690,7 +1231,7 @@
         </div>
         
         <div id="group-sale-details" style="display:none; background-color: #f0fdf4; padding: 1rem; border-radius: 16px; border: 1px solid #bbf7d0; margin-bottom: 1rem;">
-          <h4 style="font-size: 11px; font-weight: 900; text-transform: uppercase; color: #166534; margin-bottom: 10px;">Dettagli Chiusura</h4>
+          <h4 class="eyebrow" style="margin-bottom: 10px; color: var(--good);">Dettagli chiusura</h4>
           <div class="form-row">
             <div class="form-group" style="margin-bottom: 0;">
               <label class="form-label" style="color: #166534;">Data di Vendita</label>
@@ -759,6 +1300,18 @@
     </div>
   </div>
 
+  <!-- Palette comandi: Ctrl/Cmd + K -->
+  <div id="cmdk" class="cmdk-overlay" role="dialog" aria-modal="true" aria-label="Cerca ovunque">
+    <div class="cmdk-panel">
+      <div class="cmdk-search">
+        <svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path stroke-linecap="round" d="M20 20l-3.5-3.5"></path></svg>
+        <input type="text" id="cmdk-input" placeholder="Cerca un cliente, un immobile, una bozza…" autocomplete="off" spellcheck="false" aria-controls="cmdk-results">
+        <kbd>Esc</kbd>
+      </div>
+      <div class="cmdk-results" id="cmdk-results" role="listbox"></div>
+    </div>
+  </div>
+
   <!-- Menu Kebab Globale (Fuori da ogni tabella per prevenire clipping) -->
   <div id="global-kebab-menu" class="dropdown-menu">
       <button id="global-kebab-edit" class="dropdown-item">
@@ -784,8 +1337,9 @@
     let transToDelete = null; 
     let buyerToDelete = null;
     let transactions = []; 
-    let mainChartInstance = null; 
-    let pieChartInstance = null;
+    let mainChartInstance = null;
+    let revenueChartInstance = null;
+    let esitoChartInstance = null;
     let buyers = [];
     let documenti = [];
     let docToDelete = null;
@@ -903,25 +1457,132 @@
        }
     }
 
-    function showLoader(text="Attendere...") { 
-        document.getElementById('loader-text').innerText = text; 
-        document.getElementById('loader').classList.remove('hidden'); 
+    /* Il velo nero resta solo per le SCRITTURE (salvataggi, eliminazioni,
+       upload): li' bloccare serve, perche' l'utente non deve toccare nulla.
+       Per le LETTURE si usano gli scheletri: mostrano dove comparira' il
+       contenuto invece di far aspettare al buio. */
+    function showLoader(text="Attendere...") {
+        document.getElementById('loader-text').innerText = text;
+        document.getElementById('loader').classList.remove('hidden');
     }
 
-    function hideLoader() { 
-        document.getElementById('loader').classList.add('hidden'); 
+    function hideLoader() {
+        document.getElementById('loader').classList.add('hidden');
+    }
+
+    // Scheletro di una griglia di schede immobile.
+    function skeletonCards(n = 6) {
+        return Array.from({ length: n }, () => `
+          <div class="sk-card">
+            <div class="sk-box" style="width:100%; aspect-ratio:4/3; border-radius:8px;"></div>
+            <div class="sk-line" style="width:70%; height:12px;"></div>
+            <div class="sk-line" style="width:45%; height:10px;"></div>
+            <div class="sk-line" style="width:35%; height:14px;"></div>
+          </div>`).join('');
+    }
+
+    // Scheletro di un elenco a righe.
+    function skeletonRows(n = 3) {
+        return Array.from({ length: n }, () => `
+          <div class="sk-row">
+            <div class="sk-box" style="width:42px; height:42px; border-radius:8px; flex-shrink:0;"></div>
+            <div style="flex:1; display:flex; flex-direction:column; gap:7px; min-width:0;">
+              <div class="sk-line" style="width:55%; height:11px;"></div>
+              <div class="sk-line" style="width:32%; height:9px;"></div>
+            </div>
+          </div>`).join('');
+    }
+
+    // Scheletro di righe di tabella.
+    function skeletonTable(cols, n = 4) {
+        return Array.from({ length: n }, () => `
+          <tr>${Array.from({ length: cols }, () =>
+            '<td><div class="sk-line" style="width:80%; height:11px;"></div></td>').join('')}</tr>`).join('');
+    }
+
+    // Stato vuoto: dice anche PERCHE' non c'e' niente e cosa si puo' fare.
+    function emptyState({ titolo, testo, azione, onAzione, colspan }) {
+        const inner = `
+          <div class="empty-state">
+            <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10l9-7 9 7v10a1 1 0 01-1 1H4a1 1 0 01-1-1z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M9 21v-7h6v7"></path></svg>
+            <h4>${escapeHtml(titolo)}</h4>
+            ${testo ? `<p>${escapeHtml(testo)}</p>` : ''}
+            ${azione ? `<button type="button" onclick="${onAzione}">${escapeHtml(azione)}</button>` : ''}
+          </div>`;
+        return colspan ? `<tr><td colspan="${colspan}" style="padding:0;">${inner}</td></tr>` : inner;
+    }
+
+    // Mostra gli scheletri nei contenitori prima che arrivino i dati.
+    function showSkeletons() {
+        const set = (id, html) => { const el = document.getElementById(id); if (el) el.innerHTML = html; };
+        set('properties-list', skeletonCards());
+        set('overview-leads-list', skeletonRows());
+        set('transactions-list', skeletonTable(5));
+        set('buyers-list', skeletonTable(5));
+        set('documenti-list', skeletonTable(4));
     }
 
     function closeModals() { 
         document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none'); 
     }
 
+    // Titolo e sottotitolo della pagina: la colonna a sinistra dice dove sei,
+    // l'intestazione dice cosa stai guardando.
+    const TAB_META = {
+      'tab-overview':  { title: 'Panoramica',  sub: 'Michele Erre · spazio privato' },
+      'tab-vetrina':   { title: 'Immobili',    sub: 'Quello che vedono i clienti sul sito' },
+      'tab-stats':     { title: 'Statistiche', sub: 'Incarichi, vendite e fatturato' },
+      'tab-crm':       { title: 'Clienti',     sub: 'Rubrica e richieste arrivate dal sito' },
+      'tab-documenti': { title: 'Bozze',       sub: 'Incarichi e proposte salvati' }
+    };
+
     function switchTab(tabId, btn) {
       document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
       document.getElementById(tabId).classList.add('active');
-      btn.classList.add('active');
-      if(tabId === 'tab-stats') { updateDashboardStats(); } 
+      // Se la chiamata non arriva da un click (es. dalla palette comandi)
+      // ritrovo la voce di menu dal suo data-tab.
+      const navBtn = btn || document.querySelector(`.nav-item[data-tab="${tabId}"]`);
+      if (navBtn) navBtn.classList.add('active');
+
+      const meta = TAB_META[tabId];
+      if (meta) {
+        document.getElementById('page-title').innerText = meta.title;
+        document.getElementById('page-sub').innerText = meta.sub;
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (tabId === 'tab-stats') { updateDashboardStats(); }
+    }
+
+    /* ---------- TEMA ---------- */
+    function toggleTheme() {
+      const root = document.documentElement;
+      // Senza scelta salvata si sta seguendo il sistema: il primo clic deve
+      // portare all'opposto di quello che si sta vedendo, non a un default fisso.
+      const current = root.getAttribute('data-theme')
+        || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      const next = current === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      try { localStorage.setItem('admin-theme', next); } catch (e) { /* ignorato */ }
+      // I grafici disegnano su canvas: i colori non si aggiornano da soli.
+      if (document.getElementById('tab-stats')?.classList.contains('active')) updateDashboardStats();
+      renderOverviewStats();
+    }
+
+    // Legge un token CSS: cosi' i grafici usano la stessa palette del resto
+    // della pagina e cambiano insieme al tema.
+    function token(name, fallback) {
+      const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+      return v || fallback;
+    }
+
+    // Contatori accanto alle voci della colonna di sinistra.
+    function updateNavCounts() {
+      const set = (id, val) => { const el = document.getElementById(id); if (el) el.innerText = val; };
+      set('nav-count-immobili', properties.length || '');
+      set('nav-count-stats', transactions.filter(t => t.status === 'In Vendita').length || '');
+      set('nav-count-clienti', buyers.length || '');
+      set('nav-count-bozze', documenti.length || '');
     }
 
     window.addEventListener('DOMContentLoaded', async () => {
@@ -994,12 +1655,16 @@
 
     async function handleAuthSuccess() {
         document.getElementById('login-screen').style.display = 'none';
-        document.getElementById('admin-dashboard').style.display = 'flex';
+        document.getElementById('admin-dashboard').style.display = '';
         document.getElementById('nav-auth').style.display = 'flex';
+        // La dashboard compare subito con gli scheletri: il velo nero sparisce
+        // qui, non alla fine del caricamento, cosi' si vede dove sta arrivando
+        // il contenuto invece di fissare uno schermo scuro.
+        showSkeletons();
+        hideLoader();
         await Promise.all([loadProperties(), loadTransactions(), loadBuyers(), loadDocumenti()]);
         await syncActiveIncarichi();
         renderOverviewStats();
-        hideLoader();
     }
 
     /* =======================================================
@@ -1229,6 +1894,14 @@
         hideLoader();
     };
 
+    // Usata dallo stato vuoto quando i filtri non lasciano passare nulla.
+    function resetPropFilters() {
+        document.getElementById('prop-search').value = '';
+        document.getElementById('prop-filter-status').value = '';
+        document.getElementById('prop-filter-visibility').value = '';
+        renderPropertiesList();
+    }
+
     function renderPropertiesList() {
         const search = document.getElementById('prop-search').value.toLowerCase();
         const statusFilter = document.getElementById('prop-filter-status').value;
@@ -1249,7 +1922,26 @@
         document.getElementById('prop-count-badge').innerText = filtered.length;
 
         if (filtered.length === 0) {
-            list.innerHTML = `<div style="grid-column:1/-1; padding:2rem 1rem; text-align:center; color:var(--text-muted); font-size:13px; font-weight:600;">Nessun immobile trovato.</div>`;
+            // Distinguo "archivio vuoto" da "i filtri non lasciano passare
+            // nulla": sono due situazioni diverse e chiedono azioni diverse.
+            const filtrato = search || statusFilter || visFilter;
+            list.innerHTML = filtrato
+                ? emptyState({
+                    titolo: 'Nessun immobile con questi filtri',
+                    testo: [
+                        search ? `ricerca "${search}"` : '',
+                        statusFilter ? `contratto ${statusFilter.toLowerCase()}` : '',
+                        visFilter === 'visible' ? 'solo visibili' : (visFilter === 'hidden' ? 'solo nascosti' : '')
+                    ].filter(Boolean).join(' · '),
+                    azione: 'Azzera i filtri',
+                    onAzione: 'resetPropFilters()'
+                  })
+                : emptyState({
+                    titolo: 'Nessun immobile in archivio',
+                    testo: 'Il primo immobile che aggiungi compare qui e, se lo rendi visibile, anche sul sito.',
+                    azione: '+ Aggiungi immobile',
+                    onAzione: 'openPropertyForm()'
+                  });
             return;
         }
 
@@ -1405,52 +2097,150 @@
             } 
         }); 
         
-        document.getElementById('stat-active').innerText = activeOggi; 
-        document.getElementById('stat-sold').innerText = salesYr; 
-        document.getElementById('stat-revenue').innerText = `€${revYr.toLocaleString('it-IT')}`; 
-        document.getElementById('stat-days').innerText = salesYr > 0 ? `${Math.round(totalDays/salesYr)} gg` : '0 gg'; 
-        
-        renderCharts(acqByM, salesByM, revByM, pieS, pieA, pieE); 
+        document.getElementById('stat-active').innerText = activeOggi;
+        document.getElementById('stat-sold').innerText = salesYr;
+        document.getElementById('stat-revenue').innerText = `€${Math.round(revYr).toLocaleString('it-IT')}`;
+        document.getElementById('stat-days').innerText = salesYr > 0 ? `${Math.round(totalDays/salesYr)} gg` : '—';
+
+        // Confronto con l'anno precedente: senza, i numeri non dicono nulla.
+        let salesPrec = 0, revPrec = 0;
+        transactions.forEach(t => {
+            if (t.status !== 'Venduto' || !t.sale_date || !t.final_price) return;
+            if (new Date(t.sale_date).getFullYear() === yr - 1) { salesPrec++; revPrec += commissionOf(t); }
+        });
+
+        const diffVendite = salesYr - salesPrec;
+        if (salesPrec > 0) {
+            // "+0" non dice niente: se il numero e' lo stesso lo si dice cosi'.
+            setDelta('stat-delta-sold', diffVendite === 0 ? '=' : `${diffVendite > 0 ? '+' : ''}${diffVendite}`,
+                     diffVendite > 0 ? 'up' : (diffVendite < 0 ? 'down' : 'flat'));
+        } else {
+            setDelta('stat-delta-sold', '', 'flat');
+        }
+        setText('stat-foot-sold', salesPrec > 0 ? `nel ${yr - 1}: ${salesPrec}` : `nessun confronto per il ${yr - 1}`);
+
+        if (revPrec > 0) {
+            const pct = Math.round(((revYr - revPrec) / revPrec) * 100);
+            setDelta('stat-delta-revenue', pct === 0 ? '=' : `${pct > 0 ? '+' : ''}${pct}%`,
+                     pct > 0 ? 'up' : (pct < 0 ? 'down' : 'flat'));
+            setText('stat-foot-revenue', `nel ${yr - 1}: €${Math.round(revPrec).toLocaleString('it-IT')}`);
+        } else {
+            setDelta('stat-delta-revenue', '', 'flat');
+            setText('stat-foot-revenue', `nessun confronto per il ${yr - 1}`);
+        }
+        setText('stat-foot-days', salesYr > 0 ? `su ${salesYr} vendit${salesYr === 1 ? 'a' : 'e'} chiuse` : 'nessuna vendita chiusa');
+
+        setText('chart-vol-sub', `${yr} · numero di case`);
+        setText('chart-rev-sub', `${yr} · euro incassati`);
+        setText('chart-esito-sub', `${yr} · ${pieS + pieA + pieE} incarichi presi`);
+
+        renderCharts(acqByM, salesByM, revByM, pieS, pieA, pieE);
     }
 
-    function renderCharts(acqD, saleD, revD, pS, pA, pE) { 
-        const mesi = ['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic']; 
-        if(mainChartInstance) mainChartInstance.destroy(); 
-        mainChartInstance = new Chart(document.getElementById('mainChart'), { 
-            type: 'bar', 
-            data: { 
-                labels: mesi, 
-                datasets: [ 
-                    { type:'line', label:'Fatturato Netto (€)', data:revD, borderColor:'#0044FF', backgroundColor:'rgba(0,68,255,0.1)', borderWidth:3, fill:true, yAxisID:'yR', tension:0.4 }, 
-                    { type:'bar', label:'Incarichi Presi', data:acqD, backgroundColor:'#FFD90F', borderRadius:4, yAxisID:'yV' }, 
-                    { type:'bar', label:'Immobili Venduti', data:saleD, backgroundColor:'#10b981', borderRadius:4, yAxisID:'yV' } 
-                ] 
-            }, 
-            options: { 
-                responsive:true, 
-                maintainAspectRatio:false, 
-                interaction:{mode:'index', intersect:false}, 
-                scales: { 
-                    yV:{type:'linear', position:'left', title:{display:true,text:'Volumi (N. Case)'}, min:0, ticks:{stepSize:1}}, 
-                    yR:{type:'linear', position:'right', title:{display:true,text:'€ Incassati'}, grid:{drawOnChartArea:false}, min:0} 
-                } 
-            } 
-        }); 
-        
-        if(pieChartInstance) pieChartInstance.destroy(); 
-        pieChartInstance = new Chart(document.getElementById('pieChart'), { 
-            type: 'doughnut', 
-            data: { 
-                labels: ['Venduti','In Vendita','Scaduti/Ritirati'], 
-                datasets: [{ data: [pS, pA, pE], backgroundColor: ['#10b981','#0044FF','#ef4444'], borderWidth:0 }] 
-            }, 
-            options: { 
-                responsive:true, 
-                maintainAspectRatio:false, 
-                cutout:'70%', 
-                plugins:{legend:{position:'bottom'}} 
-            } 
-        }); 
+    /* I tre grafici dell'anno.
+       Prima erano due, e il primo ne conteneva due davvero: volumi sull'asse
+       sinistro, euro su quello destro. Con due scale nello stesso riquadro
+       basta spostarne una per cambiare la storia che il grafico racconta, e
+       curve scorrelate sembrano andare insieme. Ora ogni grafico ha un asse.
+
+       I colori vengono dai token --series-*: sono una palette a se', validata
+       per il daltonismo, e NON tocca verde/rosso, che nel resto della
+       dashboard vogliono dire "bene" e "attenzione". */
+    function renderCharts(acqD, saleD, revD, pS, pA, pE) {
+        const mesi = ['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'];
+        const ink2 = token('--ink-2', '#59617a');
+        const ink3 = token('--ink-3', '#8b93a8');
+        const grid = token('--grid-line', '#e6eaf2');
+        const surface = token('--surface', '#ffffff');
+        const s1 = token('--series-1', '#2B57DB');
+        const s2 = token('--series-2', '#B87A00');
+        const s3 = token('--series-3', '#12907F');
+
+        const base = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { labels: { color: ink2, boxWidth: 10, boxHeight: 10, usePointStyle: true, pointStyle: 'rectRounded', font: { size: 11 } } },
+                tooltip: { backgroundColor: token('--ink', '#151a2b'), padding: 10, cornerRadius: 8, displayColors: true, boxPadding: 4 }
+            }
+        };
+        const asseX = { grid: { display: false }, border: { color: grid }, ticks: { color: ink3, font: { size: 10 } } };
+
+        /* 1. Volumi: due serie, stessa unita' (numero di case), un asse solo. */
+        if (mainChartInstance) mainChartInstance.destroy();
+        mainChartInstance = new Chart(document.getElementById('mainChart'), {
+            type: 'bar',
+            data: {
+                labels: mesi,
+                datasets: [
+                    { label: 'Incarichi presi', data: acqD, backgroundColor: s1, borderRadius: 4, borderSkipped: false },
+                    { label: 'Immobili venduti', data: saleD, backgroundColor: s3, borderRadius: 4, borderSkipped: false }
+                ]
+            },
+            options: {
+                ...base,
+                interaction: { mode: 'index', intersect: false },
+                scales: {
+                    x: asseX,
+                    y: { beginAtZero: true, ticks: { color: ink3, stepSize: 1, precision: 0, font: { size: 10 } }, grid: { color: grid }, border: { display: false } }
+                }
+            }
+        });
+
+        /* 2. Fatturato: una serie sola, quindi nessuna legenda (il titolo la nomina). */
+        if (revenueChartInstance) revenueChartInstance.destroy();
+        const ctxRev = document.getElementById('revenueChart');
+        const grad = ctxRev.getContext('2d').createLinearGradient(0, 0, 0, 220);
+        grad.addColorStop(0, s1 + '38');
+        grad.addColorStop(1, s1 + '00');
+        revenueChartInstance = new Chart(ctxRev, {
+            type: 'line',
+            data: {
+                labels: mesi,
+                datasets: [{
+                    label: 'Fatturato netto', data: revD, borderColor: s1, backgroundColor: grad,
+                    borderWidth: 2, fill: true, tension: 0.35,
+                    pointRadius: 0, pointHoverRadius: 5, pointBackgroundColor: s1,
+                    pointHoverBorderColor: surface, pointHoverBorderWidth: 2
+                }]
+            },
+            options: {
+                ...base,
+                plugins: { ...base.plugins, legend: { display: false },
+                    tooltip: { ...base.plugins.tooltip, callbacks: { label: (c) => '€' + Math.round(c.parsed.y).toLocaleString('it-IT') } } },
+                interaction: { mode: 'index', intersect: false },
+                scales: {
+                    x: asseX,
+                    y: { beginAtZero: true, grid: { color: grid }, border: { display: false },
+                         ticks: { color: ink3, font: { size: 10 }, callback: (v) => '€' + (v >= 1000 ? (v / 1000) + 'k' : v) } }
+                }
+            }
+        });
+
+        /* 3. Esito: una barra al posto della ciambella. Occupa un quarto dello
+              spazio e i rapporti si confrontano su una linea invece che a occhio
+              fra archi. Il distacco di 2px fra i segmenti e' il fondo che passa. */
+        if (esitoChartInstance) esitoChartInstance.destroy();
+        esitoChartInstance = new Chart(document.getElementById('esitoChart'), {
+            type: 'bar',
+            data: {
+                labels: [''],
+                datasets: [
+                    { label: 'Venduti', data: [pS], backgroundColor: s1 },
+                    { label: 'In vendita', data: [pA], backgroundColor: s3 },
+                    { label: 'Scaduti / ritirati', data: [pE], backgroundColor: s2 }
+                ].map(d => ({ ...d, borderRadius: 4, borderSkipped: false, borderWidth: 2, borderColor: surface }))
+            },
+            options: {
+                ...base,
+                indexAxis: 'y',
+                plugins: { ...base.plugins, legend: { ...base.plugins.legend, position: 'bottom' } },
+                scales: {
+                    x: { stacked: true, beginAtZero: true, grid: { display: false }, border: { display: false }, ticks: { color: ink3, stepSize: 1, precision: 0, font: { size: 10 } } },
+                    y: { stacked: true, grid: { display: false }, border: { display: false }, ticks: { display: false } }
+                }
+            }
+        });
     }
     
     function renderTransactionsTable() {
@@ -1460,7 +2250,14 @@
       
       const filtered = transactions.filter(t => t.property_title.toLowerCase().includes(s) || (t.owner_name||'').toLowerCase().includes(s));
       const today = new Date();
-      
+
+      if (filtered.length === 0) {
+        list.innerHTML = s
+          ? emptyState({ titolo: 'Nessun incarico trovato', testo: `Nessun immobile o proprietario corrisponde a "${s}".`, azione: 'Azzera la ricerca', onAzione: 'resetTransSearch()', colspan: 5 })
+          : emptyState({ titolo: 'Nessun incarico nello storico', testo: 'Gli incarichi compaiono qui quando pubblichi un immobile o li aggiungi a mano.', azione: '+ Nuovo incarico', onAzione: 'openTransactionModal()', colspan: 5 });
+        return;
+      }
+
       filtered.forEach(t => {
         let b = '';
         let acq = new Date(t.acquisition_date); 
@@ -1710,6 +2507,7 @@
             buyers = data || [];
             renderBuyersList();
             renderOverviewLeads();
+            updateNavCounts();
         }
     }
 
@@ -1723,42 +2521,132 @@
         await _supabase.from('buyers').update({ is_read: true }).eq('id', id);
     }
 
-    // Statistiche rapide della Panoramica: annunci online, incarichi in corso,
-    // incarichi in scadenza entro 90 giorni, fatturato netto dell'anno corrente.
+    // Provvigione incassata su un incarico chiuso (venditore + acquirente).
+    function commissionOf(t) {
+        const pV = parseFloat(t.commission_seller_perc) || 0;
+        const pA = parseFloat(t.commission_buyer_perc) || 0;
+        return ((t.final_price * pV) / 100) + ((t.final_price * pA) / 100);
+    }
+
+    // Data di scadenza di un incarico, dedotta dalla durata scelta.
+    function expiryOf(t) {
+        const months = t.assignment_duration === '1 anno' ? 12 : (t.assignment_duration === '2 anni' ? 24 : 6);
+        const exp = new Date(t.acquisition_date);
+        exp.setMonth(exp.getMonth() + months);
+        return exp;
+    }
+
+    // Scrive un "chip" di confronto accanto a un numero. Un numero da solo non
+    // dice se e' un buon numero: serve sempre un "rispetto a cosa".
+    function setDelta(id, testo, tipo) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.className = 'stat-delta ' + (tipo || 'flat');
+        el.innerText = testo || '';
+        el.style.display = testo ? '' : 'none';
+    }
+
+    function setText(id, testo) {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = testo || '';
+    }
+
+    // Sparkline del fatturato: 12 punti, area sfumata e ultimo punto marcato.
+    function drawSparkline(svgId, valori) {
+        const svg = document.getElementById(svgId);
+        if (!svg) return;
+        const max = Math.max(...valori, 1);
+        const W = 120, H = 30;
+        const pts = valori.map((v, i) => {
+            const x = valori.length > 1 ? (i * W) / (valori.length - 1) : 0;
+            const y = H - 3 - (v / max) * (H - 6);
+            return [Number(x.toFixed(2)), Number(y.toFixed(2))];
+        });
+        const linea = pts.map(p => p.join(',')).join(' ');
+        const area = `M${linea.split(' ').join(' L')} L${W},${H} L0,${H} Z`;
+        const col = token('--good', '#0f7a5c');
+        const ultimo = pts[pts.length - 1];
+        svg.innerHTML = `
+          <defs><linearGradient id="${svgId}-g" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="${col}" stop-opacity="0.24"></stop>
+            <stop offset="100%" stop-color="${col}" stop-opacity="0"></stop>
+          </linearGradient></defs>
+          <path d="${area}" fill="url(#${svgId}-g)"></path>
+          <polyline points="${linea}" fill="none" stroke="${col}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"></polyline>
+          <circle cx="${ultimo[0]}" cy="${ultimo[1]}" r="2.2" fill="${col}"></circle>`;
+    }
+
+    // Statistiche della Panoramica. Oltre al valore, ognuna porta un confronto
+    // e, dove serve, un'indicazione di cosa fare.
     function renderOverviewStats() {
         const listingsEl = document.getElementById('ov-stat-listings');
         if (!listingsEl) return; // tab non ancora nel DOM
 
-        listingsEl.innerText = properties.filter(p => p.is_visible !== false).length;
-
-        const activeIncarichi = transactions.filter(t => t.status === 'In Vendita').length;
-        document.getElementById('ov-stat-active').innerText = activeIncarichi;
-
         const today = new Date();
-        let expiringCount = 0;
+        const yr = today.getFullYear();
+
+        /* --- annunci online --- */
+        const online = properties.filter(p => p.is_visible !== false).length;
+        const inEvidenza = properties.filter(p => p.is_featured && p.is_visible !== false).length;
+        const nascosti = properties.length - online;
+        listingsEl.innerText = online;
+        setDelta('ov-delta-listings', nascosti > 0 ? `${nascosti} nascosti` : '', 'flat');
+        setText('ov-foot-listings', inEvidenza > 0 ? `di cui ${inEvidenza} in evidenza` : 'nessuno in evidenza');
+
+        /* --- incarichi in corso --- */
+        const attivi = transactions.filter(t => t.status === 'In Vendita').length;
+        const presiQuestoMese = transactions.filter(t => {
+            const d = new Date(t.acquisition_date);
+            return d.getFullYear() === yr && d.getMonth() === today.getMonth();
+        }).length;
+        document.getElementById('ov-stat-active').innerText = attivi;
+        setDelta('ov-delta-active', presiQuestoMese > 0 ? `+${presiQuestoMese}` : '', presiQuestoMese > 0 ? 'up' : 'flat');
+        setText('ov-foot-active', presiQuestoMese > 0
+            ? `${presiQuestoMese} acquisit${presiQuestoMese === 1 ? 'o' : 'i'} questo mese`
+            : 'nessuno acquisito questo mese');
+
+        /* --- in scadenza entro 90 giorni --- */
+        let inScadenza = 0;
+        let giorniMin = null;
         transactions.forEach(t => {
             if (t.status !== 'In Vendita') return;
-            const durMonths = t.assignment_duration === '1 anno' ? 12 : (t.assignment_duration === '2 anni' ? 24 : 6);
-            const acq = new Date(t.acquisition_date);
-            const exp = new Date(acq);
-            exp.setMonth(exp.getMonth() + durMonths);
-            const daysLeft = Math.ceil((exp - today) / 86400000);
-            if (daysLeft <= 90) expiringCount++;
-        });
-        document.getElementById('ov-stat-expiring').innerText = expiringCount;
-
-        const yr = today.getFullYear();
-        let revYr = 0;
-        transactions.forEach(t => {
-            if (t.status === 'Venduto' && t.sale_date && t.final_price) {
-                if (new Date(t.sale_date).getFullYear() === yr) {
-                    const pV = parseFloat(t.commission_seller_perc) || 0;
-                    const pA = parseFloat(t.commission_buyer_perc) || 0;
-                    revYr += ((t.final_price * pV) / 100) + ((t.final_price * pA) / 100);
-                }
+            const daysLeft = Math.ceil((expiryOf(t) - today) / 86400000);
+            if (daysLeft <= 90) {
+                inScadenza++;
+                if (giorniMin === null || daysLeft < giorniMin) giorniMin = daysLeft;
             }
         });
-        document.getElementById('ov-stat-revenue').innerText = `€${revYr.toLocaleString('it-IT')}`;
+        document.getElementById('ov-stat-expiring').innerText = inScadenza;
+        document.getElementById('ov-card-expiring').classList.toggle('is-alert', inScadenza > 0);
+        setDelta('ov-delta-expiring', inScadenza > 0 ? 'da rinnovare' : '', 'warn');
+        setText('ov-foot-expiring', inScadenza === 0
+            ? 'nessun incarico in scadenza'
+            : (giorniMin < 0
+                ? `il più vecchio è scaduto da <b>${Math.abs(giorniMin)} giorni</b>`
+                : `il più vicino: <b>fra ${giorniMin} giorni</b>`));
+
+        /* --- fatturato dell'anno, confrontato con l'anno prima --- */
+        const perMese = Array(12).fill(0);
+        let revYr = 0, revPrec = 0;
+        transactions.forEach(t => {
+            if (t.status !== 'Venduto' || !t.sale_date || !t.final_price) return;
+            const d = new Date(t.sale_date);
+            const incasso = commissionOf(t);
+            if (d.getFullYear() === yr) { revYr += incasso; perMese[d.getMonth()] += incasso; }
+            else if (d.getFullYear() === yr - 1) revPrec += incasso;
+        });
+        document.getElementById('ov-label-year').innerText = yr;
+        document.getElementById('ov-stat-revenue').innerText = `€${Math.round(revYr).toLocaleString('it-IT')}`;
+        if (revPrec > 0) {
+            const pct = Math.round(((revYr - revPrec) / revPrec) * 100);
+            setDelta('ov-delta-revenue', pct === 0 ? '=' : `${pct > 0 ? '+' : ''}${pct}%`,
+                     pct > 0 ? 'up' : (pct < 0 ? 'down' : 'flat'));
+        } else {
+            setDelta('ov-delta-revenue', revYr > 0 ? 'primo anno' : '', 'flat');
+        }
+        drawSparkline('ov-spark-revenue', perMese);
+
+        updateNavCounts();
     }
 
     // Elenco delle richieste dal sito non ancora lette, in cima alla Panoramica.
@@ -1768,13 +2656,16 @@
 
         const unread = buyers.filter(b => b.source === 'sito' && !b.is_read);
 
-        document.getElementById('overview-unread-badge').innerText = unread.length;
+        document.getElementById('overview-unread-badge').innerText =
+            unread.length === 0 ? 'tutte lette' : `${unread.length} da leggere`;
+        // La pastiglia rossa sulla voce di menu si accende con una classe:
+        // impostare display a mano rompeva la centratura del numero.
         const tabBadge = document.getElementById('tab-overview-badge');
         tabBadge.innerText = unread.length;
-        tabBadge.style.display = unread.length > 0 ? 'inline-block' : 'none';
+        tabBadge.classList.toggle('on', unread.length > 0);
 
         if (unread.length === 0) {
-            list.innerHTML = `<div style="padding:2rem 1rem; text-align:center; color:var(--text-muted); font-size:13px; font-weight:600;">Nessuna nuova richiesta al momento</div>`;
+            list.innerHTML = emptyState({ titolo: 'Nessuna nuova richiesta', testo: 'Le richieste inviate dal modulo contatti e dalla valutazione gratuita compaiono qui appena arrivano.' });
             return;
         }
 
@@ -1800,7 +2691,14 @@
       list.innerHTML = "";
       
       const filtered = buyers.filter(b => b.full_name.toLowerCase().includes(s) || (b.desired_zone||'').toLowerCase().includes(s));
-      
+
+      if (filtered.length === 0) {
+        list.innerHTML = s
+          ? emptyState({ titolo: 'Nessun cliente trovato', testo: `Nessun nome o zona corrisponde a "${s}".`, azione: 'Azzera la ricerca', onAzione: 'resetBuyerSearch()', colspan: 5 })
+          : emptyState({ titolo: 'Rubrica vuota', testo: 'Qui finiscono sia i clienti che aggiungi a mano sia le richieste arrivate dal sito.', azione: '+ Aggiungi cliente', onAzione: 'openBuyerModal()', colspan: 5 });
+        return;
+      }
+
       filtered.forEach(b => {
         let badge = b.status==='Attivo'?'<span class="status-badge bg-blue">In Ricerca</span>':(b.status==='Trovato'?'<span class="status-badge bg-green">Trovato</span>':'<span class="status-badge bg-red">Non Int.</span>');
         const isNewLead = b.source === 'sito' && !b.is_read;
@@ -1908,7 +2806,24 @@
         if (!error) {
             documenti = data || [];
             renderDocumentiList();
+            updateNavCounts();
         }
+    }
+
+    function resetTransSearch() {
+        document.getElementById('trans-search').value = '';
+        renderTransactionsTable();
+    }
+
+    function resetBuyerSearch() {
+        document.getElementById('buyer-search').value = '';
+        renderBuyersList();
+    }
+
+    function resetDocFilters() {
+        document.getElementById('doc-search').value = '';
+        document.getElementById('doc-filter-tipo').value = '';
+        renderDocumentiList();
     }
 
     function renderDocumentiList() {
@@ -1923,7 +2838,9 @@
         const filtered = documenti.filter(d => (!tipoFilter || d.tipo === tipoFilter) && (d.titolo || '').toLowerCase().includes(s));
 
         if (filtered.length === 0) {
-            list.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:2rem 1rem; color:var(--text-muted); font-size:13px; font-weight:600;">Nessuna bozza salvata.</td></tr>`;
+            list.innerHTML = (s || tipoFilter)
+                ? emptyState({ titolo: 'Nessuna bozza con questi filtri', testo: 'Prova a cercare un altro titolo o a mostrare tutti i tipi.', azione: 'Azzera i filtri', onAzione: 'resetDocFilters()', colspan: 4 })
+                : emptyState({ titolo: 'Nessuna bozza salvata', testo: 'Ogni incarico o proposta che compili viene salvato qui, anche se generi solo il PDF.', colspan: 4 });
             return;
         }
 
@@ -1949,6 +2866,130 @@
         docToDelete = id;
         document.getElementById('modal-delete-doc').style.display = 'flex';
     }
+
+    /* =======================================================
+       PALETTE COMANDI (Ctrl/Cmd + K)
+       Cercare un cliente per nome era: apri la scheda giusta, trova il
+       campo cerca, scrivi, scorri. Qui sono tre lettere e Invio.
+       ======================================================= */
+    let cmdkResults = [];
+    let cmdkIndex = 0;
+
+    const CMDK_ICONS = {
+      cliente: '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.2"></circle><path stroke-linecap="round" d="M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6"></path></svg>',
+      immobile: '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10l9-7 9 7v10a1 1 0 01-1 1H4a1 1 0 01-1-1z"></path></svg>',
+      bozza: '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 3H7a1 1 0 00-1 1v16a1 1 0 001 1h10a1 1 0 001-1V7z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M14 3v4h4"></path></svg>',
+      azione: '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M12 5v14M5 12h14"></path></svg>',
+      vai: '<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>'
+    };
+
+    function openCmdk() {
+        const box = document.getElementById('cmdk');
+        box.classList.add('open');
+        const input = document.getElementById('cmdk-input');
+        input.value = '';
+        input.focus();
+        buildCmdkResults('');
+    }
+
+    function closeCmdk() {
+        document.getElementById('cmdk').classList.remove('open');
+    }
+
+    // Le azioni fisse compaiono sempre; il resto e' ricerca sui dati gia'
+    // caricati in memoria, quindi e' istantanea e non interroga il database.
+    function buildCmdkResults(q) {
+        const query = q.trim().toLowerCase();
+        const out = [];
+        const match = (txt) => (txt || '').toLowerCase().includes(query);
+
+        const azioni = [
+            { gruppo: 'Azioni', tipo: 'azione', tag: 'nuovo', nome: 'Nuovo incarico di mediazione', run: () => { location.href = 'incarico.html'; } },
+            { gruppo: 'Azioni', tipo: 'azione', tag: 'nuovo', nome: "Nuova proposta d'acquisto", run: () => { location.href = 'proposta.html'; } },
+            { gruppo: 'Azioni', tipo: 'azione', tag: 'nuovo', nome: 'Aggiungi immobile', run: () => { switchTab('tab-vetrina'); openPropertyForm(); } },
+            { gruppo: 'Azioni', tipo: 'azione', tag: 'nuovo', nome: 'Aggiungi cliente', run: () => { switchTab('tab-crm'); openBuyerModal(); } },
+            { gruppo: 'Vai a', tipo: 'vai', tag: 'sezione', nome: 'Panoramica', run: () => switchTab('tab-overview') },
+            { gruppo: 'Vai a', tipo: 'vai', tag: 'sezione', nome: 'Immobili', run: () => switchTab('tab-vetrina') },
+            { gruppo: 'Vai a', tipo: 'vai', tag: 'sezione', nome: 'Statistiche', run: () => switchTab('tab-stats') },
+            { gruppo: 'Vai a', tipo: 'vai', tag: 'sezione', nome: 'Clienti', run: () => switchTab('tab-crm') },
+            { gruppo: 'Vai a', tipo: 'vai', tag: 'sezione', nome: 'Bozze', run: () => switchTab('tab-documenti') }
+        ];
+
+        buyers.filter(b => !query || match(b.full_name) || match(b.phone) || match(b.desired_zone))
+            .slice(0, 6).forEach(b => out.push({
+                gruppo: 'Clienti', tipo: 'cliente', tag: 'cliente', nome: b.full_name,
+                run: () => { switchTab('tab-crm'); document.getElementById('buyer-search').value = b.full_name; renderBuyersList(); }
+            }));
+
+        properties.filter(p => !query || match(p.title) || match(p.zone))
+            .slice(0, 6).forEach(p => out.push({
+                gruppo: 'Immobili', tipo: 'immobile', tag: 'immobile', nome: p.title,
+                run: () => { switchTab('tab-vetrina'); openPropertyForm(p.id); }
+            }));
+
+        documenti.filter(d => !query || match(d.titolo))
+            .slice(0, 6).forEach(d => out.push({
+                gruppo: 'Bozze', tipo: 'bozza', tag: d.tipo, nome: d.titolo || 'Senza titolo',
+                run: () => { location.href = `${d.tipo}.html?id=${encodeURIComponent(d.id)}`; }
+            }));
+
+        out.push(...azioni.filter(a => !query || match(a.nome)));
+
+        cmdkResults = out;
+        cmdkIndex = 0;
+        renderCmdk();
+    }
+
+    function renderCmdk() {
+        const box = document.getElementById('cmdk-results');
+        if (cmdkResults.length === 0) {
+            box.innerHTML = '<div class="cmdk-empty">Nessun risultato.</div>';
+            return;
+        }
+        let html = '';
+        let gruppo = null;
+        cmdkResults.forEach((r, i) => {
+            if (r.gruppo !== gruppo) { gruppo = r.gruppo; html += `<div class="cmdk-group">${escapeHtml(gruppo)}</div>`; }
+            html += `<button type="button" class="cmdk-item" role="option" data-i="${i}" aria-selected="${i === cmdkIndex}">
+                ${CMDK_ICONS[r.tipo] || CMDK_ICONS.vai}
+                <span class="cmdk-name">${escapeHtml(r.nome)}</span>
+                <span class="cmdk-tag">${escapeHtml(r.tag)}</span>
+            </button>`;
+        });
+        box.innerHTML = html;
+        box.querySelectorAll('.cmdk-item').forEach(el => {
+            el.addEventListener('click', () => runCmdk(Number(el.dataset.i)));
+        });
+        box.querySelector('[aria-selected="true"]')?.scrollIntoView({ block: 'nearest' });
+    }
+
+    function runCmdk(i) {
+        const r = cmdkResults[i];
+        if (!r) return;
+        closeCmdk();
+        r.run();
+    }
+
+    document.addEventListener('keydown', (e) => {
+        // La scorciatoia vale solo a sessione aperta: sulla schermata di login
+        // non c'e' niente da cercare.
+        const dashOpen = document.getElementById('admin-dashboard')?.style.display !== 'none';
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k' && dashOpen) {
+            e.preventDefault();
+            document.getElementById('cmdk').classList.contains('open') ? closeCmdk() : openCmdk();
+            return;
+        }
+        if (!document.getElementById('cmdk')?.classList.contains('open')) return;
+        if (e.key === 'Escape') { e.preventDefault(); closeCmdk(); }
+        else if (e.key === 'ArrowDown') { e.preventDefault(); cmdkIndex = Math.min(cmdkIndex + 1, cmdkResults.length - 1); renderCmdk(); }
+        else if (e.key === 'ArrowUp') { e.preventDefault(); cmdkIndex = Math.max(cmdkIndex - 1, 0); renderCmdk(); }
+        else if (e.key === 'Enter') { e.preventDefault(); runCmdk(cmdkIndex); }
+    });
+
+    document.getElementById('cmdk-input').addEventListener('input', (e) => buildCmdkResults(e.target.value));
+    document.getElementById('cmdk').addEventListener('click', (e) => {
+        if (e.target.id === 'cmdk') closeCmdk(); // clic sullo sfondo
+    });
 
     document.getElementById('confirm-delete-doc-btn').onclick = async () => {
         if (!docToDelete) return;
