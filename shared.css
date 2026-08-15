@@ -211,22 +211,67 @@
   .btn-close-modal:hover { background-color: var(--brand-blue); color: var(--white); border-color: var(--brand-blue); }
 }
 
-/* FOOTER */
-.site-footer { background: linear-gradient(160deg, var(--brand-blue), #001f80); color: var(--white); padding: 4rem 1.5rem 0; margin-top: auto; box-shadow: 0 -10px 20px rgba(0,68,255,0.1); }
+/* FOOTER
+   Bordo giallo in cima come quello sotto la navbar: chiude la pagina con lo
+   stesso segno con cui si apre. L'alone giallo in alto a sinistra toglie
+   piattezza al blu, come nella card contatti della home. */
+.site-footer { background: radial-gradient(80% 120% at 0% 0%, rgba(255,217,15,0.12) 0%, rgba(255,217,15,0) 55%), linear-gradient(160deg, var(--brand-blue), #001f80); color: var(--white); padding: 2.75rem 1.25rem 0; margin-top: auto; border-top: 4px solid var(--brand-yellow); }
+@media (min-width: 768px) { .site-footer { padding: 4rem 1.5rem 0; } }
 .footer-inner { max-width: 1200px; margin: 0 auto; }
-.footer-grid { display: grid; grid-template-columns: 1fr; gap: 2.5rem; padding-bottom: 2.5rem; text-align: center; }
-@media (min-width: 768px) { .footer-grid { grid-template-columns: 1.4fr 1fr 1fr; gap: 2rem; text-align: left; } }
-.footer-brand-title { color: var(--brand-yellow); font-size: 1.4rem; font-weight: 900; text-transform: uppercase; margin-bottom: 0.5rem; }
-.footer-tagline { font-size: 0.95rem; font-weight: 500; color: rgba(255,255,255,0.85); line-height: 1.6; margin-bottom: 1.5rem; }
-.footer-heading { font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; color: var(--brand-yellow); margin-bottom: 1.1rem; }
-.footer-links { display: flex; flex-direction: column; gap: 0.85rem; }
-.footer-links a, .footer-links span { color: rgba(255,255,255,0.85); text-decoration: none; font-weight: 600; font-size: 0.95rem; transition: color 0.2s; }
+
+/* Da telefono le tre colonne erano una sotto l'altra e tutte centrate: un
+   nastro lungo da scorrere, con due liste di quattro voci ciascuna che da
+   sole occupavano piu' di mezzo schermo. Ora la griglia e' a due colonne,
+   con il blocco identita' a tutta larghezza in cima e le due liste affiancate
+   sotto: stessa informazione, meta' altezza. Le colonne non sono uguali
+   perche' "Contatti" contiene l'indirizzo email, molto piu' largo delle voci
+   di menu, e con due colonne identiche andava a capo malamente.
+   Le due liste vanno a sinistra e non centrate: e' l'allineamento che le
+   rende leggibili una accanto all'altra. Il blocco identita' invece resta
+   centrato, vedi sotto. */
+.footer-grid { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 2.25rem 1.25rem; padding-bottom: 2.25rem; text-align: left; }
+/* Il blocco identita' fa eccezione e resta centrato: prende tutta la
+   larghezza, quindi allinearlo a sinistra come le due liste sotto lo
+   lasciava sbilanciato. Logo, nome, frase e social si centrano insieme.
+   Da 768px in su torna in colonna accanto alle altre e riprende
+   l'allineamento a sinistra come il resto della fila. */
+.footer-col-brand { grid-column: 1 / -1; text-align: center; }
+@media (min-width: 768px) {
+  .footer-grid { grid-template-columns: 1.5fr 1fr 1fr; gap: 2.5rem; padding-bottom: 3rem; }
+  .footer-col-brand { grid-column: auto; text-align: left; }
+}
+
+/* Logo + nome + ruolo come un blocco solo: il nome da solo non diceva chi e'
+   ne' cosa fa, ed era l'unico punto del sito dove il marchio non compariva. */
+.footer-identity { display: flex; align-items: center; justify-content: center; gap: 0.85rem; margin-bottom: 1rem; }
+@media (min-width: 768px) { .footer-identity { justify-content: flex-start; } }
+.footer-logo { width: 54px; height: 54px; flex-shrink: 0; }
+.footer-brand-title { font-family: 'Teko', 'Space Grotesk', sans-serif; color: var(--brand-yellow); font-size: 1.9rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.01em; line-height: 1; }
+.footer-brand-role { display: block; margin-top: 3px; font-size: 10.5px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.14em; color: rgba(255,255,255,0.7); }
+/* margin auto: con max-width la frase e' piu' stretta della colonna, quindi
+   senza questo resterebbe appoggiata a sinistra dentro un blocco centrato. */
+.footer-tagline { font-size: 0.95rem; font-weight: 500; color: rgba(255,255,255,0.82); line-height: 1.6; max-width: 46ch; margin-left: auto; margin-right: auto; }
+@media (min-width: 768px) { .footer-tagline { margin-left: 0; margin-right: 0; } }
+
+.footer-heading { font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; color: var(--brand-yellow); margin-bottom: 1rem; }
+.footer-links { display: flex; flex-direction: column; gap: 0.8rem; }
+/* overflow-wrap: l'email e' piu' lunga della colonna sui telefoni stretti e
+   senza questo sfonderebbe invece di andare a capo. align-items flex-start
+   tiene l'icona sulla prima riga quando il testo si spezza. */
+.footer-links a, .footer-links span { color: rgba(255,255,255,0.85); text-decoration: none; font-weight: 600; font-size: 0.92rem; line-height: 1.45; transition: color 0.2s; display: flex; align-items: flex-start; gap: 9px; overflow-wrap: anywhere; }
 .footer-links a:hover { color: var(--brand-yellow); }
-.footer-social { display: flex; justify-content: center; gap: 1.25rem; margin-top: 1.5rem; }
+.footer-links svg { width: 15px; height: 15px; flex-shrink: 0; color: var(--brand-yellow); opacity: 0.8; margin-top: 0.2em; }
+
+/* Pastiglie tonde da 44px invece delle icone nude: 44px e' la misura minima
+   di un bersaglio toccabile, e prima erano due icone da 26px senza area
+   cliccabile attorno, scomode da centrare col pollice. */
+.footer-social { display: flex; justify-content: center; gap: 0.7rem; margin-top: 1.35rem; }
 @media (min-width: 768px) { .footer-social { justify-content: flex-start; } }
-.footer-social a { color: var(--brand-yellow); transition: transform 0.2s; }
-.footer-social a:hover { transform: scale(1.1); }
-.footer-bottom { border-top: 1px solid rgba(255,255,255,0.15); padding: 1.5rem 0; text-align: center; font-size: 0.8rem; color: rgba(255,255,255,0.6); display: flex; flex-direction: column; gap: 0.5rem; }
+.footer-social a { width: 44px; height: 44px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: var(--brand-yellow); background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18); transition: var(--transition); }
+.footer-social a:hover { background: var(--brand-yellow); color: var(--brand-blue); border-color: var(--brand-yellow); }
+.footer-social svg { width: 21px; height: 21px; }
+
+.footer-bottom { border-top: 1px solid rgba(255,255,255,0.15); padding: 1.35rem 0; text-align: center; font-size: 0.78rem; color: rgba(255,255,255,0.6); display: flex; flex-direction: column; gap: 0.45rem; line-height: 1.6; }
 @media (min-width: 768px) { .footer-bottom { flex-direction: row; justify-content: space-between; text-align: left; } }
 
 /* PALLINO VERDE LAMPEGGIANTE
