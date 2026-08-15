@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Icona per la home screen: disco giallo pieno con le lettere blu su fondo
+     blu. iOS ritaglia l'icona con una maschera arrotondata e non gestisce la
+     trasparenza (diventerebbe nera), quindi il fondo e' opaco e il disco sta
+     dentro un margine di sicurezza. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" width="30" height="30">
+  <rect width="30" height="30" fill="#0044FF"/>
+  <circle cx="15" cy="15" r="13.2" fill="#ffd90f"/>
+  <!-- Lettere E R R E del logo, scalate e centrate sul disco -->
+  <g transform="translate(3.52 3.68) scale(0.76)" fill="#0044FF">
+    <path d="m5.41,16.46v-.94h2.85v-1.3h-2.85v-.9h3.15v-1.39H3.79v5.92h4.81v-1.39h-3.19Z"/>
+    <path d="m13.48,15.79c.73-.31,1.21-.92,1.21-1.82v-.02c0-.58-.17-1.04-.52-1.38-.4-.4-1.02-.64-1.93-.64h-2.8v5.92h1.64v-1.79h.72l1.19,1.79h1.9l-1.41-2.06Zm-.44-1.72c0,.43-.32.7-.88.7h-1.08v-1.42h1.08c.55,0,.88.24.88.7v.02Z"/>
+    <path d="m19.56,15.79c.74-.31,1.22-.92,1.22-1.82v-.02c0-.58-.17-1.04-.52-1.38-.4-.4-1.03-.64-1.93-.64h-2.8v5.92h1.64v-1.79h.72l1.19,1.79h1.9l-1.42-2.06Zm-.43-1.72c0,.43-.32.7-.88.7h-1.08v-1.42h1.07c.55,0,.89.24.89.7v.02Z"/>
+    <path d="m23.24,16.46v-.94h2.85v-1.3h-2.85v-.9h3.14v-1.39h-4.77v5.92h4.81v-1.39h-3.18Z"/>
+  </g>
+</svg>
