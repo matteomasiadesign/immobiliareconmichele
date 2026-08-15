@@ -6,6 +6,10 @@
   <title>Valutazione Gratuita - Immobiliare con Michele</title>
   <meta name="description" content="Scopri quanto vale il tuo immobile a Porto Torres e nel Nord Sardegna. Valutazione gratuita, senza impegno, con sopralluogo e report scritto.">
 
+  <meta name="theme-color" content="#0044FF">
+
+  <link rel="icon" href="logo.svg" type="image/svg+xml">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500..700&family=Teko:wght@400..700&display=swap" rel="stylesheet">
@@ -53,6 +57,25 @@
     .val-perk-icon svg { width: 16px; height: 16px; }
     .val-perk strong { display: block; font-size: 13px; font-weight: 800; color: var(--text-slate); }
     .val-perk span { font-size: 11.5px; color: var(--text-muted); font-weight: 500; }
+
+    /* ITER: COME FUNZIONA */
+    .val-iter { margin: 2.5rem 0; }
+    .val-iter-head { text-align: center; margin-bottom: 1.75rem; }
+    .val-iter-kicker { font-size: 11px; font-weight: 900; color: var(--brand-blue); text-transform: uppercase; letter-spacing: 0.08em; }
+    .val-iter-sub { font-size: 13px; color: var(--text-muted); font-weight: 500; margin-top: 5px; }
+    .val-iter-steps { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+    .val-iter-step { position: relative; display: flex; align-items: flex-start; gap: 14px; }
+    .val-iter-step::before { content: ''; position: absolute; left: 16px; top: 42px; bottom: -1.5rem; width: 2px; background: linear-gradient(180deg, var(--border-color), rgba(226,232,240,0.25)); }
+    .val-iter-step:last-child::before { display: none; }
+    .val-iter-num { width: 34px; height: 34px; border-radius: 50%; background: var(--brand-blue); color: var(--white); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900; flex-shrink: 0; box-shadow: 0 6px 14px -7px rgba(0,68,255,0.85); }
+    .val-iter-step:last-child .val-iter-num { background: var(--brand-green); box-shadow: 0 6px 14px -7px rgba(16,185,129,0.85); }
+    .val-iter-step strong { display: block; font-size: 14px; font-weight: 800; color: var(--text-slate); margin-bottom: 4px; }
+    .val-iter-step p { font-size: 12.5px; color: var(--text-muted); font-weight: 500; line-height: 1.55; }
+    @media (min-width: 768px) {
+      .val-iter-steps { grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+      .val-iter-step { flex-direction: column; align-items: center; text-align: center; gap: 12px; padding: 0 0.5rem; }
+      .val-iter-step::before { left: calc(50% + 26px); right: calc(-50% + 26px); top: 16px; bottom: auto; width: auto; height: 2px; background: var(--border-color); }
+    }
 
     /* FORM */
     .val-card { background: var(--white); border-radius: 28px; padding: 1.75rem 1.5rem; border: 1px solid var(--border-color); border-top: 4px solid var(--brand-green); box-shadow: 0 16px 40px -22px rgba(15,23,42,0.18); }
@@ -165,6 +188,36 @@
       <div class="val-perk">
         <span class="val-perk-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg></span>
         <div><strong>Report scritto</strong><span>Con prezzo consigliato</span></div>
+      </div>
+    </div>
+
+    <div class="val-iter reveal">
+      <div class="val-iter-head">
+        <div class="val-iter-kicker">Come funziona</div>
+        <p class="val-iter-sub">Tre passaggi, nessun impegno.</p>
+      </div>
+      <div class="val-iter-steps">
+        <div class="val-iter-step">
+          <span class="val-iter-num">1</span>
+          <div>
+            <strong>Compili il form</strong>
+            <p>Ti bastano due minuti. Più dettagli mi lasci sull'immobile, più la stima parte precisa.</p>
+          </div>
+        </div>
+        <div class="val-iter-step">
+          <span class="val-iter-num">2</span>
+          <div>
+            <strong>Ti ricontatto entro 24 ore</strong>
+            <p>Leggo la tua richiesta e ti chiamo io, per fissare il sopralluogo quando ti è comodo.</p>
+          </div>
+        </div>
+        <div class="val-iter-step">
+          <span class="val-iter-num">3</span>
+          <div>
+            <strong>Ricevi il tuo report</strong>
+            <p>Un documento scritto con la valutazione del tuo immobile e il prezzo consigliato per la vendita.</p>
+          </div>
+        </div>
       </div>
     </div>
 
