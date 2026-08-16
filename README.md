@@ -70,6 +70,12 @@ Sono scritti per essere sicuri da rieseguire (`IF NOT EXISTS`).
    gli incarichi puntano al proprietario in rubrica invece di ricordarne il nome
    come testo libero. Va **dopo** il punto 7, di cui usa la colonna `deleted_at`.
 
+Dopo aver applicato l'ultimo script, in **Documenti → Aggiorna rubrica** c'è un
+pulsante che rilegge gli incarichi e le proposte già salvati e ne porta in
+rubrica le persone: quei documenti hanno i contatti solo dentro di sé, perché
+sono stati compilati prima che la rubrica imparasse ad accoglierli. Si può
+premere quante volte si vuole — chi c'è già non viene duplicato.
+
 Il workflow `.github/workflows/keep-alive.yml` interroga il database ogni tre
 giorni: i progetti Supabase gratuiti vengono sospesi dopo un periodo di
 inattività, e questo lo tiene sveglio. Usa i secret `SUPABASE_URL` e

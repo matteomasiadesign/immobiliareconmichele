@@ -30,6 +30,13 @@
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.min.js"></script>
   <script src="config.js"></script>
+  <!-- Serve solo per portaInRubrica/personeDelDocumento: il gestionale usa
+       le stesse identiche funzioni di incarico.html e proposta.html per
+       riempire la rubrica dai documenti gia' salvati. Riscriverle qui
+       avrebbe voluto dire due deduplicazioni destinate a divergere.
+       Caricare il file non fa partire niente: initBozze la chiamano le
+       pagine dei documenti, non questa. -->
+  <script src="documenti.js"></script>
 
   <style>
     /* ============================================================
@@ -1378,6 +1385,11 @@
       <div class="panel-card" style="padding: 0;">
          <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap:wrap; gap:10px;">
             <h3 class="panel-title" style="margin:0;">Incarichi e proposte salvati</h3>
+            <!-- I documenti salvati prima che la rubrica imparasse ad
+                 accoglierli hanno le persone solo dentro di se': questo
+                 pulsante le tira fuori. Si puo' premere quante volte si
+                 vuole, chi c'e' gia' non viene duplicato. -->
+            <button type="button" onclick="sincronizzaRubricaDaDocumenti()" class="btn-submit btn-quiet" style="width:auto; padding:8px 14px; flex-shrink:0;">Aggiorna rubrica</button>
             <div style="display:flex; gap:10px; flex: 1; min-width: 260px;">
               <input type="text" id="doc-search" oninput="renderDocumentiList()" placeholder="Cerca per titolo..." class="form-input" style="flex: 1; min-width: 0; padding: 8px 12px;">
               <select id="doc-filter-tipo" onchange="renderDocumentiList()" class="form-select" style="flex: 0 0 auto; width: auto; padding: 8px 12px;">
@@ -4046,6 +4058,81 @@
             </div>
           </td>
         </tr>`).join('');
+    }
+
+    /* =======================================================
+       RECUPERO DELLE PERSONE DAI DOCUMENTI GIA' SALVATI
+
+       Da adesso ogni salvataggio porta le sue persone in rubrica, ma i
+       documenti firmati prima non lo sanno: nome, cellulare ed email di
+       quei proprietari e proponenti sono ancora solo dentro "dati".
+       Questo li recupera, usando le STESSE funzioni di documenti.js -
+       niente seconda deduplica che col tempo diverge dalla prima.
+       ======================================================= */
+    async function sincronizzaRubricaDaDocumenti() {
+        const daFare = documenti.length;
+        if (daFare === 0) { alert("Non ci sono documenti da cui recuperare contatti."); return; }
+
+        if (!confirm(
+            `Leggo i ${daFare} documenti salvati e porto in rubrica le persone che ci trovo.\n\n` +
+            `Chi c'è già non viene duplicato e i dati esistenti non vengono sovrascritti.\n\n` +
+            `Procedo?`
+        )) return;
+
+        showLoader("Lettura dei documenti...");
+
+        const rubricaPrima = buyers.length;
+        let documentiCollegati = 0, incarichiCollegati = 0, saltati = 0;
+
+        try {
+            for (const d of documenti) {
+                const { persone, principale } = personeDelDocumento(d.tipo, d.dati || {});
+                const ids = [];
+                for (const persona of persone) {
+                    ids.push(await portaInRubrica(_supabase, persona));
+                }
+
+                if (ids.every(x => !x)) { saltati++; continue; }
+
+                // Il documento si aggancia al suo cliente solo se non era
+                // gia' agganciato a qualcuno: un collegamento messo a mano
+                // vale piu' di uno dedotto adesso.
+                if (!d.buyer_id && ids[principale]) {
+                    await _supabase.from('documenti_bozze').update({ buyer_id: ids[principale] }).eq('id', d.id);
+                    documentiCollegati++;
+                }
+            }
+
+            await loadBuyers();
+            await loadDocumenti();
+
+            // Secondo giro: l'incarico di un immobile conosce il suo
+            // proprietario attraverso il documento firmato per quello stesso
+            // immobile. E' il collegamento che rende chiamabile la riga
+            // "incarico in scadenza" della Panoramica.
+            for (const t of transactions) {
+                if (t.owner_id || !t.property_id) continue;
+                const doc = documenti.find(x => x.tipo === 'incarico' && x.property_id == t.property_id && x.buyer_id);
+                if (!doc) continue;
+                await _supabase.from('transactions').update({ owner_id: doc.buyer_id }).eq('id', t.id);
+                incarichiCollegati++;
+            }
+
+            if (incarichiCollegati > 0) await loadTransactions();
+
+            const aggiunte = buyers.length - rubricaPrima;
+            alert(
+                'Rubrica aggiornata.\n\n' +
+                `• ${aggiunte} ${aggiunte === 1 ? 'persona aggiunta' : 'persone aggiunte'}\n` +
+                `• ${documentiCollegati} ${documentiCollegati === 1 ? 'documento collegato' : 'documenti collegati'} al proprio cliente\n` +
+                `• ${incarichiCollegati} ${incarichiCollegati === 1 ? 'incarico collegato' : 'incarichi collegati'} al proprietario\n` +
+                (saltati > 0 ? `\n${saltati} ${saltati === 1 ? 'documento non aveva' : 'documenti non avevano'} nome e recapito: ${saltati === 1 ? 'saltato' : 'saltati'}.` : '')
+            );
+        } catch (err) {
+            alert("Errore durante l'aggiornamento della rubrica:\n" + err.message);
+        } finally {
+            hideLoader();
+        }
     }
 
     function openDeleteDocModal(id) {
