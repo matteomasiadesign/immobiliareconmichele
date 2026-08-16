@@ -18,6 +18,26 @@
   <meta name="apple-mobile-web-app-title" content="Immobiliare">
   <link rel="manifest" href="manifest.webmanifest">
 
+  <!-- ANTEPRIMA QUANDO IL LINK VIENE CONDIVISO (WhatsApp, Facebook, iMessage...)
+       Senza questi tag chi legge il link ripiega sulla favicon, e si vedeva il
+       logo. og-image.jpg e' una fotografia della hero: si rigenera con lo
+       script descritto nel README, non va ridisegnata a mano.
+       Gli URL qui sotto devono restare ASSOLUTI: i crawler non eseguono
+       JavaScript e molti non risolvono i percorsi relativi, WhatsApp per
+       primo, e in quel caso l'anteprima resta senza immagine. -->
+  <meta name="description" content="Michele Erre, professionista immobiliare a Porto Torres. Da oltre dieci anni affianco famiglie e imprenditori in tutto il Nord Sardegna: case in vendita e valutazioni gratuite.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Immobiliare con Michele">
+  <meta property="og:locale" content="it_IT">
+  <meta property="og:url" content="https://immobiliareconmichele.vercel.app/">
+  <meta property="og:title" content="Immobiliare con Michele - Casa a Porto Torres e nel Nord Sardegna">
+  <meta property="og:description" content="Michele Erre, professionista immobiliare a Porto Torres. Da oltre dieci anni affianco famiglie e imprenditori in tutto il Nord Sardegna: case in vendita e valutazioni gratuite.">
+  <meta property="og:image" content="https://immobiliareconmichele.vercel.app/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Michele Erre davanti alla scritta Benvenuti a Casa">
+  <meta name="twitter:card" content="summary_large_image">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500..700&family=Teko:wght@400..700&display=swap" rel="stylesheet">

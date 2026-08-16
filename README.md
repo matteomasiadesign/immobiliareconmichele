@@ -68,6 +68,7 @@ lì **oltre** che in `config.js`.
 - `logo.svg` — marchio, usato da tutte le pagine e come favicon
 - `michele.webp` — ritratto brandizzato, sia nell'hero sia nel riquadro contatti
 - `app-icon.svg` — **sorgente** delle icone dell'app, non referenziato dalle pagine
+- `og-image.jpg` — anteprima mostrata quando si condivide il link del sito
 
 Da `app-icon.svg` si generano i tre file raster citati in
 `manifest.webmanifest` e nel `<head>` delle pagine. Con
@@ -81,3 +82,25 @@ magick -background none app-icon.svg -resize 180x180 apple-touch-icon.png
 
 Se si cambia il marchio vanno rigenerati tutti e tre, altrimenti chi ha già
 aggiunto il sito alla schermata home continua a vedere l'icona vecchia.
+
+### L'anteprima social
+
+`og-image.jpg` è ciò che appare quando il link del sito viene incollato in
+WhatsApp, Facebook o iMessage. È uno **screenshot della hero vera**, non un
+fotomontaggio: `og-image.js` apre `index.html` in Chrome alla misura giusta e
+la fotografa a 1200x630. Quando la hero cambia si rigenera così:
+
+```sh
+npm install puppeteer-core
+node og-image.js
+npm uninstall puppeteer-core   # il sito non ne ha bisogno
+```
+
+I `<meta property="og:*">` in cima a `index.html` puntano all'immagine con un
+URL **assoluto**: i crawler non eseguono JavaScript e parecchi, WhatsApp in
+testa, non risolvono i percorsi relativi. Se il sito cambia dominio vanno
+aggiornati a mano.
+
+Le anteprime restano in cache dal lato del social, a volte per settimane: dopo
+un aggiornamento si forza la rilettura con il
+[debugger di Facebook](https://developers.facebook.com/tools/debug/).
