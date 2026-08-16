@@ -56,7 +56,12 @@ Sono scritti per essere sicuri da rieseguire (`IF NOT EXISTS`).
 3. `supabase-documenti-bozze.sql` — tabella `documenti_bozze` (incarichi e proposte salvati)
 4. `supabase-buyers-source-tracking.sql` — origine dei contatti e messaggi da leggere
 5. `supabase-valutazioni.sql` — distingue le richieste di valutazione dai contatti generici
-6. `supabase-crm-upgrade.sql` — email e promemoria di richiamo sulla rubrica,
+6. `supabase-fix-properties-rls.sql` — correzione: `properties` risultava
+   leggibile da chiunque avesse la chiave pubblica. Cancella **tutte** le policy
+   della tabella senza doverne indovinare il nome e ricrea solo quelle per
+   utenti autenticati. Il sito pubblico non se ne accorge: legge dalla vista
+   `properties_public`, non dalla tabella.
+7. `supabase-crm-upgrade.sql` — email e promemoria di richiamo sulla rubrica,
    collegamento dei documenti a immobile e cliente, colonna `deleted_at` per il
    cestino. Stringe anche l'unico permesso pubblico su `buyers`: da fuori si può
    solo inserire una richiesta marcata `source='sito'`.
