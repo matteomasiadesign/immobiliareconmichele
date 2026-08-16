@@ -113,9 +113,20 @@
 .card-badge-contract.vendita { background-color: var(--brand-yellow); color: var(--brand-blue); border: 2px solid var(--white); }
 .card-badge-contract.affitto { background-color: var(--brand-blue); color: var(--white); border: 2px solid var(--brand-yellow); }
 
-/* BADGE Reel: indicatore video in alto a destra sulla foto, apre Instagram */
-.card-badge-reel { position: absolute; top: 10px; right: 10px; z-index: 10; width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: var(--white); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.2); transition: var(--transition); }
-.card-badge-reel:hover { transform: scale(1.12); }
+/* BADGE in alto a destra sulla foto: il Reel (se l'annuncio ce l'ha) e la
+   condivisione. Stanno in un contenitore flex invece di essere posizionati
+   entrambi in assoluto: il Reel c'e' solo su alcuni annunci, e con due `right`
+   fissi il pulsante condividi avrebbe dovuto sapere se il vicino esiste. Cosi'
+   si dispongono da soli e restano allineati in entrambi i casi. */
+.card-badges { position: absolute; top: 10px; right: 10px; z-index: 10; display: flex; align-items: center; gap: 8px; }
+.card-badge-reel,
+.card-badge-share { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.2); transition: var(--transition); }
+.card-badge-reel { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: var(--white); }
+/* Bianco pieno, non un vetro trasparente: sotto ci passa la foto dell'annuncio,
+   che puo' essere di qualsiasi colore, e l'icona deve restare leggibile sempre. */
+.card-badge-share { background: var(--white); color: var(--brand-blue); border: none; padding: 0; cursor: pointer; }
+.card-badge-reel:hover,
+.card-badge-share:hover { transform: scale(1.12); }
 
 .card-title { font-family: 'Space Grotesk', -apple-system, sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--text-slate); margin-top: 0.5rem; margin-bottom: 0.5rem; line-height: 1.25; }
 .card-zone { color: var(--brand-blue); font-size: 12px; font-weight: 800; display: flex; align-items: center; gap: 4px; margin-bottom: 1rem; }
