@@ -16,6 +16,137 @@
  * rispettive pagine, perche' sono atti con una struttura burocratica precisa.
  */
 
+/* =====================================================================
+ * DALLE PERSONE DEL DOCUMENTO ALLA RUBRICA
+ *
+ * Incarico e proposta chiedono nome, cellulare, telefono ed email di chi
+ * firma. Finora quei dati restavano sepolti dentro "dati" e la rubrica non
+ * li vedeva: ci finiva solo chi compilava un modulo sul sito, cioe' il
+ * contatto meno impegnato, mentre il proprietario che firmava un incarico
+ * no. Da qui in poi ogni salvataggio porta quelle persone in rubrica.
+ *
+ * Non vengono copiati codice fiscale, documento e data di nascita: servono
+ * all'atto e nell'atto restano. La rubrica e' un'agenda di contatti, non
+ * un secondo archivio di dati identificativi.
+ * ===================================================================== */
+
+/**
+ * Ultime nove cifre del numero: "349 123 45 67", "+39 3491234567" e
+ * "0039 349 1234567" sono la stessa persona, e vanno riconosciute come
+ * tale invece di creare tre schede.
+ */
+function chiaveTelefono(tel) {
+    const cifre = (tel || '').replace(/\D/g, '');
+    return cifre.length >= 6 ? cifre.slice(-9) : null;
+}
+
+const emailNormalizzata = e => (e || '').trim().toLowerCase() || null;
+
+/**
+ * Se la persona compare in due documenti con ruoli diversi (ti ha venduto
+ * casa e adesso ne compra un'altra) non si sceglie: e' entrambi.
+ */
+function ruoloUnito(vecchio, nuovo) {
+    if (!vecchio || vecchio === nuovo) return nuovo;
+    return 'entrambi';
+}
+
+/**
+ * Inserisce o aggiorna una persona in rubrica e ne restituisce l'id.
+ *
+ * @returns {Promise<string|null>} id della scheda, o null se non c'era
+ *          abbastanza per crearne una.
+ */
+async function portaInRubrica(supabase, { nome, cell, tel, email, ruolo }) {
+    const fullName = (nome || '').trim();
+    const telefono = (cell || '').trim() || (tel || '').trim();
+    const posta = emailNormalizzata(email);
+
+    // Un nome senza nessun recapito non e' un contatto: e' rumore. Le bozze
+    // si salvano anche compilate a meta', e non devono riempire la rubrica
+    // di schede su cui non si puo' fare niente.
+    if (!fullName || (!telefono && !posta)) return null;
+
+    // La rubrica di un'agenzia sta in poche centinaia di righe: si leggono
+    // tutte e si confronta in memoria, perche' i numeri sono scritti ogni
+    // volta in un formato diverso e nessun confronto SQL li riconoscerebbe.
+    const { data: esistenti, error } = await supabase
+        .from('buyers')
+        .select('id, full_name, phone, email, ruolo, notes')
+        .is('deleted_at', null);
+    if (error) { console.error('Rubrica non leggibile:', error); return null; }
+
+    const chiave = chiaveTelefono(telefono);
+    const gia = (esistenti || []).find(b =>
+        (chiave && chiaveTelefono(b.phone) === chiave) ||
+        (posta && emailNormalizzata(b.email) === posta)
+    );
+
+    if (gia) {
+        // Si riempiono solo i buchi. Quello che c'e' gia' in rubrica e'
+        // stato scritto o corretto a mano, e un documento compilato di
+        // fretta non deve sovrascriverlo.
+        const patch = {};
+        if (!gia.phone && telefono) patch.phone = telefono;
+        if (!gia.email && posta) patch.email = posta;
+        const unito = ruoloUnito(gia.ruolo, ruolo);
+        if (unito !== gia.ruolo) patch.ruolo = unito;
+
+        if (Object.keys(patch).length > 0) {
+            await supabase.from('buyers').update(patch).eq('id', gia.id);
+        }
+        return gia.id;
+    }
+
+    const { data: creato, error: erroreInserimento } = await supabase
+        .from('buyers')
+        .insert([{
+            full_name: fullName,
+            phone: telefono || null,
+            email: posta,
+            status: 'Attivo',
+            ruolo: ruolo,
+            source: 'documento',
+            is_read: true,          // non e' una richiesta da leggere: l'hai davanti
+            notes: 'Aggiunto in automatico da un documento del gestionale.'
+        }])
+        .select('id')
+        .single();
+
+    if (erroreInserimento) { console.error('Rubrica, inserimento fallito:', erroreInserimento); return null; }
+    return creato.id;
+}
+
+/**
+ * Le persone di un documento, con il ruolo che hanno in quell'atto.
+ * L'incarico ha solo il proprietario; la proposta ha il proponente che
+ * compra e il venditore che vende.
+ *
+ * @returns {{persone: object[], principale: number}} "principale" e'
+ *          l'indice di chi va agganciato al documento come suo cliente.
+ */
+function personeDelDocumento(tipo, dati) {
+    if (tipo === 'incarico') {
+        return {
+            persone: [{
+                nome: dati.propNome, cell: dati.propCell, tel: dati.propTel,
+                email: dati.propEmail, ruolo: 'venditore'
+            }],
+            principale: 0
+        };
+    }
+    return {
+        persone: [
+            { nome: dati.proponenteNome, cell: dati.proponenteCell, tel: dati.proponenteTel,
+              email: dati.proponenteEmail, ruolo: 'acquirente' },
+            { nome: dati.venditoreNome, cell: '', tel: dati.venditoreTel,
+              email: dati.venditoreEmail, ruolo: 'venditore' }
+        ],
+        // Il "cliente" di una proposta e' chi la firma: il proponente.
+        principale: 0
+    };
+}
+
 /**
  * Collega il salvataggio bozze a un modulo documento.
  *
@@ -90,6 +221,25 @@ function initBozze({ tipo, supabase, form, loading, ricavaTitolo, generaPDF, dop
     async function salvaBozza(showAlert = true) {
         const dati = Object.fromEntries(new FormData(form));
         const nowIso = new Date().toISOString();
+
+        // Le persone del documento entrano in rubrica prima del salvataggio,
+        // cosi' il documento nasce gia' agganciato alla scheda del suo
+        // cliente. Se qualcosa va storto qui la bozza si salva lo stesso:
+        // perdere il documento perche' la rubrica ha singhiozzato sarebbe
+        // molto peggio di non aver aggiornato un contatto.
+        try {
+            const { persone, principale } = personeDelDocumento(tipo, dati);
+            const ids = [];
+            for (const persona of persone) {
+                ids.push(await portaInRubrica(supabase, persona));
+            }
+            if (!collegamenti.buyer_id && ids[principale]) {
+                collegamenti.buyer_id = ids[principale];
+            }
+        } catch (err) {
+            console.error('Rubrica non aggiornata da questo documento:', err);
+        }
+
         const payload = {
             tipo, titolo: ricavaTitolo(dati), dati, updated_at: nowIso,
             property_id: collegamenti.property_id,

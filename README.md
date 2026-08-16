@@ -65,6 +65,10 @@ Sono scritti per essere sicuri da rieseguire (`IF NOT EXISTS`).
    collegamento dei documenti a immobile e cliente, colonna `deleted_at` per il
    cestino. Stringe anche l'unico permesso pubblico su `buyers`: da fuori si può
    solo inserire una richiesta marcata `source='sito'`.
+8. `supabase-rubrica-unificata.sql` — la rubrica smette di essere solo
+   "acquirenti": ogni persona ha un ruolo (acquirente / venditore / entrambi) e
+   gli incarichi puntano al proprietario in rubrica invece di ricordarne il nome
+   come testo libero. Va **dopo** il punto 7, di cui usa la colonna `deleted_at`.
 
 Il workflow `.github/workflows/keep-alive.yml` interroga il database ogni tre
 giorni: i progetti Supabase gratuiti vengono sospesi dopo un periodo di

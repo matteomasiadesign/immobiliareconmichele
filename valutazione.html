@@ -473,6 +473,10 @@
         phone: phone,
         email: email || null,
         status: 'Attivo',
+        // Chi chiede quanto vale casa sua sta pensando di venderla: in
+        // rubrica e' un venditore, non uno che cerca casa. Prima finivano
+        // tutti nello stesso mucchio.
+        ruolo: 'venditore',
         desired_zone: zone,
         desired_type: type,
         notes: noteParts.join('\n\n'),

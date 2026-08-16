@@ -1650,8 +1650,15 @@
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label">Nome Proprietario</label>
-            <input type="text" id="trans-owner" class="form-input" placeholder="es. Mario Rossi">
+            <label class="form-label">Proprietario</label>
+            <!-- Collegandolo alla rubrica l'incarico si porta dietro il
+                 numero di telefono: senza, "Da fare" sa dirti che scade
+                 ma non da chi devi passare. -->
+            <select id="trans-owner-id" class="form-select" onchange="onTransactionOwnerChange()">
+              <option value="">— Scrivi il nome a mano —</option>
+            </select>
+            <input type="text" id="trans-owner" class="form-input" placeholder="es. Mario Rossi" style="margin-top:8px;">
+            <p class="form-hint" id="trans-owner-hint"></p>
           </div>
           <div class="form-group">
             <label class="form-label">Durata Incarico</label>
@@ -1716,6 +1723,16 @@
             <input type="text" id="buyer-name" class="form-input" required>
           </div>
           <div class="form-group">
+            <label class="form-label">Ruolo</label>
+            <select id="buyer-ruolo" class="form-select">
+              <option value="acquirente">Cerca casa</option>
+              <option value="venditore">Vende casa</option>
+              <option value="entrambi">Vende e cerca</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
             <label class="form-label">Stato</label>
             <select id="buyer-status" class="form-select">
               <option value="Attivo">Ricerca Attiva</option>
@@ -1723,22 +1740,22 @@
               <option value="Non interessato">Non interessato</option>
             </select>
           </div>
-        </div>
-        <div class="form-row">
           <div class="form-group">
             <label class="form-label">Telefono</label>
             <input type="text" id="buyer-phone" class="form-input" required>
           </div>
+        </div>
+        <div class="form-row">
           <div class="form-group">
             <label class="form-label">Email</label>
             <input type="email" id="buyer-email" class="form-input" placeholder="facoltativa">
           </div>
-        </div>
-        <div class="form-row">
           <div class="form-group">
             <label class="form-label">Budget Max (€)</label>
             <input type="number" id="buyer-budget" class="form-input">
           </div>
+        </div>
+        <div class="form-row">
           <div class="form-group">
             <label class="form-label">Da richiamare il</label>
             <input type="date" id="buyer-next-action" class="form-input">
@@ -2909,6 +2926,39 @@
         sel.value = selectedId || "";
     }
 
+    // Riempie la tendina "Proprietario" con chi in rubrica puo' vendere.
+    // Gli acquirenti puri restano fuori: non sono mai il proprietario di
+    // un incarico, e allungherebbero l'elenco senza motivo.
+    function renderOwnerOptions(selectedId) {
+        const sel = document.getElementById('trans-owner-id');
+        const venditori = buyers
+            .filter(b => b.ruolo === 'venditore' || b.ruolo === 'entrambi')
+            .sort((a, b) => a.full_name.localeCompare(b.full_name, 'it'));
+        sel.innerHTML = '<option value="">— Scrivi il nome a mano —</option>' +
+            venditori.map(b => `<option value="${b.id}">${escapeHtml(b.full_name)}${b.phone ? ' · ' + escapeHtml(b.phone) : ''}</option>`).join('');
+        sel.value = selectedId || "";
+        aggiornaNotaProprietario();
+    }
+
+    // Scegliendo una persona dalla rubrica il nome si allinea da solo: due
+    // campi che dicono la stessa cosa in modo diverso sarebbero peggio di
+    // uno solo.
+    function onTransactionOwnerChange() {
+        const id = document.getElementById('trans-owner-id').value;
+        const b = buyers.find(x => x.id == id);
+        if (b) document.getElementById('trans-owner').value = b.full_name;
+        aggiornaNotaProprietario();
+    }
+
+    function aggiornaNotaProprietario() {
+        const id = document.getElementById('trans-owner-id').value;
+        const b = buyers.find(x => x.id == id);
+        const nota = document.getElementById('trans-owner-hint');
+        nota.innerHTML = b
+            ? `In rubrica: ${b.phone ? `<a href="tel:${b.phone.replace(/[^\d+]/g, '')}" class="link-tel">${escapeHtml(b.phone)}</a>` : 'nessun telefono'}${b.email ? ' · ' + escapeHtml(b.email) : ''}`
+            : 'Non collegato alla rubrica: da "Da fare" non potrai chiamarlo.';
+    }
+
     // Selezionando un immobile dalla tendina, precompilo titolo/prezzo/data
     // acquisizione (restano comunque modificabili a mano).
     function onTransactionPropertyLinkChange() {
@@ -2929,6 +2979,7 @@
         document.getElementById('trans-duration').value = "6 mesi";
         document.getElementById('trans-modal-title').innerText = "Nuovo Incarico";
         renderPropertyLinkOptions();
+        renderOwnerOptions();
         toggleTransactionFields();
         document.getElementById('modal-transaction').style.display = 'flex';
     }
@@ -2951,6 +3002,7 @@
         document.getElementById('trans-modal-title').innerText = "Modifica Incarico";
 
         renderPropertyLinkOptions(t.property_id);
+        renderOwnerOptions(t.owner_id);
         toggleTransactionFields();
         document.getElementById('modal-transaction').style.display = 'flex';
     }
@@ -2992,7 +3044,8 @@
             commission_buyer_perc: Number(document.getElementById('trans-comm-buyer').value),
             sale_date: status === 'Venduto' ? document.getElementById('trans-sale-date').value : null,
             final_price: status === 'Venduto' ? Number(document.getElementById('trans-final-price').value) : null,
-            property_id: document.getElementById('trans-property-link').value || null
+            property_id: document.getElementById('trans-property-link').value || null,
+            owner_id: document.getElementById('trans-owner-id').value || null
         };
 
         try {
@@ -3339,7 +3392,13 @@
     }
 
     // Restituisce null se non c'e' abbinamento, altrimenti perche' c'e'.
+    // Chi in rubrica sta cercando casa. Un venditore ha dato i suoi dati
+    // per firmare un incarico, non per ricevere proposte: senza questo
+    // controllo i proprietari comparirebbero fra i "clienti che lo cercano".
+    const cercaCasa = b => b.ruolo === 'venditore' ? false : true;
+
     function valutaAbbinamento(p, b) {
+        if (!cercaCasa(b)) return null;
         if (b.status !== 'Attivo') return null;                 // ha gia' comprato o ha detto di no
         if (transactions.some(t => t.property_id == p.id && t.status === 'Venduto')) return null;
 
@@ -3601,6 +3660,14 @@
                      : giorni === 0 ? 'scade oggi'
                      : giorni === 1 ? 'scade domani'
                      : `scade tra ${giorni} giorni`;
+        // Il numero del proprietario arriva dalla sua scheda in rubrica.
+        // Senza collegamento resta solo il nome, e questa riga sa dirti che
+        // l'incarico scade ma non da chi devi passare: e' il motivo per cui
+        // gli incarichi hanno imparato a puntare a una persona vera.
+        const prop = t.owner_id ? buyers.find(b => b.id == t.owner_id) : null;
+        const tel = prop && prop.phone ? prop.phone.replace(/[^\d+]/g, '') : null;
+        const nome = (prop && prop.full_name) || t.owner_name;
+
         return `
         <div class="item-row">
             <div class="item-info">
@@ -3609,7 +3676,9 @@
                       <span class="status-badge ${giorni < 0 ? 'bg-red' : 'bg-orange'}" style="margin-left:6px;">Incarico ${quando}</span>
                     </p>
                     <p class="item-details-text">
-                      ${t.owner_name ? `Proprietario: ${escapeHtml(t.owner_name)} · ` : ''}da rinnovare o ritirare
+                      ${nome ? escapeHtml(nome) + ' · ' : ''}${tel
+                        ? `<a href="tel:${tel}" class="link-tel">${escapeHtml(prop.phone)}</a>`
+                        : '<span class="cell-sub">nessun recapito in rubrica</span>'}
                     </p>
                 </div>
             </div>
@@ -3714,6 +3783,20 @@
         `).join('');
     }
 
+    // "In Ricerca" su un proprietario che ti ha dato l'incarico non vuol
+    // dire niente: la pastiglia dello stato va letta insieme al ruolo.
+    function badgeStato(b) {
+        if (b.status === 'Trovato') {
+            return b.ruolo === 'venditore'
+                ? '<span class="status-badge bg-green">Ha venduto</span>'
+                : '<span class="status-badge bg-green">Ha comprato</span>';
+        }
+        if (b.status !== 'Attivo') return '<span class="status-badge bg-red">Non Int.</span>';
+        if (b.ruolo === 'venditore') return '<span class="status-badge bg-yellow">Vende</span>';
+        if (b.ruolo === 'entrambi')  return '<span class="status-badge bg-yellow">Vende e cerca</span>';
+        return '<span class="status-badge bg-blue">In Ricerca</span>';
+    }
+
     // Pastiglia del richiamo: rossa se e' passata la data, gialla se e'
     // oggi, niente se e' ancora avanti (non e' una cosa da fare adesso).
     function badgeRichiamo(b) {
@@ -3743,7 +3826,7 @@
       }
 
       filtered.forEach(b => {
-        let badge = b.status==='Attivo'?'<span class="status-badge bg-blue">In Ricerca</span>':(b.status==='Trovato'?'<span class="status-badge bg-green">Trovato</span>':'<span class="status-badge bg-red">Non Int.</span>');
+        let badge = badgeStato(b);
         const isNewLead = b.source === 'sito' && !b.is_read;
         // Il promemoria di richiamo si vede anche qui, non solo in
         // Panoramica: la rubrica e' il posto in cui si finisce quando si
@@ -3751,7 +3834,8 @@
         const leadTags = (isNewLead ? ' <span class="status-badge bg-red">Nuovo</span>' : '')
           + badgeRichiamo(b)
           + (b.request_type === 'valutazione' ? ' <span class="status-badge bg-green">Valutazione</span>' : '')
-          + (b.source === 'sito' ? ' <span class="status-badge bg-orange">Dal Sito</span>' : '');
+          + (b.source === 'sito' ? ' <span class="status-badge bg-orange">Dal Sito</span>' : '')
+          + (b.source === 'documento' ? ' <span class="status-badge bg-blue">Da documento</span>' : '');
 
         let notesHTML = b.notes ? escapeHtml(b.notes).replace(/\n/g, '<br>') : '<i>Nessuna nota presente.</i>';
         // Quanti immobili in vetrina somigliano a quello che cerca.
@@ -3769,7 +3853,7 @@
              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10l9-7 9 7v10a1 1 0 01-1 1H4a1 1 0 01-1-1z"></path></svg>
              ${adatti} ${adatti === 1 ? 'immobile adatto' : 'immobili adatti'}
            </button>` : ''}</td>
-          <td data-cell="info" data-label="Cosa cerca"><span class="cell-value">${escapeHtml(b.desired_type||'-')} <span class="cell-sub">(${escapeHtml(b.desired_zone||'Ovunque')})</span></span></td>
+          <td data-cell="info" data-label="${cercaCasa(b) ? 'Cosa cerca' : 'Immobile'}"><span class="cell-value">${escapeHtml(b.desired_type||'-')} <span class="cell-sub">(${escapeHtml(b.desired_zone||(cercaCasa(b) ? 'Ovunque' : '—'))})</span></span></td>
           <td data-cell="info" data-label="Budget"><span class="cell-value">${b.max_budget ? '€'+b.max_budget.toLocaleString('it-IT') : '-'}</span></td>
           <td data-cell="azioni" style="text-align:center;" onclick="event.stopPropagation()">
              <div class="action-buttons" style="justify-content:flex-end;">
@@ -3799,6 +3883,7 @@
         document.getElementById('buyer-id').value = "";
         document.querySelector('#modal-buyer form').reset();
         document.getElementById('buyer-status').value = "Attivo";
+        document.getElementById('buyer-ruolo').value = 'acquirente';
         document.getElementById('buyer-last-contact-hint').innerText = '';
         document.getElementById('buyer-modal-title').innerText = "Nuovo Cliente";
         document.getElementById('modal-buyer').style.display = 'flex';
@@ -3811,6 +3896,7 @@
         document.getElementById('buyer-id').value = b.id;
         document.getElementById('buyer-name').value = b.full_name;
         document.getElementById('buyer-status').value = b.status;
+        document.getElementById('buyer-ruolo').value = b.ruolo || 'acquirente';
         document.getElementById('buyer-phone').value = b.phone;
         document.getElementById('buyer-email').value = b.email||"";
         document.getElementById('buyer-budget').value = b.max_budget||"";
@@ -3835,6 +3921,7 @@
         const payload = {
             full_name: document.getElementById('buyer-name').value,
             status: document.getElementById('buyer-status').value,
+            ruolo: document.getElementById('buyer-ruolo').value,
             phone: document.getElementById('buyer-phone').value,
             email: document.getElementById('buyer-email').value || null,
             max_budget: Number(document.getElementById('buyer-budget').value)||null,

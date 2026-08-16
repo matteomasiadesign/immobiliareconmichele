@@ -905,6 +905,11 @@
       // quel caso: altrimenti finirebbero in rubrica i residui di una
       // scelta cambiata a meta' compilazione.
       const cercaCasa = interest === 'Cerco casa';
+      // Il ruolo si deduce da cosa ha scelto: chi vende o chiede una
+      // valutazione non e' un acquirente, e metterli tutti nello stesso
+      // mucchio faceva comparire i venditori fra i "clienti in cerca".
+      const ruolo = (interest === 'Vendo casa' || interest === 'Voglio una valutazione')
+        ? 'venditore' : 'acquirente';
       const zone = cercaCasa ? document.getElementById('contact-zone').value.trim() : '';
       const type = cercaCasa ? document.getElementById('contact-type').value.trim() : '';
       const budget = cercaCasa ? Number(document.getElementById('contact-budget').value) || null : null;
@@ -922,6 +927,7 @@
         phone: phone,
         email: email || null,
         status: 'Attivo',
+        ruolo: ruolo,
         desired_zone: zone || null,
         desired_type: type || null,
         max_budget: budget,
