@@ -597,6 +597,10 @@
 
     /* ---------- TABELLE ---------- */
     .data-table-container { background: var(--surface); border-radius: var(--radius-lg); border: 1px solid var(--line); overflow-x: auto; }
+    /* Elenco lungo che scorre dentro al pannello invece di allungare la
+       pagina. Da telefono viene disattivato: due scroll annidati nello
+       stesso schermo sono una trappola per il dito. */
+    .table-scroll { border: none; max-height: 600px; overflow-y: auto; }
     .data-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; min-width: 600px; }
     .data-table th {
       position: sticky; top: 0; z-index: 10; background: var(--surface-2); padding: .8rem 1rem;
@@ -605,6 +609,10 @@
     }
     .data-table td { padding: .85rem 1rem; border-bottom: 1px solid var(--line-soft); color: var(--ink); vertical-align: middle; word-break: break-word; }
     .data-table tr:hover td { background-color: var(--surface-2); }
+    /* Il dato di contorno di una cella (il telefono sotto il nome, la zona
+       accanto alla tipologia). Prima era "color:gray" scritto a mano riga
+       per riga: in tema scuro spariva contro il fondo. */
+    .cell-sub { font-size: 11px; color: var(--ink-3); }
 
     .status-badge {
       display: inline-block; padding: 3px 9px; border-radius: 999px; font-size: 10.5px;
@@ -615,6 +623,10 @@
     .bg-red { background: var(--crit-bg); color: var(--crit); }
     .bg-yellow { background: var(--warn-bg); color: var(--warn); }
     .bg-orange { background: var(--warn-bg); color: var(--warn); }
+    /* "Venduto" sulle schede immobile: pieno invece che tenue, perche' li'
+       convive con "Vendita"/"Affitto" e non deve sembrare un terzo tipo di
+       contratto ma il fatto compiuto. */
+    .bg-sold { background: var(--good); color: var(--surface); }
 
     /* ---------- SCHELETRI E STATI VUOTI ----------
        Il velo nero su tutta la pagina faceva aspettare al buio: lo scheletro
@@ -693,11 +705,30 @@
     .dropdown-item.delete:hover { background-color: var(--crit-bg); }
 
     .clickable-row { cursor: pointer; }
+    /* L'apertura delle note passa da una classe e non piu' da uno style
+       inline: cosi' il layout a schede del telefono puo' ridefinire il
+       display della riga senza doverlo strappare con !important. */
+    .notes-row { display: none; }
+    .notes-row.open { display: table-row; }
+    .data-table tr.notes-row td { background: transparent; }
     .notes-content { max-height: 0; overflow: hidden; transition: max-height .35s ease-in-out; }
     .notes-content.expanded { max-height: 300px; }
     .notes-box {
       margin: 0 16px 16px; padding: 12px 16px; background-color: var(--surface-2); font-size: 13px;
       color: var(--ink); border-left: 3px solid var(--brand-yellow); border-radius: 8px;
+    }
+
+    /* ---------- CONFERME IN DUE PASSI ----------
+       Per cio' che non si puo' recuperare un solo tocco e' troppo poco:
+       il secondo passo nomina la cosa che sta per sparire, cosi' la
+       conferma e' una lettura e non un riflesso. */
+    .confirm-step-2 { display: none; }
+    .confirm-card.step-2 .confirm-step-1 { display: none; }
+    .confirm-card.step-2 .confirm-step-2 { display: block; }
+    .confirm-name { color: var(--ink); font-weight: 600; }
+    .confirm-warn {
+      font-size: 12.5px; color: var(--crit); background: var(--crit-bg);
+      border-radius: 9px; padding: 9px 11px; margin-bottom: 16px; text-align: left;
     }
 
     /* ============================================================
@@ -773,6 +804,86 @@
     /* Un contenitore vuoto in un flex con gap lascia comunque il suo spazio:
        finche' non c'e' un filtro attivo, deve sparire del tutto. */
     #trans-active-filter:empty { display: none; }
+
+    /* ============================================================
+       TABELLE CHE DIVENTANO SCHEDE (sotto i 700px)
+       Cinque colonne dentro 360px chiedevano di trascinare la tabella di
+       lato per arrivare al budget, e intanto i nomi lunghi si spezzavano
+       una parola per riga. Sotto i 700px l'intestazione sparisce e ogni
+       riga diventa una scheda: ogni dato si porta dietro la sua etichetta,
+       occupa tutta la larghezza e non si scorre piu' in orizzontale.
+       ============================================================ */
+    @media (max-width: 700px) {
+      /* Niente scroll dentro lo scroll: da telefono la pagina scorre e basta.
+         (overflow va azzerato su tutti e due gli assi: se ne resta uno su
+         "auto" il browser riporta anche l'altro a "auto".) */
+      .table-scroll { max-height: none; overflow: visible; }
+
+      .data-table--stack { display: block; min-width: 0; }
+      .data-table--stack thead { display: none; }
+      .data-table--stack tbody { display: block; }
+
+      .data-table--stack tbody tr {
+        display: grid; grid-template-columns: minmax(0, 1fr) auto;
+        align-items: start; gap: 7px 10px;
+        margin: 10px; padding: 12px 13px;
+        border: 1px solid var(--line); border-radius: 14px; background: var(--surface);
+      }
+      .data-table--stack tbody tr:hover td { background: none; }
+
+      .data-table--stack td {
+        display: block; grid-column: 1 / -1;
+        padding: 0; border: none; word-break: normal; overflow-wrap: anywhere;
+      }
+
+      /* Testa della scheda: a sinistra lo stato, a destra le azioni. */
+      .data-table--stack td[data-cell="stato"]  { grid-column: 1; grid-row: 1; }
+      .data-table--stack td[data-cell="azioni"] { grid-column: 2; grid-row: 1; justify-self: end; text-align: right; }
+
+      /* Il titolo della scheda: nome o titolo, con il contatto sotto. */
+      .data-table--stack td[data-cell="main"] { font-size: 15px; line-height: 1.4; }
+      .data-table--stack .cell-sub { font-size: 12.5px; }
+
+      /* Dato ed etichetta sulla stessa riga: l'etichetta prende il posto
+         dell'intestazione di colonna, che qui non c'e' piu'. Se il valore
+         non ci sta va a capo per intero invece di incolonnarsi. */
+      .data-table--stack td[data-cell="info"] {
+        display: flex; flex-wrap: wrap; align-items: baseline;
+        justify-content: space-between; gap: 2px 14px; font-size: 13px;
+      }
+      .data-table--stack td[data-cell="info"]::before {
+        content: attr(data-label); flex: 0 0 auto; max-width: 45%;
+        font-family: var(--mono); font-size: 9.5px; font-weight: 500;
+        letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3);
+      }
+      .data-table--stack td[data-cell="info"] .cell-value { flex: 1 1 auto; min-width: 0; text-align: right; }
+      /* Un filo separa l'intestazione della scheda dai dati che seguono. */
+      .data-table--stack td[data-cell="main"] + td[data-cell="info"] {
+        border-top: 1px solid var(--line-soft); padding-top: 10px; margin-top: 2px;
+      }
+
+      /* Stati vuoti e messaggi non sono schede: niente cornice attorno. */
+      .data-table--stack tbody tr.state-row {
+        display: block; margin: 0; padding: 0; border: none; background: none;
+      }
+
+      /* I tre puntini in una tabella si prendono col mouse, in una scheda
+         col pollice: qui il bersaglio va allargato. */
+      .data-table--stack .kebab-btn { font-size: 22px; padding: 2px 11px; min-height: 36px; }
+      /* La scheda cliente si apre al tocco e non ha :hover che lo confermi. */
+      .data-table--stack tr.clickable-row:active { border-color: var(--ink-3); }
+
+      /* Le note del cliente restano agganciate sotto alla scheda che le
+         ha aperte, altrimenti sembrano appartenere alla riga dopo. */
+      .data-table--stack tr.clickable-row.notes-open {
+        margin-bottom: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0;
+      }
+      .data-table--stack .notes-row.open {
+        display: block; margin: 0 10px 10px; padding: 0;
+        border: 1px solid var(--line); border-top: none; border-radius: 0 0 14px 14px;
+      }
+      .data-table--stack .notes-box { margin: 10px; }
+    }
 
     @media (max-width: 640px) {
       /* La pillola del filtro va a capo e prende tutta la riga, invece di
@@ -1094,8 +1205,8 @@
           </div>
         </div>
         
-        <div class="data-table-container" style="border: none; border-radius: 0 0 24px 24px; max-height: 600px; overflow-y: auto;">
-          <table class="data-table">
+        <div class="data-table-container table-scroll" style="border-radius: 0 0 24px 24px;">
+          <table class="data-table data-table--stack">
             <thead>
               <tr>
                 <th>Stato</th>
@@ -1121,8 +1232,8 @@
               <button onclick="openBuyerModal()" class="btn-submit" style="width: auto; padding: 8px 16px; flex-shrink: 0;">+ Aggiungi</button>
             </div>
          </div>
-         <div class="data-table-container" style="border:none; max-height: 600px; overflow-y: auto;">
-           <table class="data-table">
+         <div class="data-table-container table-scroll">
+           <table class="data-table data-table--stack">
              <thead>
                <tr>
                  <th>Stato</th>
@@ -1152,8 +1263,8 @@
               </select>
             </div>
          </div>
-         <div class="data-table-container" style="border:none; max-height: 600px; overflow-y: auto;">
-           <table class="data-table">
+         <div class="data-table-container table-scroll">
+           <table class="data-table data-table--stack">
              <thead>
                <tr>
                  <th>Tipo</th>
@@ -1256,13 +1367,29 @@
     </div>
   </div>
   
+  <!-- Incarico: se e' una vendita gia' registrata la conferma diventa
+       doppia, perche' quella riga e' l'unica traccia rimasta di un affare
+       concluso (data, prezzo di chiusura, provvigioni incassate). -->
   <div id="modal-delete-trans" class="modal-overlay">
-    <div class="modal-content" style="max-width:360px; text-align:center;">
-      <h3 class="modal-title-sm">Attenzione!</h3>
-      <p class="modal-text-sm">Stai per eliminare questo incarico dallo storico.</p>
-      <div style="display:flex; gap:10px;">
-        <button onclick="closeModals()" class="btn-submit btn-quiet">Annulla</button>
-        <button id="confirm-delete-trans-btn" class="btn-submit" style="background:var(--crit);">Elimina</button>
+    <div id="confirm-delete-trans" class="modal-content confirm-card" style="max-width:380px; text-align:center;">
+      <div class="confirm-step-1">
+        <h3 class="modal-title-sm">Attenzione!</h3>
+        <p class="modal-text-sm">Stai per eliminare <span class="confirm-name" id="del-trans-name"></span> dallo storico incarichi.</p>
+        <div id="del-trans-sold-warn" class="confirm-warn" style="display:none;">
+          È una vendita registrata: eliminandola sparisce anche dal fatturato e dalle statistiche degli anni passati.
+        </div>
+        <div style="display:flex; gap:10px;">
+          <button onclick="closeModals()" class="btn-submit btn-quiet">Annulla</button>
+          <button onclick="proceedDeleteTrans()" class="btn-submit" style="background:var(--crit);">Elimina</button>
+        </div>
+      </div>
+      <div class="confirm-step-2">
+        <h3 class="modal-title-sm">Confermi l'eliminazione?</h3>
+        <p class="modal-text-sm">La vendita di <span class="confirm-name" id="del-trans-name-2"></span> verrà cancellata dal registro e non sarà più recuperabile. Questa è l'ultima conferma.</p>
+        <div style="display:flex; gap:10px;">
+          <button onclick="closeModals()" class="btn-submit btn-quiet">No, torna indietro</button>
+          <button id="confirm-delete-trans-btn" class="btn-submit" style="background:var(--crit);">Sì, elimina</button>
+        </div>
       </div>
     </div>
   </div>
@@ -1278,13 +1405,26 @@
     </div>
   </div>
 
+  <!-- Documenti: un incarico o una proposta si eliminano in due passi. Il
+       cestino sta accanto alla matita, e un tocco storto non deve bastare
+       a far sparire un documento firmato. -->
   <div id="modal-delete-doc" class="modal-overlay">
-    <div class="modal-content" style="max-width:360px; text-align:center;">
-      <h3 class="modal-title-sm">Elimina Bozza</h3>
-      <p class="modal-text-sm">Questa bozza verrà eliminata definitivamente dal gestionale.</p>
-      <div style="display:flex; gap:10px;">
-        <button onclick="closeModals()" class="btn-submit btn-quiet">Annulla</button>
-        <button id="confirm-delete-doc-btn" class="btn-submit" style="background:var(--crit);">Elimina</button>
+    <div id="confirm-delete-doc" class="modal-content confirm-card" style="max-width:380px; text-align:center;">
+      <div class="confirm-step-1">
+        <h3 class="modal-title-sm">Elimina bozza</h3>
+        <p class="modal-text-sm">Stai per eliminare <span class="confirm-name" id="del-doc-name"></span> dal gestionale.</p>
+        <div style="display:flex; gap:10px;">
+          <button onclick="closeModals()" class="btn-submit btn-quiet">Annulla</button>
+          <button onclick="proceedDeleteDoc()" class="btn-submit" style="background:var(--crit);">Elimina</button>
+        </div>
+      </div>
+      <div class="confirm-step-2">
+        <h3 class="modal-title-sm">Confermi l'eliminazione?</h3>
+        <p class="modal-text-sm"><span class="confirm-name" id="del-doc-name-2"></span> sparirà definitivamente: non si potrà più riaprire né rigenerare il PDF. Questa è l'ultima conferma.</p>
+        <div style="display:flex; gap:10px;">
+          <button onclick="closeModals()" class="btn-submit btn-quiet">No, torna indietro</button>
+          <button id="confirm-delete-doc-btn" class="btn-submit" style="background:var(--crit);">Sì, elimina</button>
+        </div>
       </div>
     </div>
   </div>
@@ -1571,16 +1711,23 @@
     function toggleNotes(id) {
        const notesRow = document.getElementById(`row-buyer-notes-${id}`);
        const notesContent = document.getElementById(`buyer-notes-${id}`);
+       // Da telefono la riga sopra e' una scheda con la sua cornice: le note
+       // devono saldarsi sotto a quella, non fluttuare per conto loro.
+       const mainRow = document.getElementById(`row-buyer-${id}`);
 
-       if (notesRow.style.display === 'none') {
-           notesRow.style.display = 'table-row';
-           // Piccolo timeout per permettere al browser di registrare il display:table-row prima dell'animazione
+       if (!notesRow.classList.contains('open')) {
+           notesRow.classList.add('open');
+           mainRow?.classList.add('notes-open');
+           // Piccolo timeout per permettere al browser di registrare la riga visibile prima dell'animazione
            setTimeout(() => notesContent.classList.add('expanded'), 10);
            markLeadRead(id); // aprire le note di una richiesta dal sito la segna come letta
        } else {
            notesContent.classList.remove('expanded');
            // Attende la fine dell'animazione CSS prima di nascondere la riga
-           setTimeout(() => notesRow.style.display = 'none', 400); 
+           setTimeout(() => {
+               notesRow.classList.remove('open');
+               mainRow?.classList.remove('notes-open');
+           }, 400);
        }
     }
 
@@ -1636,7 +1783,9 @@
             ${testo ? `<p>${escapeHtml(testo)}</p>` : ''}
             ${azione ? `<button type="button" onclick="${onAzione}">${escapeHtml(azione)}</button>` : ''}
           </div>`;
-        return colspan ? `<tr><td colspan="${colspan}" style="padding:0;">${inner}</td></tr>` : inner;
+        // "state-row" dice al layout a schede del telefono che questa non e'
+        // una riga di dati e non va incorniciata come le altre.
+        return colspan ? `<tr class="state-row"><td colspan="${colspan}" style="padding:0;">${inner}</td></tr>` : inner;
     }
 
     // Mostra gli scheletri nei contenitori prima che arrivino i dati.
@@ -1649,8 +1798,11 @@
         set('documenti-list', skeletonTable(4));
     }
 
-    function closeModals() { 
-        document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none'); 
+    function closeModals() {
+        document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none');
+        // Le conferme in due passi tornano sempre al primo: riaprirle e
+        // ritrovarsi gia' sul "Si, elimina" sarebbe una trappola.
+        document.querySelectorAll('.confirm-card.step-2').forEach(c => c.classList.remove('step-2'));
     }
 
     // Titolo e sottotitolo della pagina: la colonna a sinistra dice dove sei,
@@ -1928,9 +2080,17 @@
     // Se un immobile e' visibile sul sito, il suo incarico collegato deve
     // risultare "attivo" (In Vendita) nel gestionale: lo crea se manca,
     // oppure lo riattiva se era rimasto in un altro stato.
+    //
+    // Un incarico gia' "Venduto" pero' non si tocca mai. Quella riga e'
+    // l'unica traccia della vendita (data e prezzo di chiusura, provvigioni
+    // incassate): riportarla "In Vendita" bastava a farla sparire dal
+    // fatturato dell'anno e dalle statistiche. Succedeva senza avvisare, a
+    // ogni salvataggio dell'immobile collegato o rimettendolo sul sito.
+    // La stessa regola vale gia' in syncActiveIncarichi.
     async function ensurePropertyTransaction(property) {
         const existing = transactions.find(t => t.property_id == property.id);
         if (existing) {
+            if (existing.status === 'Venduto') return;
             const updates = {};
             if (existing.status !== 'In Vendita') updates.status = 'In Vendita';
             if (existing.property_title !== property.title) updates.property_title = property.title;
@@ -2074,6 +2234,10 @@
 
         list.innerHTML = filtered.map(p => {
             const isVisible = p.is_visible !== false;
+            // Un immobile venduto resta in archivio, e deve dirlo: senza
+            // questa targhetta l'unico modo per sapere che l'affare e'
+            // chiuso era andare a cercarlo nello storico incarichi.
+            const venduto = transactions.some(t => t.property_id == p.id && t.status === 'Venduto');
             const today = new Date(); today.setHours(0,0,0,0);
             let expiryHTML = '';
             if (p.expiry_date) {
@@ -2087,6 +2251,7 @@
                     <img src="${p.images[0]||'https://via.placeholder.com/300x225'}" loading="lazy">
                     <div class="property-card-badges">
                         <span class="status-badge ${p.status==='Vendita'?'bg-blue':'bg-green'}">${p.status}</span>
+                        ${venduto ? '<span class="status-badge bg-sold" title="Vendita registrata nello storico incarichi">✓ Venduto</span>' : ''}
                         ${p.is_featured ? '<span class="status-badge bg-yellow">★ Primi</span>' : ''}
                     </div>
                 </div>
@@ -2159,6 +2324,9 @@
             transactions = data || [];
             populateYearDropdown();
             renderTransactionsTable();
+            // Le schede immobile mostrano la targhetta "Venduto" leggendola
+            // da qui: se gli incarichi arrivano dopo, vanno ridisegnate.
+            if (properties.length) renderPropertiesList();
             updateDashboardStats();
             renderOverviewStats();
         }
@@ -2473,11 +2641,11 @@
         // Il Menu Kebab è stampato tramite il Singleton toggleDropdown
         list.innerHTML += `
         <tr>
-          <td>${b}</td>
-          <td style="font-weight:600;">${escapeHtml(t.property_title)}${t.property_id ? ' <span class="status-badge bg-blue" title="Collegato a un immobile in vetrina">Vetrina</span>' : ''}<br><span style="font-size:10px;color:gray;">Prop: ${escapeHtml(t.owner_name||'-')}</span></td>
-          <td>Acq: <b>${acq.toLocaleDateString('it-IT')}</b> <span style="font-size:10px;color:gray;">(${t.assignment_duration||'-'})</span><br>Giorni: <b style="color:var(--brand-blue)">${days>=0?days:0} gg</b></td>
-          <td>${pStr}<br><span style="font-size:11px;">Provv: ${cStr}</span></td>
-          <td style="text-align:center;">
+          <td data-cell="stato">${b}</td>
+          <td data-cell="main" style="font-weight:600;">${escapeHtml(t.property_title)}${t.property_id ? ' <span class="status-badge bg-blue" title="Collegato a un immobile in vetrina">Vetrina</span>' : ''}<br><span class="cell-sub">Prop: ${escapeHtml(t.owner_name||'-')}</span></td>
+          <td data-cell="info" data-label="Tempistiche"><span class="cell-value">Acq: <b>${acq.toLocaleDateString('it-IT')}</b> <span class="cell-sub">(${t.assignment_duration||'-'})</span><br>Giorni: <b style="color:var(--brand-blue)">${days>=0?days:0} gg</b></span></td>
+          <td data-cell="info" data-label="Economia"><span class="cell-value">${pStr}<br><span style="font-size:11px;">Provv: ${cStr}</span></span></td>
+          <td data-cell="azioni" style="text-align:center;">
              <button class="kebab-btn" onclick="toggleDropdown(event, 'trans', '${t.id}')">⋮</button>
           </td>
         </tr>`;
@@ -2673,20 +2841,42 @@
         }
     }
 
-    function openDeleteTransModal(id) { 
-        transToDelete = id; 
-        document.getElementById('modal-delete-trans').style.display = 'flex'; 
+    function openDeleteTransModal(id) {
+        transToDelete = id;
+        const t = transactions.find(x => x.id == id);
+        const nome = t && t.property_title ? `«${t.property_title}»` : 'questo incarico';
+        document.getElementById('del-trans-name').innerText = nome;
+        document.getElementById('del-trans-name-2').innerText = nome;
+        // Una vendita gia' chiusa non e' un incarico qualsiasi: e' l'unica
+        // riga che la registra. Si avvisa, e si chiede due volte.
+        document.getElementById('del-trans-sold-warn').style.display =
+            (t && t.status === 'Venduto') ? 'block' : 'none';
+        document.getElementById('confirm-delete-trans').classList.remove('step-2');
+        document.getElementById('modal-delete-trans').style.display = 'flex';
     }
 
-    document.getElementById('confirm-delete-trans-btn').onclick = async () => { 
-        if(!transToDelete) return; 
-        showLoader("Eliminazione..."); 
-        await _supabase.from('transactions').delete().eq('id', transToDelete); 
-        transToDelete = null; 
-        closeModals(); 
-        await loadTransactions(); 
-        hideLoader(); 
-    };
+    // Sugli incarichi in corso o scaduti la conferma resta una sola: e' il
+    // registro delle vendite che va protetto, non l'operativita' di ogni giorno.
+    function proceedDeleteTrans() {
+        const t = transactions.find(x => x.id == transToDelete);
+        if (t && t.status === 'Venduto') {
+            document.getElementById('confirm-delete-trans').classList.add('step-2');
+            return;
+        }
+        deleteTransaction();
+    }
+
+    async function deleteTransaction() {
+        if(!transToDelete) return;
+        showLoader("Eliminazione...");
+        await _supabase.from('transactions').delete().eq('id', transToDelete);
+        transToDelete = null;
+        closeModals();
+        await loadTransactions();
+        hideLoader();
+    }
+
+    document.getElementById('confirm-delete-trans-btn').onclick = deleteTransaction;
 
     /* =======================================================
        TAB 3: RUBRICA CRM
@@ -2954,22 +3144,25 @@
 
         let notesHTML = b.notes ? escapeHtml(b.notes).replace(/\n/g, '<br>') : '<i>Nessuna nota presente.</i>';
 
+        // I "data-cell" e i "data-label" non cambiano nulla da computer: sotto
+        // i 700px sono quello che permette alla riga di diventare una scheda
+        // e a ogni dato di portarsi dietro il nome della sua colonna.
         list.innerHTML += `
         <!-- Riga Cliccabile -->
-        <tr class="clickable-row" onclick="toggleNotes('${b.id}')" title="Clicca per visualizzare le note">
-          <td>${badge}</td>
-          <td style="font-weight:600;">${escapeHtml(b.full_name)}${leadTags}<br><span style="font-size:11px;color:gray;">${escapeHtml(b.phone)}</span></td>
-          <td>${escapeHtml(b.desired_type||'-')} <span style="font-size:11px;color:gray;">(${escapeHtml(b.desired_zone||'Ovunque')})</span></td>
-          <td>${b.max_budget ? '€'+b.max_budget.toLocaleString('it-IT') : '-'}</td>
-          <td style="text-align:center;" onclick="event.stopPropagation()">
+        <tr class="clickable-row" id="row-buyer-${b.id}" onclick="toggleNotes('${b.id}')" title="Clicca per visualizzare le note">
+          <td data-cell="stato">${badge}</td>
+          <td data-cell="main" style="font-weight:600;">${escapeHtml(b.full_name)}${leadTags}<br><span class="cell-sub">${escapeHtml(b.phone)}</span></td>
+          <td data-cell="info" data-label="Cosa cerca"><span class="cell-value">${escapeHtml(b.desired_type||'-')} <span class="cell-sub">(${escapeHtml(b.desired_zone||'Ovunque')})</span></span></td>
+          <td data-cell="info" data-label="Budget"><span class="cell-value">${b.max_budget ? '€'+b.max_budget.toLocaleString('it-IT') : '-'}</span></td>
+          <td data-cell="azioni" style="text-align:center;" onclick="event.stopPropagation()">
              <button class="kebab-btn" onclick="toggleDropdown(event, 'buyer', '${b.id}')">⋮</button>
           </td>
         </tr>
         <!-- Accordion Note -->
-        <tr class="notes-row" id="row-buyer-notes-${b.id}" style="display: none; background: transparent;">
+        <tr class="notes-row" id="row-buyer-notes-${b.id}">
           <td colspan="5" style="padding: 0; border: none;">
             <div id="buyer-notes-${b.id}" class="notes-content">
-               <div style="margin: 0 16px 16px 16px; padding: 12px 16px; background-color: #fffbeb; font-size: 13px; color: var(--text-slate); border-left: 4px solid var(--brand-yellow); border-radius: 6px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);">
+               <div class="notes-box">
                  <b>Note di ${escapeHtml(b.full_name.split(' ')[0])}:</b><br><br>${notesHTML}
                </div>
             </div>
@@ -3073,6 +3266,15 @@
         renderDocumentiList();
     }
 
+    // "16/08/2026, 12:30" invece di "16/8/2026, 12:30:45": i secondi non
+    // servono a nessuno e in una scheda stretta mandavano la data a capo.
+    function formatSalvataggio(iso) {
+        if (!iso) return '-';
+        return new Date(iso).toLocaleString('it-IT', {
+            day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
+        });
+    }
+
     function renderDocumentiList() {
         const searchEl = document.getElementById('doc-search');
         const filterEl = document.getElementById('doc-filter-tipo');
@@ -3093,10 +3295,10 @@
 
         list.innerHTML = filtered.map(d => `
         <tr>
-          <td><span class="status-badge ${d.tipo === 'incarico' ? 'bg-blue' : 'bg-yellow'}">${d.tipo === 'incarico' ? 'Incarico' : 'Proposta'}</span></td>
-          <td style="font-weight:600;">${escapeHtml(d.titolo || 'Senza titolo')}</td>
-          <td>${d.updated_at ? new Date(d.updated_at).toLocaleString('it-IT') : '-'}</td>
-          <td style="text-align:center;">
+          <td data-cell="stato"><span class="status-badge ${d.tipo === 'incarico' ? 'bg-blue' : 'bg-yellow'}">${d.tipo === 'incarico' ? 'Incarico' : 'Proposta'}</span></td>
+          <td data-cell="main" style="font-weight:600;">${escapeHtml(d.titolo || 'Senza titolo')}</td>
+          <td data-cell="info" data-label="Ultimo salvataggio"><span class="cell-value">${formatSalvataggio(d.updated_at)}</span></td>
+          <td data-cell="azioni" style="text-align:center;">
             <div class="action-buttons" style="justify-content:center;">
               <a href="${d.tipo}.html?id=${encodeURIComponent(d.id)}" class="btn-action edit" title="Apri e modifica">
                 <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"/></svg>
@@ -3111,7 +3313,19 @@
 
     function openDeleteDocModal(id) {
         docToDelete = id;
+        const d = documenti.find(x => x.id == id);
+        // Il nome del documento compare in tutti e due i passi: la conferma
+        // deve dire QUALE bozza sta per sparire, non "questa".
+        const nome = `«${d && d.titolo ? d.titolo : 'Senza titolo'}»`;
+        document.getElementById('del-doc-name').innerText = nome;
+        document.getElementById('del-doc-name-2').innerText = nome;
+        document.getElementById('confirm-delete-doc').classList.remove('step-2');
         document.getElementById('modal-delete-doc').style.display = 'flex';
+    }
+
+    // Primo passo: non elimina, porta alla conferma definitiva.
+    function proceedDeleteDoc() {
+        document.getElementById('confirm-delete-doc').classList.add('step-2');
     }
 
     /* =======================================================
