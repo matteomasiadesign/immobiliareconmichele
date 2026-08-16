@@ -718,6 +718,96 @@
       color: var(--ink); border-left: 3px solid var(--brand-yellow); border-radius: 8px;
     }
 
+    /* Pastiglia col numero sopra un pulsante-icona: dice quanti documenti
+       ci sono senza rubare una riga alla scheda. */
+    .btn-action { position: relative; }
+    .btn-action-dot {
+      position: absolute; top: -5px; right: -5px; min-width: 15px; height: 15px; padding: 0 3px;
+      border-radius: 999px; background: var(--accent); color: #fff; font-family: var(--mono);
+      font-size: 9px; line-height: 15px; text-align: center; border: 1.5px solid var(--surface);
+    }
+
+    /* ---------- ABBINAMENTI ---------- */
+    .match-chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 7px; }
+    .match-chip {
+      font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: .06em;
+      color: var(--good); background: var(--good-bg); border-radius: 6px; padding: 3px 7px;
+    }
+    .match-chip.over { color: var(--warn); background: var(--warn-bg); }
+    .doc-new-bar { display: flex; flex-wrap: wrap; gap: 8px; padding: 1rem 1.1rem; background: var(--surface-2); border-top: 1px solid var(--line); }
+    .doc-new-bar .btn-mini { text-decoration: none; }
+    /* Il richiamo all'abbinamento sulla scheda: non e' un'informazione ma
+       un invito ad aprire, quindi si comporta da pulsante. */
+    .btn-match {
+      display: inline-flex; align-items: center; gap: 6px; font: inherit; font-size: 11.5px;
+      font-weight: 550; padding: 5px 9px; border-radius: 8px; cursor: pointer;
+      border: 1px solid color-mix(in oklab, var(--accent) 32%, var(--line));
+      background: var(--accent-soft); color: var(--accent-ink); transition: var(--transition);
+    }
+    .btn-match:hover { background: var(--accent); color: #fff; }
+    .btn-match svg { width: 12px; height: 12px; }
+
+    /* ---------- DA FARE ---------- */
+    .form-hint { font-size: 11.5px; color: var(--ink-3); margin-top: 5px; }
+    /* Il numero di telefono e' la prossima azione, non un dato da leggere:
+       da telefono deve partire la chiamata con un tocco. */
+    .link-tel { color: var(--accent-ink); font-weight: 550; text-decoration: none; }
+    .link-tel:hover { text-decoration: underline; }
+    .dafare-actions { gap: 8px; }
+    .btn-rimanda {
+      width: auto; padding: 7px 10px; font-size: 12px; border-radius: 8px;
+      background: var(--surface); color: var(--ink-2); cursor: pointer;
+    }
+
+    /* ---------- AZIONI DI TESTATA (cestino, esporta) ---------- */
+    .page-head-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .btn-head {
+      display: flex; align-items: center; gap: 7px; padding: 7px 12px; border-radius: 9px;
+      border: 1px solid var(--line); background: var(--surface); color: var(--ink-2);
+      font: inherit; font-size: 12.5px; font-weight: 550; cursor: pointer; transition: var(--transition);
+    }
+    .btn-head:hover { background: var(--surface-2); color: var(--ink); border-color: var(--ink-3); }
+    .btn-head svg { width: 15px; height: 15px; flex-shrink: 0; }
+    .btn-head .count-pill { margin-left: 1px; }
+    /* Sotto i 480px restano le sole icone: le parole rubavano la riga al titolo. */
+    @media (max-width: 480px) { .btn-head-text { display: none; } .btn-head { padding: 8px 10px; } }
+
+    /* ---------- CESTINO ---------- */
+    .cestino-row { display: flex; align-items: center; gap: 12px; padding: 1rem 1.1rem; border-bottom: 1px solid var(--line-soft); flex-wrap: wrap; }
+    .cestino-row:last-child { border-bottom: 0; }
+    .cestino-tag {
+      font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: .08em;
+      color: var(--ink-3); border: 1px solid var(--line); border-radius: 6px; padding: 2px 6px; flex-shrink: 0;
+    }
+    .cestino-texts { flex: 1; min-width: 140px; }
+    .cestino-texts b { font-size: 14px; font-weight: 600; color: var(--ink); word-break: break-word; }
+    .cestino-texts span { display: block; font-size: 12px; color: var(--ink-3); margin-top: 2px; }
+    .cestino-actions { display: flex; gap: 8px; flex-shrink: 0; }
+    .btn-mini {
+      font: inherit; font-size: 12px; font-weight: 550; padding: 7px 12px; border-radius: 8px;
+      border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer;
+      transition: var(--transition); white-space: nowrap;
+    }
+    .btn-mini:hover { background: var(--surface-2); }
+    .btn-mini.primary { background: var(--accent-soft); border-color: var(--accent); color: var(--accent-ink); }
+    .btn-mini.danger { color: var(--crit); }
+    .btn-mini.danger:hover { background: var(--crit-bg); border-color: var(--crit); }
+
+    /* ---------- ESPORTAZIONE ---------- */
+    .export-grid { display: flex; flex-direction: column; gap: 9px; }
+    .export-row {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%;
+      text-align: left; font: inherit; padding: 12px 13px; border-radius: 11px;
+      border: 1px solid var(--line); background: var(--surface); cursor: pointer; transition: var(--transition);
+    }
+    .export-row:hover { border-color: var(--accent); background: var(--accent-soft); }
+    .export-row b { display: block; font-size: 13.5px; font-weight: 600; color: var(--ink); }
+    .export-row span { display: block; font-size: 12px; color: var(--ink-2); margin-top: 3px; }
+    .export-tag {
+      font-family: var(--mono); font-size: 10px; color: var(--ink-3); border: 1px solid var(--line);
+      border-radius: 6px; padding: 3px 7px; flex-shrink: 0;
+    }
+
     /* ---------- CONFERME IN DUE PASSI ----------
        Per cio' che non si puo' recuperare un solo tocco e' troppo poco:
        il secondo passo nomina la cosa che sta per sparire, cosi' la
@@ -873,13 +963,20 @@
       /* La scheda cliente si apre al tocco e non ha :hover che lo confermi. */
       .data-table--stack tr.clickable-row:active { border-color: var(--ink-3); }
 
-      /* Le note del cliente restano agganciate sotto alla scheda che le
-         ha aperte, altrimenti sembrano appartenere alla riga dopo. */
+      /* La riga delle note non e' una scheda: chiusa deve sparire del
+         tutto. Senza questa regola la cornice del blocco qui sopra la
+         raggiungeva lo stesso (ha selettore piu' forte di .notes-row) e
+         sotto ogni cliente restava un rettangolo vuoto. */
+      .data-table--stack tbody tr.notes-row {
+        display: none; margin: 0; padding: 0; border: none; background: none;
+      }
+      /* Aperte, le note restano agganciate sotto alla scheda che le ha
+         chiamate, altrimenti sembrano appartenere alla riga dopo. */
       .data-table--stack tr.clickable-row.notes-open {
         margin-bottom: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0;
       }
-      .data-table--stack .notes-row.open {
-        display: block; margin: 0 10px 10px; padding: 0;
+      .data-table--stack tbody tr.notes-row.open {
+        display: block; margin: 0 10px 10px;
         border: 1px solid var(--line); border-top: none; border-radius: 0 0 14px 14px;
       }
       .data-table--stack .notes-box { margin: 10px; }
@@ -1067,6 +1164,20 @@
         <h1 id="page-title">Panoramica</h1>
         <p class="page-sub" id="page-sub">Michele Erre · spazio privato</p>
       </div>
+      <!-- Cestino ed esportazione valgono per tutto il gestionale, non per
+           una scheda sola: stanno qui e non in una sesta voce di menu, che
+           sul telefono non ci sarebbe entrata. -->
+      <div class="page-head-actions">
+        <button type="button" class="btn-head" onclick="openExport()" title="Scarica una copia dei tuoi dati">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
+          <span class="btn-head-text">Esporta</span>
+        </button>
+        <button type="button" class="btn-head" onclick="openCestino()" title="Elementi eliminati negli ultimi 30 giorni">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2m-9 0l1 13a1 1 0 001 1h8a1 1 0 001-1l1-13"/></svg>
+          <span class="btn-head-text">Cestino</span>
+          <span class="count-pill" id="cestino-count" style="display:none;">0</span>
+        </button>
+      </div>
     </div>
 
     <!-- TAB 0: PANORAMICA -->
@@ -1095,6 +1206,19 @@
           <div class="stat-row"><span class="stat-value" id="ov-stat-revenue">€0</span><span class="stat-delta flat" id="ov-delta-revenue"></span></div>
           <svg class="stat-spark" id="ov-spark-revenue" viewBox="0 0 120 30" preserveAspectRatio="none" aria-hidden="true"></svg>
         </div>
+      </div>
+
+      <!-- DA FARE: l'unica cosa in Panoramica che non racconta com'e' andata
+           ma dice cosa manca. Ci finisce chi va richiamato oggi e chi ha
+           scritto dal sito senza essere mai stato sentito: leggere una
+           richiesta non e' averla gestita, e prima questa differenza non
+           esisteva da nessuna parte. -->
+      <div class="panel-card" style="padding: 0; overflow: hidden; margin-bottom: 1.25rem;">
+        <div class="archive-header">
+          <h2>Da fare</h2>
+          <span id="dafare-badge" class="count-pill">0</span>
+        </div>
+        <div id="dafare-list" class="list-wrapper"></div>
       </div>
 
       <div class="panel-card" style="padding: 0; overflow: hidden;">
@@ -1429,6 +1553,74 @@
     </div>
   </div>
 
+  <!-- ABBINAMENTI: la rubrica sa cosa cerca ognuno e la vetrina cosa c'e';
+       questo riquadro e' il punto in cui le due cose si incontrano. -->
+  <div id="modal-abbinamenti" class="modal-overlay">
+    <div class="modal-content" style="max-width:560px; padding:0; overflow:hidden;">
+      <div class="modal-header" style="padding:1.25rem 1.25rem 1rem; margin:0;">
+        <div style="min-width:0;">
+          <h3 class="panel-title" id="abbinamenti-title" style="margin:0;">Abbinamenti</h3>
+          <p class="page-sub" id="abbinamenti-sub" style="margin-top:3px;"></p>
+        </div>
+        <button type="button" class="btn-close-modal" onclick="closeModals()">✕</button>
+      </div>
+      <div id="abbinamenti-list" class="list-wrapper" style="max-height:60vh; overflow-y:auto; border-top:1px solid var(--line);"></div>
+    </div>
+  </div>
+
+  <!-- CESTINO: quello che si elimina resta qui 30 giorni prima di sparire
+       davvero. Le doppie conferme rallentano l'errore, questo lo annulla. -->
+  <div id="modal-cestino" class="fullscreen-modal">
+    <div class="fullscreen-modal-header">
+      <h2>Cestino</h2>
+      <button type="button" onclick="closeCestino()" class="btn-close-modal" style="font-size:26px;">✕</button>
+    </div>
+    <div class="fullscreen-modal-body">
+      <p class="modal-text-sm" style="margin-bottom:1.25rem;">
+        Gli elementi eliminati restano qui <b>30 giorni</b>, poi vengono cancellati per sempre.
+        Fino ad allora puoi rimetterli al loro posto.
+      </p>
+      <div id="cestino-list" class="list-wrapper panel-card" style="padding:0; overflow:hidden;"></div>
+    </div>
+  </div>
+
+  <!-- ESPORTAZIONE: una copia dei dati che esce dal gestionale solo verso
+       il telefono o il computer di chi ha fatto login. -->
+  <div id="modal-export" class="modal-overlay">
+    <div class="modal-content" style="max-width:460px;">
+      <div class="modal-header">
+        <h3 class="panel-title" style="margin:0;">Esporta i tuoi dati</h3>
+        <button type="button" class="btn-close-modal" onclick="closeModals()">✕</button>
+      </div>
+      <p class="modal-text-sm">
+        Il file viene scaricato direttamente sul dispositivo con cui hai fatto l'accesso: non passa da nessun altro servizio.
+      </p>
+      <div class="export-grid">
+        <button type="button" class="export-row" onclick="esportaIncarichiCsv()">
+          <div>
+            <b>Storico incarichi</b>
+            <span>CSV per il commercialista: date, prezzi di chiusura e provvigioni incassate.</span>
+          </div>
+          <span class="export-tag">CSV</span>
+        </button>
+        <button type="button" class="export-row" onclick="esportaRubricaCsv()">
+          <div>
+            <b>Rubrica clienti</b>
+            <span>Nomi, contatti, cosa cercano e quando vanno richiamati. Contiene dati personali: tienilo al sicuro.</span>
+          </div>
+          <span class="export-tag">CSV</span>
+        </button>
+        <button type="button" class="export-row" onclick="esportaBackupJson()">
+          <div>
+            <b>Backup completo</b>
+            <span>Tutto quanto, in un unico file: immobili, incarichi, rubrica e documenti.</span>
+          </div>
+          <span class="export-tag">JSON</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Modal Incarico -->
   <div id="modal-transaction" class="modal-overlay">
     <div class="modal-content">
@@ -1538,8 +1730,19 @@
             <input type="text" id="buyer-phone" class="form-input" required>
           </div>
           <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" id="buyer-email" class="form-input" placeholder="facoltativa">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
             <label class="form-label">Budget Max (€)</label>
             <input type="number" id="buyer-budget" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Da richiamare il</label>
+            <input type="date" id="buyer-next-action" class="form-input">
+            <p class="form-hint" id="buyer-last-contact-hint"></p>
           </div>
         </div>
         <div class="form-row">
@@ -1944,16 +2147,21 @@
         await Promise.all([loadProperties(), loadTransactions(), loadBuyers(), loadDocumenti()]);
         await syncActiveIncarichi();
         renderOverviewStats();
+        // Il numero sul cestino non blocca l'ingresso: arriva quando arriva.
+        aggiornaContatoreCestino();
     }
 
     /* =======================================================
        TAB 1: VETRINA
        ======================================================= */
     async function loadProperties() {
-        const { data, error } = await _supabase.from('properties').select('*').order('created_at', { ascending: false });
+        const { data, error } = await _supabase.from('properties').select('*').is('deleted_at', null).order('created_at', { ascending: false });
         if(!error && data) {
             properties = data;
             renderPropertiesList();
+            // La rubrica conta gli immobili adatti a ogni cliente: se la
+            // vetrina cambia, quel numero e' da rifare.
+            if (buyers.length) renderBuyersList();
             renderOverviewStats();
         }
     }
@@ -2171,10 +2379,11 @@
 
     document.getElementById('confirm-delete-prop-btn').onclick = async () => {
         if(!propToDelete) return;
-        showLoader("Eliminazione...");
-        const p = properties.find(x => x.id == propToDelete);
-        await _supabase.from('properties').delete().eq('id', propToDelete);
-        if (p) await deleteStorageImages(p.images);
+        showLoader("Spostamento nel cestino...");
+        // Le foto NON si toccano: finche' l'immobile e' nel cestino deve
+        // poter tornare indietro tutto intero. Vengono cancellate dallo
+        // storage solo dall'eliminazione definitiva (vedi purgeCestino).
+        await cestina('properties', propToDelete);
         propToDelete = null;
         closeModals();
         await loadProperties();
@@ -2238,6 +2447,9 @@
             // questa targhetta l'unico modo per sapere che l'affare e'
             // chiuso era andare a cercarlo nello storico incarichi.
             const venduto = transactions.some(t => t.property_id == p.id && t.status === 'Venduto');
+            // Quanti clienti in rubrica stanno cercando qualcosa di simile.
+            const inCerca = clientiPerImmobile(p).length;
+            const docsCollegati = documenti.filter(d => d.property_id == p.id).length;
             const today = new Date(); today.setHours(0,0,0,0);
             let expiryHTML = '';
             if (p.expiry_date) {
@@ -2264,6 +2476,11 @@
                         ${p.acquisition_date ? `<span>Acquisizione: ${new Date(p.acquisition_date).toLocaleDateString('it-IT')}</span>` : ''}
                         ${expiryHTML}
                     </div>` : ''}
+                    ${inCerca > 0 ? `
+                    <button type="button" class="btn-match" onclick="openAbbinamenti('immobile', '${p.id}')" title="Clienti in rubrica che cercano qualcosa di simile">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="8" r="3.2"></circle><path stroke-linecap="round" d="M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6"></path></svg>
+                      ${inCerca} ${inCerca === 1 ? 'cliente lo cerca' : 'clienti lo cercano'}
+                    </button>` : ''}
                     <div class="property-card-actions">
                         <button onclick="togglePropertyVisibility('${p.id}')" class="btn-toggle-visibility ${isVisible ? 'visible' : 'hidden-state'}" title="${isVisible ? 'Visibile sul sito: clicca per nascondere' : 'Nascosto: clicca per pubblicare'}">
                             ${isVisible ? 'Visibile' : 'Nascosto'}
@@ -2272,6 +2489,10 @@
                             <button onclick="togglePropertyFeatured('${p.id}')" class="btn-star-featured ${p.is_featured ? 'active' : ''}" title="Mostra per primi">★</button>
                             <button onclick="openPropertyForm('${p.id}')" class="btn-action edit" title="Modifica">
                                 <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"/></svg>
+                            </button>
+                            <button onclick="openDocumentiDi('immobile', '${p.id}')" class="btn-action" title="Incarichi e proposte di questo immobile">
+                                <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14 3H7a1 1 0 00-1 1v16a1 1 0 001 1h10a1 1 0 001-1V7z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M14 3v4h4"></path></svg>
+                                ${docsCollegati > 0 ? `<span class="btn-action-dot">${docsCollegati}</span>` : ''}
                             </button>
                             <button onclick="openDeletePropModal('${p.id}')" class="btn-action delete" title="Elimina">
                                 <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/></svg>
@@ -2319,14 +2540,16 @@
        TAB 2: INCARICHI & STATISTICHE
        ======================================================= */
     async function loadTransactions() {
-        const { data, error } = await _supabase.from('transactions').select('*').order('acquisition_date', { ascending: false });
+        const { data, error } = await _supabase.from('transactions').select('*').is('deleted_at', null).order('acquisition_date', { ascending: false });
         if(!error) {
             transactions = data || [];
             populateYearDropdown();
             renderTransactionsTable();
             // Le schede immobile mostrano la targhetta "Venduto" leggendola
             // da qui: se gli incarichi arrivano dopo, vanno ridisegnate.
+            // Vale anche per gli abbinamenti, che escludono i venduti.
             if (properties.length) renderPropertiesList();
+            if (buyers.length) renderBuyersList();
             updateDashboardStats();
             renderOverviewStats();
         }
@@ -2868,8 +3091,8 @@
 
     async function deleteTransaction() {
         if(!transToDelete) return;
-        showLoader("Eliminazione...");
-        await _supabase.from('transactions').delete().eq('id', transToDelete);
+        showLoader("Spostamento nel cestino...");
+        await cestina('transactions', transToDelete);
         transToDelete = null;
         closeModals();
         await loadTransactions();
@@ -2882,10 +3105,11 @@
        TAB 3: RUBRICA CRM
        ======================================================= */
     async function loadBuyers() {
-        const { data, error } = await _supabase.from('buyers').select('*').order('created_at', { ascending: false });
+        const { data, error } = await _supabase.from('buyers').select('*').is('deleted_at', null).order('created_at', { ascending: false });
         if(!error) {
             buyers = data || [];
             renderBuyersList();
+            renderDaFare();
             renderOverviewLeads();
             updateNavCounts();
         }
@@ -3085,6 +3309,325 @@
         updateNavCounts();
     }
 
+    /* =======================================================
+       ABBINAMENTI CLIENTE <-> IMMOBILE
+       In rubrica c'era scritto cosa cerca ognuno, in vetrina cosa c'e' in
+       vendita, e nessuna riga di codice metteva insieme le due cose: ogni
+       volta bisognava ricordarsele a memoria. Qui zona e tipologia sono
+       testo libero scritto a mano in momenti diversi ("Porto Torres" da una
+       parte, "porto torres" o "P. Torres" dall'altra), quindi il confronto
+       e' tollerante invece che esatto.
+       ======================================================= */
+    const normalizza = s => (s || '').toString().toLowerCase()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')   // via gli accenti
+        .replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
+
+    // Chi scrive questo nella zona desiderata non sta ponendo un vincolo.
+    const ZONE_LIBERE = ['ovunque', 'qualsiasi', 'indifferente', 'tutte', 'non importa'];
+
+    function testiCompatibili(a, b) {
+        const x = normalizza(a), y = normalizza(b);
+        if (!x || !y) return true;                       // campo vuoto = nessun vincolo
+        if (x.includes(y) || y.includes(x)) return true; // "trilocale" dentro "appartamento trilocale"
+        // Almeno una parola piena in comune: regge "villetta indipendente"
+        // contro "villetta a schiera" senza far passare tutto.
+        const parole = t => t.split(' ').filter(w => w.length > 3);
+        return parole(x).some(w => parole(y).includes(w));
+    }
+
+    // Restituisce null se non c'e' abbinamento, altrimenti perche' c'e'.
+    function valutaAbbinamento(p, b) {
+        if (b.status !== 'Attivo') return null;                 // ha gia' comprato o ha detto di no
+        if (transactions.some(t => t.property_id == p.id && t.status === 'Venduto')) return null;
+
+        const zonaCercata = normalizza(b.desired_zone);
+        const zonaLibera  = !zonaCercata || ZONE_LIBERE.includes(zonaCercata);
+        const zonaOk      = zonaLibera || testiCompatibili(p.zone, b.desired_zone);
+        const tipoOk      = testiCompatibili(p.property_type, b.desired_type);
+        const entroBudget = !b.max_budget || p.price <= b.max_budget;
+        // Il 10% sopra si mostra lo stesso: un buon mediatore la casa giusta
+        // leggermente fuori budget la fa vedere comunque, dicendolo.
+        const pocoSopra   = !entroBudget && b.max_budget && p.price <= b.max_budget * 1.1;
+
+        if (!zonaOk || !tipoOk || (!entroBudget && !pocoSopra)) return null;
+
+        const motivi = [];
+        if (!zonaLibera && zonaOk) motivi.push('zona');
+        if (normalizza(b.desired_type) && tipoOk) motivi.push('tipologia');
+        if (b.max_budget && entroBudget) motivi.push('budget');
+
+        // Senza nemmeno un criterio soddisfatto non e' un abbinamento, e'
+        // solo una scheda vuota: le richieste dal sito senza zona ne'
+        // budget non devono far comparire "12 immobili adatti".
+        if (motivi.length === 0) return null;
+
+        return { punteggio: motivi.length, motivi, pocoSopra };
+    }
+
+    function clientiPerImmobile(p) {
+        return buyers
+            .map(b => ({ b, esito: valutaAbbinamento(p, b) }))
+            .filter(x => x.esito)
+            .sort((x, y) => y.esito.punteggio - x.esito.punteggio);
+    }
+
+    function immobiliPerCliente(b) {
+        return properties
+            .map(p => ({ p, esito: valutaAbbinamento(p, b) }))
+            .filter(x => x.esito)
+            .sort((x, y) => y.esito.punteggio - x.esito.punteggio);
+    }
+
+    function openAbbinamenti(verso, id) {
+        const titolo = document.getElementById('abbinamenti-title');
+        const sub    = document.getElementById('abbinamenti-sub');
+        const list   = document.getElementById('abbinamenti-list');
+
+        if (verso === 'immobile') {
+            const p = properties.find(x => x.id == id);
+            if (!p) return;
+            const trovati = clientiPerImmobile(p);
+            titolo.innerText = 'Chi potrebbe volerlo';
+            sub.innerText = `${escapeHtml(p.title)} · €${p.price.toLocaleString('it-IT')}`;
+            list.innerHTML = trovati.length
+                ? trovati.map(({ b, esito }) => rigaAbbinamentoCliente(b, esito)).join('')
+                : emptyState({ titolo: 'Nessun cliente in rubrica lo sta cercando',
+                               testo: 'Compaiono qui i clienti in ricerca attiva con zona, tipologia o budget compatibili.' });
+        } else {
+            const b = buyers.find(x => x.id == id);
+            if (!b) return;
+            const trovati = immobiliPerCliente(b);
+            titolo.innerText = 'Cosa posso proporgli';
+            sub.innerText = `${escapeHtml(b.full_name)} · ${escapeHtml(b.desired_type || 'casa')}${b.desired_zone ? ' a ' + escapeHtml(b.desired_zone) : ''}${b.max_budget ? ' · fino a €' + b.max_budget.toLocaleString('it-IT') : ''}`;
+            list.innerHTML = trovati.length
+                ? trovati.map(({ p, esito }) => rigaAbbinamentoImmobile(p, esito)).join('')
+                : emptyState({ titolo: 'Niente in vetrina che gli somigli',
+                               testo: 'Nessun immobile disponibile combacia con zona, tipologia e budget di questo cliente.' });
+        }
+        document.getElementById('modal-abbinamenti').style.display = 'flex';
+    }
+
+    // Perche' questo abbinamento e' qui: senza scriverlo l'elenco sembra
+    // uscito a caso e non ci si fida.
+    function chipMotivi(esito) {
+        return esito.motivi.map(m => `<span class="match-chip">${m}</span>`).join('')
+             + (esito.pocoSopra ? '<span class="match-chip over">poco sopra budget</span>' : '');
+    }
+
+    function rigaAbbinamentoCliente(b, esito) {
+        const tel = (b.phone || '').replace(/[^\d+]/g, '');
+        return `
+        <div class="item-row">
+          <div class="item-info"><div class="item-texts">
+            <p class="item-title">${escapeHtml(b.full_name)}</p>
+            <p class="item-details-text">
+              ${tel ? `<a href="tel:${tel}" class="link-tel">${escapeHtml(b.phone)}</a>` : ''}
+              ${b.max_budget ? ` · fino a €${b.max_budget.toLocaleString('it-IT')}` : ''}
+            </p>
+            <div class="match-chips">${chipMotivi(esito)}</div>
+          </div></div>
+          <div class="item-actions-box">
+            <button class="btn-mini" onclick="closeModals(); switchTab('tab-crm'); evidenziaCliente('${b.id}')">Apri in rubrica</button>
+          </div>
+        </div>`;
+    }
+
+    function rigaAbbinamentoImmobile(p, esito) {
+        const nascosto = p.is_visible === false;
+        return `
+        <div class="item-row">
+          <div class="item-info">
+            <img class="item-thumbnail" src="${p.images && p.images[0] ? p.images[0] : 'https://via.placeholder.com/128x100'}" loading="lazy" alt="">
+            <div class="item-texts">
+              <p class="item-title">${escapeHtml(p.title)}${nascosto ? ' <span class="status-badge bg-orange">Non sul sito</span>' : ''}</p>
+              <p class="item-details-text">${escapeHtml(p.zone)} · ${escapeHtml(p.property_type)} · <b>€${p.price.toLocaleString('it-IT')}</b></p>
+              <div class="match-chips">${chipMotivi(esito)}</div>
+            </div>
+          </div>
+          <div class="item-actions-box">
+            <button class="btn-mini" onclick="closeModals(); switchTab('tab-vetrina'); openPropertyForm('${p.id}')">Apri scheda</button>
+          </div>
+        </div>`;
+    }
+
+    /* =======================================================
+       DOCUMENTI DI UN IMMOBILE / DI UN CLIENTE
+       I documenti erano una lista piatta cercabile solo per titolo: da un
+       immobile non si arrivava al suo incarico firmato e da un cliente non
+       si arrivava alla proposta che aveva fatto. Ora il collegamento e' nel
+       dato (documenti_bozze.property_id / buyer_id) e questo riquadro e'
+       il punto in cui si percorre nei due sensi.
+       ======================================================= */
+    function openDocumentiDi(verso, id) {
+        const perImmobile = verso === 'immobile';
+        const oggetto = perImmobile ? properties.find(x => x.id == id) : buyers.find(x => x.id == id);
+        if (!oggetto) return;
+
+        const collegati = documenti.filter(d => perImmobile ? d.property_id == id : d.buyer_id == id);
+        const param = perImmobile ? `property_id=${encodeURIComponent(id)}` : `buyer_id=${encodeURIComponent(id)}`;
+
+        document.getElementById('abbinamenti-title').innerText = 'Documenti collegati';
+        document.getElementById('abbinamenti-sub').innerText = perImmobile ? oggetto.title : oggetto.full_name;
+
+        const elenco = collegati.length
+            ? collegati.map(d => `
+              <div class="item-row">
+                <div class="item-info"><div class="item-texts">
+                  <p class="item-title">
+                    <span class="status-badge ${d.tipo === 'incarico' ? 'bg-blue' : 'bg-yellow'}">${d.tipo === 'incarico' ? 'Incarico' : 'Proposta'}</span>
+                    ${escapeHtml(d.titolo || 'Senza titolo')}
+                  </p>
+                  <p class="item-details-text">Ultimo salvataggio: ${formatSalvataggio(d.updated_at)}</p>
+                </div></div>
+                <div class="item-actions-box">
+                  <a class="btn-mini" href="${d.tipo}.html?id=${encodeURIComponent(d.id)}">Apri</a>
+                </div>
+              </div>`).join('')
+            : `<div class="empty-state" style="padding:1.75rem 1.25rem;">
+                 <h4>Nessun documento collegato</h4>
+                 <p>Gli incarichi e le proposte che apri da qui restano agganciati a ${perImmobile ? 'questo immobile' : 'questo cliente'}.</p>
+               </div>`;
+
+        // I due pulsanti in fondo sono il motivo per cui questo riquadro
+        // esiste: il documento nasce gia' collegato, senza doverlo dire.
+        document.getElementById('abbinamenti-list').innerHTML = elenco + `
+          <div class="doc-new-bar">
+            <a class="btn-mini primary" href="incarico.html?${param}">+ Nuovo incarico</a>
+            <a class="btn-mini primary" href="proposta.html?${param}">+ Nuova proposta</a>
+          </div>`;
+
+        document.getElementById('modal-abbinamenti').style.display = 'flex';
+    }
+
+    // Dopo un salto dagli abbinamenti la riga cercata va trovata subito:
+    // la ricerca della rubrica viene riempita col nome.
+    function evidenziaCliente(id) {
+        const b = buyers.find(x => x.id == id);
+        if (!b) return;
+        const campo = document.getElementById('buyer-search');
+        campo.value = b.full_name;
+        renderBuyersList();
+    }
+
+    /* =======================================================
+       DA FARE
+       La Panoramica sapeva dire com'era andato l'anno ma non cosa mancava
+       oggi. Qui dentro finiscono due cose che prima si perdevano: i
+       clienti con un richiamo in scadenza e le richieste dal sito che
+       hai letto e mai piu' toccato.
+       ======================================================= */
+    const inizioGiornata = () => { const d = new Date(); d.setHours(0,0,0,0); return d; };
+
+    // Una data senza orario ("2026-08-16") va letta come mezzanotte LOCALE.
+    // new Date("2026-08-16") la interpreta come mezzanotte UTC: in Italia
+    // sono le 02:00, cioe' un istante DOPO l'inizio della nostra giornata,
+    // e un richiamo fissato per oggi risultava ancora "domani" - spariva da
+    // "Da fare" e dalla pastiglia proprio nel giorno in cui serviva.
+    function dataLocale(iso) {
+        if (!iso) return null;
+        const [anno, mese, giorno] = iso.split('-').map(Number);
+        return new Date(anno, mese - 1, giorno);
+    }
+
+    function daFareList() {
+        const oggi = inizioGiornata();
+        return buyers
+            .filter(b => {
+                // Chi ha gia' comprato o ha detto di no non e' "da fare".
+                if (b.status !== 'Attivo') return false;
+                if (b.next_action_date && dataLocale(b.next_action_date) <= oggi) return true;
+                // Arrivato dal sito e mai sentito: resta qui finche' non lo
+                // richiami, anche dopo che ne hai letto la richiesta.
+                return b.source === 'sito' && !b.last_contact_at && !b.next_action_date;
+            })
+            .map(b => {
+                const scadenza = dataLocale(b.next_action_date);
+                // Arrotondato e non troncato: nei due giorni del cambio
+                // dell'ora la differenza fra due mezzanotti e' di 23 o 25
+                // ore e il troncamento sbaglierebbe di un giorno.
+                const ritardo = scadenza ? Math.round((oggi - scadenza) / 86400000) : null;
+                const attesa = Math.floor((oggi - new Date(b.created_at)) / 86400000);
+                return { ...b, _ritardo: ritardo, _attesa: attesa };
+            })
+            // Prima il ritardo piu' lungo; a parita', chi aspetta da piu' tempo.
+            .sort((a, b) => (b._ritardo ?? -1) - (a._ritardo ?? -1) || b._attesa - a._attesa);
+    }
+
+    function renderDaFare() {
+        const list = document.getElementById('dafare-list');
+        if (!list) return;
+
+        const items = daFareList();
+        document.getElementById('dafare-badge').innerText = items.length;
+
+        if (items.length === 0) {
+            list.innerHTML = emptyState({
+                titolo: 'Non hai niente in sospeso',
+                testo: 'Qui compaiono i clienti da richiamare e le richieste dal sito che non hai ancora sentito.'
+            });
+            return;
+        }
+
+        list.innerHTML = items.map(b => {
+            let quando;
+            if (b._ritardo === null)      quando = b._attesa <= 0 ? 'arrivata oggi, mai richiamata' : `in attesa da ${b._attesa} ${b._attesa === 1 ? 'giorno' : 'giorni'}, mai richiamata`;
+            else if (b._ritardo === 0)    quando = 'da richiamare oggi';
+            else if (b._ritardo === 1)    quando = 'da richiamare da ieri';
+            else                          quando = `in ritardo di ${b._ritardo} giorni`;
+
+            const urgente = b._ritardo !== null && b._ritardo > 0;
+            const tel = (b.phone || '').replace(/[^\d+]/g, '');
+
+            return `
+            <div class="item-row">
+                <div class="item-info">
+                    <div class="item-texts">
+                        <p class="item-title">${escapeHtml(b.full_name)}
+                          <span class="status-badge ${urgente ? 'bg-red' : 'bg-yellow'}" style="margin-left:6px;">${quando}</span>
+                          ${b.request_type === 'valutazione' ? '<span class="status-badge bg-green">Valutazione</span>' : ''}
+                        </p>
+                        <p class="item-details-text">
+                          ${tel ? `<a href="tel:${tel}" class="link-tel">${escapeHtml(b.phone)}</a>` : escapeHtml(b.phone || '')}
+                          ${b.desired_zone ? ` · cerca ${escapeHtml(b.desired_type || 'casa')} a ${escapeHtml(b.desired_zone)}` : ''}
+                        </p>
+                    </div>
+                </div>
+                <div class="item-actions-box dafare-actions">
+                    <button onclick="segnaSentito('${b.id}')" class="btn-mini primary">Ho sentito</button>
+                    <select class="form-select btn-rimanda" onchange="rimandaCliente('${b.id}', this)" aria-label="Rimanda il richiamo">
+                      <option value="">Rimanda…</option>
+                      <option value="1">a domani</option>
+                      <option value="3">tra 3 giorni</option>
+                      <option value="7">tra una settimana</option>
+                      <option value="30">tra un mese</option>
+                    </select>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    // "Ho sentito": registra il contatto e toglie il promemoria. Se il
+    // cliente va risentito, si rimanda invece di chiudere.
+    async function segnaSentito(id) {
+        const { error } = await _supabase.from('buyers')
+            .update({ last_contact_at: new Date().toISOString(), next_action_date: null, is_read: true })
+            .eq('id', id);
+        if (error) { alert("Errore: " + error.message); return; }
+        await loadBuyers();
+    }
+
+    async function rimandaCliente(id, select) {
+        const giorni = Number(select.value);
+        if (!giorni) return;
+        const quando = new Date();
+        quando.setDate(quando.getDate() + giorni);
+        const { error } = await _supabase.from('buyers')
+            .update({ next_action_date: quando.toISOString().split('T')[0], is_read: true })
+            .eq('id', id);
+        if (error) { alert("Errore: " + error.message); select.value = ''; return; }
+        await loadBuyers();
+    }
+
     // Elenco delle richieste dal sito non ancora lette, in cima alla Panoramica.
     function renderOverviewLeads() {
         const list = document.getElementById('overview-leads-list');
@@ -3121,6 +3664,20 @@
         `).join('');
     }
 
+    // Pastiglia del richiamo: rossa se e' passata la data, gialla se e'
+    // oggi, niente se e' ancora avanti (non e' una cosa da fare adesso).
+    function badgeRichiamo(b) {
+        if (b.status !== 'Attivo') return '';
+        if (!b.next_action_date) {
+            return (b.source === 'sito' && !b.last_contact_at)
+                ? ' <span class="status-badge bg-red">Mai richiamato</span>' : '';
+        }
+        const giorni = Math.round((inizioGiornata() - dataLocale(b.next_action_date)) / 86400000);
+        if (giorni > 0) return ` <span class="status-badge bg-red">In ritardo di ${giorni} gg</span>`;
+        if (giorni === 0) return ' <span class="status-badge bg-yellow">Da richiamare oggi</span>';
+        return '';
+    }
+
     function renderBuyersList() {
       const s = document.getElementById('buyer-search').value.toLowerCase();
       const list = document.getElementById('buyers-list'); 
@@ -3138,11 +3695,18 @@
       filtered.forEach(b => {
         let badge = b.status==='Attivo'?'<span class="status-badge bg-blue">In Ricerca</span>':(b.status==='Trovato'?'<span class="status-badge bg-green">Trovato</span>':'<span class="status-badge bg-red">Non Int.</span>');
         const isNewLead = b.source === 'sito' && !b.is_read;
+        // Il promemoria di richiamo si vede anche qui, non solo in
+        // Panoramica: la rubrica e' il posto in cui si finisce quando si
+        // cerca una persona, e deve dire subito se e' rimasta indietro.
         const leadTags = (isNewLead ? ' <span class="status-badge bg-red">Nuovo</span>' : '')
+          + badgeRichiamo(b)
           + (b.request_type === 'valutazione' ? ' <span class="status-badge bg-green">Valutazione</span>' : '')
           + (b.source === 'sito' ? ' <span class="status-badge bg-orange">Dal Sito</span>' : '');
 
         let notesHTML = b.notes ? escapeHtml(b.notes).replace(/\n/g, '<br>') : '<i>Nessuna nota presente.</i>';
+        // Quanti immobili in vetrina somigliano a quello che cerca.
+        const adatti = immobiliPerCliente(b).length;
+        const docsCliente = documenti.filter(d => d.buyer_id == b.id).length;
 
         // I "data-cell" e i "data-label" non cambiano nulla da computer: sotto
         // i 700px sono quello che permette alla riga di diventare una scheda
@@ -3151,11 +3715,20 @@
         <!-- Riga Cliccabile -->
         <tr class="clickable-row" id="row-buyer-${b.id}" onclick="toggleNotes('${b.id}')" title="Clicca per visualizzare le note">
           <td data-cell="stato">${badge}</td>
-          <td data-cell="main" style="font-weight:600;">${escapeHtml(b.full_name)}${leadTags}<br><span class="cell-sub">${escapeHtml(b.phone)}</span></td>
+          <td data-cell="main" style="font-weight:600;">${escapeHtml(b.full_name)}${leadTags}<br><span class="cell-sub">${escapeHtml(b.phone)}</span>${adatti > 0 ? `<br><button type="button" class="btn-match" style="margin-top:6px;" onclick="event.stopPropagation(); openAbbinamenti('cliente', '${b.id}')" title="Immobili in vetrina compatibili con quello che cerca">
+             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10l9-7 9 7v10a1 1 0 01-1 1H4a1 1 0 01-1-1z"></path></svg>
+             ${adatti} ${adatti === 1 ? 'immobile adatto' : 'immobili adatti'}
+           </button>` : ''}</td>
           <td data-cell="info" data-label="Cosa cerca"><span class="cell-value">${escapeHtml(b.desired_type||'-')} <span class="cell-sub">(${escapeHtml(b.desired_zone||'Ovunque')})</span></span></td>
           <td data-cell="info" data-label="Budget"><span class="cell-value">${b.max_budget ? '€'+b.max_budget.toLocaleString('it-IT') : '-'}</span></td>
           <td data-cell="azioni" style="text-align:center;" onclick="event.stopPropagation()">
-             <button class="kebab-btn" onclick="toggleDropdown(event, 'buyer', '${b.id}')">⋮</button>
+             <div class="action-buttons" style="justify-content:flex-end;">
+               <button onclick="openDocumentiDi('cliente', '${b.id}')" class="btn-action" title="Proposte e incarichi di questo cliente">
+                 <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14 3H7a1 1 0 00-1 1v16a1 1 0 001 1h10a1 1 0 001-1V7z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M14 3v4h4"></path></svg>
+                 ${docsCliente > 0 ? `<span class="btn-action-dot">${docsCliente}</span>` : ''}
+               </button>
+               <button class="kebab-btn" onclick="toggleDropdown(event, 'buyer', '${b.id}')">⋮</button>
+             </div>
           </td>
         </tr>
         <!-- Accordion Note -->
@@ -3172,28 +3745,36 @@
       });
     }
 
-    function openBuyerModal() { 
-        document.getElementById('buyer-id').value = ""; 
-        document.querySelector('#modal-buyer form').reset(); 
-        document.getElementById('buyer-status').value = "Attivo"; 
-        document.getElementById('buyer-modal-title').innerText = "Nuovo Cliente"; 
-        document.getElementById('modal-buyer').style.display = 'flex'; 
+    function openBuyerModal() {
+        document.getElementById('buyer-id').value = "";
+        document.querySelector('#modal-buyer form').reset();
+        document.getElementById('buyer-status').value = "Attivo";
+        document.getElementById('buyer-last-contact-hint').innerText = '';
+        document.getElementById('buyer-modal-title').innerText = "Nuovo Cliente";
+        document.getElementById('modal-buyer').style.display = 'flex';
     }
 
-    function editBuyer(id) { 
-        const b = buyers.find(x => x.id == id); 
-        if(!b) return; 
-        
-        document.getElementById('buyer-id').value = b.id; 
-        document.getElementById('buyer-name').value = b.full_name; 
-        document.getElementById('buyer-status').value = b.status; 
-        document.getElementById('buyer-phone').value = b.phone; 
-        document.getElementById('buyer-budget').value = b.max_budget||""; 
-        document.getElementById('buyer-zone').value = b.desired_zone||""; 
-        document.getElementById('buyer-type').value = b.desired_type||""; 
-        document.getElementById('buyer-notes').value = b.notes||""; 
-        document.getElementById('buyer-modal-title').innerText = "Modifica Cliente"; 
-        document.getElementById('modal-buyer').style.display = 'flex'; 
+    function editBuyer(id) {
+        const b = buyers.find(x => x.id == id);
+        if(!b) return;
+
+        document.getElementById('buyer-id').value = b.id;
+        document.getElementById('buyer-name').value = b.full_name;
+        document.getElementById('buyer-status').value = b.status;
+        document.getElementById('buyer-phone').value = b.phone;
+        document.getElementById('buyer-email').value = b.email||"";
+        document.getElementById('buyer-budget').value = b.max_budget||"";
+        document.getElementById('buyer-zone').value = b.desired_zone||"";
+        document.getElementById('buyer-type').value = b.desired_type||"";
+        document.getElementById('buyer-notes').value = b.notes||"";
+        document.getElementById('buyer-next-action').value = b.next_action_date||"";
+        // L'ultimo contatto non si scrive a mano: si aggiorna da solo quando
+        // dici di aver sentito il cliente. Qui e' solo un promemoria.
+        document.getElementById('buyer-last-contact-hint').innerText = b.last_contact_at
+            ? `Ultimo contatto: ${new Date(b.last_contact_at).toLocaleDateString('it-IT')}`
+            : 'Non l\'hai ancora mai sentito.';
+        document.getElementById('buyer-modal-title').innerText = "Modifica Cliente";
+        document.getElementById('modal-buyer').style.display = 'flex';
     }
 
     async function handleBuyerSubmit(e) { 
@@ -3201,15 +3782,17 @@
         showLoader("Salvataggio Cliente..."); 
         const id = document.getElementById('buyer-id').value; 
         
-        const payload = { 
-            full_name: document.getElementById('buyer-name').value, 
-            status: document.getElementById('buyer-status').value, 
-            phone: document.getElementById('buyer-phone').value, 
-            max_budget: Number(document.getElementById('buyer-budget').value)||null, 
-            desired_zone: document.getElementById('buyer-zone').value, 
-            desired_type: document.getElementById('buyer-type').value, 
-            notes: document.getElementById('buyer-notes').value 
-        }; 
+        const payload = {
+            full_name: document.getElementById('buyer-name').value,
+            status: document.getElementById('buyer-status').value,
+            phone: document.getElementById('buyer-phone').value,
+            email: document.getElementById('buyer-email').value || null,
+            max_budget: Number(document.getElementById('buyer-budget').value)||null,
+            desired_zone: document.getElementById('buyer-zone').value,
+            desired_type: document.getElementById('buyer-type').value,
+            next_action_date: document.getElementById('buyer-next-action').value || null,
+            notes: document.getElementById('buyer-notes').value
+        };
         
         const res = id ? await _supabase.from('buyers').update(payload).eq('id', id) : await _supabase.from('buyers').insert([payload]); 
         hideLoader(); 
@@ -3229,8 +3812,8 @@
 
     document.getElementById('confirm-delete-buyer-btn').onclick = async () => {
         if(!buyerToDelete) return;
-        showLoader("Eliminazione...");
-        await _supabase.from('buyers').delete().eq('id', buyerToDelete);
+        showLoader("Spostamento nel cestino...");
+        await cestina('buyers', buyerToDelete);
         buyerToDelete = null;
         closeModals();
         await loadBuyers();
@@ -3241,10 +3824,14 @@
        TAB 4: DOCUMENTI (Bozze Incarichi/Proposte)
        ======================================================= */
     async function loadDocumenti() {
-        const { data, error } = await _supabase.from('documenti_bozze').select('*').order('updated_at', { ascending: false });
+        const { data, error } = await _supabase.from('documenti_bozze').select('*').is('deleted_at', null).order('updated_at', { ascending: false });
         if (!error) {
             documenti = data || [];
             renderDocumentiList();
+            // Le schede immobile e le righe cliente mostrano quanti
+            // documenti hanno agganciato: se cambia l'elenco, cambiano loro.
+            if (properties.length) renderPropertiesList();
+            if (buyers.length) renderBuyersList();
             updateNavCounts();
         }
     }
@@ -3275,6 +3862,19 @@
         });
     }
 
+    // A cosa e' agganciato un documento. Se l'immobile o il cliente sono
+    // finiti nel cestino non compaiono piu' negli elenchi in memoria: in
+    // quel caso il collegamento resta nel dato ma qui non si mostra nulla,
+    // invece di scrivere il nome di una cosa che non c'e' piu'.
+    function collegamentoDoc(d) {
+        const parti = [];
+        const p = d.property_id ? properties.find(x => x.id == d.property_id) : null;
+        const b = d.buyer_id ? buyers.find(x => x.id == d.buyer_id) : null;
+        if (p) parti.push(escapeHtml(p.title));
+        if (b) parti.push(escapeHtml(b.full_name));
+        return parti.length ? `<br><span class="cell-sub">↳ ${parti.join(' · ')}</span>` : '';
+    }
+
     function renderDocumentiList() {
         const searchEl = document.getElementById('doc-search');
         const filterEl = document.getElementById('doc-filter-tipo');
@@ -3296,7 +3896,7 @@
         list.innerHTML = filtered.map(d => `
         <tr>
           <td data-cell="stato"><span class="status-badge ${d.tipo === 'incarico' ? 'bg-blue' : 'bg-yellow'}">${d.tipo === 'incarico' ? 'Incarico' : 'Proposta'}</span></td>
-          <td data-cell="main" style="font-weight:600;">${escapeHtml(d.titolo || 'Senza titolo')}</td>
+          <td data-cell="main" style="font-weight:600;">${escapeHtml(d.titolo || 'Senza titolo')}${collegamentoDoc(d)}</td>
           <td data-cell="info" data-label="Ultimo salvataggio"><span class="cell-value">${formatSalvataggio(d.updated_at)}</span></td>
           <td data-cell="azioni" style="text-align:center;">
             <div class="action-buttons" style="justify-content:center;">
@@ -3443,6 +4043,11 @@
             document.getElementById('cmdk').classList.contains('open') ? closeCmdk() : openCmdk();
             return;
         }
+        // Esc chiude anche il cestino: e' a schermo intero e senza questo
+        // l'unica uscita sarebbe la ✕ in alto.
+        if (e.key === 'Escape' && document.getElementById('modal-cestino')?.classList.contains('open')) {
+            e.preventDefault(); closeCestino(); return;
+        }
         if (!document.getElementById('cmdk')?.classList.contains('open')) return;
         if (e.key === 'Escape') { e.preventDefault(); closeCmdk(); }
         else if (e.key === 'ArrowDown') { e.preventDefault(); cmdkIndex = Math.min(cmdkIndex + 1, cmdkResults.length - 1); renderCmdk(); }
@@ -3457,13 +4062,242 @@
 
     document.getElementById('confirm-delete-doc-btn').onclick = async () => {
         if (!docToDelete) return;
-        showLoader("Eliminazione...");
-        await _supabase.from('documenti_bozze').delete().eq('id', docToDelete);
+        showLoader("Spostamento nel cestino...");
+        await cestina('documenti_bozze', docToDelete);
         docToDelete = null;
         closeModals();
         await loadDocumenti();
         hideLoader();
     };
+
+    /* =======================================================
+       CESTINO
+       Eliminare non cancella piu' niente: mette una data in "deleted_at"
+       e la riga esce da tutti gli elenchi. Per 30 giorni resta qui dentro
+       e puo' tornare al suo posto; dopo viene cancellata sul serio.
+       ======================================================= */
+    const CESTINO_GIORNI = 30;
+
+    // Le quattro tabelle si comportano allo stesso modo, cambia solo dove
+    // sta scritto il nome della cosa: tenerlo in tabella evita quattro
+    // copie della stessa funzione.
+    const CESTINO_TIPI = [
+        { tabella: 'properties',      etichetta: 'Immobile',  nome: r => r.title,          ricarica: () => loadProperties() },
+        { tabella: 'transactions',    etichetta: 'Incarico',  nome: r => r.property_title, ricarica: () => loadTransactions() },
+        { tabella: 'buyers',          etichetta: 'Cliente',   nome: r => r.full_name,      ricarica: () => loadBuyers() },
+        { tabella: 'documenti_bozze', etichetta: 'Documento', nome: r => r.titolo,         ricarica: () => loadDocumenti() }
+    ];
+
+    let cestino = [];
+
+    async function cestina(tabella, id) {
+        const { error } = await _supabase.from(tabella).update({ deleted_at: new Date().toISOString() }).eq('id', id);
+        if (error) { alert("Errore: " + error.message); return false; }
+        await aggiornaContatoreCestino();
+        return true;
+    }
+
+    async function loadCestino() {
+        const risultati = await Promise.all(CESTINO_TIPI.map(async tipo => {
+            const { data, error } = await _supabase.from(tipo.tabella).select('*')
+                .not('deleted_at', 'is', null)
+                .order('deleted_at', { ascending: false });
+            if (error) return [];
+            return (data || []).map(r => ({ ...r, _tipo: tipo }));
+        }));
+        // Un unico elenco in ordine di eliminazione: quello che hai buttato
+        // per ultimo e' quasi sempre quello che stai cercando.
+        cestino = risultati.flat().sort((a, b) => new Date(b.deleted_at) - new Date(a.deleted_at));
+        return cestino;
+    }
+
+    // Giorni che mancano alla cancellazione definitiva.
+    function giorniResidui(deletedAt) {
+        const scadenza = new Date(deletedAt);
+        scadenza.setDate(scadenza.getDate() + CESTINO_GIORNI);
+        return Math.ceil((scadenza - new Date()) / 86400000);
+    }
+
+    async function aggiornaContatoreCestino() {
+        const badge = document.getElementById('cestino-count');
+        if (!badge) return;
+        const conteggi = await Promise.all(CESTINO_TIPI.map(async tipo => {
+            const { count } = await _supabase.from(tipo.tabella)
+                .select('id', { count: 'exact', head: true })
+                .not('deleted_at', 'is', null);
+            return count || 0;
+        }));
+        const totale = conteggi.reduce((a, b) => a + b, 0);
+        badge.innerText = totale;
+        badge.style.display = totale > 0 ? '' : 'none';
+    }
+
+    async function openCestino() {
+        document.getElementById('admin-mobile-menu')?.classList.remove('open');
+        const box = document.getElementById('modal-cestino');
+        box.classList.add('open');
+        document.body.style.overflow = 'hidden';
+        document.getElementById('cestino-list').innerHTML = skeletonRows(3);
+        await purgeCestinoScaduto();
+        await loadCestino();
+        renderCestino();
+    }
+
+    function closeCestino() {
+        document.getElementById('modal-cestino').classList.remove('open');
+        document.body.style.overflow = '';
+    }
+
+    function renderCestino() {
+        const list = document.getElementById('cestino-list');
+        if (cestino.length === 0) {
+            list.innerHTML = emptyState({
+                titolo: 'Il cestino è vuoto',
+                testo: `Qui finisce quello che elimini, e ci resta ${CESTINO_GIORNI} giorni prima di sparire per sempre.`
+            });
+            return;
+        }
+
+        list.innerHTML = cestino.map(r => {
+            const giorni = giorniResidui(r.deleted_at);
+            const nome = escapeHtml(r._tipo.nome(r) || 'Senza titolo');
+            return `
+            <div class="cestino-row">
+              <span class="cestino-tag">${r._tipo.etichetta}</span>
+              <div class="cestino-texts">
+                <b>${nome}</b>
+                <span>Eliminato il ${new Date(r.deleted_at).toLocaleDateString('it-IT')} · ${giorni > 0 ? `sparisce tra ${giorni} ${giorni === 1 ? 'giorno' : 'giorni'}` : 'in cancellazione'}</span>
+              </div>
+              <div class="cestino-actions">
+                <button class="btn-mini primary" onclick="ripristina('${r._tipo.tabella}', '${r.id}')">Ripristina</button>
+                <button class="btn-mini danger" onclick="eliminaOra('${r._tipo.tabella}', '${r.id}')">Elimina ora</button>
+              </div>
+            </div>`;
+        }).join('');
+    }
+
+    async function ripristina(tabella, id) {
+        const tipo = CESTINO_TIPI.find(t => t.tabella === tabella);
+        showLoader("Ripristino...");
+        const { error } = await _supabase.from(tabella).update({ deleted_at: null }).eq('id', id);
+        if (error) alert("Errore: " + error.message);
+        await tipo.ricarica();
+        await loadCestino();
+        renderCestino();
+        await aggiornaContatoreCestino();
+        hideLoader();
+    }
+
+    async function eliminaOra(tabella, id) {
+        if (!confirm("Eliminare definitivamente questo elemento?\n\nDopo non sarà più recuperabile in nessun modo.")) return;
+        showLoader("Eliminazione definitiva...");
+        await eliminaDavvero(tabella, id);
+        await loadCestino();
+        renderCestino();
+        await aggiornaContatoreCestino();
+        hideLoader();
+    }
+
+    // L'unico punto del gestionale che cancella per davvero.
+    async function eliminaDavvero(tabella, id) {
+        // Le foto di un immobile vivono nello storage, non nella riga: se
+        // non le si toglie qui restano a occupare spazio per sempre.
+        if (tabella === 'properties') {
+            const riga = cestino.find(r => r.id == id && r._tipo.tabella === 'properties');
+            if (riga && riga.images) await deleteStorageImages(riga.images);
+        }
+        const { error } = await _supabase.from(tabella).delete().eq('id', id);
+        if (error) alert("Errore: " + error.message);
+    }
+
+    // Gira all'apertura del cestino: quello che ha superato i 30 giorni se
+    // ne va senza chiedere niente, che e' il patto dichiarato all'utente.
+    async function purgeCestinoScaduto() {
+        const limite = new Date();
+        limite.setDate(limite.getDate() - CESTINO_GIORNI);
+        const scaduti = await loadCestino();
+        const daPurgare = scaduti.filter(r => new Date(r.deleted_at) < limite);
+        for (const r of daPurgare) {
+            await eliminaDavvero(r._tipo.tabella, r.id);
+        }
+    }
+
+    /* =======================================================
+       ESPORTAZIONE
+       Il file nasce e muore nel browser di chi ha fatto login: non viene
+       caricato da nessuna parte e non passa da nessun servizio esterno.
+       ======================================================= */
+    function openExport() {
+        document.getElementById('admin-mobile-menu')?.classList.remove('open');
+        document.getElementById('modal-export').style.display = 'flex';
+    }
+
+    // Excel in italiano si aspetta il punto e virgola come separatore, e
+    // senza BOM mangia le lettere accentate.
+    function scaricaCsv(nomeFile, intestazioni, righe) {
+        const cella = v => {
+            const s = (v === null || v === undefined) ? '' : String(v);
+            return /[";\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+        };
+        const testo = [intestazioni, ...righe].map(r => r.map(cella).join(';')).join('\r\n');
+        scaricaFile(nomeFile, '﻿' + testo, 'text/csv;charset=utf-8');
+    }
+
+    function scaricaFile(nomeFile, contenuto, mime) {
+        const url = URL.createObjectURL(new Blob([contenuto], { type: mime }));
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = nomeFile;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        // Revoca ritardata: su iOS il download parte dopo il click e
+        // revocare subito lascerebbe un file vuoto.
+        setTimeout(() => URL.revokeObjectURL(url), 4000);
+    }
+
+    const oggiPerNomeFile = () => new Date().toISOString().split('T')[0];
+    const dataIt = v => v ? new Date(v).toLocaleDateString('it-IT') : '';
+
+    function esportaIncarichiCsv() {
+        scaricaCsv(`incarichi-${oggiPerNomeFile()}.csv`,
+            ['Stato', 'Immobile', 'Proprietario', 'Acquisizione', 'Durata', 'Prezzo di partenza',
+             'Data di vendita', 'Prezzo di chiusura', 'Provv. venditore %', 'Provv. acquirente %', 'Netto incassato'],
+            transactions.map(t => [
+                t.status, t.property_title, t.owner_name || '', dataIt(t.acquisition_date),
+                t.assignment_duration || '', t.initial_price || 0, dataIt(t.sale_date),
+                t.final_price || '', t.commission_seller_perc || 0, t.commission_buyer_perc || 0,
+                t.status === 'Venduto' ? Math.round(commissionOf(t)) : ''
+            ]));
+        closeModals();
+    }
+
+    function esportaRubricaCsv() {
+        scaricaCsv(`rubrica-${oggiPerNomeFile()}.csv`,
+            ['Nome', 'Telefono', 'Email', 'Stato', 'Cosa cerca', 'Zona', 'Budget massimo',
+             'Provenienza', 'Arrivato il', 'Ultimo contatto', 'Da richiamare il', 'Note'],
+            buyers.map(b => [
+                b.full_name, b.phone, b.email || '', b.status, b.desired_type || '', b.desired_zone || '',
+                b.max_budget || '', b.source === 'sito' ? 'Richiesta dal sito' : 'Inserito a mano',
+                dataIt(b.created_at), dataIt(b.last_contact_at), dataIt(b.next_action_date),
+                (b.notes || '').replace(/\r?\n/g, ' / ')
+            ]));
+        closeModals();
+    }
+
+    function esportaBackupJson() {
+        const backup = {
+            esportato_il: new Date().toISOString(),
+            gestionale: 'Immobiliare con Michele',
+            immobili: properties,
+            incarichi: transactions,
+            clienti: buyers,
+            documenti: documenti
+        };
+        scaricaFile(`backup-gestionale-${oggiPerNomeFile()}.json`,
+                    JSON.stringify(backup, null, 2), 'application/json');
+        closeModals();
+    }
 
   </script>
 </body>

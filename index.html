@@ -368,6 +368,11 @@
     .contact-form-card .form-input, .contact-form-card select, .contact-form-card textarea { width: 100%; padding: 14px 16px; background: #f1f5f9; border: 1px solid var(--border-color); border-radius: 14px; font-size: 14px; font-weight: 500; font-family: inherit; color: var(--text-slate); outline: none; transition: var(--transition); appearance: none; }
     .contact-form-card .form-input:focus, .contact-form-card select:focus, .contact-form-card textarea:focus { border-color: var(--brand-blue); background: var(--white); box-shadow: 0 0 0 4px rgba(0,68,255,0.1); }
     .contact-form-card textarea { grid-column: 1 / -1; resize: vertical; min-height: 90px; }
+    /* I campi di chi cerca casa: compaiono e spariscono col tipo di
+       richiesta, senza far saltare il resto del modulo. */
+    .contact-search-fields { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr; gap: 1rem; }
+    @media (min-width: 640px) { .contact-search-fields { grid-template-columns: 1fr 1fr; } .contact-search-fields input:last-child { grid-column: 1 / -1; } }
+    .contact-search-fields[hidden] { display: none; }
     .contact-form-card .btn-primary { grid-column: 1 / -1; margin-top: 0.25rem; width: 100%; }
     .contact-form-status { grid-column: 1 / -1; font-size: 13px; font-weight: 700; text-align: center; min-height: 1.2em; }
     .contact-form-status.success { color: #059669; }
@@ -676,12 +681,22 @@
             <div class="contact-form-grid">
               <input type="text" id="contact-name" class="form-input" placeholder="Nome e Cognome" required>
               <input type="tel" id="contact-phone" class="form-input" placeholder="Telefono" required>
-              <select id="contact-interest" class="form-input" style="grid-column: 1 / -1;">
+              <input type="email" id="contact-email" class="form-input" placeholder="Email (facoltativa)" style="grid-column: 1 / -1;">
+              <select id="contact-interest" class="form-input" onchange="aggiornaCampiRicerca()" style="grid-column: 1 / -1;">
                 <option value="Cerco casa">Cerco casa</option>
                 <option value="Vendo casa">Vendo casa</option>
                 <option value="Voglio una valutazione">Voglio una valutazione gratuita</option>
                 <option value="Altro">Altro</option>
               </select>
+              <!-- Chiesti solo a chi cerca casa: a chi vende non servono, e
+                   un modulo che chiede cose inutili si abbandona a meta'.
+                   Sono i tre dati che permettono a Michele di sapere subito
+                   se ha gia' in vetrina qualcosa di adatto. -->
+              <div id="contact-search-fields" class="contact-search-fields">
+                <input type="text" id="contact-zone" class="form-input" placeholder="In che zona? (es. Porto Torres)">
+                <input type="text" id="contact-type" class="form-input" placeholder="Che tipo di casa? (es. Trilocale)">
+                <input type="number" id="contact-budget" class="form-input" placeholder="Budget massimo in € (facoltativo)" min="0" step="1000">
+              </div>
               <textarea id="contact-message" class="form-input" placeholder="Scrivimi qualcosa in più (facoltativo)"></textarea>
               <button type="submit" id="contact-submit-btn" class="btn-primary">Invia Richiesta</button>
               <div id="contact-form-status" class="contact-form-status"></div>
@@ -869,14 +884,30 @@
     // Invia una richiesta dal modulo "Contatti" direttamente nella rubrica
     // clienti (tabella "buyers"), cosi' compare nel pannello admin come
     // nuovo contatto "In Ricerca" pronto per essere richiamato.
+    // Mostra o nasconde zona/tipologia/budget secondo il tipo di richiesta.
+    // Gira anche al caricamento, perche' "Cerco casa" e' gia' selezionato.
+    function aggiornaCampiRicerca() {
+      const box = document.getElementById('contact-search-fields');
+      if (box) box.hidden = document.getElementById('contact-interest').value !== 'Cerco casa';
+    }
+    document.addEventListener('DOMContentLoaded', aggiornaCampiRicerca);
+
     async function handleContactSubmit(e) {
       e.preventDefault();
       const btn = document.getElementById('contact-submit-btn');
       const statusEl = document.getElementById('contact-form-status');
       const name = document.getElementById('contact-name').value.trim();
       const phone = document.getElementById('contact-phone').value.trim();
+      const email = document.getElementById('contact-email').value.trim();
       const interest = document.getElementById('contact-interest').value;
       const message = document.getElementById('contact-message').value.trim();
+      // Solo chi cerca casa compila questi tre, quindi si leggono solo in
+      // quel caso: altrimenti finirebbero in rubrica i residui di una
+      // scelta cambiata a meta' compilazione.
+      const cercaCasa = interest === 'Cerco casa';
+      const zone = cercaCasa ? document.getElementById('contact-zone').value.trim() : '';
+      const type = cercaCasa ? document.getElementById('contact-type').value.trim() : '';
+      const budget = cercaCasa ? Number(document.getElementById('contact-budget').value) || null : null;
 
       btn.disabled = true;
       btn.textContent = 'Invio in corso...';
@@ -889,7 +920,11 @@
       const { error } = await _supabase.from('buyers').insert([{
         full_name: name,
         phone: phone,
+        email: email || null,
         status: 'Attivo',
+        desired_zone: zone || null,
+        desired_type: type || null,
+        max_budget: budget,
         notes: noteParts.join('\n\n'),
         source: 'sito',
         is_read: false

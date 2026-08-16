@@ -56,12 +56,22 @@ Sono scritti per essere sicuri da rieseguire (`IF NOT EXISTS`).
 3. `supabase-documenti-bozze.sql` — tabella `documenti_bozze` (incarichi e proposte salvati)
 4. `supabase-buyers-source-tracking.sql` — origine dei contatti e messaggi da leggere
 5. `supabase-valutazioni.sql` — distingue le richieste di valutazione dai contatti generici
+6. `supabase-crm-upgrade.sql` — email e promemoria di richiamo sulla rubrica,
+   collegamento dei documenti a immobile e cliente, colonna `deleted_at` per il
+   cestino. Stringe anche l'unico permesso pubblico su `buyers`: da fuori si può
+   solo inserire una richiesta marcata `source='sito'`.
 
-Il workflow `.github/workflows/keep-alive.yml` interroga il database ogni tre
-giorni: i progetti Supabase gratuiti vengono sospesi dopo un periodo di
-inattività, e questo lo tiene sveglio. Usa i secret `SUPABASE_URL` e
-`SUPABASE_ANON_KEY` del repo GitHub — se cambia il progetto vanno aggiornati
-lì **oltre** che in `config.js`.
+## Automazioni
+
+- `.github/workflows/keep-alive.yml` interroga il database ogni tre giorni: i
+  progetti Supabase gratuiti vengono sospesi dopo un periodo di inattività, e
+  questo lo tiene sveglio. Usa i secret `SUPABASE_URL` e `SUPABASE_ANON_KEY` del
+  repo GitHub — se cambia il progetto vanno aggiornati lì **oltre** che in
+  `config.js`.
+- `.github/workflows/incarichi-in-scadenza.yml` manda ogni lunedì un promemoria
+  degli incarichi che scadono entro 30 giorni. Richiede altri secret: finché non
+  ci sono, gira e non fa nulla senza andare in errore. Istruzioni e motivazioni
+  in [`scripts/README.md`](scripts/README.md).
 
 ## Immagini e icone
 

@@ -33,6 +33,18 @@ function initBozze({ tipo, supabase, form, loading, ricavaTitolo, generaPDF, dop
     // Id della bozza aperta: nullo finche' non se ne salva o se ne carica una.
     let currentDraftId = null;
 
+    // Collegamenti a immobile e cliente. Arrivano dall'indirizzo quando il
+    // documento viene aperto da una scheda del gestionale
+    // (es. incarico.html?property_id=12), oppure dalla bozza stessa quando
+    // se ne riapre una gia' collegata. Servono a far esistere anche nei dati
+    // la catena immobile -> incarico -> proposta -> vendita, che prima
+    // stava solo nella testa di chi compilava.
+    const parametri = new URLSearchParams(window.location.search);
+    let collegamenti = {
+        property_id: parametri.get('property_id') || null,
+        buyer_id: parametri.get('buyer_id') || null
+    };
+
     const statoBozza = document.getElementById('draft-status');
 
     function mostraStato(testo) {
@@ -63,6 +75,13 @@ function initBozze({ tipo, supabase, form, loading, ricavaTitolo, generaPDF, dop
             return;
         }
         currentDraftId = data.id;
+        // I collegamenti gia' salvati vincono su quelli dell'indirizzo:
+        // riaprire una bozza non deve poterla riagganciare altrove per
+        // sbaglio, ma se non ne aveva li' si possono aggiungere.
+        collegamenti = {
+            property_id: data.property_id || collegamenti.property_id || null,
+            buyer_id: data.buyer_id || collegamenti.buyer_id || null
+        };
         popolaForm(data.dati || {});
         mostraStato(`Stai modificando una bozza salvata (ultimo salvataggio: ${new Date(data.updated_at).toLocaleString('it-IT')})`);
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -71,7 +90,11 @@ function initBozze({ tipo, supabase, form, loading, ricavaTitolo, generaPDF, dop
     async function salvaBozza(showAlert = true) {
         const dati = Object.fromEntries(new FormData(form));
         const nowIso = new Date().toISOString();
-        const payload = { tipo, titolo: ricavaTitolo(dati), dati, updated_at: nowIso };
+        const payload = {
+            tipo, titolo: ricavaTitolo(dati), dati, updated_at: nowIso,
+            property_id: collegamenti.property_id,
+            buyer_id: collegamenti.buyer_id
+        };
 
         try {
             if (currentDraftId) {
