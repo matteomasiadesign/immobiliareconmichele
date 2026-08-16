@@ -2550,6 +2550,9 @@
             // Vale anche per gli abbinamenti, che escludono i venduti.
             if (properties.length) renderPropertiesList();
             if (buyers.length) renderBuyersList();
+            // "Da fare" ora elenca anche gli incarichi in scadenza, quindi
+            // dipende da questa tabella e non solo dalla rubrica.
+            renderDaFare();
             updateDashboardStats();
             renderOverviewStats();
         }
@@ -3529,7 +3532,20 @@
         return new Date(anno, mese - 1, giorno);
     }
 
-    function daFareList() {
+    // Un incarico che scade e' una cosa da fare quanto un cliente da
+    // richiamare: bisogna sentire il proprietario e rinnovare. Sotto i 30
+    // giorni entra qui, cosi' non serve nessun promemoria esterno - la
+    // scadenza si vede nel punto in cui si passa comunque ogni giorno.
+    const GIORNI_SCADENZA_DA_FARE = 30;
+
+    function incarichiDaFare() {
+        return transactions
+            .filter(t => t.status === 'In Vendita' && giorniAllaScadenza(t) <= GIORNI_SCADENZA_DA_FARE)
+            .map(t => ({ _tipo: 'incarico', dato: t, giorni: giorniAllaScadenza(t) }))
+            .sort((a, b) => a.giorni - b.giorni);
+    }
+
+    function clientiDaFare() {
         const oggi = inizioGiornata();
         return buyers
             .filter(b => {
@@ -3547,10 +3563,17 @@
                 // ore e il troncamento sbaglierebbe di un giorno.
                 const ritardo = scadenza ? Math.round((oggi - scadenza) / 86400000) : null;
                 const attesa = Math.floor((oggi - new Date(b.created_at)) / 86400000);
-                return { ...b, _ritardo: ritardo, _attesa: attesa };
+                return { ...b, _tipo: 'cliente', _ritardo: ritardo, _attesa: attesa };
             })
             // Prima il ritardo piu' lungo; a parita', chi aspetta da piu' tempo.
             .sort((a, b) => (b._ritardo ?? -1) - (a._ritardo ?? -1) || b._attesa - a._attesa);
+    }
+
+    // Le scadenze degli incarichi vanno in cima: un cliente si puo'
+    // richiamare domani, un incarico scaduto e' un immobile che non e' piu'
+    // tuo. I clienti seguono, nel loro ordine di urgenza.
+    function daFareList() {
+        return [...incarichiDaFare(), ...clientiDaFare()];
     }
 
     function renderDaFare() {
@@ -3563,22 +3586,50 @@
         if (items.length === 0) {
             list.innerHTML = emptyState({
                 titolo: 'Non hai niente in sospeso',
-                testo: 'Qui compaiono i clienti da richiamare e le richieste dal sito che non hai ancora sentito.'
+                testo: 'Qui compaiono gli incarichi che stanno per scadere, i clienti da richiamare e le richieste dal sito che non hai ancora sentito.'
             });
             return;
         }
 
-        list.innerHTML = items.map(b => {
-            let quando;
-            if (b._ritardo === null)      quando = b._attesa <= 0 ? 'arrivata oggi, mai richiamata' : `in attesa da ${b._attesa} ${b._attesa === 1 ? 'giorno' : 'giorni'}, mai richiamata`;
-            else if (b._ritardo === 0)    quando = 'da richiamare oggi';
-            else if (b._ritardo === 1)    quando = 'da richiamare da ieri';
-            else                          quando = `in ritardo di ${b._ritardo} giorni`;
+        list.innerHTML = items.map(x =>
+            x._tipo === 'incarico' ? rigaDaFareIncarico(x) : rigaDaFareCliente(x)
+        ).join('');
+    }
 
-            const urgente = b._ritardo !== null && b._ritardo > 0;
-            const tel = (b.phone || '').replace(/[^\d+]/g, '');
+    function rigaDaFareIncarico({ dato: t, giorni }) {
+        const quando = giorni < 0  ? `scaduto da ${Math.abs(giorni)} ${Math.abs(giorni) === 1 ? 'giorno' : 'giorni'}`
+                     : giorni === 0 ? 'scade oggi'
+                     : giorni === 1 ? 'scade domani'
+                     : `scade tra ${giorni} giorni`;
+        return `
+        <div class="item-row">
+            <div class="item-info">
+                <div class="item-texts">
+                    <p class="item-title">${escapeHtml(t.property_title)}
+                      <span class="status-badge ${giorni < 0 ? 'bg-red' : 'bg-orange'}" style="margin-left:6px;">Incarico ${quando}</span>
+                    </p>
+                    <p class="item-details-text">
+                      ${t.owner_name ? `Proprietario: ${escapeHtml(t.owner_name)} · ` : ''}da rinnovare o ritirare
+                    </p>
+                </div>
+            </div>
+            <div class="item-actions-box dafare-actions">
+                <button onclick="editTransaction('${t.id}')" class="btn-mini primary">Apri incarico</button>
+            </div>
+        </div>`;
+    }
 
-            return `
+    function rigaDaFareCliente(b) {
+        let quando;
+        if (b._ritardo === null)      quando = b._attesa <= 0 ? 'arrivata oggi, mai richiamata' : `in attesa da ${b._attesa} ${b._attesa === 1 ? 'giorno' : 'giorni'}, mai richiamata`;
+        else if (b._ritardo === 0)    quando = 'da richiamare oggi';
+        else if (b._ritardo === 1)    quando = 'da richiamare da ieri';
+        else                          quando = `in ritardo di ${b._ritardo} giorni`;
+
+        const urgente = b._ritardo !== null && b._ritardo > 0;
+        const tel = (b.phone || '').replace(/[^\d+]/g, '');
+
+        return `
             <div class="item-row">
                 <div class="item-info">
                     <div class="item-texts">
@@ -3603,7 +3654,6 @@
                     </select>
                 </div>
             </div>`;
-        }).join('');
     }
 
     // "Ho sentito": registra il contatto e toglie il promemoria. Se il

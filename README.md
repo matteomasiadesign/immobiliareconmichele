@@ -61,17 +61,15 @@ Sono scritti per essere sicuri da rieseguire (`IF NOT EXISTS`).
    cestino. Stringe anche l'unico permesso pubblico su `buyers`: da fuori si può
    solo inserire una richiesta marcata `source='sito'`.
 
-## Automazioni
+Il workflow `.github/workflows/keep-alive.yml` interroga il database ogni tre
+giorni: i progetti Supabase gratuiti vengono sospesi dopo un periodo di
+inattività, e questo lo tiene sveglio. Usa i secret `SUPABASE_URL` e
+`SUPABASE_ANON_KEY` del repo GitHub — se cambia il progetto vanno aggiornati
+lì **oltre** che in `config.js`.
 
-- `.github/workflows/keep-alive.yml` interroga il database ogni tre giorni: i
-  progetti Supabase gratuiti vengono sospesi dopo un periodo di inattività, e
-  questo lo tiene sveglio. Usa i secret `SUPABASE_URL` e `SUPABASE_ANON_KEY` del
-  repo GitHub — se cambia il progetto vanno aggiornati lì **oltre** che in
-  `config.js`.
-- `.github/workflows/incarichi-in-scadenza.yml` manda ogni lunedì un promemoria
-  degli incarichi che scadono entro 30 giorni. Richiede altri secret: finché non
-  ci sono, gira e non fa nulla senza andare in errore. Istruzioni e motivazioni
-  in [`scripts/README.md`](scripts/README.md).
+Gli incarichi in scadenza non hanno bisogno di un promemoria esterno: compaiono
+nell'elenco "Da fare" della Panoramica, che è la prima cosa che si vede
+entrando nel gestionale.
 
 ## Immagini e icone
 
