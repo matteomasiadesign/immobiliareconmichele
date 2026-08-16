@@ -9,10 +9,13 @@
 
   <link rel="icon" href="logo.svg" type="image/svg+xml">
 
-  <!-- Icona e nome per l'aggiunta alla home: vedi index.html -->
+  <!-- Icona e nome per l'aggiunta alla home: vedi index.html.
+       Manifest separato da quello del sito pubblico: iOS apre l'icona sullo
+       start_url del manifest, non sull'indirizzo che era in barra. Con il
+       manifest condiviso l'icona dell'admin finiva sulla home pubblica. -->
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
-  <meta name="apple-mobile-web-app-title" content="Immobiliare">
-  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="apple-mobile-web-app-title" content="Admin">
+  <link rel="manifest" href="admin.webmanifest">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
