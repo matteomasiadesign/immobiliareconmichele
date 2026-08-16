@@ -43,6 +43,14 @@ function chiaveTelefono(tel) {
 const emailNormalizzata = e => (e || '').trim().toLowerCase() || null;
 
 /**
+ * Nome ridotto all'osso per il confronto: via accenti, punteggiatura e
+ * spazi doppi. "Anna  Piras" e "Anna Pìras" sono la stessa persona.
+ */
+const nomeNormalizzato = n => (n || '').toString().toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
+
+/**
  * Se la persona compare in due documenti con ruoli diversi (ti ha venduto
  * casa e adesso ne compra un'altra) non si sceglie: e' entrambi.
  */
@@ -57,15 +65,26 @@ function ruoloUnito(vecchio, nuovo) {
  * @returns {Promise<string|null>} id della scheda, o null se non c'era
  *          abbastanza per crearne una.
  */
-async function portaInRubrica(supabase, { nome, cell, tel, email, ruolo }) {
+async function portaInRubrica(supabase, { nome, cell, tel, email, ruolo, cf }) {
     const fullName = (nome || '').trim();
     const telefono = (cell || '').trim() || (tel || '').trim();
     const posta = emailNormalizzata(email);
 
-    // Un nome senza nessun recapito non e' un contatto: e' rumore. Le bozze
-    // si salvano anche compilate a meta', e non devono riempire la rubrica
-    // di schede su cui non si puo' fare niente.
-    if (!fullName || (!telefono && !posta)) return null;
+    // Senza nome non si va da nessuna parte.
+    if (!fullName) return null;
+
+    // Un nome senza recapiti puo' essere due cose molto diverse: una bozza
+    // aperta e abbandonata a meta', oppure una persona che ha davvero
+    // firmato un atto e di cui semplicemente non e' stato scritto il
+    // numero. La prima e' rumore, la seconda no - ed e' proprio quella che
+    // in rubrica serve di piu'.
+    //
+    // A distinguerle e' il codice fiscale: chi ce l'ha e' stato
+    // identificato con un documento in mano, non e' una prova di
+    // compilazione. Lo si usa solo come segnale: in rubrica NON viene
+    // copiato, resta nell'atto dove serve.
+    const identificato = !!(cf || '').trim();
+    if (!telefono && !posta && !identificato) return null;
 
     // La rubrica di un'agenzia sta in poche centinaia di righe: si leggono
     // tutte e si confronta in memoria, perche' i numeri sono scritti ogni
@@ -77,10 +96,30 @@ async function portaInRubrica(supabase, { nome, cell, tel, email, ruolo }) {
     if (error) { console.error('Rubrica non leggibile:', error); return null; }
 
     const chiave = chiaveTelefono(telefono);
-    const gia = (esistenti || []).find(b =>
+    let gia = (esistenti || []).find(b =>
         (chiave && chiaveTelefono(b.phone) === chiave) ||
         (posta && emailNormalizzata(b.email) === posta)
     );
+
+    // Ultima spiaggia: il nome, ma confrontato SOLO con le schede che non
+    // hanno ne' telefono ne' email.
+    //
+    // Quelle schede mute nascono da una persona identificata dal solo
+    // codice fiscale, e senza questo passaggio non sarebbero confrontabili
+    // con niente: ogni sincronizzazione ne creerebbe una copia, e il giorno
+    // che salta fuori il numero nascerebbe l'ennesimo doppione invece di
+    // completare quella che c'e' gia'.
+    //
+    // Limitarlo alle schede mute e' quello che tiene separati gli omonimi:
+    // due "Anna Piras" con due numeri diversi restano due persone, perche'
+    // nessuna delle due e' muta.
+    if (!gia) {
+        const cercato = nomeNormalizzato(fullName);
+        gia = (esistenti || []).find(b =>
+            !chiaveTelefono(b.phone) && !emailNormalizzata(b.email) &&
+            nomeNormalizzato(b.full_name) === cercato
+        );
+    }
 
     if (gia) {
         // Si riempiono solo i buchi. Quello che c'e' gia' in rubrica e'
@@ -130,17 +169,19 @@ function personeDelDocumento(tipo, dati) {
         return {
             persone: [{
                 nome: dati.propNome, cell: dati.propCell, tel: dati.propTel,
-                email: dati.propEmail, ruolo: 'venditore'
+                email: dati.propEmail, cf: dati.propCF, ruolo: 'venditore'
             }],
             principale: 0
         };
     }
     return {
         persone: [
+            // Il modulo della proposta non chiede il cellulare del
+            // venditore: per lui c'e' solo il fisso.
             { nome: dati.proponenteNome, cell: dati.proponenteCell, tel: dati.proponenteTel,
-              email: dati.proponenteEmail, ruolo: 'acquirente' },
+              email: dati.proponenteEmail, cf: dati.proponenteCF, ruolo: 'acquirente' },
             { nome: dati.venditoreNome, cell: '', tel: dati.venditoreTel,
-              email: dati.venditoreEmail, ruolo: 'venditore' }
+              email: dati.venditoreEmail, cf: dati.venditoreCF, ruolo: 'venditore' }
         ],
         // Il "cliente" di una proposta e' chi la firma: il proponente.
         principale: 0

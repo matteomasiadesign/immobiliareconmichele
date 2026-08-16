@@ -4082,17 +4082,29 @@
         showLoader("Lettura dei documenti...");
 
         const rubricaPrima = buyers.length;
-        let documentiCollegati = 0, incarichiCollegati = 0, saltati = 0;
+        let documentiCollegati = 0, incarichiCollegati = 0;
+        const scartati = [];   // chi non e' entrato, e perche'
 
         try {
             for (const d of documenti) {
                 const { persone, principale } = personeDelDocumento(d.tipo, d.dati || {});
                 const ids = [];
                 for (const persona of persone) {
-                    ids.push(await portaInRubrica(_supabase, persona));
+                    const id = await portaInRubrica(_supabase, persona);
+                    ids.push(id);
+                    // "Saltato" senza dire chi ne' perche' costringe a
+                    // indovinare: qui si annota, e il riepilogo lo mostra.
+                    if (!id) {
+                        const nome = (persona.nome || '').trim();
+                        scartati.push({
+                            documento: d.titolo || 'Senza titolo',
+                            persona: nome || '(nessun nome nel documento)',
+                            motivo: nome ? 'niente telefono, email o codice fiscale' : 'campo del nome vuoto'
+                        });
+                    }
                 }
 
-                if (ids.every(x => !x)) { saltati++; continue; }
+                if (ids.every(x => !x)) continue;
 
                 // Il documento si aggancia al suo cliente solo se non era
                 // gia' agganciato a qualcuno: un collegamento messo a mano
@@ -4120,19 +4132,47 @@
 
             if (incarichiCollegati > 0) await loadTransactions();
 
-            const aggiunte = buyers.length - rubricaPrima;
-            alert(
-                'Rubrica aggiornata.\n\n' +
-                `• ${aggiunte} ${aggiunte === 1 ? 'persona aggiunta' : 'persone aggiunte'}\n` +
-                `• ${documentiCollegati} ${documentiCollegati === 1 ? 'documento collegato' : 'documenti collegati'} al proprio cliente\n` +
-                `• ${incarichiCollegati} ${incarichiCollegati === 1 ? 'incarico collegato' : 'incarichi collegati'} al proprietario\n` +
-                (saltati > 0 ? `\n${saltati} ${saltati === 1 ? 'documento non aveva' : 'documenti non avevano'} nome e recapito: ${saltati === 1 ? 'saltato' : 'saltati'}.` : '')
-            );
+            mostraEsitoSincronizzazione(buyers.length - rubricaPrima, documentiCollegati, incarichiCollegati, scartati);
         } catch (err) {
             alert("Errore durante l'aggiornamento della rubrica:\n" + err.message);
         } finally {
             hideLoader();
         }
+    }
+
+    // Il riepilogo riusa il riquadro degli abbinamenti: un elenco di righe
+    // con un titolo sopra e' esattamente quello che serve, e una finestra
+    // di sistema non saprebbe mostrare nomi e motivi in modo leggibile.
+    function mostraEsitoSincronizzazione(aggiunte, documentiCollegati, incarichiCollegati, scartati) {
+        document.getElementById('abbinamenti-title').innerText = 'Rubrica aggiornata';
+        document.getElementById('abbinamenti-sub').innerText =
+            `${aggiunte} ${aggiunte === 1 ? 'persona aggiunta' : 'persone aggiunte'} · ` +
+            `${documentiCollegati} ${documentiCollegati === 1 ? 'documento collegato' : 'documenti collegati'} · ` +
+            `${incarichiCollegati} ${incarichiCollegati === 1 ? 'incarico collegato' : 'incarichi collegati'}`;
+
+        const nulla = aggiunte === 0 && documentiCollegati === 0 && incarichiCollegati === 0;
+
+        document.getElementById('abbinamenti-list').innerHTML =
+            (nulla && scartati.length === 0
+              ? `<div class="empty-state" style="padding:1.75rem 1.25rem;">
+                   <h4>Era già tutto a posto</h4>
+                   <p>Ogni persona presente nei documenti è già in rubrica, e i collegamenti c'erano già.</p>
+                 </div>`
+              : '') +
+            (scartati.length > 0
+              ? `<div class="doc-new-bar" style="background:var(--warn-bg); border-top:none;">
+                   <b style="font-size:13px; color:var(--warn);">Non ${scartati.length === 1 ? 'è entrata' : 'sono entrate'} in rubrica: ${scartati.length} ${scartati.length === 1 ? 'persona' : 'persone'}</b>
+                 </div>` +
+                scartati.map(s => `
+                  <div class="item-row">
+                    <div class="item-info"><div class="item-texts">
+                      <p class="item-title">${escapeHtml(s.persona)}</p>
+                      <p class="item-details-text">${escapeHtml(s.documento)}<br><span class="cell-sub">${escapeHtml(s.motivo)}</span></p>
+                    </div></div>
+                  </div>`).join('')
+              : '');
+
+        document.getElementById('modal-abbinamenti').style.display = 'flex';
     }
 
     function openDeleteDocModal(id) {
