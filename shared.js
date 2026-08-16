@@ -331,11 +331,14 @@ function openModal(id) {
     document.getElementById('mod-type').innerText = p.property_type;
     document.getElementById('mod-title').innerText = p.title;
     document.getElementById('mod-zone').innerText = p.zone;
-    document.getElementById('mod-rooms').innerText = p.rooms + " Stanze";
-    document.getElementById('mod-bathrooms').innerText = p.bathrooms + " Bagni";
+    // Solo il numero: l'unita' di misura sta nell'etichetta sotto (Locali,
+    // Bagni) o nel markup accanto al valore (m²). Scriverla anche qui la
+    // faceva comparire due volte, e al plurale pure quando era uno solo.
+    document.getElementById('mod-rooms').innerText = p.rooms;
+    document.getElementById('mod-bathrooms').innerText = p.bathrooms;
     const modGrid = document.getElementById('mod-grid');
     const sqmItem = document.getElementById('mod-sqm-item');
-    if (p.sqm) { document.getElementById('mod-sqm').innerText = p.sqm + " m²"; sqmItem.style.display = ''; modGrid.classList.add('has-sqm'); }
+    if (p.sqm) { document.getElementById('mod-sqm').innerText = p.sqm; sqmItem.style.display = ''; modGrid.classList.add('has-sqm'); }
     else { sqmItem.style.display = 'none'; modGrid.classList.remove('has-sqm'); }
     document.getElementById('mod-parking').innerText = p.has_parking ? "Sì" : "No";
     document.getElementById('mod-desc').innerText = p.description;
