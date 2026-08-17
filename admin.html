@@ -437,6 +437,28 @@
     }
     .panel-title { font-family: var(--display); font-size: 15px; font-weight: 600; margin-bottom: 1.1rem; color: var(--ink); display: flex; align-items: center; gap: 8px; }
 
+    /* MANCA IL GEMELLO. Un incarico firmato senza annuncio in vetrina, o un
+       annuncio online di cui non esiste l'incarico: due meta' della stessa
+       cosa che finora potevano restare separate senza che niente lo dicesse.
+       Il pannello e' ambra e non rosso: non e' un errore, e' una cosa da
+       finire - e sparisce da solo quando non c'e' piu' niente da collegare. */
+    .panel-manca {
+      border-color: color-mix(in oklab, var(--warn) 36%, var(--line));
+      background: var(--warn-bg);
+      padding: 0; overflow: hidden; margin-bottom: 1.25rem;
+    }
+    .panel-manca .archive-header { border-bottom-color: color-mix(in oklab, var(--warn) 24%, var(--line)); }
+    .panel-manca .archive-header h2 { color: var(--warn); display: flex; align-items: center; gap: 7px; }
+    .panel-manca .archive-header h2 svg { width: 15px; height: 15px; flex-shrink: 0; }
+    .panel-manca .item-row { border-bottom-color: color-mix(in oklab, var(--warn) 18%, transparent); }
+    .panel-manca .item-row:last-child { border-bottom: none; }
+    /* Il piede spiega perche' il pannello esiste: senza, "3 incarichi senza
+       annuncio" sembra un rimprovero invece di un promemoria. */
+    .panel-manca-piede {
+      padding: 10px 1rem 12px; font-size: 11.5px; color: var(--ink-2);
+      border-top: 1px solid color-mix(in oklab, var(--warn) 18%, transparent);
+    }
+
     .archive-header {
       padding: .9rem 1.1rem; border-bottom: 1px solid var(--line); display: flex;
       justify-content: space-between; align-items: baseline; gap: 10px; background: var(--surface-2); width: 100%;
@@ -818,6 +840,28 @@
     .btn-head:hover { background: var(--surface-2); color: var(--ink); border-color: var(--ink-3); }
     .btn-head svg { width: 15px; height: 15px; flex-shrink: 0; }
     .btn-head .count-pill { margin-left: 1px; }
+
+    /* LA CAMPANELLA. Spenta deve sparire fra gli altri pulsanti: se
+       lampeggiasse sempre, il giorno in cui arriva davvero una richiesta
+       non lo noteresti. Accesa cambia colore e suona - il movimento e'
+       raro e breve, quattro oscillazioni ogni due secondi e mezzo, non un
+       lampeggio continuo che dopo un minuto si smette di vedere. */
+    .btn-campanella.on {
+      border-color: var(--warn); background: var(--warn-bg); color: var(--warn);
+    }
+    .btn-campanella.on .count-pill { color: var(--warn); font-weight: 700; }
+    .btn-campanella.on svg { transform-origin: 50% 12%; animation: squilla 2.5s ease-in-out infinite; }
+    @keyframes squilla {
+      0%, 82%, 100% { transform: rotate(0deg); }
+      85% { transform: rotate(12deg); }
+      88% { transform: rotate(-10deg); }
+      91% { transform: rotate(7deg); }
+      94% { transform: rotate(-4deg); }
+      97% { transform: rotate(0deg); }
+    }
+    /* Chi ha chiesto meno animazioni al sistema operativo tiene il colore,
+       che e' l'informazione, e perde solo il movimento. */
+    @media (prefers-reduced-motion: reduce) { .btn-campanella.on svg { animation: none; } }
     /* Sotto i 480px restano le sole icone: le parole rubavano la riga al titolo. */
     @media (max-width: 480px) { .btn-head-text { display: none; } .btn-head { padding: 8px 10px; } }
 
@@ -1436,6 +1480,15 @@
            una scheda sola: stanno qui e non in una sesta voce di menu, che
            sul telefono non ci sarebbe entrata. -->
       <div class="page-head-actions">
+        <!-- La campanella sta nell'intestazione e non dentro la Panoramica
+             perche' deve vedersi da qualsiasi scheda: e' l'unica cosa che
+             arriva da fuori mentre stai facendo altro. Da spenta e' un
+             pulsante come gli altri; quando c'e' qualcosa si accende e
+             squilla piano. -->
+        <button type="button" class="btn-head btn-campanella" id="btn-notifiche" onclick="apriRichieste()" title="Nuove richieste dal sito">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18 8a6 6 0 10-12 0c0 5-2 6-2 6h16s-2-1-2-6"/><path stroke-linecap="round" d="M13.7 20a2 2 0 01-3.4 0"/></svg>
+          <span class="count-pill" id="notifiche-count" style="display:none;">0</span>
+        </button>
         <button type="button" class="btn-head" onclick="openExport()" title="Scarica una copia dei tuoi dati">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
           <span class="btn-head-text">Esporta</span>
@@ -1450,39 +1503,20 @@
 
     <!-- TAB 0: PANORAMICA -->
     <div id="tab-overview" class="tab-content active">
+      <!-- Ogni selettore parte gia' acceso sul lato che gli corrisponde:
+           all'apertura del gestionale switchTab non e' ancora stato
+           chiamato da nessuno - la scheda attiva e' scritta a mano
+           nell'HTML - e senza questa classe la Panoramica restava spenta
+           finche' non ci si cliccava sopra. -->
       <div class="seg-toggle" role="tablist" aria-label="Vista della Panoramica">
-        <button type="button" role="tab" class="seg-item" data-goto="tab-overview" onclick="switchTab('tab-overview')">Panoramica</button>
+        <button type="button" role="tab" class="seg-item active" data-goto="tab-overview" onclick="switchTab('tab-overview')">Panoramica</button>
         <button type="button" role="tab" class="seg-item" data-goto="tab-stats" onclick="switchTab('tab-stats')">Statistiche<span class="seg-count seg-count-stats"></span></button>
       </div>
-      <div class="stats-cards-grid">
-        <div class="stat-card" id="ov-card-listings">
-          <span class="stat-label">Annunci online</span>
-          <div class="stat-row"><span class="stat-value" id="ov-stat-listings">0</span><span class="stat-delta flat" id="ov-delta-listings"></span></div>
-          <div class="stat-foot" id="ov-foot-listings"></div>
-        </div>
-        <div class="stat-card" id="ov-card-active">
-          <span class="stat-label">Incarichi in corso</span>
-          <div class="stat-row"><span class="stat-value" id="ov-stat-active">0</span><span class="stat-delta flat" id="ov-delta-active"></span></div>
-          <div class="stat-foot" id="ov-foot-active"></div>
-        </div>
-        <div class="stat-card" id="ov-card-expiring" onclick="apriIncarichiInScadenza()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();apriIncarichiInScadenza();}">
-          <span class="stat-label">In scadenza · 90 gg</span>
-          <div class="stat-row"><span class="stat-value" id="ov-stat-expiring">0</span><span class="stat-delta flat" id="ov-delta-expiring"></span></div>
-          <div class="stat-foot" id="ov-foot-expiring"></div>
-          <span class="stat-link">Vedi l'elenco
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
-          </span>
-        </div>
-        <div class="stat-card" id="ov-card-revenue">
-          <span class="stat-label">Fatturato · <span id="ov-label-year">anno</span></span>
-          <div class="stat-row"><span class="stat-value" id="ov-stat-revenue">€0</span><span class="stat-delta flat" id="ov-delta-revenue"></span></div>
-          <svg class="stat-spark" id="ov-spark-revenue" viewBox="0 0 120 30" preserveAspectRatio="none" aria-hidden="true"></svg>
-        </div>
-      </div>
-
-      <!-- PROSSIMI SETTE GIORNI: sta sopra "Da fare" perche' un atto di
-           giovedi' non si puo' rimandare, un richiamo si'. E' l'unico
-           pannello della Panoramica che guarda avanti invece che indietro. -->
+      <!-- Le quattro schede di numeri che stavano qui sono passate in
+           Statistiche, dove vive tutto il resto dei conteggi. La Panoramica
+           smette di raccontare com'e' andata e risponde a una domanda sola:
+           che cosa devo fare. Prima i prossimi sette giorni, poi i ritardi,
+           poi chi ha scritto dal sito. -->
       <div class="panel-card" style="padding: 0; overflow: hidden; margin-bottom: 1.25rem;">
         <div class="archive-header">
           <h2>Nei prossimi sette giorni</h2>
@@ -1516,7 +1550,7 @@
     <!-- TAB 1: AGENDA -->
     <div id="tab-agenda" class="tab-content">
       <div class="seg-toggle" role="tablist" aria-label="Vista dell'Agenda">
-        <button type="button" role="tab" class="seg-item" data-goto="tab-agenda" onclick="switchTab('tab-agenda')">Calendario</button>
+        <button type="button" role="tab" class="seg-item active" data-goto="tab-agenda" onclick="switchTab('tab-agenda')">Calendario</button>
         <button type="button" role="tab" class="seg-item" data-goto="tab-crm" onclick="switchTab('tab-crm')">Clienti<span class="seg-count seg-count-clienti"></span></button>
       </div>
       <div class="panel-card" style="padding: 0; overflow: hidden;">
@@ -1577,6 +1611,10 @@
         </div>
       </div>
 
+      <!-- Incarichi firmati che non hanno ancora un annuncio in vetrina.
+           Compare solo quando ce n'e' almeno uno. -->
+      <div class="panel-card panel-manca" id="avviso-senza-annuncio" style="display:none;"></div>
+
       <div class="panel-card" style="padding: 0; overflow: hidden;">
         <div class="archive-header">
           <h2>Archivio immobili</h2>
@@ -1590,7 +1628,7 @@
     <div id="tab-stats" class="tab-content">
       <div class="seg-toggle" role="tablist" aria-label="Vista della Panoramica">
         <button type="button" role="tab" class="seg-item" data-goto="tab-overview" onclick="switchTab('tab-overview')">Panoramica</button>
-        <button type="button" role="tab" class="seg-item" data-goto="tab-stats" onclick="switchTab('tab-stats')">Statistiche<span class="seg-count seg-count-stats"></span></button>
+        <button type="button" role="tab" class="seg-item active" data-goto="tab-stats" onclick="switchTab('tab-stats')">Statistiche<span class="seg-count seg-count-stats"></span></button>
       </div>
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 12px;">
         <div class="year-selector-box">
@@ -1603,10 +1641,28 @@
       </div>
 
       <div class="stats-cards-grid">
-        <div class="stat-card">
+        <!-- Queste tre arrivano dalla Panoramica. "Incarichi in corso" c'era
+             gia' anche qui, ma in versione muta: diceva il numero e basta.
+             Quella arrivata dalla Panoramica porta anche gli acquisiti del
+             mese e l'avviso sugli incarichi senza provvigione, quindi ha
+             preso il posto dell'altra invece di affiancarla. -->
+        <div class="stat-card" id="ov-card-listings">
+          <span class="stat-label">Annunci online</span>
+          <div class="stat-row"><span class="stat-value" id="ov-stat-listings">0</span><span class="stat-delta flat" id="ov-delta-listings"></span></div>
+          <div class="stat-foot" id="ov-foot-listings"></div>
+        </div>
+        <div class="stat-card" id="ov-card-active">
           <span class="stat-label">Incarichi in corso</span>
-          <div class="stat-row"><span class="stat-value" id="stat-active">0</span></div>
-          <div class="stat-foot">su tutti gli anni</div>
+          <div class="stat-row"><span class="stat-value" id="ov-stat-active">0</span><span class="stat-delta flat" id="ov-delta-active"></span></div>
+          <div class="stat-foot" id="ov-foot-active"></div>
+        </div>
+        <div class="stat-card" id="ov-card-expiring" onclick="apriIncarichiInScadenza()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();apriIncarichiInScadenza();}">
+          <span class="stat-label">In scadenza · 90 gg</span>
+          <div class="stat-row"><span class="stat-value" id="ov-stat-expiring">0</span><span class="stat-delta flat" id="ov-delta-expiring"></span></div>
+          <div class="stat-foot" id="ov-foot-expiring"></div>
+          <span class="stat-link">Vedi l'elenco
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+          </span>
         </div>
         <div class="stat-card">
           <span class="stat-label">Vendite concluse</span>
@@ -1652,6 +1708,10 @@
         </div>
       </div>
 
+      <!-- Immobili in vetrina di cui non esiste nessun incarico. E' il
+           gemello dell'avviso che sta in Immobili, visto dall'altro lato. -->
+      <div class="panel-card panel-manca" id="avviso-senza-incarico" style="display:none;"></div>
+
       <div class="panel-card" style="padding: 0;">
         <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
           <h3 class="panel-title" style="margin:0;">Storico incarichi</h3>
@@ -1682,7 +1742,7 @@
     <div id="tab-crm" class="tab-content">
       <div class="seg-toggle" role="tablist" aria-label="Vista dell'Agenda">
         <button type="button" role="tab" class="seg-item" data-goto="tab-agenda" onclick="switchTab('tab-agenda')">Calendario</button>
-        <button type="button" role="tab" class="seg-item" data-goto="tab-crm" onclick="switchTab('tab-crm')">Clienti<span class="seg-count seg-count-clienti"></span></button>
+        <button type="button" role="tab" class="seg-item active" data-goto="tab-crm" onclick="switchTab('tab-crm')">Clienti<span class="seg-count seg-count-clienti"></span></button>
       </div>
       <div class="panel-card" style="padding: 0;">
          <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap:wrap; gap:10px;">
@@ -2657,6 +2717,7 @@
             // La rubrica conta gli immobili adatti a ogni cliente: se la
             // vetrina cambia, quel numero e' da rifare.
             if (buyers.length) renderBuyersList();
+            renderAvvisiCollegamento();
             renderOverviewStats();
         }
     }
@@ -2771,6 +2832,20 @@
             return;
         }
 
+        // PRIMA di ensurePropertyTransaction, non dopo: quella funzione crea
+        // un incarico se non ne trova nessuno collegato a questo immobile.
+        // Legando qui - e ricaricando, cosi' se lo ritrova in "transactions" -
+        // l'incarico che aspettava viene riconosciuto invece di essere
+        // duplicato da uno nuovo e vuoto.
+        if (res.data && incaricoDaCollegare) {
+            const { error } = await _supabase.from('transactions')
+                .update({ property_id: res.data.id, property_title: payload.title })
+                .eq('id', incaricoDaCollegare);
+            incaricoDaCollegare = null;
+            if (error) alert("L'annuncio e' salvato, ma non sono riuscito a collegarlo all'incarico: " + error.message);
+            else await loadTransactions();
+        }
+
         if (payload.is_visible && res.data) {
             await ensurePropertyTransaction(res.data);
         }
@@ -2814,6 +2889,129 @@
             }]);
         }
         await loadTransactions();
+    }
+
+    /* =======================================================
+       MANCA IL GEMELLO
+       Un immobile ha due meta': l'annuncio in vetrina, che vedono i
+       clienti, e l'incarico firmato, che sta nel gestionale. Finora
+       potevano esistere separate senza che niente lo dicesse: c'era il
+       pulsante "Sincronizza con immobili", ma bisognava sapere di doverlo
+       premere. Questi due pannelli lo dicono da soli, ognuno dalla parte
+       in cui manca qualcosa.
+       ======================================================= */
+
+    // Solo gli incarichi IN CORSO: uno scaduto o gia' venduto non deve
+    // essere pubblicato, e segnalarlo sarebbe un invito a sbagliare.
+    function incarichiSenzaAnnuncio() {
+        return transactions.filter(t => t.status === 'In Vendita' && !t.property_id);
+    }
+
+    // Solo gli immobili VISIBILI sul sito: uno nascosto e' una bozza, e
+    // pretendere l'incarico per una bozza vorrebbe dire avere il pannello
+    // sempre acceso. E' la stessa condizione che usa syncActiveIncarichi.
+    function immobiliSenzaIncarico() {
+        return properties.filter(p => p.is_visible !== false && !transactions.some(t => t.property_id == p.id));
+    }
+
+    const ICONA_AVVISO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.3 3.9L2 18a2 2 0 001.7 3h16.6a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg>';
+
+    function pannelloManca(boxId, items, titolo, riga, piede) {
+        const box = document.getElementById(boxId);
+        if (!box) return;
+        // Sparisce da solo quando non c'e' piu' niente da collegare: un
+        // pannello che resta li' a dire "zero" e' rumore.
+        if (items.length === 0) { box.style.display = 'none'; box.innerHTML = ''; return; }
+        box.style.display = '';
+        box.innerHTML = `
+          <div class="archive-header">
+            <h2>${ICONA_AVVISO}${escapeHtml(titolo)}</h2>
+            <span class="count-pill">${items.length}</span>
+          </div>
+          <div class="list-wrapper">${items.map(riga).join('')}</div>
+          <p class="panel-manca-piede">${piede}</p>`;
+    }
+
+    function renderAvvisiCollegamento() {
+        const senzaAnnuncio = incarichiSenzaAnnuncio();
+        pannelloManca(
+            'avviso-senza-annuncio', senzaAnnuncio,
+            senzaAnnuncio.length === 1 ? 'Un incarico non ha ancora l\'annuncio' : 'Incarichi senza annuncio',
+            rigaIncaricoSenzaAnnuncio,
+            'Hai firmato l\'incarico ma l\'immobile non e\' in vetrina: nessuno puo\' vederlo dal sito.'
+        );
+
+        const senzaIncarico = immobiliSenzaIncarico();
+        pannelloManca(
+            'avviso-senza-incarico', senzaIncarico,
+            senzaIncarico.length === 1 ? 'Un immobile non ha l\'incarico' : 'Immobili senza incarico',
+            rigaImmobileSenzaIncarico,
+            'L\'annuncio e\' online ma nel gestionale non risulta nessun incarico: non conta nelle statistiche ne\' nel fatturato, e la scadenza non viene sorvegliata.'
+        );
+    }
+
+    function rigaIncaricoSenzaAnnuncio(t) {
+        const dettagli = [
+            t.owner_name,
+            t.initial_price ? `€${Number(t.initial_price).toLocaleString('it-IT')}` : ''
+        ].filter(Boolean).join(' · ');
+        return `
+        <div class="item-row">
+            <div class="item-info"><div class="item-texts">
+                <p class="item-title">${escapeHtml(t.property_title || 'Incarico senza titolo')}</p>
+                <p class="item-details-text">${dettagli ? escapeHtml(dettagli) + ' · ' : ''}non e' in vetrina</p>
+            </div></div>
+            <div class="item-actions-box dafare-actions">
+                <button onclick="creaAnnuncioDaIncarico('${t.id}')" class="btn-mini primary">Crea l'annuncio</button>
+                <button onclick="editTransaction('${t.id}')" class="btn-mini">Apri incarico</button>
+            </div>
+        </div>`;
+    }
+
+    function rigaImmobileSenzaIncarico(p) {
+        const dettagli = [p.zone, p.property_type, p.price ? `€${Number(p.price).toLocaleString('it-IT')}` : '']
+            .filter(Boolean).join(' · ');
+        return `
+        <div class="item-row">
+            <div class="item-info"><div class="item-texts">
+                <p class="item-title">${escapeHtml(p.title)}</p>
+                <p class="item-details-text">${dettagli ? escapeHtml(dettagli) + ' · ' : ''}nessun incarico collegato</p>
+            </div></div>
+            <div class="item-actions-box dafare-actions">
+                <button onclick="creaIncaricoDaImmobile('${p.id}')" class="btn-mini primary">Crea l'incarico</button>
+                <button onclick="openPropertyForm('${p.id}')" class="btn-mini">Apri immobile</button>
+            </div>
+        </div>`;
+    }
+
+    // Quale incarico sta aspettando l'annuncio che stai scrivendo. Senza
+    // ricordarlo, salvando nascerebbe un SECONDO incarico per lo stesso
+    // immobile e l'avviso resterebbe acceso dopo aver fatto esattamente
+    // quello che chiedeva.
+    let incaricoDaCollegare = null;
+
+    function creaAnnuncioDaIncarico(id) {
+        const t = transactions.find(x => x.id == id);
+        if (!t) return;
+        switchTab('tab-vetrina');
+        openPropertyForm();                       // azzera anche incaricoDaCollegare
+        document.getElementById('prop-title').value = t.property_title || '';
+        if (t.initial_price)    document.getElementById('prop-price').value = t.initial_price;
+        if (t.acquisition_date) document.getElementById('prop-acq-date').value = t.acquisition_date;
+        incaricoDaCollegare = t.id;
+    }
+
+    async function creaIncaricoDaImmobile(id) {
+        const p = properties.find(x => x.id == id);
+        if (!p) return;
+        showLoader("Creo l'incarico...");
+        await ensurePropertyTransaction(p);
+        hideLoader();
+        // L'incarico nasce senza proprietario e senza provvigione: lo apro
+        // subito, perche' il momento giusto per finirlo e' adesso e non
+        // quando "Da fare" verra' a ricordarlo.
+        const nuovo = transactions.find(t => t.property_id == p.id);
+        if (nuovo) editTransaction(nuovo.id);
     }
 
     function startPropEdit(id) {
@@ -2860,6 +3058,9 @@
     }
 
     function resetPropForm() {
+        // Se il modulo si riapre o si chiude, l'incarico in attesa non vale
+        // piu': legarlo al prossimo annuncio scritto sarebbe un errore muto.
+        incaricoDaCollegare = null;
         document.getElementById('prop-id').value = "";
         document.querySelector('#modal-property-form form').reset();
         document.getElementById('prop-visible').checked = true;
@@ -3056,6 +3257,9 @@
             // "Da fare" ora elenca anche gli incarichi in scadenza, quindi
             // dipende da questa tabella e non solo dalla rubrica.
             renderDaFare();
+            // I due pannelli "manca il gemello" confrontano queste due
+            // tabelle: vanno rifatti se cambia una qualsiasi delle due.
+            renderAvvisiCollegamento();
             updateDashboardStats();
             renderOverviewStats();
         }
@@ -3084,8 +3288,7 @@
         const yr = parseInt(document.getElementById('stats-year').value); 
         if(!yr) return; 
         
-        let activeOggi = 0; 
-        let salesYr = 0; 
+        let salesYr = 0;
         let revYr = 0; 
         let totalDays = 0; 
         let acqByM = Array(12).fill(0); 
@@ -3095,9 +3298,8 @@
         let pieA = 0; 
         let pieE = 0; 
         
-        transactions.forEach(t => { 
-            if(t.status === 'In Vendita') activeOggi++; 
-            const dAcq = new Date(t.acquisition_date); 
+        transactions.forEach(t => {
+            const dAcq = new Date(t.acquisition_date);
             
             if(dAcq.getFullYear() === yr) { 
                 acqByM[dAcq.getMonth()]++; 
@@ -3121,7 +3323,10 @@
             } 
         }); 
         
-        document.getElementById('stat-active').innerText = activeOggi;
+        // "stat-active" non esiste piu': gli incarichi in corso li scrive
+        // renderOverviewStats nella scheda arrivata dalla Panoramica, che
+        // dice la stessa cosa aggiungendo gli acquisiti del mese e
+        // l'avviso sulle provvigioni mancanti.
         document.getElementById('stat-sold').innerText = salesYr;
         document.getElementById('stat-revenue').innerText = `€${Math.round(revYr).toLocaleString('it-IT')}`;
         document.getElementById('stat-days').innerText = salesYr > 0 ? `${Math.round(totalDays/salesYr)} gg` : '—';
@@ -3824,29 +4029,11 @@
         cardScad.setAttribute('tabindex', inScadenza > 0 ? '0' : '-1');
         cardScad.setAttribute('title', inScadenza > 0 ? 'Apri l\'elenco degli incarichi in scadenza' : '');
 
-        /* --- fatturato dell'anno, confrontato con l'anno prima --- */
-        const perMese = Array(12).fill(0);
-        let revYr = 0, revPrec = 0;
-        transactions.forEach(t => {
-            if (t.status !== 'Venduto' || !t.sale_date || !t.final_price) return;
-            const d = new Date(t.sale_date);
-            const incasso = commissionOf(t);
-            if (d.getFullYear() === yr) { revYr += incasso; perMese[d.getMonth()] += incasso; }
-            else if (d.getFullYear() === yr - 1) revPrec += incasso;
-        });
-        document.getElementById('ov-label-year').innerText = yr;
-        document.getElementById('ov-stat-revenue').innerText = `€${Math.round(revYr).toLocaleString('it-IT')}`;
-        if (revPrec > 0) {
-            const pct = Math.round(((revYr - revPrec) / revPrec) * 100);
-            // Anche qui il paragone va scritto: la sparkline occupa il posto
-            // del piede, quindi il chip e' l'unico punto dove dirlo.
-            setDelta('ov-delta-revenue',
-                     pct === 0 ? `come nel ${yr - 1}` : `${pct > 0 ? '+' : ''}${pct}% sul ${yr - 1}`,
-                     pct > 0 ? 'up' : (pct < 0 ? 'down' : 'flat'));
-        } else {
-            setDelta('ov-delta-revenue', revYr > 0 ? 'primo anno con incassi' : '', 'flat');
-        }
-        drawSparkline('ov-spark-revenue', perMese);
+        /* La scheda del fatturato che stava qui non e' stata spostata ma
+           tolta: in Statistiche ce n'era gia' una, per giunta migliore -
+           segue l'anno scelto con il selettore invece di essere inchiodata
+           a quello corrente. Duplicarle avrebbe voluto dire due numeri
+           diversi con la stessa etichetta nella stessa schermata. */
 
         updateNavCounts();
     }
@@ -4898,6 +5085,18 @@
         await loadBuyers();
     }
 
+    // Un clic sulla campanella porta dove si leggono le richieste. Lo
+    // scorrimento aspetta un attimo perche' switchTab riporta la pagina in
+    // cima con un'animazione: partire subito vorrebbe dire fare due
+    // scorrimenti opposti nello stesso momento e restare a meta'.
+    function apriRichieste() {
+        switchTab('tab-overview');
+        setTimeout(() => {
+            document.getElementById('overview-leads-list')
+                ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 140);
+    }
+
     // Elenco delle richieste dal sito non ancora lette, in cima alla Panoramica.
     function renderOverviewLeads() {
         const list = document.getElementById('overview-leads-list');
@@ -4912,6 +5111,20 @@
         const tabBadge = document.getElementById('tab-overview-badge');
         tabBadge.innerText = unread.length;
         tabBadge.classList.toggle('on', unread.length > 0);
+
+        // La campanella nell'intestazione racconta la stessa cosa della
+        // pastiglia sulla voce di menu, ma la dice anche quando sei in
+        // un'altra scheda e la barra e' fuori dal campo visivo.
+        const campanella = document.getElementById('btn-notifiche');
+        const contatore = document.getElementById('notifiche-count');
+        if (campanella && contatore) {
+            campanella.classList.toggle('on', unread.length > 0);
+            contatore.innerText = unread.length;
+            contatore.style.display = unread.length > 0 ? '' : 'none';
+            campanella.title = unread.length === 0
+                ? 'Nessuna nuova richiesta dal sito'
+                : `${unread.length} nuov${unread.length === 1 ? 'a richiesta' : 'e richieste'} dal sito`;
+        }
 
         if (unread.length === 0) {
             list.innerHTML = emptyState({ titolo: 'Nessuna nuova richiesta', testo: 'Le richieste inviate dal modulo contatti e dalla valutazione gratuita compaiono qui appena arrivano.' });
