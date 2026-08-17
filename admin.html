@@ -280,8 +280,14 @@
     .mobile-menu-item.danger { color: #ffd9d9; border-color: rgba(239, 68, 68, .4); }
     .mobile-menu-item.danger:hover { background: #ef4444; }
 
-    @media (max-width: 860px) { .nav-actions { display: none; } .admin-mobile-toggle { display: flex; } }
-    @media (min-width: 861px) { .admin-mobile-menu { display: none; } }
+    /* Il menu a tre righe vive esattamente dove vive la barra in basso,
+       cioe' sotto i 1040px. Prima si fermava a 860 e fra le due soglie
+       restava una fascia - tablet in orizzontale, finestre affiancate - con
+       la navigazione da telefono ma senza il menu che la completa: Documenti
+       era costretto a rispuntare come quarta voce nella barra. Una soglia
+       sola per due cose che sono la stessa cosa. */
+    @media (max-width: 1039px) { .nav-actions { display: none; } .admin-mobile-toggle { display: flex; } }
+    @media (min-width: 1040px) { .admin-mobile-menu { display: none; } }
     @media (max-width: 400px) { .hide-mobile { display: none; } .btn-nav-link { padding: 7px 9px; } }
 
     /* ---------- LOGIN ---------- */
@@ -324,16 +330,6 @@
       box-shadow: 0 10px 30px rgba(21, 26, 43, .17), 0 2px 7px rgba(21, 26, 43, .09);
     }
     .app-nav .nav-group-label { display: none; }
-    /* Documenti vive nel menu a tre righe sul telefono: qui riapparirebbe
-       come quarta voce e vanificherebbe la barra a tre. */
-    .nav-item-desktop { display: none; }
-    /* 861px e' esattamente il punto in cui il menu a tre righe sparisce
-       (vedi .admin-mobile-menu): da li' in su Documenti deve tornare nella
-       barra, altrimenti fra 861 e 1039px - tablet in orizzontale, finestre
-       affiancate - non sarebbe raggiungibile da nessuna parte. La colonna
-       a sinistra arriva solo a 1040px, e questa distanza fra le due soglie
-       era il buco. */
-    @media (min-width: 861px) { .nav-item-desktop { display: flex; } }
     .nav-item {
       flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
       gap: 3px; padding: 8px 2px; border: none; background: none; cursor: pointer; border-radius: 16px;
@@ -351,6 +347,18 @@
       font-weight: 600; display: none; align-items: center; justify-content: center; line-height: 1;
     }
     .nav-item .nav-dot.on { display: flex; }
+
+    /* DOCUMENTI FUORI DALLA BARRA: finche' la navigazione e' la barra in
+       basso, Documenti vive nel menu a tre righe insieme a incarico e
+       proposta, e qui sarebbe una quarta voce che vanifica la barra a tre.
+       Ricompare solo a 1040px, dove la navigazione diventa la colonna a
+       sinistra: li' lo spazio verticale avanza e il menu non esiste piu'.
+       Due accorgimenti, perche' la prima versione di questa regola non
+       funzionava: sta DOPO ".nav-item" (che dichiara display:flex con la
+       stessa specificita', quindi a parita' vinceva l'ultima scritta) ed e'
+       qualificata con ".app-nav" per non dipendere piu' dall'ordine. */
+    .app-nav .nav-item-desktop { display: none; }
+    @media (min-width: 1040px) { .app-nav .nav-item-desktop { display: flex; } }
 
     @media (min-width: 1040px) {
       .app-nav {
