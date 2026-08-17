@@ -298,21 +298,45 @@
        da' orientamento e tiene i contatori sempre sott'occhio.
        Sotto, diventa una barra in basso, dove arriva il pollice.
        ============================================================ */
-    .app-shell { flex: 1; width: 100%; max-width: 1400px; margin: 0 auto; padding: 1.25rem 1rem 5.5rem; display: block; }
+    /* Il fondo pagina lascia posto alla barra volante: 6.5rem coprono i
+       ~62px della barra piu' i 10px con cui si stacca dal bordo, cosi'
+       l'ultima riga di una tabella non finisce sotto il vetro. */
+    .app-shell { flex: 1; width: 100%; max-width: 1400px; margin: 0 auto; padding: 1.25rem 1rem 6.5rem; display: block; }
     @media (min-width: 1040px) {
       .app-shell { display: grid; grid-template-columns: 216px minmax(0, 1fr); gap: 1.5rem; padding: 1.5rem 1.5rem 2.5rem; align-items: start; }
     }
 
+    /* La barra e' un'isola che galleggia sopra la pagina invece di essere
+       incollata al bordo: con tre sole voci non ha piu' bisogno di tutta la
+       larghezza, e staccarla fa capire a colpo d'occhio che il contenuto
+       le scorre sotto. Il max-width la tiene stretta e centrata anche sui
+       telefoni larghi, dove tre voci spalmate su 500px sarebbero lontane
+       dal pollice. */
     .app-nav {
-      position: fixed; bottom: 0; left: 0; right: 0; z-index: 900;
-      display: flex; background: var(--surface); border-top: 1px solid var(--line);
-      padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px));
-      box-shadow: 0 -2px 14px rgba(21, 26, 43, .07);
+      position: fixed; z-index: 900;
+      left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+      max-width: 400px; margin: 0 auto;
+      display: flex; gap: 3px; padding: 6px;
+      background: color-mix(in srgb, var(--surface) 86%, transparent);
+      backdrop-filter: blur(16px) saturate(1.5);
+      -webkit-backdrop-filter: blur(16px) saturate(1.5);
+      border: 1px solid var(--line); border-radius: 21px;
+      box-shadow: 0 10px 30px rgba(21, 26, 43, .17), 0 2px 7px rgba(21, 26, 43, .09);
     }
     .app-nav .nav-group-label { display: none; }
+    /* Documenti vive nel menu a tre righe sul telefono: qui riapparirebbe
+       come quarta voce e vanificherebbe la barra a tre. */
+    .nav-item-desktop { display: none; }
+    /* 861px e' esattamente il punto in cui il menu a tre righe sparisce
+       (vedi .admin-mobile-menu): da li' in su Documenti deve tornare nella
+       barra, altrimenti fra 861 e 1039px - tablet in orizzontale, finestre
+       affiancate - non sarebbe raggiungibile da nessuna parte. La colonna
+       a sinistra arriva solo a 1040px, e questa distanza fra le due soglie
+       era il buco. */
+    @media (min-width: 861px) { .nav-item-desktop { display: flex; } }
     .nav-item {
       flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-      gap: 3px; padding: 7px 2px; border: none; background: none; cursor: pointer; border-radius: 10px;
+      gap: 3px; padding: 8px 2px; border: none; background: none; cursor: pointer; border-radius: 16px;
       color: var(--ink-2); font-size: 10.5px; font-weight: 550; position: relative; min-width: 0;
       transition: color var(--transition), background var(--transition);
     }
@@ -331,6 +355,8 @@
     @media (min-width: 1040px) {
       .app-nav {
         position: sticky; top: 80px; bottom: auto; left: auto; right: auto;
+        max-width: none; margin: 0;
+        background: var(--surface); backdrop-filter: none; -webkit-backdrop-filter: none;
         flex-direction: column; gap: 1px; padding: 8px; border: 1px solid var(--line);
         border-radius: var(--radius-lg); box-shadow: var(--shadow-1);
       }
@@ -753,6 +779,14 @@
     }
     .btn-match:hover { background: var(--accent); color: #fff; }
     .btn-match svg { width: 12px; height: 12px; }
+    /* Le visite stanno sulla stessa scheda dell'abbinamento clienti e
+       dicono una cosa diversa: quante persone hanno visto DAVVERO questo
+       immobile. Tinta diversa per non leggerli come lo stesso pulsante. */
+    .btn-match.visite {
+      border-color: color-mix(in oklab, var(--good) 32%, var(--line));
+      background: var(--good-bg); color: var(--good);
+    }
+    .btn-match.visite:hover { background: var(--good); color: #fff; }
 
     /* ---------- DA FARE ---------- */
     .form-hint { font-size: 11.5px; color: var(--ink-3); margin-top: 5px; }
@@ -1012,13 +1046,13 @@
       .properties-grid { padding: .75rem; gap: .75rem; }
     }
 
+    /* Qui prima c'erano due scalini che rimpicciolivano scritte e icone,
+       perche' le voci erano sei e a 380px si troncavano. Da quando sono
+       tre non servono piu': ogni voce ha ~120px, cioe' il doppio di quello
+       che le serve. Toglierli e' l'unico modo di far guadagnare davvero
+       qualcosa alla barra - comprimere il testo la rendeva stretta, non
+       leggibile. */
     @media (max-width: 380px) {
-      /* Cinque etichette in 320-380px: senza questo "Panoramica" e
-         "Statistiche" venivano troncate con i puntini. */
-      .nav-item { font-size: 9.5px; padding: 6px 1px; gap: 2px; }
-      .nav-item svg { width: 18px; height: 18px; }
-      /* Voci piu' strette: la pastiglia va riavvicinata al centro o esce. */
-      .nav-item .nav-dot { transform: translateX(11px); }
       .navbar { padding: 0 .75rem; }
       .btn-theme { width: 30px; height: 30px; }
     }
@@ -1042,6 +1076,214 @@
       .cmdk-close { width: 36px; height: 36px; }
       .cmdk-close svg { width: 16px; height: 16px; }
       .cmdk-item { padding: 11px 10px; }
+    }
+
+    /* ---------- SELETTORE A DUE SCHEDE ----------
+       Statistiche e Clienti hanno perso la loro voce di menu e vivono
+       dentro Panoramica e Agenda: ci si passa da qui. Non e' una scelta
+       solo di spazio - "com'e' andata" e "cosa manca" sono due sguardi
+       sulla stessa cosa, e tenerli a un dito di distanza li fa confrontare
+       invece che cercare. */
+    .seg-toggle {
+      display: inline-flex; gap: 3px; padding: 3px; margin-bottom: 1.25rem;
+      background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px;
+    }
+    .seg-item {
+      display: inline-flex; align-items: center; gap: 7px; white-space: nowrap;
+      padding: 7px 15px; border: none; background: none; cursor: pointer;
+      border-radius: 9px; font: inherit; font-size: 13px; font-weight: 550;
+      color: var(--ink-2); transition: var(--transition);
+    }
+    .seg-item:hover { color: var(--ink); }
+    .seg-item.active { background: var(--surface); color: var(--ink); font-weight: 600; box-shadow: var(--shadow-1); }
+    /* Il conteggio e' lo stesso che stava accanto alla voce di menu: la
+       voce non c'e' piu', il numero non doveva sparire con lei. */
+    .seg-count { font-family: var(--mono); font-size: 11px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+    @media (max-width: 480px) {
+      /* A tutta larghezza: due bersagli grandi invece di due pulsantini
+         appoggiati a sinistra. */
+      .seg-toggle { display: flex; width: 100%; }
+      .seg-item { flex: 1; justify-content: center; padding: 9px 6px; }
+    }
+
+    /* ---------- AGENDA ----------
+       Il colore di ogni tipo arriva dal JS come variabile --tipo sulla
+       singola pastiglia: qui dentro non c'e' nessun nome di tipo scritto
+       a mano, cosi' aggiungerne uno non vuol dire toccare il CSS. */
+    .agenda-bar {
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+      padding: .85rem 1rem; border-bottom: 1px solid var(--line);
+    }
+    .agenda-nav { display: flex; align-items: center; gap: 4px; }
+    .agenda-mese {
+      font-family: var(--display); font-size: 15px; font-weight: 600; color: var(--ink);
+      min-width: 148px; text-align: center; text-transform: capitalize;
+    }
+    .agenda-spacer { flex: 1; }
+    .agenda-legenda { display: flex; flex-wrap: wrap; gap: 4px; padding: .7rem 1rem; border-bottom: 1px solid var(--line); }
+    .agenda-legenda-voce {
+      display: inline-flex; align-items: center; gap: 5px; font-size: 11px; color: var(--ink-2);
+      padding: 3px 9px 3px 7px; border-radius: 999px; border: 1px solid var(--line);
+      background: var(--surface); cursor: pointer; transition: var(--transition);
+    }
+    .agenda-legenda-voce:hover { border-color: var(--tipo); color: var(--ink); }
+    /* Il tipo escluso dal filtro resta leggibile ma chiaramente spento:
+       sbiadirlo e basta lo faceva sembrare disabilitato, non deselezionato. */
+    .agenda-legenda-voce.off { opacity: .38; text-decoration: line-through; }
+    .agenda-legenda-voce i { width: 9px; height: 9px; border-radius: 3px; background: var(--tipo); flex-shrink: 0; }
+
+    /* La griglia del mese. Le sette colonne sono uguali e il giorno ha
+       un'altezza minima: senza, una settimana con un solo appuntamento
+       diventava alta la meta' delle altre e il mese perdeva la forma. */
+    .agenda-grid { display: grid; grid-template-columns: repeat(7, 1fr); }
+    .agenda-dow {
+      padding: 8px 6px; font-size: 10.5px; font-weight: 650; letter-spacing: .04em;
+      text-transform: uppercase; color: var(--ink-3); text-align: center;
+      border-bottom: 1px solid var(--line); background: var(--surface-2);
+    }
+    .agenda-day {
+      position: relative;
+      min-height: 96px; padding: 5px 5px 6px; border-right: 1px solid var(--line-soft);
+      border-bottom: 1px solid var(--line-soft); display: flex; flex-direction: column; gap: 3px;
+      cursor: pointer; transition: background var(--transition); background: none; text-align: left;
+      font: inherit; color: inherit;
+    }
+    .agenda-day:nth-child(7n+7) { border-right: none; }
+    .agenda-day:hover { background: var(--surface-2); }
+    .agenda-day.fuori { background: var(--surface-2); }
+    .agenda-day.fuori .agenda-day-num { color: var(--ink-3); opacity: .55; }
+    .agenda-day-num { font-size: 12px; font-weight: 600; color: var(--ink-2); padding: 1px 2px; }
+    .agenda-day.oggi .agenda-day-num {
+      background: var(--accent); color: #fff; border-radius: 999px;
+      width: 21px; height: 21px; display: inline-flex; align-items: center; justify-content: center;
+      padding: 0; font-weight: 700;
+    }
+    /* Sabato e domenica non sono giorni liberi in questo mestiere: sono
+       quelli delle visite. Restano marcati, ma in modo tenue. */
+    .agenda-day.weekend:not(.fuori) { background: color-mix(in srgb, var(--surface-2) 55%, transparent); }
+
+    /* QUANTO E' PIENO IL MESE, a colpo d'occhio. Le pastiglie dicono cosa
+       c'e' in un giorno, ma per capire se una settimana e' carica bisogna
+       leggerle una per una: la tinta si vede sfogliando, senza leggere.
+       Va dichiarata DOPO il weekend, che ha la stessa specificita'. */
+    .agenda-day.carico-1:not(.fuori) { background: color-mix(in srgb, var(--accent) 4%,  transparent); }
+    .agenda-day.carico-2:not(.fuori) { background: color-mix(in srgb, var(--accent) 8%,  transparent); }
+    .agenda-day.carico-3:not(.fuori) { background: color-mix(in srgb, var(--accent) 13%, transparent); }
+    .agenda-day.carico-1:hover, .agenda-day.carico-2:hover, .agenda-day.carico-3:hover { background: var(--surface-2); }
+
+    /* Il "+" per aggiungere in un giorno che ha gia' qualcosa: li' il clic
+       sulla casella apre la consultazione, quindi serve un bersaglio suo. */
+    .agenda-add {
+      position: absolute; top: 4px; right: 4px; width: 19px; height: 19px; padding: 0;
+      border: none; border-radius: 5px; background: var(--accent-soft); color: var(--accent-ink);
+      font-size: 14px; font-weight: 600; line-height: 1; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: var(--transition);
+    }
+    .agenda-day:hover .agenda-add, .agenda-add:focus-visible { opacity: 1; }
+    .agenda-add:hover { background: var(--accent); color: #fff; }
+    /* Il tocco non ha :hover: senza questo il "+" non comparirebbe mai. */
+    @media (hover: none) { .agenda-add { opacity: .5; } }
+
+    .agenda-ev {
+      display: flex; align-items: center; gap: 4px; width: 100%;
+      font-size: 10.5px; line-height: 1.25; text-align: left;
+      padding: 3px 5px; border-radius: 5px; cursor: pointer;
+      border: none; border-left: 3px solid var(--tipo);
+      background: color-mix(in srgb, var(--tipo) 13%, transparent);
+      color: var(--ink); transition: var(--transition);
+    }
+    .agenda-ev:hover { background: color-mix(in srgb, var(--tipo) 24%, transparent); }
+    .agenda-ev-ora { font-variant-numeric: tabular-nums; font-weight: 650; color: var(--tipo); flex-shrink: 0; }
+    .agenda-ev-txt { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    /* Svolto: grigio e barrato, mai rimosso. E' lo storico che serve a
+       contare le visite di ogni immobile. */
+    .agenda-ev.svolto {
+      border-left-color: var(--ink-3); background: var(--surface-3);
+      color: var(--ink-3); opacity: .6;
+    }
+    .agenda-ev.svolto .agenda-ev-ora { color: var(--ink-3); }
+    .agenda-ev.svolto .agenda-ev-txt { text-decoration: line-through; }
+    .agenda-piu {
+      font-size: 10px; color: var(--ink-3); padding: 1px 5px; background: none;
+      border: none; cursor: pointer; text-align: left; font-weight: 600;
+    }
+    .agenda-piu:hover { color: var(--accent-ink); }
+
+    /* I PALLINI, cioe' la griglia sul telefono. In una casella da 48px non
+       entra nessun titolo, ma il colore da solo dice gia' quasi tutto:
+       quanti impegni ha quel giorno e di che genere sono. E' lo stesso
+       compromesso del calendario dell'iPhone in verticale. Restano nel DOM
+       anche sul desktop, dove sono le pastiglie a essere visibili: cosi' il
+       disegno del mese e' uno solo e non dipende da un listener sul resize. */
+    .agenda-punti { display: none; gap: 3px; flex-wrap: wrap; justify-content: center; padding: 0 2px; }
+    .agenda-punti i { width: 5px; height: 5px; border-radius: 50%; background: var(--tipo); flex-shrink: 0; }
+    .agenda-punti i.svolto { background: var(--ink-3); opacity: .4; }
+
+    /* Riga di dettaglio: elenco del giorno, dei prossimi sette giorni e
+       vista telefono usano tutte questa, cosi' un appuntamento si legge
+       allo stesso modo ovunque compaia. */
+    .ag-riga {
+      display: flex; align-items: flex-start; gap: 10px; padding: 11px 1rem;
+      border-bottom: 1px solid var(--line-soft);
+    }
+    .ag-riga:last-child { border-bottom: none; }
+    .ag-riga.svolto .ag-riga-titolo { text-decoration: line-through; }
+    .ag-riga.svolto { opacity: .55; }
+    .ag-check {
+      flex-shrink: 0; width: 21px; height: 21px; margin-top: 1px; border-radius: 6px;
+      border: 1.5px solid var(--line); background: var(--surface); cursor: pointer;
+      display: flex; align-items: center; justify-content: center; color: transparent;
+      transition: var(--transition); padding: 0;
+    }
+    .ag-check svg { width: 13px; height: 13px; }
+    .ag-check:hover { border-color: var(--good); color: var(--good); }
+    .ag-check.fatto { background: var(--good); border-color: var(--good); color: #fff; }
+    .ag-riga-corpo { flex: 1; min-width: 0; }
+    .ag-riga-titolo { font-size: 13.5px; font-weight: 600; color: var(--ink); }
+    .ag-riga-meta { font-size: 11.5px; color: var(--ink-3); margin-top: 2px; line-height: 1.45; }
+    .ag-pill {
+      display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 650;
+      padding: 2px 7px; border-radius: 999px; margin-right: 5px;
+      color: var(--tipo); background: color-mix(in srgb, var(--tipo) 14%, transparent);
+    }
+    .ag-riga-azioni { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+    /* Il giorno di appartenenza dentro un elenco che ne attraversa piu' di uno. */
+    .ag-giorno-sep {
+      padding: 7px 1rem; font-size: 10.5px; font-weight: 700; letter-spacing: .04em;
+      text-transform: uppercase; color: var(--ink-3); background: var(--surface-2);
+      border-bottom: 1px solid var(--line-soft); position: sticky; top: 0; z-index: 1;
+    }
+    .ag-giorno-sep.oggi { color: var(--accent-ink); }
+
+    /* Sotto i 720px la griglia resta, ma cambia linguaggio: via i titoli,
+       che in una casella da 48px non entrano, e al loro posto i pallini.
+       Il mese continua a vedersi tutto in una schermata - che e' il motivo
+       per cui si guarda un calendario - e il dettaglio si legge toccando
+       il giorno, nel riquadro qui sotto. */
+    @media (max-width: 720px) {
+      .agenda-day {
+        min-height: 52px; padding: 4px 2px 5px; align-items: center; gap: 4px;
+      }
+      .agenda-day-num { font-size: 12px; padding: 0; }
+      .agenda-day.oggi .agenda-day-num { width: 22px; height: 22px; }
+      .agenda-ev, .agenda-piu { display: none; }
+      .agenda-punti { display: flex; }
+      /* Il "+" nell'angolo vive di :hover, che il dito non ha, e in una
+         casella cosi' stretta sarebbe un bersaglio da sbagliare: sul
+         telefono si aggiunge dal riquadro del giorno o dalla barra. */
+      .agenda-add { display: none; }
+      .agenda-dow { padding: 6px 2px; font-size: 9.5px; }
+      .agenda-mese { min-width: 118px; font-size: 14px; }
+      .agenda-legenda { padding: .6rem .8rem; }
+      .ag-riga { padding: 11px .8rem; }
+    }
+
+    @media (max-width: 380px) {
+      /* Sette colonne in 320px: 45px a casella, due pallini per riga. */
+      .agenda-day { min-height: 46px; }
+      .agenda-punti { gap: 2px; }
+      .agenda-punti i { width: 4.5px; height: 4.5px; }
     }
   </style>
 
@@ -1117,6 +1359,13 @@
     </button>
     <a href="incarico.html" class="mobile-menu-item primary">Incarico di Mediazione</a>
     <a href="proposta.html" class="mobile-menu-item primary">Proposta d'Acquisto</a>
+    <!-- I documenti salvati stanno accanto ai due moduli che li generano:
+         si scrive un incarico e si va a rileggerlo nello stesso momento.
+         Sul desktop restano anche nella colonna a sinistra, dove lo spazio
+         non manca e questo menu non esiste. -->
+    <button type="button" onclick="switchTab('tab-documenti'); document.getElementById('admin-mobile-menu').classList.remove('open');" class="mobile-menu-item">
+      Documenti salvati
+    </button>
     <a href="index.html" class="mobile-menu-item">Torna al Sito</a>
     <button onclick="handleLogout()" class="mobile-menu-item danger">Esci</button>
   </div>
@@ -1143,22 +1392,26 @@
         <span class="nav-dot" id="tab-overview-badge">0</span>
         <span class="nav-count" id="nav-count-overview"></span>
       </button>
+      <!-- Immobili sta in mezzo apposta: e' la voce che si tocca piu'
+           spesso, e in una barra da tre il centro e' il posto piu' comodo
+           per il pollice. -->
       <button type="button" class="nav-item" data-tab="tab-vetrina" onclick="switchTab('tab-vetrina', this)">
         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10l9-7 9 7v10a1 1 0 01-1 1H4a1 1 0 01-1-1z"></path></svg>
         <span class="nav-text">Immobili</span>
         <span class="nav-count" id="nav-count-immobili"></span>
       </button>
-      <button type="button" class="nav-item" data-tab="tab-stats" onclick="switchTab('tab-stats', this)">
-        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M4 20V10M10 20V4M16 20v-7M22 20H2"></path></svg>
-        <span class="nav-text">Statistiche</span>
-        <span class="nav-count" id="nav-count-stats"></span>
+      <button type="button" class="nav-item" data-tab="tab-agenda" onclick="switchTab('tab-agenda', this)">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path stroke-linecap="round" d="M3 10h18M8 3v4M16 3v4"></path></svg>
+        <span class="nav-text">Agenda</span>
+        <span class="nav-dot" id="tab-agenda-badge">0</span>
+        <span class="nav-count" id="nav-count-agenda"></span>
       </button>
-      <button type="button" class="nav-item" data-tab="tab-crm" onclick="switchTab('tab-crm', this)">
-        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.2"></circle><path stroke-linecap="round" d="M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6"></path></svg>
-        <span class="nav-text">Clienti</span>
-        <span class="nav-count" id="nav-count-clienti"></span>
-      </button>
-      <button type="button" class="nav-item nav-item-sep" data-tab="tab-documenti" onclick="switchTab('tab-documenti', this)">
+      <!-- Statistiche e Clienti non hanno piu' una voce loro: vivono dentro
+           Panoramica e Agenda, raggiungibili dal selettore in cima alla
+           scheda. Documenti invece resta una sezione a se', ma sul telefono
+           sta nel menu a tre righe insieme a incarico e proposta - le tre
+           cose che si fanno sempre di seguito. -->
+      <button type="button" class="nav-item nav-item-sep nav-item-desktop" data-tab="tab-documenti" onclick="switchTab('tab-documenti', this)">
         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 3H7a1 1 0 00-1 1v16a1 1 0 001 1h10a1 1 0 001-1V7z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M14 3v4h4"></path></svg>
         <span class="nav-text">Documenti</span>
         <span class="nav-count" id="nav-count-bozze"></span>
@@ -1189,6 +1442,10 @@
 
     <!-- TAB 0: PANORAMICA -->
     <div id="tab-overview" class="tab-content active">
+      <div class="seg-toggle" role="tablist" aria-label="Vista della Panoramica">
+        <button type="button" role="tab" class="seg-item" data-goto="tab-overview" onclick="switchTab('tab-overview')">Panoramica</button>
+        <button type="button" role="tab" class="seg-item" data-goto="tab-stats" onclick="switchTab('tab-stats')">Statistiche<span class="seg-count seg-count-stats"></span></button>
+      </div>
       <div class="stats-cards-grid">
         <div class="stat-card" id="ov-card-listings">
           <span class="stat-label">Annunci online</span>
@@ -1215,6 +1472,17 @@
         </div>
       </div>
 
+      <!-- PROSSIMI SETTE GIORNI: sta sopra "Da fare" perche' un atto di
+           giovedi' non si puo' rimandare, un richiamo si'. E' l'unico
+           pannello della Panoramica che guarda avanti invece che indietro. -->
+      <div class="panel-card" style="padding: 0; overflow: hidden; margin-bottom: 1.25rem;">
+        <div class="archive-header">
+          <h2>Nei prossimi sette giorni</h2>
+          <span id="prossimi-badge" class="count-pill">0</span>
+        </div>
+        <div id="prossimi-list" class="list-wrapper"></div>
+      </div>
+
       <!-- DA FARE: l'unica cosa in Panoramica che non racconta com'e' andata
            ma dice cosa manca. Ci finisce chi va richiamato oggi e chi ha
            scritto dal sito senza essere mai stato sentito: leggere una
@@ -1237,7 +1505,52 @@
       </div>
     </div>
 
-    <!-- TAB 1: IMMOBILI (Properties Pubbliche) -->
+    <!-- TAB 1: AGENDA -->
+    <div id="tab-agenda" class="tab-content">
+      <div class="seg-toggle" role="tablist" aria-label="Vista dell'Agenda">
+        <button type="button" role="tab" class="seg-item" data-goto="tab-agenda" onclick="switchTab('tab-agenda')">Calendario</button>
+        <button type="button" role="tab" class="seg-item" data-goto="tab-crm" onclick="switchTab('tab-crm')">Clienti<span class="seg-count seg-count-clienti"></span></button>
+      </div>
+      <div class="panel-card" style="padding: 0; overflow: hidden;">
+        <div class="agenda-bar">
+          <div class="agenda-nav">
+            <button type="button" class="btn-action" onclick="agendaSposta(-1)" aria-label="Mese precedente">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path stroke-linecap="round" stroke-linejoin="round" d="M15 5l-7 7 7 7"></path></svg>
+            </button>
+            <span class="agenda-mese" id="agenda-mese">—</span>
+            <button type="button" class="btn-action" onclick="agendaSposta(1)" aria-label="Mese successivo">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+            </button>
+          </div>
+          <button type="button" class="btn-mini" onclick="agendaOggi()">Oggi</button>
+          <div class="agenda-spacer"></div>
+          <button type="button" class="btn-mini" id="agenda-btn-svolti" onclick="agendaToggleSvolti()">Nascondi svolti</button>
+          <button type="button" class="btn-mini primary" onclick="openAppuntamentoModal()">+ Appuntamento</button>
+        </div>
+
+        <!-- La legenda e' anche il filtro: i colori vanno spiegati comunque,
+             e una volta che sono li' cliccarli per isolare un tipo e' la
+             cosa che uno prova a fare per istinto. -->
+        <div class="agenda-legenda" id="agenda-legenda"></div>
+
+        <div class="agenda-grid" id="agenda-grid"></div>
+      </div>
+
+      <!-- Dettaglio del giorno scelto: compare solo dopo un clic sulla
+           griglia, altrimenti occuperebbe mezzo schermo per stare vuoto. -->
+      <div class="panel-card" id="agenda-giorno-card" style="display: none; padding: 0; overflow: hidden; margin-top: 1.25rem;">
+        <div class="archive-header">
+          <h2 id="agenda-giorno-titolo">Giorno</h2>
+          <div style="display:flex; gap:6px;">
+            <button type="button" class="btn-mini primary" onclick="aggiungiNelGiornoAperto()">+ Aggiungi</button>
+            <button type="button" class="btn-mini" onclick="agendaChiudiGiorno()">Chiudi</button>
+          </div>
+        </div>
+        <div id="agenda-giorno-list" class="list-wrapper"></div>
+      </div>
+    </div>
+
+    <!-- TAB 2: IMMOBILI (Properties Pubbliche) -->
     <div id="tab-vetrina" class="tab-content">
       <div class="panel-card" style="padding: 1rem; margin-bottom: 1.5rem;">
         <div class="immobili-filters-bar">
@@ -1265,8 +1578,12 @@
       </div>
     </div>
 
-    <!-- TAB 2: STATISTICHE E STORICO -->
+    <!-- TAB 3: STATISTICHE E STORICO -->
     <div id="tab-stats" class="tab-content">
+      <div class="seg-toggle" role="tablist" aria-label="Vista della Panoramica">
+        <button type="button" role="tab" class="seg-item" data-goto="tab-overview" onclick="switchTab('tab-overview')">Panoramica</button>
+        <button type="button" role="tab" class="seg-item" data-goto="tab-stats" onclick="switchTab('tab-stats')">Statistiche<span class="seg-count seg-count-stats"></span></button>
+      </div>
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 12px;">
         <div class="year-selector-box">
           <span class="eyebrow">Anno fiscale</span> <select id="stats-year" onchange="updateDashboardStats()"></select>
@@ -1353,8 +1670,12 @@
       </div>
     </div>
 
-    <!-- TAB 3: CRM RUBRICA -->
+    <!-- TAB 4: CRM RUBRICA -->
     <div id="tab-crm" class="tab-content">
+      <div class="seg-toggle" role="tablist" aria-label="Vista dell'Agenda">
+        <button type="button" role="tab" class="seg-item" data-goto="tab-agenda" onclick="switchTab('tab-agenda')">Calendario</button>
+        <button type="button" role="tab" class="seg-item" data-goto="tab-crm" onclick="switchTab('tab-crm')">Clienti<span class="seg-count seg-count-clienti"></span></button>
+      </div>
       <div class="panel-card" style="padding: 0;">
          <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap:wrap; gap:10px;">
             <h3 class="panel-title" style="margin:0;">Rubrica clienti</h3>
@@ -1380,7 +1701,7 @@
       </div>
     </div>
 
-    <!-- TAB 4: DOCUMENTI (Bozze Incarichi/Proposte) -->
+    <!-- TAB 5: DOCUMENTI (Bozze Incarichi/Proposte) -->
     <div id="tab-documenti" class="tab-content">
       <div class="panel-card" style="padding: 0;">
          <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap:wrap; gap:10px;">
@@ -1793,6 +2114,92 @@
     </div>
   </div>
 
+  <div id="modal-appuntamento" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="panel-title" id="app-modal-title" style="margin:0;">Nuovo appuntamento</h3>
+        <button type="button" class="btn-close-modal" onclick="closeModals()">✕</button>
+      </div>
+      <form onsubmit="handleAppuntamentoSubmit(event)">
+        <input type="hidden" id="app-id">
+        <!-- L'ordine dei campi e' quello delle domande che ci si fa
+             davvero: che cosa, quando, con chi. Il titolo sta in fondo
+             perche' quasi sempre non serve scriverlo. -->
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Tipo</label>
+            <select id="app-tipo" class="form-select" onchange="aggiornaCampiTipo()"></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Giorno</label>
+            <input type="date" id="app-data" class="form-input" required>
+          </div>
+        </div>
+
+        <!-- Ora e durata sono due tendine e non due campi orario apposta.
+             <input type="time"> segue la lingua del BROWSER, non quella
+             della pagina: con un browser in inglese diventa un orologio a
+             12 ore con il campo AM/PM da riempire a parte, e lasciandolo
+             vuoto il salvataggio si blocca su "field incomplete". Non e'
+             aggirabile da HTML. Una tendina invece si legge uguale
+             ovunque, e "durata" e' anche piu' facile da rispondere di
+             un'ora di fine: quanto dura una visita lo sai, a che ora
+             finisce lo devi calcolare. -->
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Ora</label>
+            <select id="app-ora" class="form-select" onchange="aggiornaCampiTipo()"></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Durata</label>
+            <select id="app-durata" class="form-select"></select>
+          </div>
+        </div>
+
+        <!-- Il collegamento all'immobile e' il motivo per cui l'agenda sta
+             dentro il gestionale invece che sul telefono: e' quello che
+             trasforma tre visite in un dato sull'annuncio. -->
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Immobile</label>
+            <select id="app-property" class="form-select" onchange="aggiornaCampiTipo()"></select>
+            <p class="form-hint" id="app-property-hint"></p>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Cliente</label>
+            <select id="app-buyer" class="form-select" onchange="aggiornaCampiTipo()"></select>
+            <p class="form-hint">Serve per avere il numero a portata di mano.</p>
+          </div>
+        </div>
+
+        <!-- Il titolo e' facoltativo e sta qui in fondo apposta: il tipo lo
+             dice gia' il colore, l'immobile e il cliente sono due campi
+             qui sopra. Scrivere "Visita Via Roma 12" avendo scelto "Visita"
+             e collegato "Via Roma 12" e' ripetere due volte la stessa cosa.
+             Serve solo quando l'appuntamento non e' legato a niente:
+             "Commercialista", "Ritiro chiavi". -->
+        <div class="form-group">
+          <label class="form-label">Titolo</label>
+          <input type="text" id="app-titolo" class="form-input" placeholder="Facoltativo">
+          <p class="form-hint" id="app-titolo-hint"></p>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Luogo</label>
+          <input type="text" id="app-luogo" class="form-input" placeholder="Facoltativo: studio del notaio, indirizzo...">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Note</label>
+          <textarea id="app-note" rows="2" class="form-textarea"></textarea>
+        </div>
+
+        <div style="display:flex; gap:10px; align-items:center;">
+          <button type="submit" class="btn-submit" style="flex:1;">Salva appuntamento</button>
+          <button type="button" class="btn-mini danger" id="app-btn-elimina" style="display:none;" onclick="eliminaAppuntamento()">Elimina</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Palette comandi: Ctrl/Cmd + K -->
   <div id="cmdk" class="cmdk-overlay" role="dialog" aria-modal="true" aria-label="Cerca ovunque">
     <div class="cmdk-panel">
@@ -1841,6 +2248,7 @@
     let esitoChartInstance = null;
     let buyers = [];
     let documenti = [];
+    let appuntamenti = [];
     let docToDelete = null;
 
     // Sfugge i caratteri HTML pericolosi nei dati provenienti dal database
@@ -2025,6 +2433,7 @@
         const set = (id, html) => { const el = document.getElementById(id); if (el) el.innerHTML = html; };
         set('properties-list', skeletonCards());
         set('overview-leads-list', skeletonRows());
+        set('prossimi-list', skeletonRows());
         set('transactions-list', skeletonTable(5));
         set('buyers-list', skeletonTable(5));
         set('documenti-list', skeletonTable(4));
@@ -2044,17 +2453,38 @@
       'tab-vetrina':   { title: 'Immobili',    sub: 'Quello che vedono i clienti sul sito' },
       'tab-stats':     { title: 'Statistiche', sub: 'Incarichi, vendite e fatturato' },
       'tab-crm':       { title: 'Clienti',     sub: 'Rubrica e richieste arrivate dal sito' },
+      'tab-agenda':    { title: 'Agenda',      sub: 'Atti, visite, perizie e chiamate' },
       'tab-documenti': { title: 'Documenti',   sub: 'Incarichi e proposte salvati' }
     };
 
-    function switchTab(tabId, btn) {
+    // A quale VOCE DI MENU appartiene ogni scheda. Da quando Statistiche
+    // vive dentro Panoramica e Clienti dentro Agenda, la scheda che stai
+    // guardando e la voce accesa in basso non sono piu' la stessa cosa:
+    // aprendo le statistiche deve restare illuminata "Panoramica", altrimenti
+    // la barra dice che sei in un posto che nella barra non esiste.
+    const TAB_GRUPPO = {
+      'tab-overview':  'tab-overview',
+      'tab-stats':     'tab-overview',
+      'tab-agenda':    'tab-agenda',
+      'tab-crm':       'tab-agenda',
+      'tab-vetrina':   'tab-vetrina',
+      'tab-documenti': 'tab-documenti'
+    };
+
+    function switchTab(tabId) {
       document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
       document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
       document.getElementById(tabId).classList.add('active');
-      // Se la chiamata non arriva da un click (es. dalla palette comandi)
-      // ritrovo la voce di menu dal suo data-tab.
-      const navBtn = btn || document.querySelector(`.nav-item[data-tab="${tabId}"]`);
+
+      // La voce si ricava sempre dal gruppo e mai dal pulsante cliccato:
+      // al selettore a due schede non corrisponde nessuna voce di menu.
+      const navBtn = document.querySelector(`.nav-item[data-tab="${TAB_GRUPPO[tabId] || tabId}"]`);
       if (navBtn) navBtn.classList.add('active');
+
+      // Il selettore e' ripetuto in tutte e due le schede della coppia:
+      // vanno aggiornati entrambi, o tornando indietro resta acceso il lato
+      // sbagliato.
+      document.querySelectorAll('.seg-item').forEach(s => s.classList.toggle('active', s.dataset.goto === tabId));
 
       const meta = TAB_META[tabId];
       if (meta) {
@@ -2062,7 +2492,10 @@
         document.getElementById('page-sub').innerText = meta.sub;
       }
       window.scrollTo({ top: 0, behavior: 'smooth' });
-      if (tabId === 'tab-stats') { updateDashboardStats(); }
+      if (tabId === 'tab-stats')  { updateDashboardStats(); }
+      // L'agenda si riapre sempre sul mese in cui sei: tornarci e trovare
+      // il mese che stavi sfogliando tre tab fa e' disorientante.
+      if (tabId === 'tab-agenda') { agendaOggi(); }
     }
 
     /* ---------- TEMA ---------- */
@@ -2091,9 +2524,28 @@
     function updateNavCounts() {
       const set = (id, val) => { const el = document.getElementById(id); if (el) el.innerText = val; };
       set('nav-count-immobili', properties.length || '');
-      set('nav-count-stats', transactions.filter(t => t.status === 'In Vendita').length || '');
-      set('nav-count-clienti', buyers.length || '');
       set('nav-count-bozze', documenti.length || '');
+
+      // Statistiche e Clienti non hanno piu' una voce di menu, quindi il
+      // loro numero vive nel selettore. E' scritto in due posti - il
+      // selettore e' ripetuto in entrambe le schede della coppia - percio'
+      // qui serve una classe e non un id.
+      const setAll = (sel, val) => document.querySelectorAll(sel).forEach(el => el.innerText = val);
+      setAll('.seg-count-stats', transactions.filter(t => t.status === 'In Vendita').length || '');
+      setAll('.seg-count-clienti', buyers.length || '');
+      // Accanto ad "Agenda" il numero della settimana, non il totale: di un
+      // calendario interessa quanto e' pieno adesso, non quante righe ha.
+      set('nav-count-agenda', prossimiSetteGiorni().length || '');
+
+      // La pastiglia rossa si accende solo per OGGI: e' l'unica cosa che
+      // non puo' aspettare e che deve vedersi da qualsiasi scheda.
+      const badge = document.getElementById('tab-agenda-badge');
+      if (badge) {
+        const oggiKey = chiaveGiorno(new Date());
+        const oggi = appuntamenti.filter(a => !a.svolto_at && chiaveGiorno(new Date(a.inizio)) === oggiKey).length;
+        badge.innerText = oggi;
+        badge.classList.toggle('on', oggi > 0);
+      }
     }
 
     window.addEventListener('DOMContentLoaded', async () => {
@@ -2173,15 +2625,21 @@
         // il contenuto invece di fissare uno schermo scuro.
         showSkeletons();
         hideLoader();
-        await Promise.all([loadProperties(), loadTransactions(), loadBuyers(), loadDocumenti()]);
+        await Promise.all([loadProperties(), loadTransactions(), loadBuyers(), loadDocumenti(), loadAppuntamenti()]);
         await syncActiveIncarichi();
         renderOverviewStats();
+        // I quattro caricamenti corrono in parallelo: se l'agenda arriva
+        // per prima, le sue righe si disegnano quando "properties" e
+        // "buyers" sono ancora vuoti e restano senza il nome dell'immobile
+        // e senza il numero del cliente. Qui i dati ci sono tutti.
+        renderAgenda();
+        renderProssimiSette();
         // Il numero sul cestino non blocca l'ingresso: arriva quando arriva.
         aggiornaContatoreCestino();
     }
 
     /* =======================================================
-       TAB 1: VETRINA
+       TAB 2: VETRINA
        ======================================================= */
     async function loadProperties() {
         const { data, error } = await _supabase.from('properties').select('*').is('deleted_at', null).order('created_at', { ascending: false });
@@ -2479,6 +2937,10 @@
             // Quanti clienti in rubrica stanno cercando qualcosa di simile.
             const inCerca = clientiPerImmobile(p).length;
             const docsCollegati = documenti.filter(d => d.property_id == p.id).length;
+            // Quanto e' stato visto davvero. Un annuncio online da tre mesi
+            // con zero visite e uno con dodici raccontano due storie molto
+            // diverse, e prima di questa riga erano indistinguibili.
+            const visite = visiteDiImmobile(p.id);
             const today = new Date(); today.setHours(0,0,0,0);
             let expiryHTML = '';
             if (p.expiry_date) {
@@ -2510,6 +2972,10 @@
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="8" r="3.2"></circle><path stroke-linecap="round" d="M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6"></path></svg>
                       ${inCerca} ${inCerca === 1 ? 'cliente lo cerca' : 'clienti lo cercano'}
                     </button>` : ''}
+                    <button type="button" class="btn-match visite" onclick="nuovaVisitaPerImmobile('${p.id}')" title="Visite collegate a questo immobile: clicca per segnarne una nuova">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"></path><circle cx="12" cy="12" r="2.4"></circle></svg>
+                      ${etichettaVisite(visite)}
+                    </button>
                     <div class="property-card-actions">
                         <button onclick="togglePropertyVisibility('${p.id}')" class="btn-toggle-visibility ${isVisible ? 'visible' : 'hidden-state'}" title="${isVisible ? 'Visibile sul sito: clicca per nascondere' : 'Nascosto: clicca per pubblicare'}">
                             ${isVisible ? 'Visibile' : 'Nascosto'}
@@ -2566,7 +3032,7 @@
 
 
     /* =======================================================
-       TAB 2: INCARICHI & STATISTICHE
+       TAB 3: INCARICHI & STATISTICHE
        ======================================================= */
     async function loadTransactions() {
         const { data, error } = await _supabase.from('transactions').select('*').is('deleted_at', null).order('acquisition_date', { ascending: false });
@@ -3170,7 +3636,7 @@
     document.getElementById('confirm-delete-trans-btn').onclick = deleteTransaction;
 
     /* =======================================================
-       TAB 3: RUBRICA CRM
+       TAB 4: RUBRICA CRM
        ======================================================= */
     async function loadBuyers() {
         const { data, error } = await _supabase.from('buyers').select('*').is('deleted_at', null).order('created_at', { ascending: false });
@@ -3430,10 +3896,18 @@
         if (normalizza(b.desired_type) && tipoOk) motivi.push('tipologia');
         if (b.max_budget && entroBudget) motivi.push('budget');
 
-        // Senza nemmeno un criterio soddisfatto non e' un abbinamento, e'
-        // solo una scheda vuota: le richieste dal sito senza zona ne'
-        // budget non devono far comparire "12 immobili adatti".
-        if (motivi.length === 0) return null;
+        // Serve almeno un criterio QUALITATIVO: zona o tipologia. Il budget
+        // da solo non e' un abbinamento - dice quanto uno puo' spendere,
+        // non cosa vuole. Puo' escludere un immobile troppo caro, non
+        // dichiarare che qualcuno lo sta cercando.
+        //
+        // Senza questa distinzione un cliente che in rubrica ha compilato
+        // solo "fino a 200.000" risultava interessato a ogni immobile sotto
+        // quella cifra, e la scheda diceva "1 cliente lo cerca" di uno che
+        // non ha mai detto di cercare niente del genere. Vale anche al
+        // contrario: le richieste dal sito, che arrivano quasi sempre senza
+        // zona ne' tipologia, non devono far comparire "12 immobili adatti".
+        if (!motivi.some(m => m !== 'budget')) return null;
 
         return { punteggio: motivi.length, motivi, pocoSopra };
     }
@@ -3466,7 +3940,7 @@
             list.innerHTML = trovati.length
                 ? trovati.map(({ b, esito }) => rigaAbbinamentoCliente(b, esito)).join('')
                 : emptyState({ titolo: 'Nessun cliente in rubrica lo sta cercando',
-                               testo: 'Compaiono qui i clienti in ricerca attiva con zona, tipologia o budget compatibili.' });
+                               testo: 'Compaiono qui i clienti in ricerca attiva la cui zona o tipologia combacia. Di chi in rubrica ha solo un budget non si sa cosa cerca, quindi non compare: aggiungi zona e tipologia alla sua scheda.' });
         } else {
             const b = buyers.find(x => x.id == id);
             if (!b) return;
@@ -3476,7 +3950,7 @@
             list.innerHTML = trovati.length
                 ? trovati.map(({ p, esito }) => rigaAbbinamentoImmobile(p, esito)).join('')
                 : emptyState({ titolo: 'Niente in vetrina che gli somigli',
-                               testo: 'Nessun immobile disponibile combacia con zona, tipologia e budget di questo cliente.' });
+                               testo: 'Nessun immobile disponibile combacia con la zona o la tipologia che cerca. Se sulla sua scheda c\'e\' solo il budget, quello da solo non basta a proporgli qualcosa.' });
         }
         document.getElementById('modal-abbinamenti').style.display = 'flex';
     }
@@ -3584,6 +4058,658 @@
     }
 
     /* =======================================================
+       AGENDA
+       Il gestionale sapeva raccontare il passato (incarichi, vendite,
+       fatturato) e i ritardi ("Da fare"), ma non sapeva niente di cio' che
+       deve ancora succedere a una data precisa. Qui dentro c'e' il
+       calendario, e soprattutto il collegamento fra una visita e
+       l'immobile che l'ha ricevuta: e' quello che trasforma tre
+       appuntamenti in un dato sull'annuncio.
+       ======================================================= */
+
+    // Il colore vive qui e non nel database: cambiarlo o aggiungere un tipo
+    // e' una riga di JavaScript, non una migrazione. Le tinte sono prese
+    // dalle variabili del tema dove esistono, cosi' il calendario segue da
+    // solo il chiaro e lo scuro; le tre fisse sono scelte per restare
+    // leggibili su entrambi i fondi.
+    const TIPI_APPUNTAMENTO = {
+        atto:        { label: 'Atto',        colore: 'var(--good)'   },
+        perizia:     { label: 'Perizia',     colore: '#7c5cff'       },
+        visita:      { label: 'Visita',      colore: 'var(--accent)' },
+        valutazione: { label: 'Valutazione', colore: 'var(--warn)'   },
+        contenuti:   { label: 'Foto e video',colore: '#d6499b'       },
+        chiamata:    { label: 'Chiamata',    colore: '#0e9aa7'       },
+        altro:       { label: 'Altro',       colore: 'var(--ink-3)'  }
+    };
+
+    // Un tipo arrivato dal database e non previsto qui (per dire: aggiunto
+    // al vincolo SQL e dimenticato in questa mappa) non deve far sparire
+    // l'appuntamento dal calendario.
+    function tipoDi(a) {
+        return TIPI_APPUNTAMENTO[a.tipo] || { label: a.tipo || 'Altro', colore: 'var(--ink-3)' };
+    }
+
+    // LA CHIAVE DEL GIORNO, ed e' il punto piu' delicato di tutta la
+    // sezione. toISOString() da' la data in UTC: un appuntamento dell'una
+    // di notte di lunedi' diventerebbe "domenica" e finirebbe nella casella
+    // sbagliata del calendario. E' lo stesso inciampo gia' documentato per
+    // dataLocale() qui sotto, visto dal lato opposto - li' si legge una
+    // data, qui se ne scrive una.
+    function chiaveGiorno(d) {
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const gg = String(d.getDate()).padStart(2, '0');
+        return `${d.getFullYear()}-${mm}-${gg}`;
+    }
+
+    // Mese attualmente mostrato (sempre il giorno 1), giorno aperto in
+    // basso, e i due filtri della barra.
+    let agendaMese = new Date();
+    let agendaGiornoAperto = null;
+    let agendaNascondiSvolti = false;
+    const agendaTipiNascosti = new Set();
+
+    async function loadAppuntamenti() {
+        const { data, error } = await _supabase.from('appuntamenti').select('*')
+            .is('deleted_at', null)
+            .order('inizio', { ascending: true });
+        if (error) {
+            // La tabella potrebbe non esistere ancora (file SQL non lanciato):
+            // il resto del gestionale deve continuare a funzionare.
+            console.warn('Agenda non disponibile:', error.message);
+            return;
+        }
+        appuntamenti = data || [];
+        renderAgenda();
+        renderProssimiSette();
+        renderDaFare();
+        updateNavCounts();
+    }
+
+    /* ---------- lettura e filtri ---------- */
+
+    function appuntamentiVisibili() {
+        return appuntamenti.filter(a => {
+            if (agendaNascondiSvolti && a.svolto_at) return false;
+            if (agendaTipiNascosti.has(a.tipo)) return false;
+            return true;
+        });
+    }
+
+    function raggruppaPerGiorno(lista) {
+        const mappa = new Map();
+        [...lista]
+            .sort((a, b) => new Date(a.inizio) - new Date(b.inizio))
+            .forEach(a => {
+                const k = chiaveGiorno(new Date(a.inizio));
+                if (!mappa.has(k)) mappa.set(k, []);
+                mappa.get(k).push(a);
+            });
+        return mappa;
+    }
+
+    // COME SI CHIAMA un appuntamento quando non gli hai dato un nome.
+    // Il tipo lo dice gia' il colore della pastiglia, quindi ripeterlo nel
+    // titolo non aggiunge niente: quello che serve leggere e' DI CHI o DI
+    // COSA si tratta. Si costruisce al momento di disegnare e non al
+    // salvataggio, cosi' se rinomini un immobile cambia anche negli
+    // appuntamenti gia' passati.
+    function etichettaAppuntamento(a) {
+        if (a.titolo) return a.titolo;
+        const p = a.property_id ? properties.find(x => x.id == a.property_id) : null;
+        if (p) return p.title;
+        const b = a.buyer_id ? buyers.find(x => x.id == a.buyer_id) : null;
+        if (b) return b.full_name;
+        return tipoDi(a).label;
+    }
+
+    function oraDi(a) {
+        return new Date(a.inizio).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    // "9:30 - 11:00", oppure "tutto il giorno".
+    function orarioTesto(a) {
+        if (a.tutto_il_giorno) return 'tutto il giorno';
+        const fine = a.fine ? ` - ${new Date(a.fine).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })}` : '';
+        return oraDi(a) + fine;
+    }
+
+    /* ---------- la griglia del mese ---------- */
+
+    function agendaSposta(delta) {
+        agendaMese = new Date(agendaMese.getFullYear(), agendaMese.getMonth() + delta, 1);
+        agendaChiudiGiorno();
+        renderAgenda();
+    }
+
+    function agendaOggi() {
+        const oggi = new Date();
+        agendaMese = new Date(oggi.getFullYear(), oggi.getMonth(), 1);
+        // Il riquadro del giorno si chiude come quando si cambia mese:
+        // altrimenti, rientrando in Agenda, restava aperto su un giorno che
+        // nella griglia non c'e' piu'.
+        agendaChiudiGiorno();
+        renderAgenda();
+    }
+
+    function agendaToggleSvolti() {
+        agendaNascondiSvolti = !agendaNascondiSvolti;
+        document.getElementById('agenda-btn-svolti').innerText =
+            agendaNascondiSvolti ? 'Mostra svolti' : 'Nascondi svolti';
+        document.getElementById('agenda-btn-svolti').classList.toggle('primary', agendaNascondiSvolti);
+        renderAgenda();
+    }
+
+    function agendaToggleTipo(tipo) {
+        if (agendaTipiNascosti.has(tipo)) agendaTipiNascosti.delete(tipo);
+        else agendaTipiNascosti.add(tipo);
+        renderAgenda();
+    }
+
+    function renderAgendaLegenda() {
+        const box = document.getElementById('agenda-legenda');
+        if (!box) return;
+        box.innerHTML = Object.entries(TIPI_APPUNTAMENTO).map(([chiave, t]) => `
+            <button type="button" class="agenda-legenda-voce${agendaTipiNascosti.has(chiave) ? ' off' : ''}"
+                    style="--tipo:${t.colore}" onclick="agendaToggleTipo('${chiave}')"
+                    aria-pressed="${!agendaTipiNascosti.has(chiave)}"
+                    title="Mostra o nascondi gli appuntamenti di questo tipo">
+              <i></i>${escapeHtml(t.label)}
+            </button>`).join('');
+    }
+
+    function pastigliaEvento(a) {
+        const t = tipoDi(a);
+        const ora = a.tutto_il_giorno ? '' : `<span class="agenda-ev-ora">${oraDi(a)}</span>`;
+        // stopPropagation: il clic sulla pastiglia apre l'appuntamento, il
+        // clic sul resto della casella apre il giorno. Senza, farebbe
+        // tutte e due le cose.
+        return `<button type="button" class="agenda-ev${a.svolto_at ? ' svolto' : ''}" style="--tipo:${t.colore}"
+                    onclick="event.stopPropagation(); openAppuntamentoModal('${a.id}')"
+                    title="${escapeHtml(t.label)} · ${escapeHtml(orarioTesto(a))}">
+                  ${ora}<span class="agenda-ev-txt">${escapeHtml(etichettaAppuntamento(a))}</span>
+                </button>`;
+    }
+
+    function renderAgenda() {
+        const grid = document.getElementById('agenda-grid');
+        if (!grid) return;
+
+        renderAgendaLegenda();
+        const etichetta = agendaMese.toLocaleDateString('it-IT', { month: 'long', year: 'numeric' });
+        document.getElementById('agenda-mese').innerText = etichetta;
+
+        const anno = agendaMese.getFullYear(), mese = agendaMese.getMonth();
+        // La settimana italiana comincia di lunedi', getDay() invece conta
+        // da domenica: senza questa rotazione il mese partirebbe storto.
+        const offset = (new Date(anno, mese, 1).getDay() + 6) % 7;
+        const giorniMese = new Date(anno, mese + 1, 0).getDate();
+        // Cinque o sei righe a seconda di come cade il mese: fissarne sei
+        // avrebbe lasciato una settimana vuota in fondo quasi ogni mese.
+        const celle = Math.ceil((offset + giorniMese) / 7) * 7;
+
+        const perGiorno = raggruppaPerGiorno(appuntamentiVisibili());
+        const oggiKey = chiaveGiorno(new Date());
+
+        let html = ['lun', 'mar', 'mer', 'gio', 'ven', 'sab', 'dom']
+            .map(d => `<div class="agenda-dow">${d}</div>`).join('');
+
+        for (let i = 0; i < celle; i++) {
+            const g = new Date(anno, mese, 1 - offset + i);
+            const key = chiaveGiorno(g);
+            const eventi = perGiorno.get(key) || [];
+            // Al massimo tre pastiglie per casella: oltre, la riga del
+            // calendario si allungherebbe a fisarmonica. Il resto si legge
+            // aprendo il giorno.
+            const mostrati = eventi.slice(0, 3);
+            const resto = eventi.length - mostrati.length;
+            const classi = [
+                'agenda-day',
+                g.getMonth() !== mese ? 'fuori' : '',
+                (g.getDay() === 0 || g.getDay() === 6) ? 'weekend' : '',
+                key === oggiKey ? 'oggi' : '',
+                eventi.length ? `carico-${Math.min(eventi.length, 3)}` : ''
+            ].filter(Boolean).join(' ');
+
+            const giornoEsteso = g.toLocaleDateString('it-IT', { day: 'numeric', month: 'long' });
+            const descrizione = eventi.length === 0
+                ? `${giornoEsteso}, libero: aggiungi un appuntamento`
+                : `${giornoEsteso}, ${eventi.length} ${eventi.length === 1 ? 'appuntamento' : 'appuntamenti'}`;
+
+            html += `
+              <div class="${classi}" role="button" tabindex="0"
+                   onclick="agendaClicGiorno('${key}')"
+                   onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();agendaClicGiorno('${key}');}"
+                   aria-label="${descrizione}">
+                <span class="agenda-day-num">${g.getDate()}</span>
+                ${eventi.length ? `<button type="button" class="agenda-add" tabindex="-1"
+                     onclick="event.stopPropagation(); openAppuntamentoModal(null, '${key}')"
+                     aria-label="Aggiungi un appuntamento il ${giornoEsteso}"
+                     title="Aggiungi un appuntamento in questo giorno">+</button>` : ''}
+                ${mostrati.map(pastigliaEvento).join('')}
+                ${resto > 0 ? `<span class="agenda-piu">+${resto} altri</span>` : ''}
+                <span class="agenda-punti">${eventi.slice(0, 6).map(a =>
+                    `<i class="${a.svolto_at ? 'svolto' : ''}" style="--tipo:${tipoDi(a).colore}"></i>`).join('')}</span>
+              </div>`;
+        }
+        grid.innerHTML = html;
+
+        if (agendaGiornoAperto) agendaApriGiorno(agendaGiornoAperto, true);
+    }
+
+    /* ---------- elenchi ---------- */
+
+    // Un elenco che attraversa piu' giorni, con l'intestazione di ognuno.
+    // Lo usano la vista telefono e "Nei prossimi sette giorni".
+    function elencoConGiorni(lista) {
+        const perGiorno = raggruppaPerGiorno(lista);
+        const oggiKey = chiaveGiorno(new Date());
+        const domaniKey = chiaveGiorno(new Date(Date.now() + 86400000));
+
+        return [...perGiorno.entries()].map(([key, eventi]) => {
+            const d = dataLocale(key);
+            let titolo = d.toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long' });
+            if (key === oggiKey) titolo = 'Oggi · ' + titolo;
+            else if (key === domaniKey) titolo = 'Domani · ' + titolo;
+            return `<div class="ag-giorno-sep${key === oggiKey ? ' oggi' : ''}">${escapeHtml(titolo)}</div>`
+                 + eventi.map(a => rigaAppuntamento(a)).join('');
+        }).join('');
+    }
+
+    function rigaAppuntamento(a) {
+        const t = tipoDi(a);
+        const p = a.property_id ? properties.find(x => x.id == a.property_id) : null;
+        const b = a.buyer_id ? buyers.find(x => x.id == a.buyer_id) : null;
+        const tel = b && b.phone ? b.phone.replace(/[^\d+]/g, '') : null;
+
+        // Quando il titolo manca, l'etichetta E' gia' il nome dell'immobile
+        // o del cliente: ripeterlo nella riga sotto lo scriverebbe due
+        // volte nella stessa riga.
+        const etichetta = etichettaAppuntamento(a);
+        const meta = [
+            escapeHtml(orarioTesto(a)),
+            (p && p.title !== etichetta) ? escapeHtml(p.title) : '',
+            a.luogo ? escapeHtml(a.luogo) : '',
+            // Il numero a portata di mano: e' la stessa ragione per cui gli
+            // incarichi in scadenza hanno imparato a puntare a una persona.
+            (b && b.full_name !== etichetta)
+                ? (tel ? `<a href="tel:${tel}" class="link-tel">${escapeHtml(b.full_name)}</a>` : escapeHtml(b.full_name))
+                : ''
+        ].filter(Boolean).join(' · ');
+
+        return `
+        <div class="ag-riga${a.svolto_at ? ' svolto' : ''}">
+            <button type="button" class="ag-check${a.svolto_at ? ' fatto' : ''}"
+                    onclick="toggleSvolto('${a.id}')"
+                    aria-pressed="${!!a.svolto_at}"
+                    title="${a.svolto_at ? 'Segnato come svolto: clicca per riaprirlo' : 'Segna come svolto'}">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+            </button>
+            <div class="ag-riga-corpo">
+                <p class="ag-riga-titolo">
+                  <span class="ag-pill" style="--tipo:${t.colore}">${escapeHtml(t.label)}</span>
+                  ${escapeHtml(etichetta)}
+                </p>
+                <p class="ag-riga-meta">${meta}</p>
+            </div>
+            <div class="ag-riga-azioni">
+                <button type="button" class="btn-mini" onclick="openAppuntamentoModal('${a.id}')">Apri</button>
+            </div>
+        </div>`;
+    }
+
+    /* ---------- il giorno aperto sotto il calendario ---------- */
+
+    // IL CLIC SULLA CASELLA fa due cose diverse a seconda di cosa c'e'
+    // dentro, e non e' un'ambiguita': e' l'unica cosa sensata da fare in
+    // ognuno dei due casi. Su un giorno libero non c'e' niente da
+    // consultare, quindi apre direttamente l'appuntamento nuovo con la data
+    // gia' compilata; su un giorno pieno apre l'elenco, e per aggiungere
+    // c'e' il "+" nell'angolo della casella.
+    function agendaClicGiorno(key) {
+        const eventi = raggruppaPerGiorno(appuntamentiVisibili()).get(key) || [];
+        if (eventi.length === 0) { openAppuntamentoModal(null, key); return; }
+        agendaApriGiorno(key);
+    }
+
+    function agendaApriGiorno(key, silenzioso) {
+        agendaGiornoAperto = key;
+        const card = document.getElementById('agenda-giorno-card');
+        const d = dataLocale(key);
+        document.getElementById('agenda-giorno-titolo').innerText =
+            d.toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long' });
+
+        const eventi = (raggruppaPerGiorno(appuntamentiVisibili()).get(key)) || [];
+        document.getElementById('agenda-giorno-list').innerHTML = eventi.length
+            ? eventi.map(a => rigaAppuntamento(a)).join('')
+            : emptyState({
+                titolo: 'Giornata libera',
+                testo: 'Nessun appuntamento segnato in questo giorno.',
+                azione: '+ Aggiungi appuntamento',
+                onAzione: `openAppuntamentoModal(null, '${key}')`
+              });
+        card.style.display = '';
+        // Il riquadro si apre sotto la griglia: senza portarcelo, su uno
+        // schermo corto sembra che il clic non abbia fatto niente. Ma non
+        // quando e' solo un ridisegno dopo un salvataggio.
+        if (!silenzioso) card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // Il "+ Aggiungi" nell'intestazione del giorno aperto: sul telefono e'
+    // la via principale per inserire in una data precisa, visto che li' la
+    // casella e' troppo piccola per ospitare il suo pulsantino.
+    function aggiungiNelGiornoAperto() {
+        openAppuntamentoModal(null, agendaGiornoAperto || chiaveGiorno(new Date()));
+    }
+
+    function agendaChiudiGiorno() {
+        agendaGiornoAperto = null;
+        const card = document.getElementById('agenda-giorno-card');
+        if (card) card.style.display = 'none';
+    }
+
+    /* ---------- scrittura ---------- */
+
+    async function toggleSvolto(id) {
+        const a = appuntamenti.find(x => x.id === id);
+        if (!a) return;
+        // Spuntare NON cancella: la riga resta e diventa grigia. E' lo
+        // storico che regge il conteggio delle visite per immobile - se
+        // sparisse, il numero si azzererebbe da solo ogni settimana.
+        const nuovo = a.svolto_at ? null : new Date().toISOString();
+        a.svolto_at = nuovo; // ottimistico: la spunta deve rispondere subito
+        renderAgenda(); renderProssimiSette(); renderDaFare();
+
+        const { error } = await _supabase.from('appuntamenti')
+            .update({ svolto_at: nuovo, updated_at: new Date().toISOString() }).eq('id', id);
+        if (error) { alert("Errore: " + error.message); await loadAppuntamenti(); return; }
+        updateNavCounts();
+        renderPropertiesList();
+    }
+
+    /* ---------- ora e durata ---------- */
+
+    // Dalle sette del mattino alle dieci di sera, di quarto d'ora in quarto
+    // d'ora: un appuntamento di lavoro ci sta sempre dentro. Chi cade fuori
+    // dalla fascia (un atto alle 6:30) non viene buttato via - l'orario
+    // salvato viene aggiunto all'elenco al momento di riaprirlo.
+    const AGENDA_PRIMA_ORA = 7, AGENDA_ULTIMA_ORA = 21;
+
+    function opzioniOra(extra) {
+        const valori = [];
+        for (let h = AGENDA_PRIMA_ORA; h <= AGENDA_ULTIMA_ORA; h++)
+            for (const m of [0, 15, 30, 45])
+                valori.push(`${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`);
+        if (extra && !valori.includes(extra)) valori.push(extra);
+        valori.sort();
+        // La prima voce sostituisce la vecchia casella "dura tutto il
+        // giorno": un appuntamento senza ora E' un appuntamento di
+        // giornata, e con la casella erano due controlli per una cosa sola.
+        return '<option value="">Tutto il giorno</option>'
+             + valori.map(v => `<option value="${v}">${v}</option>`).join('');
+    }
+
+    const DURATE = [
+        { min: 15,  label: '15 minuti' },
+        { min: 30,  label: 'Mezz\'ora' },
+        { min: 45,  label: '45 minuti' },
+        { min: 60,  label: 'Un\'ora' },
+        { min: 90,  label: 'Un\'ora e mezza' },
+        { min: 120, label: 'Due ore' },
+        { min: 180, label: 'Tre ore' },
+        { min: 240, label: 'Quattro ore' }
+    ];
+
+    function opzioniDurata(extra) {
+        const lista = [...DURATE];
+        // Stessa cortesia dell'orario: una durata strana salvata prima
+        // (o scritta a mano nel database) resta selezionabile.
+        if (extra && !lista.some(d => d.min === extra)) {
+            const h = Math.floor(extra / 60), m = extra % 60;
+            lista.push({ min: extra, label: [h ? `${h}h` : '', m ? `${m} min` : ''].filter(Boolean).join(' ') });
+        }
+        lista.sort((a, b) => a.min - b.min);
+        return '<option value="">Non so quanto dura</option>'
+             + lista.map(d => `<option value="${d.min}">${escapeHtml(d.label)}</option>`).join('');
+    }
+
+    function openAppuntamentoModal(id, giornoISO) {
+        const a = id ? appuntamenti.find(x => x.id === id) : null;
+
+        document.getElementById('app-modal-title').innerText = a ? 'Modifica appuntamento' : 'Nuovo appuntamento';
+        document.getElementById('app-id').value = a ? a.id : '';
+        document.getElementById('app-btn-elimina').style.display = a ? '' : 'none';
+
+        document.getElementById('app-tipo').innerHTML = Object.entries(TIPI_APPUNTAMENTO)
+            .map(([k, t]) => `<option value="${k}">${escapeHtml(t.label)}</option>`).join('');
+        document.getElementById('app-tipo').value = a ? a.tipo : 'visita';
+
+        // Gli immobili nel cestino non compaiono: "properties" e' gia'
+        // caricato senza, quindi basta l'elenco cosi' com'e'.
+        document.getElementById('app-property').innerHTML =
+            '<option value="">Nessun immobile</option>' +
+            properties.map(p => `<option value="${p.id}">${escapeHtml(p.title)}</option>`).join('');
+        document.getElementById('app-property').value = a && a.property_id ? a.property_id : '';
+
+        document.getElementById('app-buyer').innerHTML =
+            '<option value="">Nessun cliente</option>' +
+            [...buyers].sort((x, y) => (x.full_name || '').localeCompare(y.full_name || ''))
+                .map(b => `<option value="${b.id}">${escapeHtml(b.full_name)}${b.phone ? ' · ' + escapeHtml(b.phone) : ''}</option>`).join('');
+        document.getElementById('app-buyer').value = a && a.buyer_id ? a.buyer_id : '';
+
+        const inizio = a ? new Date(a.inizio) : null;
+        document.getElementById('app-titolo').value = a ? (a.titolo || '') : '';
+        document.getElementById('app-data').value = inizio ? chiaveGiorno(inizio) : (giornoISO || chiaveGiorno(new Date()));
+
+        // Un appuntamento gia' salvato non conserva la durata: la si
+        // ricava dai due istanti, che e' l'unica cosa che il database
+        // deve sapere.
+        const oraSel = (inizio && !a.tutto_il_giorno) ? oraDi(a) : '';
+        const durataSel = (inizio && a.fine) ? Math.round((new Date(a.fine) - inizio) / 60000) : '';
+        document.getElementById('app-ora').innerHTML = opzioniOra(oraSel);
+        document.getElementById('app-ora').value = a ? oraSel : '10:00';
+        document.getElementById('app-durata').innerHTML = opzioniDurata(durataSel);
+        document.getElementById('app-durata').value = a ? String(durataSel || '') : '60';
+
+        document.getElementById('app-luogo').value = a ? (a.luogo || '') : '';
+        document.getElementById('app-note').value = a ? (a.note || '') : '';
+
+        aggiornaCampiTipo();
+        document.getElementById('modal-appuntamento').style.display = 'flex';
+    }
+
+    // La durata si spegne quando l'appuntamento e' di giornata, e il
+    // suggerimento sotto l'immobile cambia in base al tipo: per una visita
+    // quel campo non e' un extra, e' il motivo per cui la sezione esiste.
+    function aggiornaCampiTipo() {
+        document.getElementById('app-durata').disabled = !document.getElementById('app-ora').value;
+
+        const tipo = document.getElementById('app-tipo').value;
+        document.getElementById('app-property-hint').innerText = (tipo === 'visita')
+            ? "Collegalo: e' cosi' che si conta quante visite ha ricevuto l'annuncio."
+            : 'Facoltativo.';
+
+        // Anteprima del nome che prendera' l'appuntamento restando vuoto:
+        // scrivere "facoltativo" e basta non dice cosa succede a non
+        // compilarlo, e uno lo compila per sicurezza.
+        const anteprima = etichettaAppuntamento({
+            titolo: null,
+            tipo,
+            property_id: document.getElementById('app-property').value || null,
+            buyer_id: document.getElementById('app-buyer').value || null
+        });
+        document.getElementById('app-titolo-hint').innerText =
+            `Vuoto, si chiamera' "${anteprima}".`;
+    }
+
+    async function handleAppuntamentoSubmit(e) {
+        e.preventDefault();
+        const id = document.getElementById('app-id').value;
+        const giorno = document.getElementById('app-data').value;
+        const ora = document.getElementById('app-ora').value;
+        const durata = Number(document.getElementById('app-durata').value) || 0;
+        const tuttoGiorno = !ora;
+
+        // new Date(anno, mese, giorno, ore, minuti) costruisce l'istante nel
+        // fuso locale e toISOString() lo converte in UTC per il database:
+        // e' l'unico modo di scrivere "giovedi' alle 10" senza che diventi
+        // un'ora diversa a seconda dell'ora legale.
+        const [y, m, d] = giorno.split('-').map(Number);
+        let inizio, fine = null;
+        if (tuttoGiorno) {
+            inizio = dataLocale(giorno).toISOString();
+        } else {
+            const [hh, mi] = ora.split(':').map(Number);
+            const partenza = new Date(y, m - 1, d, hh, mi);
+            inizio = partenza.toISOString();
+            // La fine si calcola sommando i minuti: cosi' non puo' piu'
+            // esistere un appuntamento che finisce prima di cominciare, e
+            // sparisce il controllo che serviva a impedirlo.
+            if (durata) fine = new Date(partenza.getTime() + durata * 60000).toISOString();
+        }
+
+        const dati = {
+            tipo: document.getElementById('app-tipo').value,
+            // Vuoto vuol dire "chiamalo da solo": va salvato come NULL e non
+            // come stringa vuota, altrimenti etichettaAppuntamento non
+            // saprebbe distinguere i due casi.
+            titolo: document.getElementById('app-titolo').value.trim() || null,
+            inizio,
+            fine,
+            tutto_il_giorno: tuttoGiorno,
+            property_id: document.getElementById('app-property').value || null,
+            buyer_id: document.getElementById('app-buyer').value || null,
+            luogo: document.getElementById('app-luogo').value.trim() || null,
+            note: document.getElementById('app-note').value.trim() || null,
+            updated_at: new Date().toISOString()
+        };
+
+        showLoader(id ? "Aggiorno l'appuntamento..." : "Salvo l'appuntamento...");
+        const { error } = id
+            ? await _supabase.from('appuntamenti').update(dati).eq('id', id)
+            : await _supabase.from('appuntamenti').insert([dati]);
+        hideLoader();
+
+        if (error) { alert("Errore: " + error.message); return; }
+        closeModals();
+        await loadAppuntamenti();
+        renderPropertiesList();
+    }
+
+    async function eliminaAppuntamento() {
+        const id = document.getElementById('app-id').value;
+        if (!id) return;
+        // Nel cestino, non cancellato: 30 giorni per accorgersi dell'errore,
+        // come per immobili, incarichi, clienti e documenti.
+        if (!await cestina('appuntamenti', id)) return;
+        closeModals();
+        await loadAppuntamenti();
+        renderPropertiesList();
+    }
+
+    /* ---------- innesti nel resto del gestionale ---------- */
+
+    // Quante volte un immobile e' stato visitato davvero. Il conteggio usa
+    // TUTTI gli appuntamenti collegati, filtri della barra compresi: e' un
+    // dato dell'immobile, non della vista.
+    function appuntamentiDiImmobile(propertyId) {
+        return appuntamenti.filter(a => a.property_id == propertyId);
+    }
+
+    function visiteDiImmobile(propertyId) {
+        const suoi = appuntamentiDiImmobile(propertyId).filter(a => a.tipo === 'visita');
+        return {
+            svolte: suoi.filter(a => a.svolto_at).length,
+            inProgramma: suoi.filter(a => !a.svolto_at && new Date(a.inizio) >= new Date()).length
+        };
+    }
+
+    function etichettaVisite(v) {
+        if (v.svolte === 0 && v.inProgramma === 0) return 'Nessuna visita';
+        return [
+            v.svolte ? `${v.svolte} ${v.svolte === 1 ? 'visita' : 'visite'}` : '',
+            v.inProgramma ? `${v.inProgramma} in programma` : ''
+        ].filter(Boolean).join(' · ');
+    }
+
+    // Dalla scheda dell'immobile alla visita gia' compilata: e' il gesto
+    // che si fa davvero (uno chiama per QUELL'annuncio), e farlo partire
+    // dall'Agenda a scelta vuota vorrebbe dire ricercare l'immobile a mano.
+    function nuovaVisitaPerImmobile(propertyId) {
+        switchTab('tab-agenda');
+        openAppuntamentoModal();
+        document.getElementById('app-tipo').value = 'visita';
+        document.getElementById('app-property').value = propertyId;
+        // Niente titolo precompilato: sarebbe "Visita" + il nome
+        // dell'immobile, cioe' la copia esatta dei due campi qui sopra.
+        aggiornaCampiTipo();
+    }
+
+    // Panoramica: la settimana che arriva. Parte dall'inizio di oggi (un
+    // appuntamento di stamattina deve restare visibile fino a sera) e
+    // arriva a sette giorni pieni.
+    function prossimiSetteGiorni() {
+        const da = inizioGiornata();
+        const a = new Date(da); a.setDate(a.getDate() + 7);
+        return appuntamenti
+            .filter(x => { const i = new Date(x.inizio); return i >= da && i < a; })
+            .sort((x, y) => new Date(x.inizio) - new Date(y.inizio));
+    }
+
+    function renderProssimiSette() {
+        const list = document.getElementById('prossimi-list');
+        if (!list) return;
+
+        const items = prossimiSetteGiorni();
+        const daFare = items.filter(a => !a.svolto_at).length;
+        document.getElementById('prossimi-badge').innerText =
+            items.length === 0 ? 'niente in programma'
+                               : `${daFare} da fare su ${items.length}`;
+
+        list.innerHTML = items.length === 0
+            ? emptyState({
+                titolo: 'Settimana libera',
+                testo: 'Qui compaiono atti, visite, perizie e chiamate dei prossimi sette giorni, appena li segni in Agenda.',
+                azione: '+ Aggiungi appuntamento',
+                onAzione: 'openAppuntamentoModal()'
+              })
+            : elencoConGiorni(items);
+    }
+
+    // Un appuntamento passato e mai spuntato: non e' in ritardo come un
+    // incarico scaduto, ma se non lo si chiude il conteggio delle visite
+    // per immobile diventa inaffidabile nel giro di un mese. La soglia e'
+    // l'inizio di oggi e non "adesso": chiedere conto di una visita
+    // finita due ore fa sarebbe solo fastidioso.
+    function appuntamentiDaSegnare() {
+        const oggi = inizioGiornata();
+        return appuntamenti
+            .filter(a => !a.svolto_at && new Date(a.inizio) < oggi)
+            .map(a => ({ ...a, _tipo: 'appuntamento',
+                         _giorni: Math.round((oggi - new Date(a.inizio)) / 86400000) }))
+            .sort((a, b) => a._giorni - b._giorni);
+    }
+
+    function rigaDaFareAppuntamento(a) {
+        const t = tipoDi(a);
+        const quando = a._giorni <= 1 ? 'di ieri' : `di ${a._giorni} giorni fa`;
+        return `
+        <div class="item-row">
+            <div class="item-info">
+                <div class="item-texts">
+                    <p class="item-title">${escapeHtml(etichettaAppuntamento(a))}
+                      <span class="status-badge bg-yellow" style="margin-left:6px;">${escapeHtml(t.label)} ${quando}, da spuntare</span>
+                    </p>
+                    <p class="item-details-text">Segna com'e' andata: e' quello che tiene in piedi il conteggio delle visite.</p>
+                </div>
+            </div>
+            <div class="item-actions-box dafare-actions">
+                <button onclick="toggleSvolto('${a.id}')" class="btn-mini primary">Fatto</button>
+                <button onclick="openAppuntamentoModal('${a.id}')" class="btn-mini">Apri</button>
+            </div>
+        </div>`;
+    }
+
+    /* =======================================================
        DA FARE
        La Panoramica sapeva dire com'era andato l'anno ma non cosa mancava
        oggi. Qui dentro finiscono due cose che prima si perdevano: i
@@ -3642,9 +4768,12 @@
 
     // Le scadenze degli incarichi vanno in cima: un cliente si puo'
     // richiamare domani, un incarico scaduto e' un immobile che non e' piu'
-    // tuo. I clienti seguono, nel loro ordine di urgenza.
+    // tuo. I clienti seguono, nel loro ordine di urgenza. In fondo gli
+    // appuntamenti passati da spuntare: non e' urgenza, e' contabilita' -
+    // nessuno perde un immobile perche' non ha segnato una visita, ma il
+    // conteggio per immobile regge solo se prima o poi le spunti.
     function daFareList() {
-        return [...incarichiDaFare(), ...clientiDaFare()];
+        return [...incarichiDaFare(), ...clientiDaFare(), ...appuntamentiDaSegnare()];
     }
 
     function renderDaFare() {
@@ -3663,7 +4792,9 @@
         }
 
         list.innerHTML = items.map(x =>
-            x._tipo === 'incarico' ? rigaDaFareIncarico(x) : rigaDaFareCliente(x)
+            x._tipo === 'incarico'     ? rigaDaFareIncarico(x)
+          : x._tipo === 'appuntamento' ? rigaDaFareAppuntamento(x)
+          : rigaDaFareCliente(x)
         ).join('');
     }
 
@@ -3970,7 +5101,7 @@
     };
 
     /* =======================================================
-       TAB 4: DOCUMENTI (Bozze Incarichi/Proposte)
+       TAB 5: DOCUMENTI (Bozze Incarichi/Proposte)
        ======================================================= */
     async function loadDocumenti() {
         const { data, error } = await _supabase.from('documenti_bozze').select('*').is('deleted_at', null).order('updated_at', { ascending: false });
@@ -4236,7 +5367,9 @@
             { gruppo: 'Azioni', tipo: 'azione', tag: 'nuovo', nome: "Nuova proposta d'acquisto", run: () => { location.href = 'proposta.html'; } },
             { gruppo: 'Azioni', tipo: 'azione', tag: 'nuovo', nome: 'Aggiungi immobile', run: () => { switchTab('tab-vetrina'); openPropertyForm(); } },
             { gruppo: 'Azioni', tipo: 'azione', tag: 'nuovo', nome: 'Aggiungi cliente', run: () => { switchTab('tab-crm'); openBuyerModal(); } },
+            { gruppo: 'Azioni', tipo: 'azione', tag: 'nuovo', nome: 'Nuovo appuntamento', run: () => { switchTab('tab-agenda'); openAppuntamentoModal(); } },
             { gruppo: 'Vai a', tipo: 'vai', tag: 'sezione', nome: 'Panoramica', run: () => switchTab('tab-overview') },
+            { gruppo: 'Vai a', tipo: 'vai', tag: 'sezione', nome: 'Agenda', run: () => switchTab('tab-agenda') },
             { gruppo: 'Vai a', tipo: 'vai', tag: 'sezione', nome: 'Immobili', run: () => switchTab('tab-vetrina') },
             { gruppo: 'Vai a', tipo: 'vai', tag: 'sezione', nome: 'Statistiche', run: () => switchTab('tab-stats') },
             { gruppo: 'Vai a', tipo: 'vai', tag: 'sezione', nome: 'Clienti', run: () => switchTab('tab-crm') },
@@ -4349,7 +5482,8 @@
         { tabella: 'properties',      etichetta: 'Immobile',  nome: r => r.title,          ricarica: () => loadProperties() },
         { tabella: 'transactions',    etichetta: 'Incarico',  nome: r => r.property_title, ricarica: () => loadTransactions() },
         { tabella: 'buyers',          etichetta: 'Cliente',   nome: r => r.full_name,      ricarica: () => loadBuyers() },
-        { tabella: 'documenti_bozze', etichetta: 'Documento', nome: r => r.titolo,         ricarica: () => loadDocumenti() }
+        { tabella: 'documenti_bozze', etichetta: 'Documento', nome: r => r.titolo,         ricarica: () => loadDocumenti() },
+        { tabella: 'appuntamenti',    etichetta: 'Appuntamento', nome: r => etichettaAppuntamento(r), ricarica: () => loadAppuntamenti() }
     ];
 
     let cestino = [];
