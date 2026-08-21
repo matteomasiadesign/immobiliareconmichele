@@ -1,0 +1,10 @@
+{
+  "name": "immobiliareconmichele",
+  "version": "1.0.0",
+  "description": "Sito e gestionale di Michele Erre, agente immobiliare a Porto Torres",
+  "scripts": {
+    "dev": "node serve.js",
+    "start": "node serve.js"
+  }
+}
+

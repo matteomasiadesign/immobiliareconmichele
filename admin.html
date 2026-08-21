@@ -708,11 +708,468 @@
     .empty-state h4 { font-size: 14.5px; font-weight: 600; color: var(--ink); margin-bottom: 4px; }
     .empty-state p { font-size: 12.5px; color: var(--ink-2); margin-bottom: 14px; max-width: 40ch; margin-left: auto; margin-right: auto; }
     .empty-state button {
-      font: inherit; font-size: 12.5px; font-weight: 550; padding: 8px 15px; border-radius: 9px;
+      font: inherit; font-size: 12.5px; font-weight: 550; padding: 8px 15px; border-radius: 999px;
       border: 1px solid var(--line); background: var(--surface); color: var(--accent-ink); cursor: pointer;
       transition: var(--transition);
     }
     .empty-state button:hover { background: var(--accent-soft); border-color: var(--accent); }
+
+    /* ============================================================
+       PANORAMICA RINNOVATA: DAILY PULSE, QUICK ACTIONS & 2-COL DASHBOARD
+       ============================================================ */
+
+    /* Daily Pulse (4 micro-card in cima) */
+    .daily-pulse-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 1.25rem;
+    }
+    @media (min-width: 768px) {
+      .daily-pulse-grid { grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    }
+    .pulse-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      box-shadow: var(--shadow-1);
+      cursor: pointer;
+      transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+      position: relative;
+      overflow: hidden;
+      text-align: left;
+    }
+    .pulse-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-2);
+      border-color: var(--accent);
+    }
+    .pulse-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--pulse-color, var(--accent));
+    }
+    .pulse-card.pulse-blue { --pulse-color: var(--info); }
+    .pulse-card.pulse-red { --pulse-color: var(--crit); }
+    .pulse-card.pulse-orange { --pulse-color: var(--warn); }
+    .pulse-card.pulse-green { --pulse-color: var(--good); }
+
+    .pulse-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+    .pulse-label {
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      color: var(--ink-3);
+    }
+    .pulse-icon {
+      width: 17px;
+      height: 17px;
+      color: var(--pulse-color, var(--accent));
+      flex-shrink: 0;
+    }
+    .pulse-val {
+      font-family: var(--display);
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.1;
+    }
+    .pulse-sub {
+      font-size: 11.5px;
+      color: var(--ink-2);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Quick Action Toolbar */
+    .overview-quick-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 1.25rem;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+    .overview-quick-bar::-webkit-scrollbar { display: none; }
+    .btn-quick-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 650;
+      color: var(--ink);
+      background: var(--surface);
+      border: 1px solid var(--line);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: var(--transition);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      flex-shrink: 0;
+    }
+    .btn-quick-action:hover {
+      background: var(--surface-2);
+      border-color: var(--accent);
+      color: var(--accent-ink);
+    }
+    .btn-quick-action.primary {
+      background: var(--accent-soft);
+      border-color: color-mix(in srgb, var(--accent) 35%, transparent);
+      color: var(--accent-ink);
+    }
+    .btn-quick-action.primary:hover {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    /* Layout 2 colonne per Panoramica */
+    .overview-dashboard {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      width: 100%;
+    }
+    @media (min-width: 900px) {
+      .overview-dashboard {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        align-items: start;
+      }
+    }
+
+    /* Card moderna, spaziosa e declutterata */
+    .ov-item-card {
+      padding: 1.15rem 1.25rem;
+      border-bottom: 1px solid var(--line-soft);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+      background: var(--surface);
+      transition: background var(--transition);
+      box-sizing: border-box;
+    }
+    .ov-item-card:hover {
+      background: color-mix(in srgb, var(--surface-2) 40%, var(--surface));
+    }
+    .ov-item-card:last-child {
+      border-bottom: none;
+    }
+    .ov-card-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .ov-card-title-box {
+      min-width: 0;
+      flex: 1;
+    }
+    .ov-card-title {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.3;
+    }
+    .ov-card-badges {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      flex-shrink: 0;
+    }
+
+    /* Metadati a chip con icone */
+    .ov-meta-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .ov-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11.5px;
+      color: var(--ink-2);
+      background: var(--surface-2);
+      padding: 3px 9px;
+      border-radius: 6px;
+      border: 1px solid var(--line-soft);
+      text-decoration: none;
+    }
+    .ov-chip svg {
+      width: 13px;
+      height: 13px;
+      flex-shrink: 0;
+      color: var(--ink-3);
+    }
+    .ov-chip.phone {
+      color: var(--accent-ink);
+      font-weight: 600;
+    }
+    .ov-chip.phone svg {
+      color: var(--accent-ink);
+    }
+
+    /* Box Note / Richiesta Cliente */
+    .ov-notes-box {
+      background: var(--surface-2);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      padding: 8px 12px;
+      font-size: 12.5px;
+      color: var(--ink);
+      line-height: 1.45;
+      white-space: pre-line;
+      margin-top: 2px;
+    }
+
+    /* Riga Azioni */
+    .ov-actions-row {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding-top: 4px;
+    }
+    .btn-wa-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #25D366;
+      color: #ffffff !important;
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 5px 11px;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: var(--transition);
+      border: none;
+      cursor: pointer;
+    }
+    .btn-wa-action:hover {
+      background: #1eb857;
+      box-shadow: 0 2px 8px rgba(37,211,102,0.35);
+    }
+    .btn-wa-action svg {
+      width: 14px;
+      height: 14px;
+      fill: currentColor;
+    }
+    .btn-call-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--surface-2);
+      color: var(--ink);
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 5px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+    .btn-call-action:hover {
+      background: var(--surface-3);
+      border-color: var(--ink-3);
+    }
+    .btn-call-action svg {
+      width: 13px;
+      height: 13px;
+    }
+
+    /* Selettore tab Agenda Oggi / Settimana */
+    .agenda-tab-toggle {
+      display: inline-flex;
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 2px;
+      gap: 2px;
+    }
+    .agenda-tab-btn {
+      border: none;
+      background: transparent;
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--ink-2);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    /* ============================================================
+       TAB DOCUMENTI: KPI CARDS, STATI, CHIP & AZIONI RAPIDE
+       ============================================================ */
+    .doc-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 1.25rem;
+    }
+    @media (min-width: 768px) {
+      .doc-kpi-grid { grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    }
+    .doc-kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      box-shadow: var(--shadow-1);
+      cursor: pointer;
+      transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+      position: relative;
+      overflow: hidden;
+      text-align: left;
+    }
+    .doc-kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-2);
+      border-color: var(--accent);
+    }
+    .doc-kpi-card.active-filter {
+      border-color: var(--accent);
+      background: color-mix(in srgb, var(--accent-soft) 30%, var(--surface));
+    }
+    .doc-kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--kpi-color, var(--accent));
+    }
+    .doc-kpi-card.kpi-total { --kpi-color: var(--ink-2); }
+    .doc-kpi-card.kpi-signed { --kpi-color: var(--good); }
+    .doc-kpi-card.kpi-delivered { --kpi-color: var(--info); }
+    .doc-kpi-card.kpi-draft { --kpi-color: var(--warn); }
+
+    .doc-kpi-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+    .doc-kpi-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .03em;
+      color: var(--ink-3);
+    }
+    .doc-kpi-val {
+      font-family: var(--display);
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.1;
+    }
+    .doc-kpi-sub {
+      font-size: 11px;
+      color: var(--ink-2);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Badges di stato documento */
+    .status-badge.bg-gray {
+      background: var(--surface-2);
+      color: var(--ink-2);
+      border-color: var(--line);
+    }
+    .status-badge.bg-purple {
+      background: #f3e8ff;
+      color: #6b21a8;
+      border-color: #d8b4fe;
+    }
+
+    /* Dettagli data atto ed etichette nella tabella */
+    .doc-date-highlight {
+      font-weight: 650;
+      color: var(--ink);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .doc-date-sub {
+      font-size: 11px;
+      color: var(--ink-3);
+      margin-top: 2px;
+    }
+
+    /* Riga azioni per riga documento */
+    .doc-actions-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      flex-wrap: nowrap;
+    }
+
+    /* Box / Checkbox rapida per Segna come Firmato */
+    .doc-flag-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      padding: 4px 9px;
+      border-radius: 6px;
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--ink-2);
+      transition: var(--transition);
+      user-select: none;
+    }
+    .doc-flag-label:hover {
+      background: var(--surface-3);
+      border-color: var(--accent);
+    }
+    .doc-flag-label.is-signed {
+      background: #f0fdf4;
+      border-color: #86efac;
+      color: #166534;
+    }
+    .doc-flag-checkbox {
+      cursor: pointer;
+      accent-color: #16a34a;
+      width: 14px;
+      height: 14px;
+      margin: 0;
+      flex-shrink: 0;
+    }
+    .doc-flag-text {
+      white-space: nowrap;
+    }
+    .doc-flag-text.is-signed {
+      color: #166534;
+      font-weight: 700;
+    }
 
     /* ---------- LOADER (solo per le scritture) ---------- */
     .loader-overlay {
@@ -1184,21 +1641,21 @@
     .agenda-legenda-voce.off { opacity: .38; text-decoration: line-through; }
     .agenda-legenda-voce i { width: 9px; height: 9px; border-radius: 3px; background: var(--tipo); flex-shrink: 0; }
 
-    /* La griglia del mese. Le sette colonne sono uguali e il giorno ha
-       un'altezza minima: senza, una settimana con un solo appuntamento
-       diventava alta la meta' delle altre e il mese perdeva la forma. */
-    .agenda-grid { display: grid; grid-template-columns: repeat(7, 1fr); }
+    /* La griglia del mese. Le sette colonne sono uguali e scalano con minmax(0, 1fr):
+       min-width: 0 impedisce alle pastiglie di allargare la colonna e tagliare la griglia. */
+    .agenda-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); width: 100%; }
     .agenda-dow {
       padding: 8px 6px; font-size: 10.5px; font-weight: 650; letter-spacing: .04em;
       text-transform: uppercase; color: var(--ink-3); text-align: center;
       border-bottom: 1px solid var(--line); background: var(--surface-2);
+      min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
     .agenda-day {
       position: relative;
       min-height: 96px; padding: 5px 5px 6px; border-right: 1px solid var(--line-soft);
       border-bottom: 1px solid var(--line-soft); display: flex; flex-direction: column; gap: 3px;
       cursor: pointer; transition: background var(--transition); background: none; text-align: left;
-      font: inherit; color: inherit;
+      font: inherit; color: inherit; min-width: 0; overflow: hidden;
     }
     .agenda-day:nth-child(7n+7) { border-right: none; }
     .agenda-day:hover { background: var(--surface-2); }
@@ -1244,10 +1701,11 @@
       border: none; border-left: 3px solid var(--tipo);
       background: color-mix(in srgb, var(--tipo) 13%, transparent);
       color: var(--ink); transition: var(--transition);
+      min-width: 0; box-sizing: border-box;
     }
     .agenda-ev:hover { background: color-mix(in srgb, var(--tipo) 24%, transparent); }
     .agenda-ev-ora { font-variant-numeric: tabular-nums; font-weight: 650; color: var(--tipo); flex-shrink: 0; }
-    .agenda-ev-txt { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .agenda-ev-txt { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; flex: 1; }
     /* Svolto: grigio e barrato, mai rimosso. E' lo storico che serve a
        contare le visite di ogni immobile. */
     .agenda-ev.svolto {
@@ -1259,6 +1717,7 @@
     .agenda-piu {
       font-size: 10px; color: var(--ink-3); padding: 1px 5px; background: none;
       border: none; cursor: pointer; text-align: left; font-weight: 600;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0;
     }
     .agenda-piu:hover { color: var(--accent-ink); }
 
@@ -1307,6 +1766,24 @@
       border-bottom: 1px solid var(--line-soft); position: sticky; top: 0; z-index: 1;
     }
     .ag-giorno-sep.oggi { color: var(--accent-ink); }
+
+    /* ADATTAMENTO TABLET (721px - 1039px): scala proporzionata senza tagliare colonne */
+    @media (max-width: 1039px) and (min-width: 721px) {
+      .agenda-bar { padding: .7rem .85rem; gap: 6px; }
+      .agenda-nav { gap: 2px; }
+      .agenda-mese { min-width: 120px; font-size: 14px; }
+      .agenda-legenda { padding: .55rem .85rem; gap: 4px; }
+      .agenda-legenda-voce { font-size: 10.5px; padding: 2px 7px; }
+      .agenda-dow { padding: 6px 2px; font-size: 9.5px; }
+      .agenda-day { min-height: 80px; padding: 4px 3px 5px; gap: 2px; }
+      .agenda-day-num { font-size: 11px; padding: 0 1px; }
+      .agenda-day.oggi .agenda-day-num { width: 19px; height: 19px; font-size: 10.5px; }
+      .agenda-ev { font-size: 9.5px; padding: 2px 3px; gap: 2px; border-left-width: 2.5px; }
+      .agenda-ev-ora { font-size: 8.5px; }
+      .agenda-ev-txt { font-size: 9px; }
+      .agenda-piu { font-size: 9px; padding: 0 2px; }
+      .agenda-add { width: 17px; height: 17px; font-size: 12px; top: 3px; right: 3px; }
+    }
 
     /* Sotto i 720px la griglia resta, ma cambia linguaggio: via i titoli,
        che in una casella da 48px non entrano, e al loro posto i pallini.
@@ -1503,47 +1980,113 @@
 
     <!-- TAB 0: PANORAMICA -->
     <div id="tab-overview" class="tab-content active">
-      <!-- Ogni selettore parte gia' acceso sul lato che gli corrisponde:
-           all'apertura del gestionale switchTab non e' ancora stato
-           chiamato da nessuno - la scheda attiva e' scritta a mano
-           nell'HTML - e senza questa classe la Panoramica restava spenta
-           finche' non ci si cliccava sopra. -->
       <div class="seg-toggle" role="tablist" aria-label="Vista della Panoramica">
         <button type="button" role="tab" class="seg-item active" data-goto="tab-overview" onclick="switchTab('tab-overview')">Panoramica</button>
         <button type="button" role="tab" class="seg-item" data-goto="tab-stats" onclick="switchTab('tab-stats')">Statistiche<span class="seg-count seg-count-stats"></span></button>
       </div>
-      <!-- Le quattro schede di numeri che stavano qui sono passate in
-           Statistiche, dove vive tutto il resto dei conteggi. La Panoramica
-           smette di raccontare com'e' andata e risponde a una domanda sola:
-           che cosa devo fare. Prima i prossimi sette giorni, poi i ritardi,
-           poi chi ha scritto dal sito. -->
-      <div class="panel-card" style="padding: 0; overflow: hidden; margin-bottom: 1.25rem;">
-        <div class="archive-header">
-          <h2>Nei prossimi sette giorni</h2>
-          <span id="prossimi-badge" class="count-pill">0</span>
+
+      <!-- DAILY PULSE: 4 KPI in tempo reale -->
+      <div class="daily-pulse-grid" id="overview-pulse">
+        <div class="pulse-card pulse-blue" onclick="scorriA('overview-agenda-card')">
+          <div class="pulse-top">
+            <span class="pulse-label">Oggi in Agenda</span>
+            <svg class="pulse-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          </div>
+          <div class="pulse-val" id="pulse-agenda-val">0</div>
+          <div class="pulse-sub" id="pulse-agenda-sub">Nessun impegno oggi</div>
         </div>
-        <div id="prossimi-list" class="list-wrapper"></div>
+
+        <div class="pulse-card pulse-red" onclick="scorriA('overview-leads-card')">
+          <div class="pulse-top">
+            <span class="pulse-label">Nuove Richieste</span>
+            <svg class="pulse-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+          </div>
+          <div class="pulse-val" id="pulse-leads-val">0</div>
+          <div class="pulse-sub" id="pulse-leads-sub">Tutte lette</div>
+        </div>
+
+        <div class="pulse-card pulse-orange" onclick="scorriA('overview-dafare-card')">
+          <div class="pulse-top">
+            <span class="pulse-label">Da Fare / Scadenze</span>
+            <svg class="pulse-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+          </div>
+          <div class="pulse-val" id="pulse-dafare-val">0</div>
+          <div class="pulse-sub" id="pulse-dafare-sub">Tutto in regola</div>
+        </div>
+
+        <div class="pulse-card pulse-green" onclick="switchTab('tab-vetrina')">
+          <div class="pulse-top">
+            <span class="pulse-label">In Vetrina</span>
+            <svg class="pulse-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+          </div>
+          <div class="pulse-val" id="pulse-listings-val">0</div>
+          <div class="pulse-sub" id="pulse-listings-sub">Annunci online</div>
+        </div>
       </div>
 
-      <!-- DA FARE: l'unica cosa in Panoramica che non racconta com'e' andata
-           ma dice cosa manca. Ci finisce chi va richiamato oggi e chi ha
-           scritto dal sito senza essere mai stato sentito: leggere una
-           richiesta non e' averla gestita, e prima questa differenza non
-           esisteva da nessuna parte. -->
-      <div class="panel-card" style="padding: 0; overflow: hidden; margin-bottom: 1.25rem;">
-        <div class="archive-header">
-          <h2>Da fare</h2>
-          <span id="dafare-badge" class="count-pill">0</span>
-        </div>
-        <div id="dafare-list" class="list-wrapper"></div>
+      <!-- BARRA AZIONI RAPIDE -->
+      <div class="overview-quick-bar">
+        <button type="button" class="btn-quick-action primary" onclick="openAppuntamentoModal()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          + Appuntamento
+        </button>
+        <button type="button" class="btn-quick-action" onclick="openBuyerModal()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          + Nuovo Cliente
+        </button>
+        <button type="button" class="btn-quick-action" onclick="openTransactionModal()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          + Incarico
+        </button>
+        <button type="button" class="btn-quick-action" onclick="openPropertyForm()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          + Immobile
+        </button>
       </div>
 
-      <div class="panel-card" style="padding: 0; overflow: hidden;">
-        <div class="archive-header">
-          <h2>Nuove richieste dal sito</h2>
-          <span id="overview-unread-badge" class="count-pill">0</span>
+      <!-- DASHBOARD A 2 COLONNE SU DESKTOP/TABLET -->
+      <div class="overview-dashboard">
+        <!-- COLONNA SINISTRA: Urgenze e Nuovi Contatti -->
+        <div class="overview-col-main" style="display: flex; flex-direction: column; gap: 1.25rem;">
+          <!-- 1. Nuove richieste dal sito -->
+          <div class="panel-card" id="overview-leads-card" style="padding: 0; overflow: hidden;">
+            <div class="archive-header">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <h2>Nuove richieste dal sito</h2>
+                <span id="overview-unread-badge" class="count-pill">0</span>
+              </div>
+            </div>
+            <div id="overview-leads-list" class="list-wrapper"></div>
+          </div>
+
+          <!-- 2. Da fare & Scadenze -->
+          <div class="panel-card" id="overview-dafare-card" style="padding: 0; overflow: hidden;">
+            <div class="archive-header">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <h2>Da fare &amp; Scadenze</h2>
+                <span id="dafare-badge" class="count-pill">0</span>
+              </div>
+            </div>
+            <div id="dafare-list" class="list-wrapper"></div>
+          </div>
         </div>
-        <div id="overview-leads-list" class="list-wrapper"></div>
+
+        <!-- COLONNA DESTRA: Agenda & Pianificazione -->
+        <div class="overview-col-side" style="display: flex; flex-direction: column; gap: 1.25rem;">
+          <div class="panel-card" id="overview-agenda-card" style="padding: 0; overflow: hidden;">
+            <div class="archive-header" style="flex-wrap: wrap; gap: 8px;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <h2>Agenda</h2>
+                <span id="prossimi-badge" class="count-pill">0</span>
+              </div>
+              <div class="agenda-tab-toggle" role="group" aria-label="Filtro agenda">
+                <button type="button" class="agenda-tab-btn active" id="btn-agenda-oggi" onclick="setAgendaOverviewFilter('oggi')">Oggi</button>
+                <button type="button" class="agenda-tab-btn" id="btn-agenda-settimana" onclick="setAgendaOverviewFilter('settimana')">7 giorni</button>
+              </div>
+            </div>
+            <div id="prossimi-list" class="list-wrapper"></div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -1769,33 +2312,99 @@
       </div>
     </div>
 
-    <!-- TAB 5: DOCUMENTI (Bozze Incarichi/Proposte) -->
+    <!-- TAB 5: DOCUMENTI (Incarichi & Proposte) -->
     <div id="tab-documenti" class="tab-content">
+      <!-- CRUSCOTTO KPI DOCUMENTI -->
+      <div class="doc-kpi-grid">
+        <div class="doc-kpi-card kpi-total" onclick="filtraDocPerStato('')" id="kpi-doc-totali">
+          <div class="doc-kpi-top">
+            <span class="doc-kpi-label">Tutti i Documenti</span>
+            <svg style="width:16px;height:16px;color:var(--ink-2);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          </div>
+          <div class="doc-kpi-val" id="doc-kpi-total-val">0</div>
+          <div class="doc-kpi-sub" id="doc-kpi-total-sub">Atti e bozze salvati</div>
+        </div>
+
+        <div class="doc-kpi-card kpi-signed" onclick="filtraDocPerStato('firmato')" id="kpi-doc-firmati">
+          <div class="doc-kpi-top">
+            <span class="doc-kpi-label" style="color:var(--good);">✍️ Firmati / Conclusi</span>
+            <svg style="width:16px;height:16px;color:var(--good);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          </div>
+          <div class="doc-kpi-val" id="doc-kpi-signed-val" style="color:var(--good);">0</div>
+          <div class="doc-kpi-sub" id="doc-kpi-signed-sub">Atti ufficiali validi</div>
+        </div>
+
+        <div class="doc-kpi-card kpi-delivered" onclick="filtraDocPerStato('consegnato')" id="kpi-doc-consegnati">
+          <div class="doc-kpi-top">
+            <span class="doc-kpi-label" style="color:var(--info);">⏳ Consegnati / Inviati</span>
+            <svg style="width:16px;height:16px;color:var(--info);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          </div>
+          <div class="doc-kpi-val" id="doc-kpi-delivered-val" style="color:var(--info);">0</div>
+          <div class="doc-kpi-sub" id="doc-kpi-delivered-sub">In attesa di firma</div>
+        </div>
+
+        <div class="doc-kpi-card kpi-draft" onclick="filtraDocPerStato('bozza')" id="kpi-doc-bozze">
+          <div class="doc-kpi-top">
+            <span class="doc-kpi-label" style="color:var(--warn);">📝 Bozze in Lavorazione</span>
+            <svg style="width:16px;height:16px;color:var(--warn);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+          </div>
+          <div class="doc-kpi-val" id="doc-kpi-draft-val" style="color:var(--warn);">0</div>
+          <div class="doc-kpi-sub" id="doc-kpi-draft-sub">Non ancora finalizzati</div>
+        </div>
+      </div>
+
       <div class="panel-card" style="padding: 0;">
-         <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap:wrap; gap:10px;">
-            <h3 class="panel-title" style="margin:0;">Incarichi e proposte salvati</h3>
-            <!-- I documenti salvati prima che la rubrica imparasse ad
-                 accoglierli hanno le persone solo dentro di se': questo
-                 pulsante le tira fuori. Si puo' premere quante volte si
-                 vuole, chi c'e' gia' non viene duplicato. -->
-            <button type="button" onclick="sincronizzaRubricaDaDocumenti()" class="btn-submit btn-quiet" style="width:auto; padding:8px 14px; flex-shrink:0;">Aggiorna rubrica</button>
-            <div style="display:flex; gap:10px; flex: 1; min-width: 260px;">
-              <input type="text" id="doc-search" oninput="renderDocumentiList()" placeholder="Cerca per titolo..." class="form-input" style="flex: 1; min-width: 0; padding: 8px 12px;">
-              <select id="doc-filter-tipo" onchange="renderDocumentiList()" class="form-select" style="flex: 0 0 auto; width: auto; padding: 8px 12px;">
+         <div style="padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 12px;">
+            <!-- RIGA 1: Titolo e Pulsanti di creazione rapida -->
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+              <h3 class="panel-title" style="margin:0;">Archivio Documenti &amp; Atti</h3>
+              <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                <a href="incarico.html" target="_blank" class="btn-quick-action primary" style="text-decoration:none;">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                  + Nuovo Incarico
+                </a>
+                <a href="proposta.html" target="_blank" class="btn-quick-action primary" style="text-decoration:none;">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                  + Nuova Proposta
+                </a>
+                <button type="button" onclick="sincronizzaRubricaDaDocumenti()" class="btn-quick-action" title="Recupera persone e contatti dai documenti e inseriscili in rubrica">
+                  Aggiorna rubrica
+                </button>
+              </div>
+            </div>
+
+            <!-- RIGA 2: Filtri di Ricerca, Tipo e Stato -->
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+              <div style="flex: 1; min-width: 220px; position: relative;">
+                <input type="text" id="doc-search" oninput="renderDocumentiList()" placeholder="Cerca per titolo, cliente o immobile..." class="form-input" style="width: 100%; padding: 8px 12px;">
+              </div>
+              <select id="doc-filter-tipo" onchange="renderDocumentiList()" class="form-select" style="width: auto; min-width: 130px; padding: 8px 12px;">
                 <option value="">Tutti i tipi</option>
                 <option value="incarico">Incarichi</option>
                 <option value="proposta">Proposte</option>
               </select>
+              <select id="doc-filter-stato" onchange="renderDocumentiList()" class="form-select" style="width: auto; min-width: 140px; padding: 8px 12px;">
+                <option value="">Tutti gli stati</option>
+                <option value="firmato">✍️ Firmati / Conclusi</option>
+                <option value="consegnato">⏳ Consegnati</option>
+                <option value="bozza">📝 Bozze</option>
+                <option value="annullato">🚫 Annullati</option>
+              </select>
+              <button type="button" onclick="resetDocFilters()" class="btn-action" title="Azzera filtri" style="height:36px; padding:0 12px; font-size:12px;">
+                Azzera
+              </button>
             </div>
          </div>
+
          <div class="data-table-container table-scroll">
            <table class="data-table data-table--stack">
              <thead>
                <tr>
-                 <th>Tipo</th>
-                 <th>Titolo</th>
-                 <th>Ultimo Salvataggio</th>
-                 <th style="text-align:center;">Azioni</th>
+                 <th style="min-width: 120px;">Stato &amp; Tipo</th>
+                 <th style="min-width: 240px;">Titolo &amp; Collegamenti</th>
+                 <th style="min-width: 170px;">Data Atto &amp; Firma</th>
+                 <th style="min-width: 140px;">Dati Chiave</th>
+                 <th style="text-align:center; min-width: 140px;">Azioni</th>
                </tr>
              </thead>
              <tbody id="documenti-list"></tbody>
@@ -1930,23 +2539,104 @@
     </div>
   </div>
 
-  <!-- Documenti: un incarico o una proposta si eliminano in due passi. Il
-       cestino sta accanto alla matita, e un tocco storto non deve bastare
-       a far sparire un documento firmato. -->
+  <!-- Modal Stato e Dettagli Documento -->
+  <div id="modal-doc-status" class="modal-overlay">
+    <div class="modal-content" style="max-width:440px;">
+      <div class="modal-header">
+        <h3 class="panel-title" id="doc-status-modal-title" style="margin:0;">Stato Documento</h3>
+        <button type="button" class="btn-close-modal" onclick="closeModals()">✕</button>
+      </div>
+      <form onsubmit="handleDocStatusSubmit(event)">
+        <input type="hidden" id="doc-status-id">
+        
+        <div style="background:var(--surface-2); padding:10px 12px; border-radius:8px; border:1px solid var(--line); margin-bottom:1rem;">
+          <div id="doc-status-doc-title" style="font-weight:700; font-size:13.5px; color:var(--ink);"></div>
+          <div id="doc-status-doc-sub" style="font-size:11.5px; color:var(--ink-2); margin-top:2px;"></div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Stato dell'Atto</label>
+          <select id="doc-status-select" class="form-select" onchange="toggleDocStatusFields()">
+            <option value="firmato">✍️ Firmato / Concluso (Valido)</option>
+            <option value="consegnato">⏳ Consegnato / Inviato al cliente</option>
+            <option value="bozza">📝 Bozza in preparazione</option>
+            <option value="annullato">🚫 Annullato / Sostituito</option>
+          </select>
+        </div>
+
+        <div class="form-group" id="group-doc-date">
+          <label class="form-label" id="doc-date-label">Data Atto / Firma</label>
+          <input type="date" id="doc-date-input" class="form-input">
+          <p class="form-hint" style="margin-top:3px; font-size:11px; color:var(--ink-3);">Questa data identifica l'atto nello storico e non verrà sovrascritta aprendo o rileggendo il documento.</p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Note / Appunti Interni (facoltative)</label>
+          <textarea id="doc-notes-input" rows="2" class="form-textarea" placeholder="es. Consegnato a mano in agenzia il 15/07; in attesa delibera mutuo..."></textarea>
+        </div>
+
+        <div style="display:flex; gap:10px; margin-top:1.25rem;">
+          <button type="button" onclick="closeModals()" class="btn-submit btn-quiet" style="flex:1;">Annulla</button>
+          <button type="submit" class="btn-submit" style="flex:1;">Salva Stato</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Double-Check Firma Documento -->
+  <div id="modal-confirm-firma" class="modal-overlay">
+    <div class="modal-content confirm-card" style="max-width:400px; text-align:center;">
+      <div style="font-size:32px; margin-bottom:6px;">✍️</div>
+      <h3 class="modal-title-sm" id="confirm-firma-title">Segna come Firmato</h3>
+      <p class="modal-text-sm" style="margin-bottom:12px;">Confermi che il documento <span class="confirm-name" id="confirm-firma-doc-name"></span> è stato <b>firmato dal cliente</b>?</p>
+      
+      <div style="background:var(--surface-2); padding:10px 12px; border-radius:8px; border:1px solid var(--line); margin-bottom:14px; text-align:left;">
+        <label class="form-label" style="font-size:11.5px; margin-bottom:4px; font-weight:600;">Data di Firma dell'Atto</label>
+        <input type="date" id="confirm-firma-date" class="form-input" style="padding:6px 10px; font-size:13px;">
+      </div>
+
+      <div style="display:flex; gap:10px;">
+        <button type="button" onclick="closeModals()" class="btn-submit btn-quiet" style="flex:1;">Annulla</button>
+        <button type="button" id="btn-do-confirm-firma" onclick="eseguiConfermaFirma()" class="btn-submit" style="flex:1; background:var(--good);">✓ Conferma Firma</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Double-Check Riporta a Bozza -->
+  <div id="modal-confirm-bozza" class="modal-overlay">
+    <div class="modal-content confirm-card" style="max-width:380px; text-align:center;">
+      <div style="font-size:30px; margin-bottom:6px;">📝</div>
+      <h3 class="modal-title-sm">Riporta a Bozza</h3>
+      <p class="modal-text-sm">Vuoi togliere il contrassegno di firma da <span class="confirm-name" id="confirm-bozza-doc-name"></span> e riportarlo a bozza in lavorazione?</p>
+      <div style="display:flex; gap:10px; margin-top:14px;">
+        <button type="button" onclick="closeModals()" class="btn-submit btn-quiet" style="flex:1;">Annulla</button>
+        <button type="button" id="btn-do-confirm-bozza" onclick="eseguiConfermaBozza()" class="btn-submit" style="flex:1; background:var(--warn); color:#fff;">Sì, è una bozza</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Documenti: eliminazione protetta e informativa -->
   <div id="modal-delete-doc" class="modal-overlay">
-    <div id="confirm-delete-doc" class="modal-content confirm-card" style="max-width:380px; text-align:center;">
+    <div id="confirm-delete-doc" class="modal-content confirm-card" style="max-width:420px; text-align:center;">
       <div class="confirm-step-1">
-        <h3 class="modal-title-sm">Elimina bozza</h3>
-        <p class="modal-text-sm">Stai per eliminare <span class="confirm-name" id="del-doc-name"></span> dal gestionale.</p>
+        <h3 class="modal-title-sm">Elimina Documento</h3>
+        <p class="modal-text-sm" style="margin-bottom:8px;">Stai per eliminare il documento:</p>
+        <div style="background:var(--surface-2); padding:10px 14px; border-radius:8px; border:1px solid var(--line); margin:6px 0 12px; text-align:left;">
+          <div id="del-doc-name" style="font-weight:700; color:var(--ink); font-size:13.5px;"></div>
+          <div id="del-doc-info" style="font-size:11.5px; color:var(--ink-2); margin-top:4px;"></div>
+        </div>
+        <div id="del-doc-warning" style="display:none; background:#fef2f2; border:1px solid #fca5a5; color:#991b1b; padding:8px 12px; border-radius:6px; font-size:12px; font-weight:600; margin-bottom:12px; text-align:left;">
+          ⚠️ Attenzione: questo documento risulta contrassegnato come FIRMATO / UFFICIALE.
+        </div>
         <div style="display:flex; gap:10px;">
           <button onclick="closeModals()" class="btn-submit btn-quiet">Annulla</button>
           <button onclick="proceedDeleteDoc()" class="btn-submit" style="background:var(--crit);">Elimina</button>
         </div>
       </div>
       <div class="confirm-step-2">
-        <h3 class="modal-title-sm">Confermi l'eliminazione?</h3>
-        <p class="modal-text-sm"><span class="confirm-name" id="del-doc-name-2"></span> sparirà definitivamente: non si potrà più riaprire né rigenerare il PDF. Questa è l'ultima conferma.</p>
-        <div style="display:flex; gap:10px;">
+        <h3 class="modal-title-sm">Confermi lo spostamento nel cestino?</h3>
+        <p class="modal-text-sm"><span class="confirm-name" id="del-doc-name-2"></span> verrà spostato nel cestino (recuperabile per 30 giorni). Non comparirà più nell'elenco documenti attivi.</p>
+        <div style="display:flex; gap:10px; margin-top:14px;">
           <button onclick="closeModals()" class="btn-submit btn-quiet">No, torna indietro</button>
           <button id="confirm-delete-doc-btn" class="btn-submit" style="background:var(--crit);">Sì, elimina</button>
         </div>
@@ -4036,6 +4726,7 @@
            diversi con la stessa etichetta nella stessa schermata. */
 
         updateNavCounts();
+        renderDailyPulse();
     }
 
     /* =======================================================
@@ -4213,26 +4904,31 @@
         document.getElementById('abbinamenti-sub').innerText = perImmobile ? oggetto.title : oggetto.full_name;
 
         const elenco = collegati.length
-            ? collegati.map(d => `
+            ? collegati.map(d => {
+                const stato = statoDiDocumento(d);
+                const dataAtto = dataAttoDocumento(d);
+                return `
               <div class="item-row">
                 <div class="item-info"><div class="item-texts">
                   <p class="item-title">
-                    <span class="status-badge ${d.tipo === 'incarico' ? 'bg-blue' : 'bg-yellow'}">${d.tipo === 'incarico' ? 'Incarico' : 'Proposta'}</span>
-                    ${escapeHtml(d.titolo || 'Senza titolo')}
+                    ${badgeStatoDocumento(stato)}
+                    <span class="status-badge ${d.tipo === 'incarico' ? 'bg-blue' : 'bg-yellow'}" style="margin-left:4px;">${d.tipo === 'incarico' ? 'Incarico' : 'Proposta'}</span>
+                    <span style="font-weight:600; margin-left:4px;">${escapeHtml(d.titolo || 'Senza titolo')}</span>
                   </p>
-                  <p class="item-details-text">Ultimo salvataggio: ${formatSalvataggio(d.updated_at)}</p>
+                  <p class="item-details-text">
+                    ${dataAtto ? `Data atto: <b>${formatDataAtto(dataAtto)}</b> · ` : ''}Ultimo salvataggio: ${formatSalvataggio(d.updated_at)}
+                  </p>
                 </div></div>
                 <div class="item-actions-box">
-                  <a class="btn-mini" href="${d.tipo}.html?id=${encodeURIComponent(d.id)}">Apri</a>
+                  <a class="btn-mini primary" href="${d.tipo}.html?id=${encodeURIComponent(d.id)}">Apri</a>
                 </div>
-              </div>`).join('')
+              </div>`;
+            }).join('')
             : `<div class="empty-state" style="padding:1.75rem 1.25rem;">
                  <h4>Nessun documento collegato</h4>
                  <p>Gli incarichi e le proposte che apri da qui restano agganciati a ${perImmobile ? 'questo immobile' : 'questo cliente'}.</p>
                </div>`;
 
-        // I due pulsanti in fondo sono il motivo per cui questo riquadro
-        // esiste: il documento nasce gia' collegato, senza doverlo dire.
         document.getElementById('abbinamenti-list').innerHTML = elenco + `
           <div class="doc-new-bar">
             <a class="btn-mini primary" href="incarico.html?${param}">+ Nuovo incarico</a>
@@ -4839,9 +5535,102 @@
         aggiornaCampiTipo();
     }
 
-    // Panoramica: la settimana che arriva. Parte dall'inizio di oggi (un
-    // appuntamento di stamattina deve restare visibile fino a sera) e
-    // arriva a sette giorni pieni.
+    // Helper WhatsApp per aprire direttamente la chat con messaggio preimpostato
+    function getWhatsAppLink(phone, name, context = '') {
+        if (!phone) return '';
+        let clean = phone.replace(/[^\d+]/g, '');
+        if (clean.startsWith('00')) clean = '+' + clean.substring(2);
+        if (!clean.startsWith('+')) {
+            if (clean.length >= 9 && clean.length <= 11) {
+                clean = '39' + clean;
+            }
+        } else {
+            clean = clean.replace('+', '');
+        }
+        const saluto = name ? `Buongiorno ${name}` : 'Buongiorno';
+        let text = `${saluto}, sono Michele Erre di Immobiliare con Michele.`;
+        if (context) {
+            text += ` Le scrivo in merito a: ${context}.`;
+        }
+        return `https://wa.me/${clean}?text=${encodeURIComponent(text)}`;
+    }
+
+    function scorriA(elementId) {
+        const el = document.getElementById(elementId);
+        if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }
+
+    let agendaOverviewFilter = 'oggi';
+
+    function setAgendaOverviewFilter(mode) {
+        agendaOverviewFilter = mode;
+        const btnOggi = document.getElementById('btn-agenda-oggi');
+        const btnSett = document.getElementById('btn-agenda-settimana');
+        if (btnOggi) btnOggi.classList.toggle('active', mode === 'oggi');
+        if (btnSett) btnSett.classList.toggle('active', mode === 'settimana');
+        renderProssimiSette();
+    }
+
+    function renderDailyPulse() {
+        const oggi = inizioGiornata();
+        const domani = new Date(oggi); domani.setDate(domani.getDate() + 1);
+
+        // 1. Oggi in agenda
+        const oggiApp = appuntamenti.filter(a => {
+            const d = new Date(a.inizio);
+            return d >= oggi && d < domani;
+        });
+        const oggiVal = document.getElementById('pulse-agenda-val');
+        const oggiSub = document.getElementById('pulse-agenda-sub');
+        if (oggiVal && oggiSub) {
+            oggiVal.innerText = oggiApp.length;
+            if (oggiApp.length === 0) {
+                oggiSub.innerText = 'Nessun impegno oggi';
+            } else {
+                const daFare = oggiApp.filter(a => !a.svolto_at).length;
+                oggiSub.innerText = daFare > 0 ? `${daFare} da completare` : 'Tutti completati';
+            }
+        }
+
+        // 2. Nuove richieste dal sito
+        const unread = buyers.filter(b => b.source === 'sito' && !b.is_read);
+        const leadsVal = document.getElementById('pulse-leads-val');
+        const leadsSub = document.getElementById('pulse-leads-sub');
+        if (leadsVal && leadsSub) {
+            leadsVal.innerText = unread.length;
+            leadsSub.innerText = unread.length === 0 ? 'Tutte gestite' : (unread.length === 1 ? '1 nuova da leggere' : `${unread.length} nuove da leggere`);
+        }
+
+        // 3. Da fare / Scadenze
+        const itemsDaFare = daFareList();
+        const dafareVal = document.getElementById('pulse-dafare-val');
+        const dafareSub = document.getElementById('pulse-dafare-sub');
+        if (dafareVal && dafareSub) {
+            dafareVal.innerText = itemsDaFare.length;
+            dafareSub.innerText = itemsDaFare.length === 0 ? 'Tutto in regola' : `${itemsDaFare.length} attività in sospeso`;
+        }
+
+        // 4. In Vetrina
+        const visibili = properties.filter(p => p.is_visible !== false).length;
+        const listingsVal = document.getElementById('pulse-listings-val');
+        const listingsSub = document.getElementById('pulse-listings-sub');
+        if (listingsVal && listingsSub) {
+            listingsVal.innerText = visibili;
+            listingsSub.innerText = `${properties.length} totali (${visibili} online)`;
+        }
+    }
+
+    function appuntamentiOggi() {
+        const da = inizioGiornata();
+        const a = new Date(da); a.setDate(a.getDate() + 1);
+        return appuntamenti
+            .filter(x => { const i = new Date(x.inizio); return i >= da && i < a; })
+            .sort((x, y) => new Date(x.inizio) - new Date(y.inizio));
+    }
+
+    // Panoramica: la settimana che arriva o oggi a seconda del filtro
     function prossimiSetteGiorni() {
         const da = inizioGiornata();
         const a = new Date(da); a.setDate(a.getDate() + 7);
@@ -4854,27 +5643,31 @@
         const list = document.getElementById('prossimi-list');
         if (!list) return;
 
-        const items = prossimiSetteGiorni();
+        const isOggi = (agendaOverviewFilter === 'oggi');
+        const items = isOggi ? appuntamentiOggi() : prossimiSetteGiorni();
         const daFare = items.filter(a => !a.svolto_at).length;
-        document.getElementById('prossimi-badge').innerText =
-            items.length === 0 ? 'niente in programma'
-                               : `${daFare} da fare su ${items.length}`;
+        
+        const badgeEl = document.getElementById('prossimi-badge');
+        if (badgeEl) {
+            badgeEl.innerText = items.length === 0 
+                ? (isOggi ? 'nessun impegno oggi' : 'settimana libera')
+                : `${daFare} da fare su ${items.length}`;
+        }
 
-        list.innerHTML = items.length === 0
-            ? emptyState({
-                titolo: 'Settimana libera',
-                testo: 'Qui compaiono atti, visite, perizie e chiamate dei prossimi sette giorni, appena li segni in Agenda.',
+        if (items.length === 0) {
+            list.innerHTML = emptyState({
+                titolo: isOggi ? 'Oggi nessun appuntamento' : 'Settimana libera',
+                testo: isOggi ? 'Nessun impegno segnato per la giornata odierna.' : 'Qui compaiono visite, atti e appuntamenti dei prossimi 7 giorni.',
                 azione: '+ Aggiungi appuntamento',
                 onAzione: 'openAppuntamentoModal()'
-              })
-            : elencoConGiorni(items);
+            });
+        } else {
+            list.innerHTML = elencoConGiorni(items);
+        }
+        renderDailyPulse();
     }
 
-    // Un appuntamento passato e mai spuntato: non e' in ritardo come un
-    // incarico scaduto, ma se non lo si chiude il conteggio delle visite
-    // per immobile diventa inaffidabile nel giro di un mese. La soglia e'
-    // l'inizio di oggi e non "adesso": chiedere conto di una visita
-    // finita due ore fa sarebbe solo fastidioso.
+    // Un appuntamento passato e mai spuntato
     function appuntamentiDaSegnare() {
         const oggi = inizioGiornata();
         return appuntamenti
@@ -4886,48 +5679,38 @@
 
     function rigaDaFareAppuntamento(a) {
         const t = tipoDi(a);
-        const quando = a._giorni <= 1 ? 'di ieri' : `di ${a._giorni} giorni fa`;
+        const quando = a._giorni <= 1 ? 'di ieri' : `di ${a._giorni} gg fa`;
         return `
-        <div class="item-row">
-            <div class="item-info">
-                <div class="item-texts">
-                    <p class="item-title">${escapeHtml(etichettaAppuntamento(a))}
-                      <span class="status-badge bg-yellow" style="margin-left:6px;">${escapeHtml(t.label)} ${quando}, da spuntare</span>
-                    </p>
-                    <p class="item-details-text">Segna com'e' andata: e' quello che tiene in piedi il conteggio delle visite.</p>
+        <div class="ov-item-card">
+            <div class="ov-card-head">
+                <div class="ov-card-title-box">
+                    <div class="ov-card-title">${escapeHtml(etichettaAppuntamento(a))}</div>
+                </div>
+                <div class="ov-card-badges">
+                    <span class="status-badge bg-yellow">${escapeHtml(t.label)} ${quando}, da spuntare</span>
                 </div>
             </div>
-            <div class="item-actions-box dafare-actions">
-                <button onclick="toggleSvolto('${a.id}')" class="btn-mini primary">Fatto</button>
-                <button onclick="openAppuntamentoModal('${a.id}')" class="btn-mini">Apri</button>
+            <div class="ov-meta-row">
+                <span class="ov-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>Completato? Conferma l'esito per aggiornare lo storico</span>
+            </div>
+            <div class="ov-actions-row">
+                <button type="button" onclick="toggleSvolto('${a.id}')" class="btn-mini primary">Segna Svolto</button>
+                <button type="button" onclick="openAppuntamentoModal('${a.id}')" class="btn-mini">Dettagli</button>
             </div>
         </div>`;
     }
 
     /* =======================================================
        DA FARE
-       La Panoramica sapeva dire com'era andato l'anno ma non cosa mancava
-       oggi. Qui dentro finiscono due cose che prima si perdevano: i
-       clienti con un richiamo in scadenza e le richieste dal sito che
-       hai letto e mai piu' toccato.
        ======================================================= */
     const inizioGiornata = () => { const d = new Date(); d.setHours(0,0,0,0); return d; };
 
-    // Una data senza orario ("2026-08-16") va letta come mezzanotte LOCALE.
-    // new Date("2026-08-16") la interpreta come mezzanotte UTC: in Italia
-    // sono le 02:00, cioe' un istante DOPO l'inizio della nostra giornata,
-    // e un richiamo fissato per oggi risultava ancora "domani" - spariva da
-    // "Da fare" e dalla pastiglia proprio nel giorno in cui serviva.
     function dataLocale(iso) {
         if (!iso) return null;
         const [anno, mese, giorno] = iso.split('-').map(Number);
         return new Date(anno, mese - 1, giorno);
     }
 
-    // Un incarico che scade e' una cosa da fare quanto un cliente da
-    // richiamare: bisogna sentire il proprietario e rinnovare. Sotto i 30
-    // giorni entra qui, cosi' non serve nessun promemoria esterno - la
-    // scadenza si vede nel punto in cui si passa comunque ogni giorno.
     const GIORNI_SCADENZA_DA_FARE = 30;
 
     function incarichiDaFare() {
@@ -4941,32 +5724,19 @@
         const oggi = inizioGiornata();
         return buyers
             .filter(b => {
-                // Chi ha gia' comprato o ha detto di no non e' "da fare".
                 if (b.status !== 'Attivo') return false;
                 if (b.next_action_date && dataLocale(b.next_action_date) <= oggi) return true;
-                // Arrivato dal sito e mai sentito: resta qui finche' non lo
-                // richiami, anche dopo che ne hai letto la richiesta.
                 return b.source === 'sito' && !b.last_contact_at && !b.next_action_date;
             })
             .map(b => {
                 const scadenza = dataLocale(b.next_action_date);
-                // Arrotondato e non troncato: nei due giorni del cambio
-                // dell'ora la differenza fra due mezzanotti e' di 23 o 25
-                // ore e il troncamento sbaglierebbe di un giorno.
                 const ritardo = scadenza ? Math.round((oggi - scadenza) / 86400000) : null;
                 const attesa = Math.floor((oggi - new Date(b.created_at)) / 86400000);
                 return { ...b, _tipo: 'cliente', _ritardo: ritardo, _attesa: attesa };
             })
-            // Prima il ritardo piu' lungo; a parita', chi aspetta da piu' tempo.
             .sort((a, b) => (b._ritardo ?? -1) - (a._ritardo ?? -1) || b._attesa - a._attesa);
     }
 
-    // Le scadenze degli incarichi vanno in cima: un cliente si puo'
-    // richiamare domani, un incarico scaduto e' un immobile che non e' piu'
-    // tuo. I clienti seguono, nel loro ordine di urgenza. In fondo gli
-    // appuntamenti passati da spuntare: non e' urgenza, e' contabilita' -
-    // nessuno perde un immobile perche' non ha segnato una visita, ma il
-    // conteggio per immobile regge solo se prima o poi le spunti.
     function daFareList() {
         return [...incarichiDaFare(), ...clientiDaFare(), ...appuntamentiDaSegnare()];
     }
@@ -4976,13 +5746,15 @@
         if (!list) return;
 
         const items = daFareList();
-        document.getElementById('dafare-badge').innerText = items.length;
+        const badgeEl = document.getElementById('dafare-badge');
+        if (badgeEl) badgeEl.innerText = items.length;
 
         if (items.length === 0) {
             list.innerHTML = emptyState({
                 titolo: 'Non hai niente in sospeso',
                 testo: 'Qui compaiono gli incarichi che stanno per scadere, i clienti da richiamare e le richieste dal sito che non hai ancora sentito.'
             });
+            renderDailyPulse();
             return;
         }
 
@@ -4991,67 +5763,78 @@
           : x._tipo === 'appuntamento' ? rigaDaFareAppuntamento(x)
           : rigaDaFareCliente(x)
         ).join('');
+        renderDailyPulse();
     }
 
     function rigaDaFareIncarico({ dato: t, giorni }) {
-        const quando = giorni < 0  ? `scaduto da ${Math.abs(giorni)} ${Math.abs(giorni) === 1 ? 'giorno' : 'giorni'}`
-                     : giorni === 0 ? 'scade oggi'
-                     : giorni === 1 ? 'scade domani'
-                     : `scade tra ${giorni} giorni`;
-        // Il numero del proprietario arriva dalla sua scheda in rubrica.
-        // Senza collegamento resta solo il nome, e questa riga sa dirti che
-        // l'incarico scade ma non da chi devi passare: e' il motivo per cui
-        // gli incarichi hanno imparato a puntare a una persona vera.
+        const quando = giorni < 0  ? `Scaduto da ${Math.abs(giorni)} ${Math.abs(giorni) === 1 ? 'giorno' : 'giorni'}`
+                     : giorni === 0 ? 'Scade oggi'
+                     : giorni === 1 ? 'Scade domani'
+                     : `Scade tra ${giorni} gg`;
         const prop = t.owner_id ? buyers.find(b => b.id == t.owner_id) : null;
         const tel = prop && prop.phone ? prop.phone.replace(/[^\d+]/g, '') : null;
         const nome = (prop && prop.full_name) || t.owner_name;
+        const waUrl = tel ? getWhatsAppLink(tel, nome, `l'incarico di vendita dell'immobile "${t.property_title}"`) : '';
 
         return `
-        <div class="item-row">
-            <div class="item-info">
-                <div class="item-texts">
-                    <p class="item-title">${escapeHtml(t.property_title)}
-                      <span class="status-badge ${giorni < 0 ? 'bg-red' : 'bg-orange'}" style="margin-left:6px;">Incarico ${quando}</span>
-                    </p>
-                    <p class="item-details-text">
-                      ${nome ? escapeHtml(nome) + ' · ' : ''}${tel
-                        ? `<a href="tel:${tel}" class="link-tel">${escapeHtml(prop.phone)}</a>`
-                        : '<span class="cell-sub">nessun recapito in rubrica</span>'}
-                    </p>
+        <div class="ov-item-card">
+            <div class="ov-card-head">
+                <div class="ov-card-title-box">
+                    <div class="ov-card-title">${escapeHtml(t.property_title || 'Incarico')}</div>
+                </div>
+                <div class="ov-card-badges">
+                    <span class="status-badge ${giorni < 0 ? 'bg-red' : 'bg-orange'}">${quando}</span>
                 </div>
             </div>
-            <div class="item-actions-box dafare-actions">
-                <button onclick="editTransaction('${t.id}')" class="btn-mini primary">Apri incarico</button>
+
+            <div class="ov-meta-row">
+                ${nome ? `<span class="ov-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>${escapeHtml(nome)}</span>` : ''}
+                ${tel ? `<a href="tel:${tel}" class="ov-chip phone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>${escapeHtml(prop.phone)}</a>` : ''}
+                ${t.price ? `<span class="ov-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>€ ${Number(t.price).toLocaleString('it-IT')}</span>` : ''}
+            </div>
+
+            <div class="ov-actions-row">
+                ${waUrl ? `<a href="${waUrl}" target="_blank" rel="noopener" class="btn-wa-action"><svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>WhatsApp</a>` : ''}
+                ${tel ? `<a href="tel:${tel}" class="btn-call-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>Chiama</a>` : ''}
+                <button type="button" onclick="editTransaction('${t.id}')" class="btn-mini primary">Apri incarico</button>
             </div>
         </div>`;
     }
 
     function rigaDaFareCliente(b) {
         let quando;
-        if (b._ritardo === null)      quando = b._attesa <= 0 ? 'arrivata oggi, mai richiamata' : `in attesa da ${b._attesa} ${b._attesa === 1 ? 'giorno' : 'giorni'}, mai richiamata`;
+        if (b._ritardo === null)      quando = b._attesa <= 0 ? 'arrivata oggi' : `in attesa da ${b._attesa} gg`;
         else if (b._ritardo === 0)    quando = 'da richiamare oggi';
         else if (b._ritardo === 1)    quando = 'da richiamare da ieri';
-        else                          quando = `in ritardo di ${b._ritardo} giorni`;
+        else                          quando = `in ritardo di ${b._ritardo} gg`;
 
         const urgente = b._ritardo !== null && b._ritardo > 0;
         const tel = (b.phone || '').replace(/[^\d+]/g, '');
+        const waUrl = tel ? getWhatsAppLink(tel, b.full_name, 'il nostro promemoria di contatto') : '';
 
         return `
-            <div class="item-row">
-                <div class="item-info">
-                    <div class="item-texts">
-                        <p class="item-title">${escapeHtml(b.full_name)}
-                          <span class="status-badge ${urgente ? 'bg-red' : 'bg-yellow'}" style="margin-left:6px;">${quando}</span>
-                          ${b.request_type === 'valutazione' ? '<span class="status-badge bg-green">Valutazione</span>' : ''}
-                        </p>
-                        <p class="item-details-text">
-                          ${tel ? `<a href="tel:${tel}" class="link-tel">${escapeHtml(b.phone)}</a>` : escapeHtml(b.phone || '')}
-                          ${b.desired_zone ? ` · cerca ${escapeHtml(b.desired_type || 'casa')} a ${escapeHtml(b.desired_zone)}` : ''}
-                        </p>
+            <div class="ov-item-card">
+                <div class="ov-card-head">
+                    <div class="ov-card-title-box">
+                        <div class="ov-card-title">${escapeHtml(b.full_name)}</div>
+                    </div>
+                    <div class="ov-card-badges">
+                        <span class="status-badge ${urgente ? 'bg-red' : 'bg-yellow'}">${quando}</span>
+                        ${b.request_type === 'valutazione' ? '<span class="status-badge bg-green">Valutazione</span>' : ''}
                     </div>
                 </div>
-                <div class="item-actions-box dafare-actions">
-                    <button onclick="segnaSentito('${b.id}')" class="btn-mini primary">Ho sentito</button>
+
+                <div class="ov-meta-row">
+                    ${tel ? `<a href="tel:${tel}" class="ov-chip phone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>${escapeHtml(b.phone)}</a>` : ''}
+                    ${b.desired_zone ? `<span class="ov-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>Cerca ${escapeHtml(b.desired_type || 'immobile')} a ${escapeHtml(b.desired_zone)}</span>` : ''}
+                </div>
+
+                ${b.notes ? `<div class="ov-notes-box">${escapeHtml(b.notes)}</div>` : ''}
+
+                <div class="ov-actions-row">
+                    ${waUrl ? `<a href="${waUrl}" target="_blank" rel="noopener" class="btn-wa-action"><svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>WhatsApp</a>` : ''}
+                    ${tel ? `<a href="tel:${tel}" class="btn-call-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>Chiama</a>` : ''}
+                    <button type="button" onclick="segnaSentito('${b.id}')" class="btn-mini primary">Ho sentito</button>
                     <select class="form-select btn-rimanda" onchange="rimandaCliente('${b.id}', this)" aria-label="Rimanda il richiamo">
                       <option value="">Rimanda…</option>
                       <option value="1">a domani</option>
@@ -5059,12 +5842,12 @@
                       <option value="7">tra una settimana</option>
                       <option value="30">tra un mese</option>
                     </select>
+                    <button type="button" onclick="openBuyerModal('${b.id}')" class="btn-mini">Scheda</button>
                 </div>
             </div>`;
     }
 
-    // "Ho sentito": registra il contatto e toglie il promemoria. Se il
-    // cliente va risentito, si rimanda invece di chiudere.
+    // "Ho sentito": registra il contatto e toglie il promemoria.
     async function segnaSentito(id) {
         const { error } = await _supabase.from('buyers')
             .update({ last_contact_at: new Date().toISOString(), next_action_date: null, is_read: true })
@@ -5085,36 +5868,32 @@
         await loadBuyers();
     }
 
-    // Un clic sulla campanella porta dove si leggono le richieste. Lo
-    // scorrimento aspetta un attimo perche' switchTab riporta la pagina in
-    // cima con un'animazione: partire subito vorrebbe dire fare due
-    // scorrimenti opposti nello stesso momento e restare a meta'.
     function apriRichieste() {
         switchTab('tab-overview');
         setTimeout(() => {
-            document.getElementById('overview-leads-list')
-                ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            document.getElementById('overview-leads-card')
+                ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }, 140);
     }
 
-    // Elenco delle richieste dal sito non ancora lette, in cima alla Panoramica.
+    // Elenco delle richieste dal sito non ancora lette
     function renderOverviewLeads() {
         const list = document.getElementById('overview-leads-list');
-        if (!list) return; // tab non ancora nel DOM
+        if (!list) return;
 
         const unread = buyers.filter(b => b.source === 'sito' && !b.is_read);
 
-        document.getElementById('overview-unread-badge').innerText =
-            unread.length === 0 ? 'tutte lette' : `${unread.length} da leggere`;
-        // La pastiglia rossa sulla voce di menu si accende con una classe:
-        // impostare display a mano rompeva la centratura del numero.
-        const tabBadge = document.getElementById('tab-overview-badge');
-        tabBadge.innerText = unread.length;
-        tabBadge.classList.toggle('on', unread.length > 0);
+        const badgeEl = document.getElementById('overview-unread-badge');
+        if (badgeEl) {
+            badgeEl.innerText = unread.length === 0 ? 'tutte lette' : `${unread.length} da leggere`;
+        }
 
-        // La campanella nell'intestazione racconta la stessa cosa della
-        // pastiglia sulla voce di menu, ma la dice anche quando sei in
-        // un'altra scheda e la barra e' fuori dal campo visivo.
+        const tabBadge = document.getElementById('tab-overview-badge');
+        if (tabBadge) {
+            tabBadge.innerText = unread.length;
+            tabBadge.classList.toggle('on', unread.length > 0);
+        }
+
         const campanella = document.getElementById('btn-notifiche');
         const contatore = document.getElementById('notifiche-count');
         if (campanella && contatore) {
@@ -5127,24 +5906,50 @@
         }
 
         if (unread.length === 0) {
-            list.innerHTML = emptyState({ titolo: 'Nessuna nuova richiesta', testo: 'Le richieste inviate dal modulo contatti e dalla valutazione gratuita compaiono qui appena arrivano.' });
+            list.innerHTML = emptyState({
+                titolo: 'Nessuna nuova richiesta',
+                testo: 'Le richieste inviate dal modulo contatti e dalla valutazione gratuita compaiono qui appena arrivano.'
+            });
+            renderDailyPulse();
             return;
         }
 
-        list.innerHTML = unread.map(b => `
-            <div class="item-row">
-                <div class="item-info">
-                    <div class="item-texts">
-                        <p class="item-title">${escapeHtml(b.full_name)} <span class="status-badge bg-red" style="margin-left:6px;">Nuovo</span>${b.request_type === 'valutazione' ? ' <span class="status-badge bg-green">Valutazione</span>' : ''}</p>
-                        <p class="item-details-text">${escapeHtml(b.phone)} — ${b.created_at ? new Date(b.created_at).toLocaleDateString('it-IT') : ''}</p>
-                        <p class="item-details-text" style="margin-top:6px; white-space:pre-line;">${escapeHtml(b.notes || '')}</p>
+        list.innerHTML = unread.map(b => {
+            const tel = (b.phone || '').replace(/[^\d+]/g, '');
+            const waUrl = tel ? getWhatsAppLink(tel, b.full_name, b.request_type === 'valutazione' ? 'la richiesta di valutazione' : 'la richiesta dal sito') : '';
+            const dataStr = b.created_at ? new Date(b.created_at).toLocaleDateString('it-IT', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '';
+            const isValutazione = b.request_type === 'valutazione';
+
+            return `
+            <div class="ov-item-card">
+                <div class="ov-card-head">
+                    <div class="ov-card-title-box">
+                        <div class="ov-card-title">${escapeHtml(b.full_name || 'Richiesta dal sito')}</div>
+                    </div>
+                    <div class="ov-card-badges">
+                        <span class="status-badge bg-red">Nuovo Lead</span>
+                        ${isValutazione ? '<span class="status-badge bg-green">Valutazione Gratuita</span>' : '<span class="status-badge bg-blue">Richiesta Sito</span>'}
                     </div>
                 </div>
-                <div class="item-actions-box">
-                    <button onclick="markLeadRead('${b.id}')" class="btn-submit" style="width:auto; padding:10px 18px;">Segna come letto</button>
+
+                <div class="ov-meta-row">
+                    ${dataStr ? `<span class="ov-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>${escapeHtml(dataStr)}</span>` : ''}
+                    ${tel ? `<a href="tel:${tel}" class="ov-chip phone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>${escapeHtml(b.phone)}</a>` : ''}
+                    ${b.email ? `<span class="ov-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>${escapeHtml(b.email)}</span>` : ''}
+                    ${b.desired_zone ? `<span class="ov-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>${escapeHtml(b.desired_zone)}</span>` : ''}
                 </div>
-            </div>
-        `).join('');
+
+                ${b.notes ? `<div class="ov-notes-box">${escapeHtml(b.notes)}</div>` : ''}
+
+                <div class="ov-actions-row">
+                    ${waUrl ? `<a href="${waUrl}" target="_blank" rel="noopener" class="btn-wa-action"><svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>WhatsApp</a>` : ''}
+                    ${tel ? `<a href="tel:${tel}" class="btn-call-action"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>Chiama</a>` : ''}
+                    <button type="button" onclick="markLeadRead('${b.id}')" class="btn-mini primary">Segna come letto</button>
+                    <button type="button" onclick="openBuyerModal('${b.id}')" class="btn-mini">Dettagli</button>
+                </div>
+            </div>`;
+        }).join('');
+        renderDailyPulse();
     }
 
     // "In Ricerca" su un proprietario che ti ha dato l'incarico non vuol
@@ -5322,19 +6127,99 @@
     };
 
     /* =======================================================
-       TAB 5: DOCUMENTI (Bozze Incarichi/Proposte)
+       TAB 5: DOCUMENTI (Incarichi / Proposte & Ciclo di Vita)
        ======================================================= */
+    let docFilterStatoAttivo = '';
+
+    function statoDiDocumento(d) {
+        if (d.dati && d.dati._stato_doc) return d.dati._stato_doc;
+        if (d.stato) return d.stato;
+        // Se non è stato mai impostato esplicitamente uno stato, parte sempre come 'bozza'
+        // per evitare falsi positivi sui documenti storici
+        return 'bozza';
+    }
+
+    function dataAttoDocumento(d) {
+        if (d.dati && d.dati._data_documento) return d.dati._data_documento;
+        if (d.dati && d.dati.dataFirma) return d.dati.dataFirma;
+        return d.created_at ? d.created_at.split('T')[0] : '';
+    }
+
+    function noteDiDocumento(d) {
+        return (d.dati && d.dati._note_doc) || '';
+    }
+
+    function badgeStatoDocumento(stato) {
+        switch (stato) {
+            case 'firmato':
+                return `<span class="status-badge bg-green" title="Atto firmato e valido">✍️ Firmato</span>`;
+            case 'consegnato':
+                return `<span class="status-badge bg-blue" title="Consegnato al cliente in attesa di firma">⏳ Consegnato</span>`;
+            case 'annullato':
+                return `<span class="status-badge bg-gray" title="Atto annullato o sostituito">🚫 Annullato</span>`;
+            case 'bozza':
+            default:
+                return `<span class="status-badge bg-yellow" title="Bozza in preparazione">📝 Bozza</span>`;
+        }
+    }
+
+    function formatDataAtto(iso) {
+        if (!iso) return '—';
+        try {
+            const clean = iso.split('T')[0];
+            const [anno, mese, giorno] = clean.split('-').map(Number);
+            if (!anno || !mese || !giorno) return iso;
+            const d = new Date(anno, mese - 1, giorno);
+            return d.toLocaleDateString('it-IT', { day: 'numeric', month: 'short', year: 'numeric' });
+        } catch {
+            return iso;
+        }
+    }
+
     async function loadDocumenti() {
         const { data, error } = await _supabase.from('documenti_bozze').select('*').is('deleted_at', null).order('updated_at', { ascending: false });
         if (!error) {
             documenti = data || [];
+            renderDocumentiKPIs();
             renderDocumentiList();
-            // Le schede immobile e le righe cliente mostrano quanti
-            // documenti hanno agganciato: se cambia l'elenco, cambiano loro.
             if (properties.length) renderPropertiesList();
             if (buyers.length) renderBuyersList();
             updateNavCounts();
         }
+    }
+
+    function renderDocumentiKPIs() {
+        const totVal = document.getElementById('doc-kpi-total-val');
+        const totSub = document.getElementById('doc-kpi-total-sub');
+        const sigVal = document.getElementById('doc-kpi-signed-val');
+        const delVal = document.getElementById('doc-kpi-delivered-val');
+        const dftVal = document.getElementById('doc-kpi-draft-val');
+
+        if (!totVal) return;
+
+        const tot = documenti.length;
+        const firmati = documenti.filter(d => statoDiDocumento(d) === 'firmato').length;
+        const consegnati = documenti.filter(d => statoDiDocumento(d) === 'consegnato').length;
+        const bozze = documenti.filter(d => statoDiDocumento(d) === 'bozza').length;
+
+        totVal.innerText = tot;
+        totSub.innerText = `${firmati} firmati · ${bozze} bozze`;
+        if (sigVal) sigVal.innerText = firmati;
+        if (delVal) delVal.innerText = consegnati;
+        if (dftVal) dftVal.innerText = bozze;
+
+        document.getElementById('kpi-doc-totali')?.classList.toggle('active-filter', docFilterStatoAttivo === '');
+        document.getElementById('kpi-doc-firmati')?.classList.toggle('active-filter', docFilterStatoAttivo === 'firmato');
+        document.getElementById('kpi-doc-consegnati')?.classList.toggle('active-filter', docFilterStatoAttivo === 'consegnato');
+        document.getElementById('kpi-doc-bozze')?.classList.toggle('active-filter', docFilterStatoAttivo === 'bozza');
+    }
+
+    function filtraDocPerStato(stato) {
+        docFilterStatoAttivo = stato;
+        const filterEl = document.getElementById('doc-filter-stato');
+        if (filterEl) filterEl.value = stato;
+        renderDocumentiKPIs();
+        renderDocumentiList();
     }
 
     function resetTransSearch() {
@@ -5351,11 +6236,12 @@
     function resetDocFilters() {
         document.getElementById('doc-search').value = '';
         document.getElementById('doc-filter-tipo').value = '';
+        document.getElementById('doc-filter-stato').value = '';
+        docFilterStatoAttivo = '';
+        renderDocumentiKPIs();
         renderDocumentiList();
     }
 
-    // "16/08/2026, 12:30" invece di "16/8/2026, 12:30:45": i secondi non
-    // servono a nessuno e in una scheda stretta mandavano la data a capo.
     function formatSalvataggio(iso) {
         if (!iso) return '-';
         return new Date(iso).toLocaleString('it-IT', {
@@ -5363,53 +6249,323 @@
         });
     }
 
-    // A cosa e' agganciato un documento. Se l'immobile o il cliente sono
-    // finiti nel cestino non compaiono piu' negli elenchi in memoria: in
-    // quel caso il collegamento resta nel dato ma qui non si mostra nulla,
-    // invece di scrivere il nome di una cosa che non c'e' piu'.
     function collegamentoDoc(d) {
         const parti = [];
         const p = d.property_id ? properties.find(x => x.id == d.property_id) : null;
         const b = d.buyer_id ? buyers.find(x => x.id == d.buyer_id) : null;
-        if (p) parti.push(escapeHtml(p.title));
-        if (b) parti.push(escapeHtml(b.full_name));
-        return parti.length ? `<br><span class="cell-sub">↳ ${parti.join(' · ')}</span>` : '';
+        if (p) parti.push(`🏠 ${escapeHtml(p.title)}`);
+        if (b) parti.push(`👤 ${escapeHtml(b.full_name)}`);
+        return parti.length ? `<div style="margin-top:3px; display:flex; gap:6px; flex-wrap:wrap;">${parti.map(x => `<span class="ov-chip" style="font-size:11px;">${x}</span>`).join('')}</div>` : '';
+    }
+
+    function datiSalientiDoc(d) {
+        const dati = d.dati || {};
+        const items = [];
+        if (d.tipo === 'incarico') {
+            if (dati.prezzo) items.push(`Prezzo: € ${Number(dati.prezzo).toLocaleString('it-IT')}`);
+            if (dati.provvigioneEuro) items.push(`Provv: € ${Number(dati.provvigioneEuro).toLocaleString('it-IT')}`);
+            else if (dati.provvigionePerc) items.push(`Provv: ${dati.provvigionePerc}%`);
+        } else {
+            if (dati.prezzoTotale) items.push(`Offerta: € ${Number(dati.prezzoTotale).toLocaleString('it-IT')}`);
+            if (dati.caparra1) items.push(`Caparra: € ${Number(dati.caparra1).toLocaleString('it-IT')}`);
+        }
+        return items.length ? items.map(t => `<span class="ov-chip" style="font-size:11px;">${escapeHtml(t)}</span>`).join(' ') : '<span class="cell-sub">—</span>';
     }
 
     function renderDocumentiList() {
         const searchEl = document.getElementById('doc-search');
-        const filterEl = document.getElementById('doc-filter-tipo');
-        if (!searchEl || !filterEl) return; // tab non ancora nel DOM
+        const filterTipoEl = document.getElementById('doc-filter-tipo');
+        const filterStatoEl = document.getElementById('doc-filter-stato');
+        if (!searchEl || !filterTipoEl) return;
 
-        const s = searchEl.value.toLowerCase();
-        const tipoFilter = filterEl.value;
+        const s = searchEl.value.toLowerCase().trim();
+        const tipoFilter = filterTipoEl.value;
+        const statoFilter = filterStatoEl ? filterStatoEl.value : docFilterStatoAttivo;
         const list = document.getElementById('documenti-list');
 
-        const filtered = documenti.filter(d => (!tipoFilter || d.tipo === tipoFilter) && (d.titolo || '').toLowerCase().includes(s));
+        renderDocumentiKPIs();
+
+        const filtered = documenti.filter(d => {
+            if (tipoFilter && d.tipo !== tipoFilter) return false;
+            const st = statoDiDocumento(d);
+            if (statoFilter && st !== statoFilter) return false;
+            if (!s) return true;
+
+            const p = d.property_id ? properties.find(x => x.id == d.property_id) : null;
+            const b = d.buyer_id ? buyers.find(x => x.id == d.buyer_id) : null;
+
+            const matching = (d.titolo || '').toLowerCase().includes(s)
+                || (p && (p.title || '').toLowerCase().includes(s))
+                || (b && (b.full_name || '').toLowerCase().includes(s))
+                || (d.dati && (d.dati.propNome || d.dati.proponenteNome || d.dati.venditoreNome || '').toLowerCase().includes(s));
+            return matching;
+        });
 
         if (filtered.length === 0) {
-            list.innerHTML = (s || tipoFilter)
-                ? emptyState({ titolo: 'Nessuna bozza con questi filtri', testo: 'Prova a cercare un altro titolo o a mostrare tutti i tipi.', azione: 'Azzera i filtri', onAzione: 'resetDocFilters()', colspan: 4 })
-                : emptyState({ titolo: 'Nessuna bozza salvata', testo: 'Ogni incarico o proposta che compili viene salvato qui, anche se generi solo il PDF.', colspan: 4 });
+            list.innerHTML = (s || tipoFilter || statoFilter)
+                ? emptyState({ titolo: 'Nessun documento con questi filtri', testo: 'Prova a cercare un altro termine o a selezionare tutti i tipi e stati.', azione: 'Azzera i filtri', onAzione: 'resetDocFilters()', colspan: 5 })
+                : emptyState({ titolo: 'Nessun documento salvato', testo: 'Compila un incarico o una proposta: ogni documento salvato comparirà qui.', colspan: 5 });
             return;
         }
 
-        list.innerHTML = filtered.map(d => `
-        <tr>
-          <td data-cell="stato"><span class="status-badge ${d.tipo === 'incarico' ? 'bg-blue' : 'bg-yellow'}">${d.tipo === 'incarico' ? 'Incarico' : 'Proposta'}</span></td>
-          <td data-cell="main" style="font-weight:600;">${escapeHtml(d.titolo || 'Senza titolo')}${collegamentoDoc(d)}</td>
-          <td data-cell="info" data-label="Ultimo salvataggio"><span class="cell-value">${formatSalvataggio(d.updated_at)}</span></td>
-          <td data-cell="azioni" style="text-align:center;">
-            <div class="action-buttons" style="justify-content:center;">
-              <a href="${d.tipo}.html?id=${encodeURIComponent(d.id)}" class="btn-action edit" title="Apri e modifica">
-                <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"/></svg>
-              </a>
-              <button onclick="openDeleteDocModal('${d.id}')" class="btn-action delete" title="Elimina">
-                <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/></svg>
-              </button>
-            </div>
-          </td>
-        </tr>`).join('');
+        list.innerHTML = filtered.map(d => {
+            const stato = statoDiDocumento(d);
+            const dataAtto = dataAttoDocumento(d);
+            const note = noteDiDocumento(d);
+            const tipoBadge = `<span class="status-badge ${d.tipo === 'incarico' ? 'bg-blue' : 'bg-yellow'}">${d.tipo === 'incarico' ? 'Incarico' : 'Proposta'}</span>`;
+
+            return `
+            <tr>
+              <td data-cell="stato">
+                <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-start;">
+                  <label class="doc-flag-label ${stato === 'firmato' ? 'is-signed' : ''}" onclick="event.stopPropagation(); toggleFirmaRapida('${d.id}', ${stato === 'firmato'})" title="${stato === 'firmato' ? 'Clicca per modificare o togliere la firma' : 'Clicca per segnare come FIRMATO dal cliente'}">
+                    <input type="checkbox" class="doc-flag-checkbox" ${stato === 'firmato' ? 'checked' : ''} onclick="event.preventDefault();">
+                    <span class="doc-flag-text ${stato === 'firmato' ? 'is-signed' : ''}">${stato === 'firmato' ? '✍️ Firmato' : 'Segna firmato'}</span>
+                  </label>
+                  ${tipoBadge}
+                </div>
+              </td>
+              <td data-cell="main" style="font-weight:600;">
+                <span style="font-size:14px; color:var(--ink);">${escapeHtml(d.titolo || 'Senza titolo')}</span>
+                ${collegamentoDoc(d)}
+                ${note ? `<div style="font-size:11.5px; color:var(--ink-2); font-weight:normal; margin-top:4px; font-style:italic; border-left:2px solid var(--accent); padding-left:6px;">${escapeHtml(note)}</div>` : ''}
+              </td>
+              <td data-cell="info" data-label="Data Atto & Firma">
+                <div class="doc-date-highlight">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                  ${formatDataAtto(dataAtto)}
+                </div>
+                <div class="doc-date-sub">Salvataggio: ${formatSalvataggio(d.updated_at)}</div>
+              </td>
+              <td data-cell="info" data-label="Dati Chiave">
+                ${datiSalientiDoc(d)}
+              </td>
+              <td data-cell="azioni" style="text-align:center;">
+                <div class="doc-actions-box">
+                  <a href="${d.tipo}.html?id=${encodeURIComponent(d.id)}" class="btn-action edit" title="Apri e visualizza/modifica">
+                    <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"/></svg>
+                  </a>
+                  <button onclick="openStatoDocModal('${d.id}')" class="btn-action" title="Cambia stato (Firmato/Consegnato/Bozza) e note">
+                    <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z"/></svg>
+                  </button>
+                  <button onclick="duplicaDocumento('${d.id}')" class="btn-action" title="Duplica come nuova bozza/revisione">
+                    <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75"/></svg>
+                  </button>
+                  <button onclick="openDeleteDocModal('${d.id}')" class="btn-action delete" title="Elimina nel cestino">
+                    <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/></svg>
+                  </button>
+                </div>
+              </td>
+            </tr>`;
+        }).join('');
+    }
+
+    let pendingFirmaDocId = null;
+
+    function toggleFirmaRapida(id, isCurrentlySigned) {
+        pendingFirmaDocId = id;
+        const d = documenti.find(x => x.id == id);
+        if (!d) return;
+
+        if (!isCurrentlySigned) {
+            document.getElementById('confirm-firma-doc-name').innerText = `«${d.titolo || 'questo documento'}»`;
+            const dataEsistente = dataAttoDocumento(d) || new Date().toISOString().split('T')[0];
+            document.getElementById('confirm-firma-date').value = dataEsistente;
+            document.getElementById('modal-confirm-firma').style.display = 'flex';
+        } else {
+            document.getElementById('confirm-bozza-doc-name').innerText = `«${d.titolo || 'questo documento'}»`;
+            document.getElementById('modal-confirm-bozza').style.display = 'flex';
+        }
+    }
+
+    async function eseguiConfermaFirma() {
+        if (!pendingFirmaDocId) return;
+        const d = documenti.find(x => x.id == pendingFirmaDocId);
+        if (!d) return;
+
+        const dataFirma = document.getElementById('confirm-firma-date').value || new Date().toISOString().split('T')[0];
+        const datiAggiornati = {
+            ...(d.dati || {}),
+            _stato_doc: 'firmato',
+            _data_documento: dataFirma,
+            dataFirma: dataFirma
+        };
+
+        showLoader("Salvataggio stato firmato...");
+        const { error } = await _supabase.from('documenti_bozze').update({
+            dati: datiAggiornati
+        }).eq('id', pendingFirmaDocId);
+
+        hideLoader();
+        if (error) {
+            alert("Errore salvataggio: " + error.message);
+            return;
+        }
+
+        closeModals();
+        await loadDocumenti();
+    }
+
+    async function eseguiConfermaBozza() {
+        if (!pendingFirmaDocId) return;
+        const d = documenti.find(x => x.id == pendingFirmaDocId);
+        if (!d) return;
+
+        const datiAggiornati = {
+            ...(d.dati || {}),
+            _stato_doc: 'bozza'
+        };
+
+        showLoader("Aggiornamento a bozza...");
+        const { error } = await _supabase.from('documenti_bozze').update({
+            dati: datiAggiornati
+        }).eq('id', pendingFirmaDocId);
+
+        hideLoader();
+        if (error) {
+            alert("Errore salvataggio: " + error.message);
+            return;
+        }
+
+        closeModals();
+        await loadDocumenti();
+    }
+
+    function openStatoDocModal(id) {
+        const d = documenti.find(x => x.id == id);
+        if (!d) return;
+
+        document.getElementById('doc-status-id').value = d.id;
+        document.getElementById('doc-status-doc-title').innerText = d.titolo || 'Senza titolo';
+        
+        const tipoStr = d.tipo === 'incarico' ? 'Incarico di Mediazione' : 'Proposta di Acquisto';
+        const stato = statoDiDocumento(d);
+        document.getElementById('doc-status-doc-sub').innerText = `${tipoStr} · Ultimo salvataggio: ${formatSalvataggio(d.updated_at)}`;
+
+        document.getElementById('doc-status-select').value = stato;
+        document.getElementById('doc-date-input').value = dataAttoDocumento(d);
+        document.getElementById('doc-notes-input').value = noteDiDocumento(d);
+
+        toggleDocStatusFields();
+        document.getElementById('modal-doc-status').style.display = 'flex';
+    }
+
+    function toggleDocStatusFields() {
+        const stato = document.getElementById('doc-status-select').value;
+        const label = document.getElementById('doc-date-label');
+        if (label) {
+            label.innerText = stato === 'firmato' ? 'Data Firma Atto' : (stato === 'consegnato' ? 'Data Consegna al Cliente' : 'Data Documento');
+        }
+    }
+
+    async function handleDocStatusSubmit(e) {
+        e.preventDefault();
+        const id = document.getElementById('doc-status-id').value;
+        const d = documenti.find(x => x.id == id);
+        if (!d) return;
+
+        const nuovoStato = document.getElementById('doc-status-select').value;
+        const nuovaData = document.getElementById('doc-date-input').value;
+        const nuoveNote = document.getElementById('doc-notes-input').value.trim();
+
+        const datiAggiornati = {
+            ...(d.dati || {}),
+            _stato_doc: nuovoStato,
+            _data_documento: nuovaData || null,
+            _note_doc: nuoveNote || null
+        };
+
+        if (nuovaData) {
+            datiAggiornati.dataFirma = nuovaData;
+        }
+
+        showLoader("Aggiornamento stato...");
+        const { error } = await _supabase.from('documenti_bozze').update({
+            dati: datiAggiornati
+        }).eq('id', id);
+
+        hideLoader();
+
+        if (error) {
+            alert("Errore nell'aggiornamento: " + error.message);
+            return;
+        }
+
+        closeModals();
+        await loadDocumenti();
+    }
+
+    async function duplicaDocumento(id) {
+        const orig = documenti.find(x => x.id == id);
+        if (!orig) return;
+
+        const conf = confirm(
+            `Vuoi creare una NUOVA bozza duplicando «${orig.titolo || 'questo documento'}»?\n\n` +
+            `Il documento originale (anche se già firmato) rimarrà intatto nello storico.`
+        );
+        if (!conf) return;
+
+        showLoader("Duplicazione documento...");
+
+        const datiClonati = {
+            ...(orig.dati || {}),
+            _stato_doc: 'bozza',
+            _note_doc: `Revisione duplicata da documento precedente (${new Date().toLocaleDateString('it-IT')})`
+        };
+
+        const nowIso = new Date().toISOString();
+        const payload = {
+            tipo: orig.tipo,
+            titolo: (orig.titolo || 'Documento') + ' (Nuova bozza)',
+            dati: datiClonati,
+            property_id: orig.property_id || null,
+            buyer_id: orig.buyer_id || null,
+            created_at: nowIso,
+            updated_at: nowIso
+        };
+
+        const { data, error } = await _supabase.from('documenti_bozze').insert([payload]).select().single();
+        hideLoader();
+
+        if (error || !data) {
+            alert("Errore durante la duplicazione: " + (error ? error.message : 'Dati non validi'));
+            return;
+        }
+
+        await loadDocumenti();
+        window.open(`${data.tipo}.html?id=${encodeURIComponent(data.id)}`, '_blank');
+    }
+
+    function openDeleteDocModal(id) {
+        docToDelete = id;
+        const d = documenti.find(x => x.id == id);
+        if (!d) return;
+
+        const stato = statoDiDocumento(d);
+        const dataAtto = dataAttoDocumento(d);
+        const nome = d.titolo || 'Senza titolo';
+        
+        document.getElementById('del-doc-name').innerText = nome;
+        document.getElementById('del-doc-name-2').innerText = `«${nome}»`;
+
+        const infoEl = document.getElementById('del-doc-info');
+        if (infoEl) {
+            const tipoStr = d.tipo === 'incarico' ? 'Incarico' : 'Proposta';
+            const dataStr = dataAtto ? ` · Data atto: ${formatDataAtto(dataAtto)}` : '';
+            infoEl.innerText = `${tipoStr} (${stato.toUpperCase()})${dataStr}`;
+        }
+
+        const warnEl = document.getElementById('del-doc-warning');
+        if (warnEl) {
+            warnEl.style.display = (stato === 'firmato') ? 'block' : 'none';
+        }
+
+        document.getElementById('confirm-delete-doc').classList.remove('step-2');
+        document.getElementById('modal-delete-doc').style.display = 'flex';
+    }
+
+    function proceedDeleteDoc() {
+        document.getElementById('confirm-delete-doc').classList.add('step-2');
     }
 
     /* =======================================================

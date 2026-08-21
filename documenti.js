@@ -204,13 +204,12 @@ function personeDelDocumento(tipo, dati) {
 function initBozze({ tipo, supabase, form, loading, ricavaTitolo, generaPDF, dopoPopolamento }) {
     // Id della bozza aperta: nullo finche' non se ne salva o se ne carica una.
     let currentDraftId = null;
+    let loadedDocState = null; // memorizza i metadati di stato originari
 
     // Collegamenti a immobile e cliente. Arrivano dall'indirizzo quando il
     // documento viene aperto da una scheda del gestionale
     // (es. incarico.html?property_id=12), oppure dalla bozza stessa quando
-    // se ne riapre una gia' collegata. Servono a far esistere anche nei dati
-    // la catena immobile -> incarico -> proposta -> vendita, che prima
-    // stava solo nella testa di chi compilava.
+    // se ne riapre una gia' collegata.
     const parametri = new URLSearchParams(window.location.search);
     let collegamenti = {
         property_id: parametri.get('property_id') || null,
@@ -219,8 +218,16 @@ function initBozze({ tipo, supabase, form, loading, ricavaTitolo, generaPDF, dop
 
     const statoBozza = document.getElementById('draft-status');
 
-    function mostraStato(testo) {
-        if (statoBozza) statoBozza.innerText = testo;
+    function mostraStato(testo, isSigned = false) {
+        if (!statoBozza) return;
+        statoBozza.innerHTML = testo;
+        if (isSigned) {
+            statoBozza.style.color = '#107a3c';
+            statoBozza.style.fontWeight = '600';
+        } else {
+            statoBozza.style.color = '';
+            statoBozza.style.fontWeight = '';
+        }
     }
 
     // Ripopola il form da un oggetto {name: valore}: per checkbox/radio
@@ -229,6 +236,7 @@ function initBozze({ tipo, supabase, form, loading, ricavaTitolo, generaPDF, dop
     function popolaForm(dati) {
         form.reset();
         Object.entries(dati || {}).forEach(([name, value]) => {
+            if (name.startsWith('_')) return; // ignora metadati interni
             form.querySelectorAll(`[name="${CSS.escape(name)}"]`).forEach(el => {
                 if (el.type === 'checkbox' || el.type === 'radio') {
                     el.checked = (el.value === value);
@@ -247,27 +255,47 @@ function initBozze({ tipo, supabase, form, loading, ricavaTitolo, generaPDF, dop
             return;
         }
         currentDraftId = data.id;
-        // I collegamenti gia' salvati vincono su quelli dell'indirizzo:
-        // riaprire una bozza non deve poterla riagganciare altrove per
-        // sbaglio, ma se non ne aveva li' si possono aggiungere.
+        loadedDocState = data.dati || {};
+        
         collegamenti = {
             property_id: data.property_id || collegamenti.property_id || null,
             buyer_id: data.buyer_id || collegamenti.buyer_id || null
         };
         popolaForm(data.dati || {});
-        mostraStato(`Stai modificando una bozza salvata (ultimo salvataggio: ${new Date(data.updated_at).toLocaleString('it-IT')})`);
+
+        const stato = data.dati?._stato_doc || 'bozza';
+        const dataAtto = data.dati?._data_documento || data.dati?.dataFirma || '';
+        const dataAttoStr = dataAtto ? new Date(dataAtto).toLocaleDateString('it-IT') : '';
+
+        if (stato === 'firmato') {
+            mostraStato(`✍️ Documento contrassegnato come FIRMATO ${dataAttoStr ? `(data atto: ${dataAttoStr})` : ''} · <a href="javascript:void(0)" onclick="salvaComeNuovaCopia()" style="color:#0044FF; text-decoration:underline;">Salva come nuova revisione</a>`, true);
+        } else if (stato === 'consegnato') {
+            mostraStato(`⏳ Documento contrassegnato come CONSEGNATO AL CLIENTE · Ultimo salvataggio: ${new Date(data.updated_at).toLocaleString('it-IT')}`);
+        } else {
+            mostraStato(`📝 Stai modificando una bozza salvata (ultimo salvataggio: ${new Date(data.updated_at).toLocaleString('it-IT')})`);
+        }
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     async function salvaBozza(showAlert = true) {
-        const dati = Object.fromEntries(new FormData(form));
+        const formData = Object.fromEntries(new FormData(form));
         const nowIso = new Date().toISOString();
 
-        // Le persone del documento entrano in rubrica prima del salvataggio,
-        // cosi' il documento nasce gia' agganciato alla scheda del suo
-        // cliente. Se qualcosa va storto qui la bozza si salva lo stesso:
-        // perdere il documento perche' la rubrica ha singhiozzato sarebbe
-        // molto peggio di non aver aggiornato un contatto.
+        // Preserva i metadati interni di stato e data atto se già presenti
+        const dati = {
+            ...(loadedDocState || {}),
+            ...formData
+        };
+
+        // Se non era ancora impostato uno stato, default 'bozza'
+        if (!dati._stato_doc) {
+            dati._stato_doc = 'bozza';
+        }
+        if (dati.dataFirma && !dati._data_documento) {
+            dati._data_documento = dati.dataFirma;
+        }
+
+        // Le persone del documento entrano in rubrica prima del salvataggio
         try {
             const { persone, principale } = personeDelDocumento(tipo, dati);
             const ids = [];
@@ -296,24 +324,31 @@ function initBozze({ tipo, supabase, form, loading, ricavaTitolo, generaPDF, dop
                 const { data: inserted, error } = await supabase.from('documenti_bozze').insert([payload]).select().single();
                 if (error) throw error;
                 currentDraftId = inserted.id;
-                // Da qui in poi la pagina "e'" quella bozza: mettendo l'id
-                // nell'URL un ricaricamento riapre la stessa, non ne crea una nuova.
                 const url = new URL(window.location.href);
                 url.searchParams.set('id', currentDraftId);
                 window.history.replaceState({}, '', url);
             }
+            loadedDocState = dati;
             mostraStato(`Bozza salvata nel gestionale (${new Date().toLocaleString('it-IT')})`);
-            if (showAlert) alert('Bozza salvata nel gestionale!');
+            if (showAlert) alert('Documento salvato nel gestionale!');
             return true;
         } catch (err) {
-            console.error('Errore salvataggio bozza:', err);
-            if (showAlert) alert('Errore nel salvataggio della bozza: ' + err.message);
+            console.error('Errore salvataggio documento:', err);
+            if (showAlert) alert('Errore nel salvataggio: ' + err.message);
             return false;
         }
     }
 
+    async function salvaComeNuovaCopia() {
+        if (!confirm("Vuoi salvare questo documento come NUOVA revisione/bozza separata? L'originale firmato rimarrà intatto nello storico.")) return;
+        currentDraftId = null; // Resetta ID per forzare un nuovo insert
+        if (loadedDocState) {
+            loadedDocState._stato_doc = 'bozza'; // La nuova revisione parte come bozza
+        }
+        await salvaBozza(true);
+    }
+
     // "Genera PDF": prima il PDF, poi il salvataggio silenzioso della bozza
-    // (showAlert=false), cosi' l'utente vede un solo messaggio finale.
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
@@ -325,10 +360,10 @@ function initBozze({ tipo, supabase, form, loading, ricavaTitolo, generaPDF, dop
         loading.classList.add('active');
 
         try {
-            const dati = Object.fromEntries(new FormData(form));
-            generaPDF(dati);
+            const formData = Object.fromEntries(new FormData(form));
+            generaPDF(formData);
             await salvaBozza(false);
-            alert('PDF generato e bozza salvata nel gestionale!');
+            alert('PDF generato e salvato nel gestionale!');
         } catch (error) {
             console.error('Errore:', error);
             alert('Errore nella generazione: ' + error.message);
@@ -337,11 +372,10 @@ function initBozze({ tipo, supabase, form, loading, ricavaTitolo, generaPDF, dop
         }
     });
 
-    // Esposte sul window perche' servono agli handler inline gia' presenti nel
-    // markup (`onclick="salvaBozza()"`) e al controllo di sessione, che vive in
-    // un altro <script> della pagina.
+    // Esposte sul window perche' servono agli handler inline
     window.caricaBozza = caricaBozza;
     window.salvaBozza = salvaBozza;
+    window.salvaComeNuovaCopia = salvaComeNuovaCopia;
 
-    return { caricaBozza, salvaBozza };
+    return { caricaBozza, salvaBozza, salvaComeNuovaCopia };
 }
