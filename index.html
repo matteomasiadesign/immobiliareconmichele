@@ -718,10 +718,6 @@
       <section id="home" class="hero">
         <div class="hero-overlay"></div>
         <div class="hero-content">
-          <div class="hero-badge">
-            <svg style="width: 14px; height: 14px; flex-shrink: 0;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
-            Niente giacca e cravatta. Solo case giuste.
-          </div>
           <h1 class="hero-title"><span class="hero-line1">Benvenuti</span><span class="hero-line2">a <span class="hero-up">Casa</span></span></h1>
           <p class="hero-text">Sono Michele Erre, professionista immobiliare. Da oltre dieci anni affianco famiglie e imprenditori a Porto Torres e in tutto il Nord Sardegna.</p>
           <div class="hero-buttons">
@@ -1302,8 +1298,7 @@
     function animateHero() {
       if (!motionOK) return;
       gsap.timeline({ defaults: { opacity: 0, y: 20, duration: 0.6, ease: 'power2.out' } })
-        .from('.hero-badge', {})
-        .from('.hero-line1', {}, '-=0.35')
+        .from('.hero-line1', {})
         .from('.hero-line2', {}, '-=0.4')
         .from('.hero-text', {}, '-=0.35')
         .from('.hero-buttons', {}, '-=0.35');
