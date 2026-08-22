@@ -1174,8 +1174,9 @@
 
     /* ---------- LOADER (solo per le scritture) ---------- */
     .loader-overlay {
-      position: fixed; inset: 0; background: radial-gradient(circle at center, rgba(14, 26, 56, 0.92) 0%, rgba(6, 10, 20, 0.96) 100%); backdrop-filter: blur(8px);
+      position: fixed; inset: 0; width: 100vw; height: 100vh; height: 100svh; height: 100dvh; background: radial-gradient(circle at center, rgba(14, 26, 56, 0.92) 0%, rgba(6, 10, 20, 0.96) 100%); backdrop-filter: blur(8px);
       z-index: 3000; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding-bottom: clamp(2.5rem, 9vh, 5.5rem);
       gap: 14px; color: #fff; font-weight: 600; font-size: 14px;
     }
     .preloader-orbit-wrap {

@@ -504,11 +504,14 @@
   inset: 0;
   width: 100vw;
   height: 100vh;
+  height: 100svh;
+  height: 100dvh;
   background: radial-gradient(circle at center, #0e1a38 0%, #060a14 100%);
   z-index: 999999;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding-bottom: clamp(2.5rem, 9vh, 5.5rem);
   overflow: hidden;
   transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.5s;
 }
