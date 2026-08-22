@@ -176,6 +176,7 @@ function initNavbarScroll() {
 // Il testo e i bottoni si muovono lentamente verso l'alto mentre l'utente scrolla.
 function initHeroParallax() {
     if (!motionOK) return;
+    if (window.innerWidth < 992) return;
     const heroContent = document.querySelector('.hero-content');
     if (!heroContent) return;
 

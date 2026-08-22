@@ -76,9 +76,8 @@
       position: relative;
       width: 100%;
       height: calc(100vh - 80px);
-      height: calc(100dvh - 80px);
-      min-height: calc(100vh - 80px);
-      min-height: calc(100dvh - 80px);
+      height: calc(100svh - 80px);
+      min-height: 460px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -96,20 +95,26 @@
     
     .hero-content { position: relative; z-index: 10; max-width: 700px; }
     
-    .hero-badge { background-color: var(--brand-yellow); color: var(--brand-blue); font-size: 11px; font-weight: 900; letter-spacing: 0.02em; padding: 6px 14px; border-radius: 20px; display: inline-flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 6px; max-width: 100%; text-align: center; margin-bottom: clamp(0.75rem, 1.8vh, 1.25rem); }
-    
     /* Titolo scalato con viewport height e width per non sfondare mai lo schermo in altezza */
-    .hero-title { font-family: 'Teko', 'Space Grotesk', sans-serif; font-size: clamp(2.6rem, min(6.2vw, 8.5vh), 5.4rem); font-weight: 700; color: var(--white); line-height: 0.88; letter-spacing: -0.02em; margin-bottom: clamp(0.75rem, 1.8vh, 1.25rem); }
+    .hero-title {
+      font-family: 'Teko', 'Space Grotesk', sans-serif;
+      font-size: clamp(3rem, min(8vw, 11vh), 6.5rem);
+      font-weight: 700;
+      color: var(--white);
+      line-height: 0.86;
+      letter-spacing: -0.02em;
+      margin-bottom: clamp(0.9rem, 2vh, 1.5rem);
+    }
     .hero-title span { font-family: inherit; }
     .hero-line1 { display: block; text-transform: uppercase; }
-    .hero-line2 { display: block; font-size: 1.45em; color: var(--brand-yellow); letter-spacing: -0.03em; }
+    .hero-line2 { display: block; font-size: 1.4em; color: var(--brand-yellow); letter-spacing: -0.03em; }
     .hero-up { text-transform: uppercase; }
     
-    .hero-text { font-size: clamp(0.92rem, 1.1vw, 1.05rem); color: #e2e8f0; font-weight: 500; margin-bottom: clamp(1rem, 2.4vh, 1.75rem); line-height: 1.5; max-width: 520px; margin-inline: auto; text-wrap: balance; }
+    .hero-text { font-size: clamp(0.95rem, 1.15vw, 1.12rem); color: #e2e8f0; font-weight: 500; margin-bottom: clamp(1rem, 2.4vh, 1.75rem); line-height: 1.5; max-width: 540px; margin-inline: auto; text-wrap: balance; }
     .hero-buttons { display: flex; flex-direction: column; gap: 0.85rem; align-items: center; justify-content: center; }
     @media (min-width: 640px) { .hero-buttons { flex-direction: row; } }
-    .btn-primary { background-color: var(--brand-blue); color: var(--brand-yellow); padding: 13px 26px; border-radius: 999px; text-decoration: none; font-weight: 900; font-size: 13px; text-transform: uppercase; box-shadow: 0 4px 15px rgba(0,68,255,0.3); transition: var(--transition); border: 2.5px solid var(--brand-yellow); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
-    .btn-secondary { background-color: rgba(255,255,255,0.1); color: var(--white); border: 2px solid rgba(255,255,255,0.25); padding: 12px 26px; border-radius: 999px; text-decoration: none; font-weight: 900; font-size: 13px; text-transform: uppercase; backdrop-filter: blur(4px); transition: var(--transition); display: inline-flex; align-items: center; justify-content: center; }
+    .btn-primary { background-color: var(--brand-blue); color: var(--brand-yellow); padding: 14px 28px; border-radius: 999px; text-decoration: none; font-weight: 900; font-size: 13.5px; text-transform: uppercase; box-shadow: 0 4px 15px rgba(0,68,255,0.3); transition: var(--transition); border: 2.5px solid var(--brand-yellow); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+    .btn-secondary { background-color: rgba(255,255,255,0.1); color: var(--white); border: 2px solid rgba(255,255,255,0.25); padding: 13px 28px; border-radius: 999px; text-decoration: none; font-weight: 900; font-size: 13.5px; text-transform: uppercase; backdrop-filter: blur(4px); transition: var(--transition); display: inline-flex; align-items: center; justify-content: center; }
     .btn-primary:hover { background-color: #0033CC; }
     .hero-buttons .btn-primary:hover { box-shadow: 0 4px 15px rgba(0,68,255,0.3), 0 0 22px rgba(255,217,15,0.65); }
     .hero-buttons .btn-secondary:hover { box-shadow: 0 0 22px rgba(255,217,15,0.5); border-color: rgba(255,217,15,0.5); }
@@ -118,9 +123,8 @@
     @media (min-width: 992px) {
       .hero {
         height: calc(100vh - 80px);
-        height: calc(100dvh - 80px);
+        height: calc(100svh - 80px);
         min-height: calc(100vh - 80px);
-        min-height: calc(100dvh - 80px);
         align-items: center;
         justify-content: flex-start;
         text-align: left;
@@ -128,8 +132,12 @@
         background-position: center;
       }
       .hero-overlay { background: linear-gradient(100deg, rgba(15,23,42,0.88) 0%, rgba(15,23,42,0.6) 42%, rgba(15,23,42,0.15) 68%, rgba(15,23,42,0) 85%); }
-      .hero-content { max-width: 580px; }
-      .hero-text { margin-inline: 0; max-width: 520px; text-wrap: pretty; }
+      .hero-content { max-width: 660px; }
+      .hero-title {
+        font-size: clamp(4.4rem, min(7.8vw, 12.5vh), 7.2rem);
+        line-height: 0.84;
+      }
+      .hero-text { margin-inline: 0; max-width: 540px; text-wrap: pretty; }
       .hero-buttons { justify-content: flex-start; }
     }
 
@@ -217,24 +225,43 @@
       .vetrina-ticker-track { animation: none; transform: none; }
     }
 
-    /* CARD IMMOBILI IN VETRINA SU MOBILE & DESKTOP */
-    #featured-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 1.25rem;
-    }
-    @media (min-width: 640px) {
+    /* VETRINA "IN EVIDENZA": CAROSELLO ORIZZONTALE FLUIDO SU MOBILE */
+    @media (max-width: 767px) {
       #featured-grid {
+        display: flex;
+        gap: 1rem;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scroll-snap-type: x mandatory;
+        margin-inline: -1rem;
+        padding-inline: 1rem;
+        scroll-padding-inline-start: 1rem;
+        padding-block: 4px 1.25rem;
+        overscroll-behavior-x: contain;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+      }
+      #featured-grid::-webkit-scrollbar { display: none; }
+      #featured-grid > .card {
+        flex: 0 0 min(82%, 330px);
+        min-width: 0;
+        scroll-snap-align: start;
+      }
+    }
+
+    /* Griglia Desktop & Tablet */
+    @media (min-width: 768px) {
+      #featured-grid {
+        display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 1.5rem;
       }
     }
     @media (min-width: 1024px) {
       #featured-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 1.5rem;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.25rem;
       }
-      #featured-grid > .card:nth-child(n+4) { display: none; }
     }
 
     /* SEZIONE SERVIZI - GRIGLIA A 3 COLONNE PREMIUM */
@@ -1459,6 +1486,7 @@
               preloader.remove();
               window.scrollTo(0, 0);
               animateHero();
+              if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
             }
           }, '-=0.15');
       };
