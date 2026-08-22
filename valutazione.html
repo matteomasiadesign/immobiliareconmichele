@@ -144,6 +144,7 @@
 </head>
 <body>
 
+  <!-- NAVBAR CON RICERCA E HAMBURGER -->
   <nav class="navbar" aria-label="Navigazione principale">
     <a href="index.html" class="brand">
       <div class="brand-icon-box">
@@ -154,20 +155,36 @@
       </div>
     </a>
 
-    <ul class="nav-links">
-      <li><a href="index.html#home" class="nav-link">Home</a></li>
-      <li><a href="index.html#servizi" class="nav-link">Servizi</a></li>
-      <li><a href="index.html#contatti" class="nav-link">Contatti</a></li>
-      <li><a href="catalogo.html" class="btn-catalog-nav">Catalogo</a></li>
-      <li><a href="valutazione.html" class="btn-valuation-nav">Valutazione</a></li>
-    </ul>
+    <div class="nav-actions">
+      <!-- TRIGGER RICERCA E FILTRI -->
+      <div class="nav-search-trigger" onclick="openNavSearch(event)" role="button" tabindex="0" aria-label="Cerca e filtra immobili">
+        <svg class="nav-search-icon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"></path></svg>
+        <span class="nav-search-text">Cerca casa o filtra...</span>
+        <span class="nav-search-filter-tag">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"></path></svg>
+          Filtri
+        </span>
+      </div>
 
-    <button id="mobile-toggle" class="mobile-toggle" aria-label="Apri il menu" aria-expanded="false" aria-controls="mobile-menu">
-      <svg width="32" height="32" fill="none" stroke="var(--brand-yellow)" stroke-width="2.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-    </button>
+      <!-- BOTTONE RICERCA MOBILE -->
+      <button class="nav-mobile-search-btn" onclick="openNavSearch(event)" aria-label="Cerca nel catalogo">
+        <svg width="22" height="22" fill="none" stroke="var(--brand-yellow)" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"></path></svg>
+      </button>
+
+      <!-- MENU HAMBURGER (DESKTOP & MOBILE) -->
+      <button id="mobile-toggle" class="mobile-toggle" aria-label="Apri il menu" aria-expanded="false" aria-controls="mobile-menu">
+        <svg fill="none" stroke="var(--brand-yellow)" stroke-width="2.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        <span class="mobile-toggle-label">Menu</span>
+      </button>
+    </div>
   </nav>
 
+  <!-- MENU A DISCESA UNIFICATO -->
   <div id="mobile-menu" class="mobile-menu">
+    <button type="button" class="mobile-menu-search-btn" onclick="openNavSearch(event)">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"></path></svg>
+      Cerca e Filtra Immobili
+    </button>
     <a href="index.html#home" class="nav-link">Home</a>
     <a href="index.html#servizi" class="nav-link">Servizi</a>
     <a href="index.html#contatti" class="nav-link">Contatti</a>
@@ -395,6 +412,91 @@
       <button class="fab-main" onclick="toggleFab()">
           <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
       </button>
+  </div>
+  <!-- MODAL RICERCA E FILTRI NAVBAR -->
+  <div id="nav-search-modal" class="nav-search-modal-overlay" onclick="handleNavSearchOverlayClick(event)">
+    <div class="nav-search-modal-card">
+      <div class="nav-search-modal-header">
+        <div class="nav-search-header-title">
+          <svg width="22" height="22" fill="none" stroke="var(--brand-blue)" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"></path></svg>
+          <h3>Cerca nel Catalogo</h3>
+        </div>
+        <button type="button" class="btn-close-search-modal" onclick="closeNavSearch()" aria-label="Chiudi ricerca">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+
+      <form id="nav-search-form" onsubmit="handleNavSearchSubmit(event)">
+        <!-- Input testo principale -->
+        <div class="nav-search-input-box">
+          <svg class="nav-search-input-icon" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"></path></svg>
+          <input type="text" id="nav-search-q" class="nav-search-input" placeholder="Zona, via, o parole chiave (es. Lungomare, Terrazzo)..." autocomplete="off">
+        </div>
+
+        <!-- Selettore Contratto (Pillole) -->
+        <div class="nav-search-section">
+          <label class="nav-search-label">Contratto</label>
+          <div class="nav-search-pills" id="nav-search-status-pills">
+            <button type="button" class="nav-pill active" data-value="Tutti" onclick="selectNavStatus(this)">Tutti</button>
+            <button type="button" class="nav-pill" data-value="Vendita" onclick="selectNavStatus(this)">Vendita</button>
+            <button type="button" class="nav-pill" data-value="Affitto" onclick="selectNavStatus(this)">Affitto</button>
+          </div>
+          <input type="hidden" id="nav-search-status" value="Tutti">
+        </div>
+
+        <!-- Griglia Filtri (Zona, Tipologia, Prezzo) -->
+        <div class="nav-search-grid">
+          <div class="nav-search-field">
+            <label class="nav-search-label" for="nav-search-zone">Zona</label>
+            <select id="nav-search-zone" class="nav-search-select">
+              <option value="Tutte">Qualsiasi zona</option>
+              <option value="Porto Torres">Porto Torres</option>
+              <option value="Sassari">Sassari</option>
+              <option value="Stintino">Stintino</option>
+              <option value="Sorso">Sorso</option>
+              <option value="Alghero">Alghero</option>
+              <option value="Castelsardo">Castelsardo</option>
+            </select>
+          </div>
+
+          <div class="nav-search-field">
+            <label class="nav-search-label" for="nav-search-type">Tipologia</label>
+            <select id="nav-search-type" class="nav-search-select">
+              <option value="Tutte">Qualsiasi tipologia</option>
+              <option value="Appartamento">Appartamento</option>
+              <option value="Villa">Villa</option>
+              <option value="Attico">Attico / Mansarda</option>
+              <option value="Indipendente">Casa Indipendente</option>
+              <option value="Locale Commerciale">Locale Commerciale</option>
+              <option value="Terreno">Terreno</option>
+            </select>
+          </div>
+
+          <div class="nav-search-field full">
+            <label class="nav-search-label" for="nav-search-price">Budget Massimo</label>
+            <select id="nav-search-price" class="nav-search-select">
+              <option value="0">Qualsiasi prezzo</option>
+              <option value="80000">Fino a 80.000 €</option>
+              <option value="120000">Fino a 120.000 €</option>
+              <option value="160000">Fino a 160.000 €</option>
+              <option value="200000">Fino a 200.000 €</option>
+              <option value="250000">Fino a 250.000 €</option>
+              <option value="350000">Fino a 350.000 €</option>
+              <option value="500000">Fino a 500.000 €</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Footer Azioni -->
+        <div class="nav-search-actions">
+          <button type="button" class="nav-search-btn-reset" onclick="resetNavSearch()">Azzera</button>
+          <button type="submit" class="nav-search-btn-submit">
+            <span>Mostra Risultati</span>
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 
   <script src="shared.js"></script>

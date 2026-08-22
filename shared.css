@@ -5,139 +5,319 @@
  * (--brand-blue, --brand-yellow, --white, --text-slate, --text-muted, --border-color, --transition).
  */
 
-/* NAVBAR STICKY: a riposo (in cima) è piena/solida, perché lì sotto non c'è
-   ancora nulla da sfocare - l'effetto vetro smerigliato si attiva solo
-   quando si scrolla, quando il contenuto della pagina passa davvero sotto. */
-.navbar { background: linear-gradient(120deg, var(--brand-blue), #001f8c); border-bottom: 4px solid var(--brand-yellow); height: 80px; display: flex; align-items: center; justify-content: space-between; padding: 0 1rem; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 15px rgba(0,68,255,0.15); transition: height 0.3s ease, box-shadow 0.3s ease, background 0.3s ease, backdrop-filter 0.3s ease; }
-/* brightness() nel backdrop-filter scurisce quello che c'è sotto (schede
-   bianche, sfondi chiari) PRIMA che si mescoli col blu, cosi' il colore
-   resta sempre saturo anche scrollando su sezioni chiare della pagina. */
-.navbar.scrolled { height: 64px; box-shadow: 0 8px 20px rgba(0,0,0,0.18); background: linear-gradient(120deg, rgba(0,68,255,0.85), rgba(0,31,140,0.88)); backdrop-filter: blur(20px) saturate(180%) brightness(0.75); -webkit-backdrop-filter: blur(20px) saturate(180%) brightness(0.75); }
+/* NAVBAR STICKY: full-width e stile classico con giallo brand */
+.navbar {
+  background: linear-gradient(120deg, var(--brand-blue), #001f8c);
+  border-bottom: 4px solid var(--brand-yellow);
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.25rem;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 4px 18px rgba(0,68,255,0.18);
+  transition: height 0.3s ease, box-shadow 0.3s ease, background 0.3s ease, backdrop-filter 0.3s ease;
+}
+@media (min-width: 768px) {
+  .navbar { padding: 0 2rem; }
+}
+
+.navbar.scrolled {
+  height: 64px;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.2);
+  background: linear-gradient(120deg, rgba(0,68,255,0.88), rgba(0,31,140,0.92));
+  backdrop-filter: blur(20px) saturate(180%) brightness(0.75);
+  -webkit-backdrop-filter: blur(20px) saturate(180%) brightness(0.75);
+}
 .brand { display: flex; align-items: center; text-decoration: none; z-index: 1001; }
 .brand-icon-box { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
 .brand-text { margin-left: 12px; display: flex; align-items: center; line-height: 1.1; }
-/* "IMMOBILIARE CON MICHELE" su una riga sola, centrata sull'altezza del logo:
-   tutto maiuscolo e in bianco, cosi' il giallo resta solo del logo.
-   Il top di 0.1em recupera lo squilibrio del Teko: l'ascendente vale 0.94em
-   e il discendente 0.47em, ma in maiuscolo non c'e' niente sotto la linea di
-   base, quindi align-items:center centra la riga di testo e non le lettere,
-   che senza correzione restano 2px troppo in alto rispetto al logo.
-   Il corpo cresce con lo schermo perche' da mobile la scritta sta fra logo e
-   hamburger: la clamp la tiene sempre dentro lo spazio libero senza dover
-   scrivere una misura per ogni breakpoint. A 1.6rem l'altezza delle maiuscole
-   e' 17px contro i 40px del logo (43%), la proporzione che regge il confronto;
-   a 1rem erano 11px (28%) e la scritta spariva accanto all'icona. */
-.brand-title { font-family: 'Teko', 'Space Grotesk', sans-serif; font-size: clamp(1.05rem, 5.4vw, 1.6rem); font-weight: 700; color: var(--white); text-transform: uppercase; letter-spacing: 0.02em; line-height: 1; white-space: nowrap; position: relative; top: 0.1em; }
+.brand-title { font-family: 'Teko', 'Space Grotesk', sans-serif; font-size: clamp(1.15rem, 4.5vw, 1.65rem); font-weight: 700; color: var(--white); text-transform: uppercase; letter-spacing: 0.02em; line-height: 1; white-space: nowrap; position: relative; top: 0.1em; }
 
-/* MOBILE: logo a sinistra, nome al centro, hamburger a destra.
-   Il nome esce dal flusso e si aggancia al centro della navbar, cosi' resta
-   centrato sullo schermo e non sulla porzione libera tra logo e hamburger.
-   Vale solo per le pagine pubbliche (a.brand): nel gestionale la barra ha
-   altri elementi a destra e il marchio resta accanto al logo. */
-@media (max-width: 999px) {
-  a.brand .brand-text { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); margin-left: 0; max-width: calc(100vw - 7.5rem); }
-  a.brand .brand-title { overflow: hidden; text-overflow: ellipsis; }
+/* GRUPPO AZIONI DESTRA NAVBAR (RICERCA + HAMBURGER UNIFICATO) */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 1001;
 }
 
-/* Il menu esteso compare solo da 1000px: sotto quella soglia logo, tre voci e
-   due pulsanti non ci stanno e vanno a capo, quindi resta l'hamburger. */
-.nav-links { display: none; gap: 1.5rem; align-items: center; list-style: none; }
-@media (min-width: 1000px) { .nav-links { display: flex; } .navbar { padding: 0 2rem; } }
-/* Sottolineatura che si attiva sulla sezione attualmente in vista (scroll-spy) */
-.nav-link { position: relative; color: var(--brand-yellow); text-decoration: none; font-weight: 900; font-size: 13px; text-transform: uppercase; transition: var(--transition); }
-.nav-link:hover { color: var(--white); }
-.nav-link::after { content: ''; position: absolute; left: 0; right: 0; bottom: -6px; height: 2px; background: var(--brand-yellow); border-radius: 2px; transform: scaleX(0); transition: transform 0.25s ease; }
-.nav-link.active::after, .nav-link.is-current::after { transform: scaleX(1); }
+/* PULSANTE RICERCA DESKTOP & TABLET */
+.nav-search-trigger {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255,255,255,0.12);
+  border: 1.5px solid rgba(255,255,255,0.28);
+  border-radius: 999px;
+  padding: 8px 16px 8px 14px;
+  color: rgba(255,255,255,0.95);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  user-select: none;
+}
+.nav-search-trigger:hover {
+  background: rgba(255,255,255,0.22);
+  border-color: var(--brand-yellow);
+  color: var(--white);
+  box-shadow: 0 0 16px rgba(255,217,15,0.3);
+}
+.nav-search-icon { color: var(--brand-yellow); flex-shrink: 0; }
+.nav-search-text { white-space: nowrap; }
+.nav-search-filter-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--brand-yellow);
+  color: var(--brand-blue);
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 3px 8px;
+  border-radius: 999px;
+  margin-left: 4px;
+}
+@media (min-width: 640px) {
+  .nav-search-trigger { display: inline-flex; }
+}
 
-/* PULSANTI DELLA NAVBAR
-   Definiti qui una volta sola: prima ogni pagina se li ridichiarava e lo
-   stesso "Catalogo" appariva giallo sulla home e bianco slavato altrove. */
-.btn-catalog-nav, .btn-valuation-nav { padding: 10px 20px; border-radius: 999px; text-decoration: none; font-weight: 900; font-size: 12px; text-transform: uppercase; white-space: nowrap; border: none; transition: var(--transition); }
-.btn-catalog-nav { background-color: var(--brand-yellow); color: var(--brand-blue); }
-.btn-catalog-nav:hover { background-color: #ffe14d; }
-.btn-valuation-nav { background-color: #10b981; color: var(--white); }
-.btn-valuation-nav:hover { background-color: #059669; }
+/* PULSANTE RICERCA MOBILE ICON-ONLY */
+.nav-mobile-search-btn {
+  background: rgba(255,255,255,0.12);
+  border: 1.5px solid rgba(255,255,255,0.3);
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--brand-yellow);
+  transition: var(--transition);
+}
+.nav-mobile-search-btn:hover {
+  background: rgba(255,255,255,0.22);
+  border-color: var(--brand-yellow);
+  transform: scale(1.05);
+}
+@media (min-width: 640px) {
+  .nav-mobile-search-btn { display: none; }
+}
 
-/* Pagina in cui ti trovi: alone chiaro attorno al pulsante corrispondente */
-.nav-links .btn-catalog-nav.is-current, .nav-links .btn-valuation-nav.is-current,
-.mobile-menu .btn-catalog-nav.is-current, .mobile-menu .btn-valuation-nav.is-current { box-shadow: 0 0 0 3px rgba(255,255,255,0.6); }
+/* HAMBURGER TOGGLE BUTTON UNIFICATO (DESKTOP & MOBILE) */
+.mobile-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.12);
+  border: 1.5px solid rgba(255,255,255,0.3);
+  border-radius: 999px;
+  padding: 8px 16px 8px 12px;
+  cursor: pointer;
+  color: var(--brand-yellow);
+  transition: var(--transition);
+  height: 42px;
+}
+.mobile-toggle:hover {
+  background: rgba(255,255,255,0.22);
+  border-color: var(--brand-yellow);
+  color: var(--white);
+  transform: scale(1.03);
+}
+.mobile-toggle svg { width: 22px; height: 22px; flex-shrink: 0; stroke: var(--brand-yellow); }
+.mobile-toggle-label {
+  font-family: 'Space Grotesk', -apple-system, sans-serif;
+  font-size: 12.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--white);
+  display: none;
+}
+@media (min-width: 768px) {
+  .mobile-toggle-label { display: inline-block; }
+}
+@media (max-width: 639px) {
+  .mobile-toggle {
+    padding: 0;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+  }
+}
 
-/* Contorno di messa a fuoco visibile per chi naviga da tastiera */
-.navbar a:focus-visible, .navbar button:focus-visible, .mobile-menu a:focus-visible { outline: 3px solid var(--white); outline-offset: 3px; border-radius: 6px; }
-
-/* HAMBURGER MENU (MOBILE) */
-.mobile-toggle { display: block; background: none; border: none; cursor: pointer; z-index: 1001; }
-@media (min-width: 1000px) { .mobile-toggle { display: none; } }
-
-.mobile-menu { position: fixed; top: 80px; left: 0; width: 100%; background: linear-gradient(160deg, #0044FF, #001f8c); border-bottom: 4px solid var(--brand-yellow); display: flex; flex-direction: column; align-items: center; gap: 0.75rem; padding: 1.5rem 1rem 1.75rem; transform: translateY(-150%); transition: transform 0.3s ease, top 0.3s ease; z-index: 999; box-shadow: 0 14px 24px rgba(0,0,0,0.22); }
+/* MENU A DISCESA UNIFICATO */
+.mobile-menu {
+  position: fixed;
+  top: 80px;
+  left: 0;
+  width: 100%;
+  background: linear-gradient(160deg, #0044FF, #001f8c);
+  border-bottom: 4px solid var(--brand-yellow);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.75rem 1rem 2rem;
+  transform: translateY(-150%);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), top 0.3s ease;
+  z-index: 999;
+  box-shadow: 0 16px 36px rgba(0,0,0,0.3);
+}
 .mobile-menu.open { transform: translateY(0); }
-/* La navbar si accorcia scrollando (80px -> 64px): il menu deve seguirla,
-   altrimenti resta sospeso e si vede la pagina nel mezzo. */
 .navbar.scrolled ~ .mobile-menu { top: 64px; }
 
-/* Tutte le voci come pillole: le sezioni in trasparenza, le due pagine
-   dedicate a colore pieno per farle risaltare come azioni principali. */
+/* Pulsante rapido ricerca dentro al menu */
+.mobile-menu-search-btn {
+  width: 100%;
+  max-width: 340px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--brand-yellow);
+  color: var(--brand-blue);
+  border: none;
+  border-radius: 999px;
+  padding: 14px 24px;
+  font-size: 14px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+  margin-bottom: 0.25rem;
+}
+.mobile-menu-search-btn:hover { background: #ffe14d; }
+
 .mobile-menu .nav-link,
 .mobile-menu .btn-catalog-nav,
-.mobile-menu .btn-valuation-nav { width: 100%; max-width: 320px; text-align: center; font-size: 1rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.04em; padding: 14px 28px; border-radius: 999px; }
-.mobile-menu .nav-link { background: rgba(255,255,255,0.12); border: 1.5px solid rgba(255,255,255,0.28); }
-.mobile-menu .nav-link:hover, .mobile-menu .nav-link.active { background: rgba(255,255,255,0.2); }
-/* Qui la sezione corrente si vede gia' dalla pillola piu' chiara: la
-   sottolineatura gialla della navbar, ereditata da .nav-link::after, sotto una
-   pillola tonda restava staccata e larga quanto tutta la voce. Via. */
-.mobile-menu .nav-link::after { display: none; }
+.mobile-menu .btn-valuation-nav {
+  width: 100%;
+  max-width: 340px;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 14px 28px;
+  border-radius: 999px;
+  text-decoration: none;
+  transition: var(--transition);
+}
+.mobile-menu .nav-link {
+  background: rgba(255,255,255,0.12);
+  border: 1.5px solid rgba(255,255,255,0.28);
+  color: var(--brand-yellow);
+}
+.mobile-menu .nav-link:hover, .mobile-menu .nav-link.active {
+  background: rgba(255,255,255,0.22);
+  color: var(--white);
+}
+.mobile-menu .btn-catalog-nav {
+  background-color: var(--brand-yellow);
+  color: var(--brand-blue);
+}
+.mobile-menu .btn-catalog-nav:hover { background-color: #ffe14d; }
+.mobile-menu .btn-valuation-nav {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: var(--white);
+}
+.mobile-menu .btn-valuation-nav:hover {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+}
+.mobile-menu .nav-link.is-current,
+.mobile-menu .btn-catalog-nav.is-current,
+.mobile-menu .btn-valuation-nav.is-current {
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.6);
+}
+
+.navbar a:focus-visible, .navbar button:focus-visible, .mobile-menu a:focus-visible, .nav-search-trigger:focus-visible { outline: 3px solid var(--white); outline-offset: 3px; border-radius: 6px; }
+
+/* ==========================================================================
+   MODAL / POPUP RICERCA RAPIDA & FILTRI UNIVERSALE
+   ========================================================================== */
+.nav-search-modal-overlay { position: fixed; inset: 0; background-color: rgba(15, 23, 42, 0.75); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 2500; display: none; align-items: center; justify-content: center; padding: 1rem; }
+.nav-search-modal-card { background: var(--white); width: 100%; max-width: 520px; border-radius: 28px; padding: 1.75rem 1.5rem; box-shadow: 0 25px 60px -15px rgba(0,0,0,0.35); border: 2px solid var(--border-color); border-top: 5px solid var(--brand-yellow); max-height: 92vh; overflow-y: auto; position: relative; }
+@media (min-width: 640px) { .nav-search-modal-card { padding: 2.25rem 2rem; } }
+
+.nav-search-modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
+.nav-search-header-title { display: flex; align-items: center; gap: 10px; }
+.nav-search-header-title h3 { font-family: 'Space Grotesk', -apple-system, sans-serif; font-size: 1.25rem; font-weight: 700; color: var(--text-slate); text-transform: uppercase; }
+.btn-close-search-modal { width: 38px; height: 38px; border-radius: 50%; background-color: #f1f5f9; border: 1px solid var(--border-color); color: var(--text-slate); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition); }
+.btn-close-search-modal:hover { background-color: var(--brand-blue); color: var(--white); border-color: var(--brand-blue); }
+
+.nav-search-input-box { position: relative; margin-bottom: 1.25rem; }
+.nav-search-input-icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none; }
+.nav-search-input { width: 100%; padding: 14px 16px 14px 2.75rem; background: #f8fafc; border: 1.5px solid var(--border-color); border-radius: 16px; font-size: 14px; font-weight: 600; color: var(--text-slate); outline: none; transition: var(--transition); }
+.nav-search-input:focus { border-color: var(--brand-blue); background: var(--white); box-shadow: 0 0 0 4px rgba(0,68,255,0.1); }
+
+.nav-search-section { margin-bottom: 1.25rem; }
+.nav-search-label { font-size: 11px; font-weight: 900; color: var(--brand-blue); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 7px; }
+
+.nav-search-pills { display: flex; gap: 8px; }
+.nav-pill { flex: 1; padding: 10px 14px; border-radius: 999px; border: 1.5px solid var(--border-color); background: #f8fafc; font-size: 12.5px; font-weight: 800; color: var(--text-muted); cursor: pointer; transition: var(--transition); text-align: center; text-transform: uppercase; }
+.nav-pill:hover { border-color: var(--brand-blue); color: var(--brand-blue); }
+.nav-pill.active { background: var(--brand-blue); color: var(--white); border-color: var(--brand-blue); box-shadow: 0 4px 12px rgba(0,68,255,0.25); }
+
+.nav-search-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+@media (min-width: 540px) { .nav-search-grid { grid-template-columns: 1fr 1fr; } .nav-search-grid .nav-search-field.full { grid-column: 1 / -1; } }
+
+.nav-search-select { width: 100%; padding: 12px 14px; background-color: #f8fafc; border: 1.5px solid var(--border-color); border-radius: 14px; font-size: 13.5px; font-weight: 600; color: var(--text-slate); outline: none; transition: var(--transition); cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' stroke='%2364748b' stroke-width='2.5' viewBox='0 0 24 24'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; background-size: 14px; }
+.nav-search-select:focus { border-color: var(--brand-blue); background-color: var(--white); box-shadow: 0 0 0 4px rgba(0,68,255,0.1); }
+
+.nav-search-actions { display: flex; gap: 10px; align-items: center; padding-top: 1rem; border-top: 1px solid var(--border-color); }
+.nav-search-btn-reset { padding: 12px 18px; border-radius: 999px; background: #f1f5f9; border: none; font-size: 12px; font-weight: 800; text-transform: uppercase; color: var(--text-muted); cursor: pointer; transition: var(--transition); }
+.nav-search-btn-reset:hover { background: #e2e8f0; color: var(--text-slate); }
+.nav-search-btn-submit { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: var(--brand-yellow); color: var(--brand-blue); border: 2.5px solid var(--brand-blue); padding: 14px 24px; border-radius: 999px; font-size: 13.5px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.03em; cursor: pointer; transition: var(--transition); box-shadow: 0 4px 15px rgba(255,217,15,0.3); }
+.nav-search-btn-submit:hover { background: #ffe14d; box-shadow: 0 6px 20px rgba(255,217,15,0.5); gap: 12px; }
 
 /* GRID IMMOBILI */
-.properties-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
-@media (min-width: 768px) { .properties-grid { grid-template-columns: repeat(2, 1fr); gap: 2rem; } }
-@media (min-width: 1024px) { .properties-grid { grid-template-columns: repeat(3, 1fr); } }
-.card { background: var(--white); border-radius: 24px; overflow: hidden; border: 1px solid var(--border-color); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); cursor: pointer; display: flex; flex-direction: column; transition: var(--transition); }
+.properties-grid { display: grid; grid-template-columns: 1fr; gap: 1.25rem; }
+@media (min-width: 768px) { .properties-grid { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; } }
+@media (min-width: 1024px) { .properties-grid { grid-template-columns: repeat(3, 1fr); gap: 1.5rem; } }
+.card { background: var(--white); border-radius: 20px; overflow: hidden; border: 1px solid var(--border-color); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); cursor: pointer; display: flex; flex-direction: column; transition: var(--transition); }
 .card:hover { transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
-.card-img-container { position: relative; aspect-ratio: 4/3; width: 100%; overflow: hidden; background: #e2e8f0; }
+.card-img-container { position: relative; aspect-ratio: 16/10; width: 100%; overflow: hidden; background: #e2e8f0; }
 .card-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease, opacity 0.5s ease; }
 .card:hover .card-img { transform: scale(1.06); }
-/* Se l'annuncio ha più di una foto, la seconda appare al passaggio del mouse.
-   La seconda immagine viene semplicemente accesa SOPRA la prima (stesso
-   riquadro, stessa dimensione, ed è dopo nel DOM quindi copre): la prima non
-   va spenta. Spegnendola, sugli annunci con una foto sola - dove la seconda
-   immagine non esiste proprio - non restava nulla da mostrare e si vedeva il
-   grigio del contenitore vuoto. Su touch il :hover scatta appoggiando il dito,
-   quindi la card diventava grigia durante lo scorrimento. */
+/* Se l'annuncio ha più di una foto, la seconda appare al passaggio del mouse. */
 .card-img-hover { opacity: 0; }
 .card:hover .card-img-hover { opacity: 1; }
-.card-content { padding: 1.25rem; flex: 1; display: flex; flex-direction: column; position: relative; }
-@media (min-width: 768px) { .card-content { padding: 1.5rem; } }
+.card-content { padding: 1.15rem 1.25rem; flex: 1; display: flex; flex-direction: column; position: relative; }
+@media (min-width: 768px) { .card-content { padding: 1.15rem 1.25rem; } }
 
 /* BADGE contratto (Vendita/Affitto) in alto a sinistra sulla foto */
-.card-badge-contract { position: absolute; top: 12px; left: 12px; font-size: 10px; font-weight: 900; text-transform: uppercase; padding: 6px 16px; border-radius: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.15); z-index: 10; }
+.card-badge-contract { position: absolute; top: 10px; left: 10px; font-size: 9.5px; font-weight: 900; text-transform: uppercase; padding: 5px 12px; border-radius: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.15); z-index: 10; }
 .card-badge-contract.vendita { background-color: var(--brand-yellow); color: var(--brand-blue); border: 2px solid var(--white); }
 .card-badge-contract.affitto { background-color: var(--brand-blue); color: var(--white); border: 2px solid var(--brand-yellow); }
 
-/* BADGE in alto a destra sulla foto: il Reel (se l'annuncio ce l'ha) e la
-   condivisione. Stanno in un contenitore flex invece di essere posizionati
-   entrambi in assoluto: il Reel c'e' solo su alcuni annunci, e con due `right`
-   fissi il pulsante condividi avrebbe dovuto sapere se il vicino esiste. Cosi'
-   si dispongono da soli e restano allineati in entrambi i casi. */
-.card-badges { position: absolute; top: 10px; right: 10px; z-index: 10; display: flex; align-items: center; gap: 8px; }
+/* BADGE in alto a destra sulla foto */
+.card-badges { position: absolute; top: 10px; right: 10px; z-index: 10; display: flex; align-items: center; gap: 6px; }
 .card-badge-reel,
-.card-badge-share { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.2); transition: var(--transition); }
+.card-badge-share { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.2); transition: var(--transition); }
 .card-badge-reel { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: var(--white); }
-/* Bianco pieno, non un vetro trasparente: sotto ci passa la foto dell'annuncio,
-   che puo' essere di qualsiasi colore, e l'icona deve restare leggibile sempre. */
 .card-badge-share { background: var(--white); color: var(--brand-blue); border: none; padding: 0; cursor: pointer; }
 .card-badge-reel:hover,
 .card-badge-share:hover { transform: scale(1.12); }
 
-.card-title { font-family: 'Space Grotesk', -apple-system, sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--text-slate); margin-top: 0.5rem; margin-bottom: 0.5rem; line-height: 1.25; }
-.card-zone { color: var(--brand-blue); font-size: 12px; font-weight: 800; display: flex; align-items: center; gap: 4px; margin-bottom: 1rem; }
-.card-features { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color); }
-.feature-item { background: #f1f5f9; font-size: 11px; font-weight: 800; color: var(--text-muted); padding: 6px 10px; border-radius: 12px; display: flex; align-items: center; gap: 4px; }
+.card-title { font-family: 'Space Grotesk', -apple-system, sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--text-slate); margin-top: 0.35rem; margin-bottom: 0.35rem; line-height: 1.25; }
+.card-zone { color: var(--brand-blue); font-size: 11.5px; font-weight: 800; display: flex; align-items: center; gap: 4px; margin-bottom: 0.75rem; }
+.card-features { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 0.75rem; padding-top: 0.65rem; border-top: 1px solid var(--border-color); }
+.feature-item { background: #f1f5f9; font-size: 10.5px; font-weight: 800; color: var(--text-muted); padding: 4px 8px; border-radius: 10px; display: flex; align-items: center; gap: 4px; }
 
 /* FOOTER card: solo prezzo + invito a scoprire, un'unica azione chiara */
-.card-footer { margin-top: auto; display: flex; justify-content: space-between; align-items: flex-end; padding-top: 1rem; border-top: 1px solid var(--border-color); }
-.card-price-label { font-size: 10px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 2px; }
-.card-price { font-size: 1.35rem; font-weight: 900; color: var(--text-slate); }
-.card-cta { font-size: 11px; font-weight: 900; color: var(--brand-blue); text-transform: uppercase; letter-spacing: 0.03em; display: flex; align-items: center; gap: 4px; transition: var(--transition); }
+.card-footer { margin-top: auto; display: flex; justify-content: space-between; align-items: flex-end; padding-top: 0.75rem; border-top: 1px solid var(--border-color); }
+.card-price-label { font-size: 9.5px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 2px; }
+.card-price { font-size: 1.25rem; font-weight: 900; color: var(--text-slate); }
+.card-cta { font-size: 10.5px; font-weight: 900; color: var(--brand-blue); text-transform: uppercase; letter-spacing: 0.03em; display: flex; align-items: center; gap: 4px; transition: var(--transition); }
 .card:hover .card-cta { gap: 8px; }
 
 /* FLOATING ACTION MENU */
@@ -315,6 +495,193 @@
 .pulse-dot { width: 8px; height: 8px; border-radius: 50%; background: #10b981; position: relative; flex-shrink: 0; }
 .pulse-dot::after { content: ''; position: absolute; inset: -4px; border-radius: 50%; background: #10b981; opacity: 0.55; animation: pulse-dot-anim 1.8s ease-out infinite; }
 @keyframes pulse-dot-anim { 0% { transform: scale(0.6); opacity: 0.55; } 100% { transform: scale(2.4); opacity: 0; } }
-/* Niente stop con "riduci movimento": come per le altre animazioni del sito
-   (vedi motionOK in shared.js) il pallino deve lampeggiare sempre, altrimenti
-   su molti telefoni - che hanno il risparmio energetico attivo - sparisce. */
+
+/* ==========================================================================
+   SITE PRELOADER LUXURY CON LOGO ED ORBITING SATELLITE
+   ========================================================================== */
+.site-preloader {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(circle at center, #0e1a38 0%, #060a14 100%);
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.5s;
+}
+.site-preloader.loaded {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.preloader-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+  user-select: none;
+}
+
+.preloader-orbit-wrap {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Bagliore morbido dietro il logo */
+.preloader-glow-aura {
+  position: absolute;
+  inset: -10px;
+  background: radial-gradient(circle, rgba(0,68,255,0.4) 0%, rgba(255,217,15,0.15) 50%, transparent 70%);
+  border-radius: 50%;
+  filter: blur(14px);
+  pointer-events: none;
+}
+
+/* Logo centrale intatto */
+.preloader-logo-img {
+  width: 76px;
+  height: 76px;
+  object-fit: contain;
+  position: relative;
+  z-index: 2;
+  filter: drop-shadow(0 6px 20px rgba(0,68,255,0.45));
+}
+
+/* Traccia circolare con satellite giallo orbitante */
+.preloader-orbit-track {
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  border: 1.5px dashed rgba(255, 217, 15, 0.25);
+  animation: preloaderOrbitSpin 2s linear infinite;
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* Pallina gialla luminosa che ruota sul logo */
+.preloader-satellite-dot {
+  position: absolute;
+  top: -5px;
+  left: calc(50% - 5px);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ffd90f;
+  box-shadow: 0 0 12px 3px #ffd90f, 0 0 22px 6px rgba(255, 217, 15, 0.5);
+}
+@keyframes preloaderOrbitSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   SKELETON LOADER PER LE CARD IMMOBILI (VETRINA E CATALOGO)
+   ========================================================================== */
+.card-skeleton {
+  pointer-events: none;
+  background: var(--white);
+  border-color: rgba(226, 232, 240, 0.9);
+}
+.skeleton-img {
+  width: 100%;
+  aspect-ratio: 16/10;
+  background: #e2e8f0;
+  position: relative;
+  overflow: hidden;
+}
+.skeleton-body {
+  padding: 1.15rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+.skeleton-badge {
+  width: 70px;
+  height: 12px;
+  border-radius: 4px;
+  background: #e2e8f0;
+  position: relative;
+  overflow: hidden;
+}
+.skeleton-title {
+  width: 85%;
+  height: 18px;
+  border-radius: 4px;
+  background: #e2e8f0;
+  position: relative;
+  overflow: hidden;
+}
+.skeleton-line {
+  width: 50%;
+  height: 12px;
+  border-radius: 4px;
+  background: #e2e8f0;
+  position: relative;
+  overflow: hidden;
+}
+.skeleton-features {
+  display: flex;
+  gap: 6px;
+  margin-top: 0.35rem;
+}
+.skeleton-chip {
+  width: 65px;
+  height: 22px;
+  border-radius: 8px;
+  background: #e2e8f0;
+  position: relative;
+  overflow: hidden;
+}
+.skeleton-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.65rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid rgba(226, 232, 240, 0.6);
+}
+.skeleton-price {
+  width: 90px;
+  height: 20px;
+  border-radius: 4px;
+  background: #e2e8f0;
+  position: relative;
+  overflow: hidden;
+}
+.skeleton-btn {
+  width: 60px;
+  height: 26px;
+  border-radius: 20px;
+  background: #e2e8f0;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Shimmer Wave Effect */
+.skeleton-img::after,
+.skeleton-badge::after,
+.skeleton-title::after,
+.skeleton-line::after,
+.skeleton-chip::after,
+.skeleton-price::after,
+.skeleton-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.65) 50%, transparent 100%);
+  animation: skeletonShimmer 1.5s infinite;
+}
+@keyframes skeletonShimmer {
+  100% { transform: translateX(100%); }
+}

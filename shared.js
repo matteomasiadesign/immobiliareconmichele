@@ -279,32 +279,60 @@ if (document.readyState === 'loading') {
     initCardStagger();
 }
 
-// GESTIONE HAMBURGER MENU
+// GESTIONE HAMBURGER MENU MORFICO
 const mobileToggle = document.getElementById('mobile-toggle');
 const mobileMenu = document.getElementById('mobile-menu');
 
-// Lo stato aperto/chiuso va annunciato anche a chi usa uno screen reader:
-// senza aria-expanded il bottone verrebbe letto come un comando muto.
 function setMobileMenu(open) {
+    if (!mobileMenu || !mobileToggle) return;
     mobileMenu.classList.toggle('open', open);
+    mobileToggle.classList.toggle('is-active', open);
     mobileToggle.setAttribute('aria-expanded', String(open));
     mobileToggle.setAttribute('aria-label', open ? 'Chiudi il menu' : 'Apri il menu');
 }
-mobileToggle.addEventListener('click', () => setMobileMenu(!mobileMenu.classList.contains('open')));
-mobileMenu.querySelectorAll('a').forEach(link => { link.addEventListener('click', () => setMobileMenu(false)); });
-// Esc chiude il menu e riporta il focus sull'hamburger, come ci si aspetta
-// da un pannello a comparsa.
+if (mobileToggle) {
+    mobileToggle.addEventListener('click', () => setMobileMenu(!mobileMenu.classList.contains('open')));
+}
+if (mobileMenu) {
+    mobileMenu.querySelectorAll('a').forEach(link => { link.addEventListener('click', () => setMobileMenu(false)); });
+}
 document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && mobileMenu.classList.contains('open')) { setMobileMenu(false); mobileToggle.focus(); }
+    if (e.key === 'Escape' && mobileMenu && mobileMenu.classList.contains('open')) {
+        setMobileMenu(false);
+        if (mobileToggle) mobileToggle.focus();
+    }
 });
 
-// Evidenzia nella navbar la pagina in cui ci si trova. Il confronto ignora
-// l'estensione .html perche' l'hosting puo' servire /catalogo al posto di
-// /catalogo.html, e salta i link a un'ancora (li gestisce lo scroll-spy).
+// ROTATING SMART SEARCH PLACEHOLDER
+function initSearchRotatingText() {
+    const searchEl = document.querySelector('.nav-search-text');
+    if (!searchEl) return;
+
+    const queries = [
+        "Cerca casa o filtra...",
+        "Ville a Porto Torres...",
+        "Appartamenti vista mare...",
+        "Filtra per prezzo e vani..."
+    ];
+    let idx = 0;
+
+    setInterval(() => {
+        if (!searchEl) return;
+        searchEl.style.opacity = '0';
+        setTimeout(() => {
+            idx = (idx + 1) % queries.length;
+            searchEl.textContent = queries[idx];
+            searchEl.style.opacity = '1';
+        }, 250);
+    }, 3600);
+}
+initSearchRotatingText();
+
+// Evidenzia nella navbar la pagina in cui ci si trova
 function initCurrentPageNav() {
     const clean = (s) => s.split('#')[0].split('/').pop().replace(/\.html$/, '') || 'index';
     const current = clean(location.pathname);
-    document.querySelectorAll('.nav-links a, .mobile-menu a').forEach(a => {
+    document.querySelectorAll('.drawer-nav-item, .mobile-menu a').forEach(a => {
         const href = a.getAttribute('href') || '';
         if (!href || href.startsWith('#') || /^(https?:|tel:|mailto:)/.test(href)) return;
         if (clean(href) !== current) return;
@@ -458,3 +486,202 @@ function shareProperty(id, title) {
         });
     }
 }
+
+// ==========================================================================
+// GESTIONE RICERCA RAPIDA & FILTRI NAVBAR
+// ==========================================================================
+
+function openNavSearch(e) {
+    if (e && typeof e.stopPropagation === 'function') e.stopPropagation();
+    
+    // Chiudi il menu mobile se aperto
+    const mMenu = document.getElementById('mobile-menu');
+    if (mMenu && mMenu.classList.contains('open')) {
+        if (typeof setMobileMenu === 'function') {
+            setMobileMenu(false);
+        } else {
+            mMenu.classList.remove('open');
+        }
+    }
+    
+    const overlay = document.getElementById('nav-search-modal');
+    if (!overlay) {
+        console.error('nav-search-modal non trovato nel DOM');
+        return;
+    }
+
+    try {
+        populateNavSearchOptions();
+    } catch (err) {
+        console.warn('Errore popolamento opzioni:', err);
+    }
+
+    overlay.style.display = 'flex';
+    const card = overlay.querySelector('.nav-search-modal-card');
+    if (motionOK && card && typeof gsap !== 'undefined') {
+        gsap.fromTo(card, { opacity: 0, y: -20, scale: 0.97 }, { opacity: 1, y: 0, scale: 1, duration: 0.3, ease: 'power2.out' });
+    }
+
+    const inputQ = document.getElementById('nav-search-q');
+    if (inputQ) {
+        setTimeout(() => inputQ.focus(), 150);
+    }
+}
+
+function closeNavSearch() {
+    const overlay = document.getElementById('nav-search-modal');
+    if (!overlay) return;
+    const card = overlay.querySelector('.nav-search-modal-card');
+    if (motionOK) {
+        gsap.to(card, {
+            opacity: 0, y: -15, scale: 0.97, duration: 0.2, ease: 'power1.in',
+            onComplete: () => { overlay.style.display = 'none'; gsap.set(card, { clearProps: 'opacity,y,scale' }); }
+        });
+    } else {
+        overlay.style.display = 'none';
+    }
+}
+
+function handleNavSearchOverlayClick(e) {
+    if (e.target.id === 'nav-search-modal') {
+        closeNavSearch();
+    }
+}
+
+function selectNavStatus(btn) {
+    const container = document.getElementById('nav-search-status-pills');
+    if (!container) return;
+    container.querySelectorAll('.nav-pill').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    const hidden = document.getElementById('nav-search-status');
+    if (hidden) hidden.value = btn.dataset.value;
+}
+
+function resetNavSearch() {
+    const qEl = document.getElementById('nav-search-q');
+    if (qEl) qEl.value = '';
+    
+    const firstPill = document.querySelector('#nav-search-status-pills .nav-pill[data-value="Tutti"]');
+    if (firstPill) selectNavStatus(firstPill);
+    
+    const zoneEl = document.getElementById('nav-search-zone');
+    if (zoneEl) zoneEl.value = 'Tutte';
+    
+    const typeEl = document.getElementById('nav-search-type');
+    if (typeEl) typeEl.value = 'Tutte';
+    
+    const priceEl = document.getElementById('nav-search-price');
+    if (priceEl) priceEl.value = '0';
+}
+
+function populateNavSearchOptions() {
+    if (!properties || properties.length === 0) return;
+    
+    const zoneEl = document.getElementById('nav-search-zone');
+    const typeEl = document.getElementById('nav-search-type');
+    if (!zoneEl || !typeEl) return;
+
+    const currentZone = zoneEl.value;
+    const currentType = typeEl.value;
+
+    const dbZones = [...new Set(properties.map(p => p.zone ? p.zone.trim() : ''))].filter(Boolean);
+    const dbTypes = [...new Set(properties.map(p => p.property_type ? p.property_type.trim() : ''))].filter(Boolean);
+
+    const defaultZones = ['Porto Torres', 'Sassari', 'Stintino', 'Sorso', 'Alghero', 'Castelsardo'];
+    const allZones = [...new Set([...defaultZones, ...dbZones])].sort();
+
+    const defaultTypes = ['Appartamento', 'Villa', 'Attico', 'Indipendente', 'Locale Commerciale', 'Terreno'];
+    const allTypes = [...new Set([...defaultTypes, ...dbTypes])].sort();
+
+    if (zoneEl.options.length <= 1) {
+        zoneEl.innerHTML = '<option value="Tutte">Qualsiasi zona</option>';
+        allZones.forEach(z => {
+            const opt = document.createElement('option');
+            opt.value = z;
+            opt.textContent = z;
+            zoneEl.appendChild(opt);
+        });
+        if (currentZone && zoneEl.querySelector(`option[value="${currentZone}"]`)) zoneEl.value = currentZone;
+    }
+
+    if (typeEl.options.length <= 1) {
+        typeEl.innerHTML = '<option value="Tutte">Qualsiasi tipologia</option>';
+        allTypes.forEach(t => {
+            const opt = document.createElement('option');
+            opt.value = t;
+            opt.textContent = t;
+            typeEl.appendChild(opt);
+        });
+        if (currentType && typeEl.querySelector(`option[value="${currentType}"]`)) typeEl.value = currentType;
+    }
+}
+
+function handleNavSearchSubmit(e) {
+    e.preventDefault();
+    const q = (document.getElementById('nav-search-q')?.value || '').trim();
+    const status = document.getElementById('nav-search-status')?.value || 'Tutti';
+    const zone = document.getElementById('nav-search-zone')?.value || 'Tutte';
+    const type = document.getElementById('nav-search-type')?.value || 'Tutte';
+    const price = Number(document.getElementById('nav-search-price')?.value) || 0;
+
+    // Se siamo già in catalogo.html, applichiamo subito i filtri
+    const isCatalog = location.pathname.includes('catalogo');
+    if (isCatalog && typeof renderGrid === 'function') {
+        closeNavSearch();
+        
+        const catalogSearch = document.getElementById('search-text');
+        const catalogStatus = document.getElementById('filter-status');
+        const catalogZone = document.getElementById('filter-zone');
+        const catalogType = document.getElementById('filter-type');
+        const catalogPriceMax = document.getElementById('price-max');
+
+        if (catalogSearch) catalogSearch.value = q;
+        if (catalogStatus) catalogStatus.value = status;
+        if (catalogZone && catalogZone.querySelector(`option[value="${zone}"]`)) catalogZone.value = zone;
+        if (catalogType && catalogType.querySelector(`option[value="${type}"]`)) catalogType.value = type;
+        if (catalogPriceMax && price > 0) {
+            catalogPriceMax.value = price;
+            if (typeof updatePriceUI === 'function') updatePriceUI();
+        }
+
+        renderGrid();
+
+        const gridEl = document.getElementById('properties-grid');
+        if (gridEl) {
+            if (typeof lenis !== 'undefined' && lenis) {
+                lenis.scrollTo(gridEl, { offset: -120 });
+            } else {
+                gridEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+        return;
+    }
+
+    // Reindirizziamo al catalogo con i parametri
+    const params = new URLSearchParams();
+    if (q) params.set('q', q);
+    if (status && status !== 'Tutti') params.set('status', status);
+    if (zone && zone !== 'Tutte') params.set('zone', zone);
+    if (type && type !== 'Tutte') params.set('type', type);
+    if (price > 0) params.set('priceMax', price);
+
+    const queryString = params.toString();
+    window.location.href = 'catalogo.html' + (queryString ? '?' + queryString : '');
+}
+
+// Chiusura con tasto Escape
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        const navSearchModal = document.getElementById('nav-search-modal');
+        if (navSearchModal && navSearchModal.style.display !== 'none' && getComputedStyle(navSearchModal).display !== 'none') {
+            closeNavSearch();
+        }
+    }
+});
+
+// Listener di sicurezza al caricamento del DOM
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.nav-search-trigger, .nav-mobile-search-btn, .mobile-menu-search-btn').forEach(el => {
+        el.addEventListener('click', (e) => openNavSearch(e));
+    });
+});

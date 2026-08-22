@@ -70,245 +70,509 @@
     .main-content { flex: 1 0 auto; display: flex; flex-direction: column; }
 
     /* HERO
-       Su mobile la foto e' ritagliata alta e stretta: centrandola il viso di
-       Michele finiva esattamente dietro al titolo. Alzando il punto di fuoco
-       la testa scende sotto il blocco di testo, cosi' si legge il titolo E si
-       vede lui. Il testo sta in alto e la figura ha tutta la parte bassa. */
-    /* Il padding in basso non e' decorativo: senza, su schermi bassi (telefono
-       in orizzontale, portatili piccoli) i bottoni finivano appiccicati al
-       bordo dell'hero e venivano tagliati dalla sezione successiva. Con il
-       padding l'hero cresce quel tanto che basta e i bottoni restano dentro. */
-    /* L'altezza non e' una percentuale a occhio ma "tutto lo schermo meno la
-       navbar" (80px, vedi shared.css): la navbar e' sticky ma resta nel flusso
-       sopra l'hero, quindi con un valore tipo 88vh la somma navbar + hero non
-       arrivava a fondo finestra e all'apertura si intravedeva una striscia
-       bianca della sezione sotto. Su mobile 100vh e' il viewport GRANDE (barra
-       degli indirizzi nascosta), percio' all'apertura - con la barra ancora
-       visibile - l'hero e' semmai un filo piu' alto del visibile: mai bianco. */
-    .hero { position: relative; min-height: calc(100vh - 80px); display: flex; align-items: flex-start; justify-content: center; text-align: center; padding: 2.5rem 1rem 3rem; background-image: url('michele.webp'); background-size: cover; background-position: 50% 18%; }
-    /* Velo sfumato invece che piatto: denso in alto dove corre il testo, si
-       apre in basso per non spegnere la figura. */
+       Ottimizzato per riempire esattamente il viewport (100vh - navbar)
+       mantenendo testo e pulsanti sempre visibili senza tagliare nulla. */
+    .hero {
+      position: relative;
+      width: 100%;
+      height: calc(100vh - 80px);
+      height: calc(100dvh - 80px);
+      min-height: calc(100vh - 80px);
+      min-height: calc(100dvh - 80px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: clamp(1rem, 2.5vh, 2.5rem) 1rem;
+      background-color: var(--brand-blue);
+      background-image: url('michele.webp');
+      background-size: cover;
+      background-position: 50% 18%;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+    /* Velo sfumato: denso in alto dove corre il testo, si apre in basso */
     .hero-overlay { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(15,23,42,0.86) 0%, rgba(15,23,42,0.82) 42%, rgba(15,23,42,0.55) 72%, rgba(15,23,42,0.42) 100%); }
-    /* RACCORDO CON LA SEZIONE SOTTO
-       L'hero e' alta quanto lo schermo, quindi il suo bordo inferiore tagliava
-       Michele a meta' gamba di netto, e proprio li' il velo sopra e' al minimo
-       (0.42): l'ultima riga di pixel della foto era il punto piu' luminoso e
-       piu' "pieno", subito attaccato al quasi bianco della vetrina. Massimo
-       contrasto nel punto peggiore. Qui la foto sfuma nello stesso colore
-       della sezione che segue, cosi' il confine non esiste piu' e la figura
-       svanisce invece di essere tranciata.
-       Il colore delle fermate e' scritto per esteso invece di "transparent":
-       transparent vale rgba(0,0,0,0) e in mezzo alla sfumatura darebbe una
-       velatura grigiastra. Vive su ::after e non dentro .hero-overlay perche'
-       da desktop l'overlay viene riscritto per intero (sfumatura orizzontale)
-       e il raccordo andrebbe altrimenti duplicato li'.
-       z-index 5: sopra il velo, sotto .hero-content che sta a 10. */
-    .hero::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: clamp(96px, 20%, 200px); z-index: 5; pointer-events: none; background: linear-gradient(180deg, rgba(248,250,252,0) 0%, rgba(248,250,252,0.28) 45%, rgba(248,250,252,0.72) 76%, var(--bg-slate) 100%); }
-    .hero-content { position: relative; z-index: 10; max-width: 800px; }
-    /* La frase e' piu' lunga di un'etichetta breve: niente maiuscolo forzato,
-       spaziatura ridotta e a capo consentito per non sfondare su schermi stretti. */
-    .hero-badge { background-color: var(--brand-yellow); color: var(--brand-blue); font-size: 11.5px; font-weight: 900; letter-spacing: 0.02em; padding: 7px 16px; border-radius: 20px; display: inline-flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 6px; max-width: 100%; text-align: center; margin-bottom: 1.5rem; }
-    /* Titolo a due misure: "BENVENUTI" e sotto "a CASA" molto piu' grande.
-       La seconda riga ha meno lettere, quindi ingrandendola le due righe
-       finiscono per occupare all'incirca la stessa larghezza: e' quello che
-       tiene insieme il blocco invece di lasciarlo sbilanciato a destra.
-       Il font va ripetuto sugli span perche' la regola "*" in cima al foglio
-       li riporterebbe al sans di sistema. */
-    .hero-title { font-family: 'Teko', 'Space Grotesk', sans-serif; font-size: clamp(3.4rem, 13vw, 8.4rem); font-weight: 700; color: var(--white); line-height: 0.86; letter-spacing: -0.02em; margin-bottom: 1.75rem; }
+    
+    .hero-content { position: relative; z-index: 10; max-width: 700px; }
+    
+    .hero-badge { background-color: var(--brand-yellow); color: var(--brand-blue); font-size: 11px; font-weight: 900; letter-spacing: 0.02em; padding: 6px 14px; border-radius: 20px; display: inline-flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 6px; max-width: 100%; text-align: center; margin-bottom: clamp(0.75rem, 1.8vh, 1.25rem); }
+    
+    /* Titolo scalato con viewport height e width per non sfondare mai lo schermo in altezza */
+    .hero-title { font-family: 'Teko', 'Space Grotesk', sans-serif; font-size: clamp(2.6rem, min(6.2vw, 8.5vh), 5.4rem); font-weight: 700; color: var(--white); line-height: 0.88; letter-spacing: -0.02em; margin-bottom: clamp(0.75rem, 1.8vh, 1.25rem); }
     .hero-title span { font-family: inherit; }
     .hero-line1 { display: block; text-transform: uppercase; }
-    .hero-line2 { display: block; font-size: 1.57em; color: var(--brand-yellow); letter-spacing: -0.03em; }
+    .hero-line2 { display: block; font-size: 1.45em; color: var(--brand-yellow); letter-spacing: -0.03em; }
     .hero-up { text-transform: uppercase; }
-    .hero-text { font-size: 1.1rem; color: #e2e8f0; font-weight: 500; margin-bottom: 2.5rem; line-height: 1.6; max-width: 520px; margin-inline: auto; text-wrap: balance; }
-    .hero-buttons { display: flex; flex-direction: column; gap: 1rem; align-items: center; justify-content: center; }
+    
+    .hero-text { font-size: clamp(0.92rem, 1.1vw, 1.05rem); color: #e2e8f0; font-weight: 500; margin-bottom: clamp(1rem, 2.4vh, 1.75rem); line-height: 1.5; max-width: 520px; margin-inline: auto; text-wrap: balance; }
+    .hero-buttons { display: flex; flex-direction: column; gap: 0.85rem; align-items: center; justify-content: center; }
     @media (min-width: 640px) { .hero-buttons { flex-direction: row; } }
-    .btn-primary { background-color: var(--brand-blue); color: var(--brand-yellow); padding: 16px 32px; border-radius: 999px; text-decoration: none; font-weight: 900; font-size: 14px; text-transform: uppercase; box-shadow: 0 4px 15px rgba(0,68,255,0.3); transition: var(--transition); border: 3px solid var(--brand-yellow); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
-    .btn-secondary { background-color: rgba(255,255,255,0.1); color: var(--white); border: 2px solid rgba(255,255,255,0.2); padding: 14px 32px; border-radius: 999px; text-decoration: none; font-weight: 900; font-size: 14px; text-transform: uppercase; backdrop-filter: blur(4px); transition: var(--transition); display: inline-flex; align-items: center; justify-content: center; }
+    .btn-primary { background-color: var(--brand-blue); color: var(--brand-yellow); padding: 13px 26px; border-radius: 999px; text-decoration: none; font-weight: 900; font-size: 13px; text-transform: uppercase; box-shadow: 0 4px 15px rgba(0,68,255,0.3); transition: var(--transition); border: 2.5px solid var(--brand-yellow); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+    .btn-secondary { background-color: rgba(255,255,255,0.1); color: var(--white); border: 2px solid rgba(255,255,255,0.25); padding: 12px 26px; border-radius: 999px; text-decoration: none; font-weight: 900; font-size: 13px; text-transform: uppercase; backdrop-filter: blur(4px); transition: var(--transition); display: inline-flex; align-items: center; justify-content: center; }
     .btn-primary:hover { background-color: #0033CC; }
     .hero-buttons .btn-primary:hover { box-shadow: 0 4px 15px rgba(0,68,255,0.3), 0 0 22px rgba(255,217,15,0.65); }
     .hero-buttons .btn-secondary:hover { box-shadow: 0 0 22px rgba(255,217,15,0.5); border-color: rgba(255,217,15,0.5); }
 
-    /* HERO DESKTOP: layout asimmetrico invece di tutto centrato */
-    /* Da desktop il ritaglio della foto e' largo, non alto: la figura sta gia'
-       sulla destra e il testo alla sua sinistra, quindi si torna alla foto
-       centrata, al testo centrato in verticale e al velo sfumato in orizzontale. */
+    /* HERO DESKTOP: layout asimmetrico perfettamente bilanciato */
     @media (min-width: 992px) {
-      .hero { min-height: calc(100vh - 80px); align-items: center; justify-content: flex-start; text-align: left; padding: 3rem 1rem 3rem 6vw; background-position: center; }
+      .hero {
+        height: calc(100vh - 80px);
+        height: calc(100dvh - 80px);
+        min-height: calc(100vh - 80px);
+        min-height: calc(100dvh - 80px);
+        align-items: center;
+        justify-content: flex-start;
+        text-align: left;
+        padding: clamp(1rem, 2.5vh, 2.5rem) 1rem clamp(1.5rem, 3vh, 3rem) 6vw;
+        background-position: center;
+      }
       .hero-overlay { background: linear-gradient(100deg, rgba(15,23,42,0.88) 0%, rgba(15,23,42,0.6) 42%, rgba(15,23,42,0.15) 68%, rgba(15,23,42,0) 85%); }
-      .hero-content { max-width: 640px; }
-      .hero-text { margin-inline: 0; max-width: 560px; text-wrap: pretty; }
+      .hero-content { max-width: 580px; }
+      .hero-text { margin-inline: 0; max-width: 520px; text-wrap: pretty; }
       .hero-buttons { justify-content: flex-start; }
     }
 
-    /* SEZIONI - PADDING RIDOTTO E AGGIUNTO SCROLL MARGIN TOP */
-    .section { padding: 1.5rem 1rem; max-width: 1200px; margin: 0 auto; width: 100%; scroll-margin-top: 100px; }
-    @media (min-width: 768px) { .section { padding: 2.5rem 1.5rem; } }
-    .section-header { text-align: center; margin-bottom: 2rem; }
-    @media (min-width: 768px) { .section-header { margin-bottom: 3rem; } }
-    .section-label { color: var(--brand-blue); font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; background-color: rgba(0,68,255,0.05); padding: 6px 12px; border-radius: 20px; display: inline-block; margin-bottom: 1rem; }
-    /* Titoli di sezione su una scala vicina a quella dell'hero. Alla vecchia
-       taglia (1.8rem da telefono, 3rem da desktop) si spegnevano: il titolo
-       hero arriva a 13vw, e subito sotto quel salto all'ingiu' faceva leggere
-       "e' finita una cosa" invece di "ne comincia un'altra".
-       Il Teko e' condensato, quindi regge misure grosse restando su una riga.
-       Il minimo e' 2.6rem e non di piu' per il titolo piu' lungo, "I MIEI
-       SERVIZI": sotto i ~350px di schermo il 12vw scende troppo e con un
-       minimo piu' alto andrebbe a capo spezzando "I MIEI / SERVIZI".
-       line-height 0.9 perche' ai corpi grossi l'interlinea di default apre
-       troppo e il titolo si sfalda invece di fare blocco (stessa ragione
-       dello 0.86 sul titolo hero). */
-    .section-title { font-family: 'Teko', 'Space Grotesk', -apple-system, sans-serif; font-size: clamp(2.6rem, 12vw, 4.6rem); line-height: 0.9; font-weight: 700; color: var(--text-slate); text-transform: uppercase; letter-spacing: -0.02em; margin-bottom: 0; }
-    /* Barra gialla sotto ogni titolo: riprende il bordo sotto la navbar ed e'
-       l'unico modo di usare il giallo del brand qui, perche' come colore di
-       testo su fondo quasi bianco sarebbe illeggibile. Vive su ::after per
-       non dover toccare il markup delle tre intestazioni. */
-    .section-title::after { content: ''; display: block; width: 72px; height: 6px; border-radius: 3px; margin: 1.1rem auto 0; background: var(--brand-yellow); }
+    /* SEZIONI - PADDING E SCROLL MARGIN BILANCIATI */
+    .section { padding: clamp(1.25rem, 2vh, 2rem) 1rem; max-width: 1200px; margin: 0 auto; width: 100%; scroll-margin-top: 90px; }
+    @media (min-width: 768px) { .section { padding: clamp(1.5rem, 2.5vh, 2.5rem) 1.5rem; } }
+    .section-header { text-align: center; margin-bottom: clamp(1.25rem, 2vh, 1.75rem); }
+    .section-label { color: var(--brand-blue); font-size: 10.5px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.08em; background-color: rgba(0,68,255,0.05); padding: 4px 10px; border-radius: 20px; display: inline-block; margin-bottom: 0.4rem; }
+    
+    /* Titoli di sezione proporzionati ed eleganti */
+    .section-title { font-family: 'Teko', 'Space Grotesk', -apple-system, sans-serif; font-size: clamp(2.2rem, min(4.5vw, 5.5vh), 3.4rem); line-height: 0.92; font-weight: 700; color: var(--text-slate); text-transform: uppercase; letter-spacing: -0.02em; margin-bottom: 0; }
+    .section-title::after { content: ''; display: block; width: 48px; height: 4px; border-radius: 2px; margin: 0.6rem auto 0; background: var(--brand-yellow); }
 
-    /* Solo la vetrina: e' l'unica sezione che arriva subito dopo l'hero e ha
-       bisogno di stacco sopra, se no il titolo resta appiccicato alla foto.
-       Le altre sezioni hanno gia' il respiro giusto tra una e l'altra. */
-    #vetrina { padding-top: 3.5rem; }
-    @media (min-width: 768px) { #vetrina { padding-top: 4.5rem; } }
+    /* Vetrina: stacco bilanciato dall'hero */
+    #vetrina { padding-top: clamp(2rem, 3.5vh, 3rem); overflow-x: clip; }
 
-    /* Griglia annunci e card: vedi shared.css */
-
-    /* VETRINA "IN EVIDENZA": CAROSELLO ORIZZONTALE SU MOBILE
-       Da telefono le tre proposte impilate in colonna costringevano a scorrere
-       mezza pagina per vederle tutte, con la terza praticamente ignorata. Qui
-       la griglia diventa una fila che si sfoglia col dito, con lo snap che
-       ferma ogni card in posizione. La regola e' volutamente legata a
-       #featured-grid e non a .properties-grid: il catalogo usa la stessa
-       classe, ma li' gli annunci possono essere decine e la colonna verticale
-       resta la lettura giusta. Sopra i 768px torna la griglia di shared.css. */
-    @media (max-width: 767px) {
-      #featured-grid {
-        display: flex;
-        gap: 1rem;
-        overflow-x: auto;
-        /* Esplicito, perche' aprendo l'overflow orizzontale il browser porta
-           da solo anche quello verticale ad "auto": il carosello diventava
-           cosi' scrollabile pure in su, e siccome le card entrano in scena
-           traslate di 40px (lo stagger di initCardStagger) c'erano davvero
-           quei pixel da scorrere. Uno swipe anche solo un po' obliquo li
-           mangiava e la fila restava spostata in alto. */
-        overflow-y: hidden;
-        scroll-snap-type: x mandatory;
-        /* Margine negativo + padding uguale e contrario: la fila scorre da
-           bordo a bordo dello schermo (cosi' la card successiva "sbuca" e si
-           capisce che c'e' altro), ma la prima resta allineata al titolo. */
-        margin-inline: -1rem;
-        padding-inline: 1rem;
-        scroll-padding-inline-start: 1rem;
-        /* Respiro verticale per non tagliare l'ombra sotto le card: aprendo
-           l'overflow orizzontale il browser ritaglia anche in verticale. */
-        padding-block: 4px 1rem;
-        /* Evita che lo swipe oltre l'ultima card faccia rimbalzare la pagina
-           o attivi il gesto "indietro" del browser. */
-        overscroll-behavior-x: contain;
-        scrollbar-width: none;
-      }
-      #featured-grid::-webkit-scrollbar { display: none; }
-      /* min-width:0 perche' i figli flex non si stringano oltre il contenuto. */
-      #featured-grid > .card { flex: 0 0 min(82%, 330px); min-width: 0; scroll-snap-align: start; }
+    /* TICKER INFINITO TITOLO "PROPOSTE DEL MOMENTO" (DESKTOP & MOBILE) */
+    .vetrina-ticker-wrapper {
+      position: relative;
+      width: 100vw;
+      margin-left: calc(-50vw + 50%);
+      overflow: hidden;
+      padding: 0.25rem 0 1.5rem;
+      user-select: none;
+      pointer-events: none;
+      mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,1) 12%, rgba(0,0,0,1) 88%, transparent 100%);
+      -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,1) 12%, rgba(0,0,0,1) 88%, transparent 100%);
+    }
+    .vetrina-ticker-wrapper::before,
+    .vetrina-ticker-wrapper::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: clamp(35px, 10vw, 200px);
+      z-index: 10;
+      pointer-events: none;
+    }
+    .vetrina-ticker-wrapper::before {
+      left: 0;
+      background: linear-gradient(90deg, #f8fafc 0%, rgba(248, 250, 252, 0.85) 45%, rgba(248, 250, 252, 0) 100%);
+    }
+    .vetrina-ticker-wrapper::after {
+      right: 0;
+      background: linear-gradient(270deg, #f8fafc 0%, rgba(248, 250, 252, 0.85) 45%, rgba(248, 250, 252, 0) 100%);
+    }
+    .vetrina-ticker-track {
+      display: flex;
+      width: max-content;
+      animation: tickerInfinite 24s linear infinite !important;
+      will-change: transform;
+    }
+    .vetrina-ticker-group {
+      display: flex;
+      align-items: center;
+      gap: clamp(1.25rem, 3vw, 3rem);
+      padding-right: clamp(1.25rem, 3vw, 3rem);
+      white-space: nowrap;
+    }
+    .ticker-text {
+      font-family: 'Teko', 'Space Grotesk', sans-serif;
+      font-size: clamp(2.2rem, 7vw, 4rem);
+      font-weight: 700;
+      color: var(--text-slate);
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+    }
+    .ticker-star {
+      color: var(--brand-yellow);
+      font-size: clamp(1.3rem, 3vw, 2rem);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
     }
 
-    /* Da desktop (>= 1024px) la griglia ha 3 colonne: mostriamo 3 card per una
-       riga completa e ordinata. Da tablet (768px - 1023px) la griglia a 2 colonne
-       mostra 4 card (griglia 2x2). */
+    @keyframes tickerInfinite {
+      0% { transform: translate3d(0, 0, 0); }
+      100% { transform: translate3d(-50%, 0, 0); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .vetrina-ticker-track { animation: none; transform: none; }
+    }
+
+    /* CARD IMMOBILI IN VETRINA SU MOBILE & DESKTOP */
+    #featured-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
+    @media (min-width: 640px) {
+      #featured-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+      }
+    }
     @media (min-width: 1024px) {
+      #featured-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+      }
       #featured-grid > .card:nth-child(n+4) { display: none; }
     }
 
-    /* SEZIONE SERVIZI - fascia con sfondo alternato + una sezione intera per ogni servizio */
+    /* SEZIONE SERVIZI - GRIGLIA A 3 COLONNE PREMIUM */
     .servizi-band { background-color: rgba(0,68,255,0.03); }
-
-    .service-block { position: relative; background: var(--white); border-radius: 28px; padding: 2rem 1.5rem 2.25rem; margin-bottom: 2rem; border-top: 4px solid var(--brand-yellow); box-shadow: 0 16px 40px -22px rgba(15,23,42,0.18); overflow: hidden; }
-    .service-block:last-child { margin-bottom: 0; }
-    .service-block.accent-blue { border-top-color: var(--brand-blue); }
-    .service-block.accent-green { border-top-color: #10b981; background: linear-gradient(180deg, rgba(16,185,129,0.08), rgba(16,185,129,0) 40%), var(--white); }
-    @media (min-width: 768px) { .service-block { padding: 2.75rem 3rem 3rem; } }
-
-    .service-block-num { position: absolute; top: 0.25rem; right: 1.25rem; font-size: 4.5rem; font-weight: 900; color: rgba(0,68,255,0.06); line-height: 1; pointer-events: none; user-select: none; }
-    @media (min-width: 768px) { .service-block-num { font-size: 6rem; right: 2rem; } }
-
-    .service-block-top { position: relative; display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.75rem; flex-wrap: wrap; }
-    .service-block-icon { width: 56px; height: 56px; border-radius: 16px; background-color: var(--brand-blue); color: var(--white); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .service-block-icon svg { width: 28px; height: 28px; }
-    .service-block-heading { flex: 1; min-width: 200px; }
-    .service-block-title-row { margin-bottom: 0.5rem; }
-    .service-block-title { font-size: 1.4rem; font-weight: 900; color: var(--text-slate); text-transform: uppercase; letter-spacing: -0.01em; }
-    @media (min-width: 768px) { .service-block-title { font-size: 1.85rem; } }
-    /* Inline-block dentro al titolo: se il titolo va a capo su mobile il pallino
-       resta attaccato all'ultima parola invece di finire da solo su una riga. */
-    .service-block-live-dot { display: inline-block; vertical-align: middle; width: 11px; height: 11px; margin-left: 10px; box-shadow: 0 0 0 4px rgba(16,185,129,0.15), 0 2px 8px rgba(16,185,129,0.6); }
-    .service-block-tagline { font-size: 0.95rem; color: var(--text-muted); font-weight: 500; line-height: 1.6; max-width: 48ch; }
-
-    .service-block-body { position: relative; display: flex; flex-direction: column; gap: 1.5rem; }
-    /* Da desktop la spotlight si allarga e le due colonne si allungano alla
-       stessa altezza: gli step si centrano accanto alla card invece di
-       lasciare un buco sotto quando sono pochi. */
-    @media (min-width: 900px) {
-      .service-block-body { flex-direction: row; align-items: stretch; gap: 3rem; }
-      .service-block-body .service-spotlight { flex: 0 0 380px; padding: 1.5rem 1.6rem 1.65rem; gap: 1rem; }
-      .service-journey { flex: 1; justify-content: center; }
-      .service-block-body .service-spotlight-number { font-size: 2.6rem; }
-      .service-block-body .service-spotlight-copy { font-size: 13.5px; }
-      .service-journey .service-feature-text strong { font-size: 15px; }
-      .service-journey .service-feature-text p { font-size: 13.5px; }
-      .service-journey-step { padding-bottom: 2rem; }
+    .services-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+    @media (min-width: 960px) {
+      .services-grid { grid-template-columns: repeat(3, 1fr); gap: 1.5rem; align-items: stretch; }
     }
 
-    .service-journey { display: flex; flex-direction: column; }
-    .service-journey-step { position: relative; display: flex; gap: 1rem; padding-bottom: 1.5rem; }
-    .service-journey-step:last-child { padding-bottom: 0; }
-    .service-journey-step::before { content: ''; position: absolute; left: 15px; top: 36px; bottom: -4px; width: 2px; background: var(--border-color); }
-    .service-journey-step:last-child::before { display: none; }
-    .service-journey-icon { position: relative; z-index: 1; flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%; background-color: rgba(0,68,255,0.07); color: var(--brand-blue); display: flex; align-items: center; justify-content: center; }
-    .service-journey-icon svg { width: 16px; height: 16px; }
-    .service-feature-text strong { display: block; font-size: 14px; font-weight: 800; color: var(--text-slate); margin-bottom: 3px; }
-    .service-feature-text p { font-size: 13px; color: var(--text-muted); line-height: 1.55; font-weight: 500; }
+    .service-card {
+      position: relative;
+      background: var(--white);
+      border-radius: 26px;
+      padding: 2rem 1.6rem 1.75rem;
+      border: 1.5px solid var(--border-color);
+      box-shadow: 0 16px 40px -15px rgba(15,23,42,0.08);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, border-color 0.35s ease;
+      overflow: hidden;
+    }
+    .service-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 24px 50px -12px rgba(0,68,255,0.15);
+      border-color: rgba(0,68,255,0.25);
+    }
+    .service-card.card-featured {
+      border-color: rgba(255,217,15,0.6);
+      box-shadow: 0 16px 40px -15px rgba(0,68,255,0.12), 0 0 0 1px rgba(255,217,15,0.4);
+    }
+    .service-card.card-featured:hover {
+      border-color: var(--brand-yellow);
+      box-shadow: 0 24px 50px -12px rgba(0,68,255,0.2), 0 0 25px rgba(255,217,15,0.3);
+    }
 
-    /* Piede della card: da desktop le pillole "anche se..." stanno a sinistra
-       e la CTA si allinea in basso a destra, cosi' la riga finale occupa tutta
-       la larghezza invece di lasciare il vuoto a destra. */
-    .service-block-foot { position: relative; margin-top: 1.75rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 1.5rem; }
-    @media (min-width: 900px) { .service-block-foot { flex-direction: row; align-items: flex-end; justify-content: space-between; gap: 2.5rem; } }
-    .service-block-foot .service-block-cta { margin-top: 0; flex-shrink: 0; }
-    .service-block-extra { position: relative; flex: 1; }
-    .service-block-extra-title { display: block; font-size: 11px; font-weight: 900; color: var(--brand-blue); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.85rem; }
-    .service-block-extra-items { display: flex; flex-wrap: wrap; gap: 0.6rem; }
-    .service-block-extra-item { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 700; color: var(--text-slate); background-color: rgba(0,68,255,0.05); padding: 8px 14px; border-radius: 999px; }
-    .service-block-extra-item svg { width: 14px; height: 14px; color: var(--brand-blue); flex-shrink: 0; }
+    .service-card-num {
+      position: absolute;
+      top: 0.25rem;
+      right: 1.25rem;
+      font-size: 4rem;
+      font-weight: 900;
+      color: rgba(0,68,255,0.05);
+      line-height: 1;
+      pointer-events: none;
+      user-select: none;
+      font-family: 'Teko', sans-serif;
+    }
 
-    .service-block-cta { position: relative; display: inline-flex; align-items: center; gap: 8px; margin-top: 2rem; background-color: var(--brand-blue); color: var(--white); font-weight: 900; font-size: 13px; text-transform: uppercase; letter-spacing: 0.03em; padding: 14px 26px; border-radius: 999px; text-decoration: none; transition: var(--transition); }
-    .service-block-cta:hover { background-color: #0033CC; gap: 12px; }
-    .service-block-cta svg { width: 14px; height: 14px; }
-    .service-block-cta.cta-strong { display: flex; width: 100%; justify-content: center; background-color: var(--brand-yellow); color: var(--brand-blue); border: 3px solid var(--brand-blue); font-size: 14px; padding: 16px 30px; }
-    .service-block-cta.cta-strong:hover { background-color: #ffe14d; }
+    .service-card-head {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 0.85rem;
+      position: relative;
+      z-index: 2;
+    }
+    .service-card-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--brand-blue) 0%, #002db3 100%);
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 6px 18px rgba(0,68,255,0.3);
+    }
+    .service-card.accent-green .service-card-icon {
+      background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+      box-shadow: 0 6px 18px rgba(16,185,129,0.3);
+    }
+    .service-card-icon svg { width: 26px; height: 26px; }
 
-    /* SERVIZI: mini-card "spotlight" per far risaltare la leva di forza di ogni servizio */
-    .service-spotlight { position: relative; overflow: hidden; background: var(--brand-blue); border: 3px solid var(--brand-yellow); border-radius: 18px; padding: 1.1rem 1.2rem 1.25rem; display: flex; flex-direction: column; gap: 0.85rem; }
-    .service-spotlight::after { content: ''; position: absolute; top: -30px; right: -30px; width: 100px; height: 100px; background: rgba(255,217,15,0.15); border-radius: 50%; pointer-events: none; }
-    .service-spotlight-eyebrow { position: relative; display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.06em; color: var(--brand-yellow); }
-    .service-spotlight-eyebrow svg { width: 14px; height: 14px; flex-shrink: 0; }
-    .service-spotlight-stats { position: relative; display: flex; align-items: center; gap: 1rem; }
-    .service-spotlight-number { font-size: 2rem; font-weight: 900; line-height: 1; color: var(--white); }
-    .service-spotlight-number small { display: block; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: rgba(255,255,255,0.65); margin-top: 5px; }
-    .service-spotlight-divider { width: 1px; align-self: stretch; background: rgba(255,255,255,0.25); }
-    .service-spotlight-social { display: flex; flex-direction: column; gap: 6px; }
-    .service-spotlight-social-row { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.9); }
-    .service-spotlight-social-row svg { width: 14px; height: 14px; flex-shrink: 0; }
-    /* Loghi social reali: chip circolari affiancati accanto al contatore */
-    .service-spotlight-brands { display: flex; align-items: center; gap: 8px; }
-    .service-spotlight-brand { width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.12); color: var(--white); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .service-spotlight-brand svg { width: 16px; height: 16px; fill: currentColor; }
-    .service-spotlight-btn { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 8px; margin-top: 0.25rem; background: var(--brand-yellow); color: var(--brand-blue); font-size: 11.5px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.04em; padding: 11px 18px; border-radius: 999px; text-decoration: none; transition: var(--transition); }
-    .service-spotlight-btn:hover { background: #ffe14d; gap: 12px; }
-    .service-spotlight-btn svg { width: 15px; height: 15px; fill: currentColor; flex-shrink: 0; }
-    .service-spotlight-copy { position: relative; font-size: 12.5px; line-height: 1.55; font-weight: 500; color: rgba(255,255,255,0.92); }
-    .service-spotlight-copy strong { color: var(--brand-yellow); font-weight: 800; }
-    .service-spotlight-credit { position: relative; display: flex; align-items: center; gap: 6px; font-size: 10.5px; font-weight: 700; color: rgba(255,255,255,0.65); }
-    .service-spotlight-credit svg { width: 12px; height: 12px; flex-shrink: 0; color: var(--brand-yellow); }
+    .service-card-title {
+      font-family: 'Space Grotesk', -apple-system, sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--text-slate);
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .service-block-live-dot {
+      display: inline-block;
+      vertical-align: middle;
+      width: 10px;
+      height: 10px;
+      box-shadow: 0 0 0 4px rgba(16,185,129,0.15), 0 2px 8px rgba(16,185,129,0.6);
+    }
+
+    .service-card-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      font-weight: 500;
+      margin-bottom: 1.25rem;
+      min-height: 40px;
+    }
+
+    /* SPOTLIGHT WIDGET DENTRO LE CARD */
+    .service-spotlight-box {
+      position: relative;
+      overflow: hidden;
+      border-radius: 20px;
+      padding: 1.15rem 1.2rem;
+      margin-bottom: 1.35rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.12);
+    }
+    .service-spotlight-box.spotlight-social {
+      background: linear-gradient(135deg, #0044ff 0%, #002299 100%);
+      border: 2px solid var(--brand-yellow);
+      color: var(--white);
+    }
+    .service-spotlight-box.spotlight-shield {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      border: 2px solid rgba(255,255,255,0.2);
+      color: var(--white);
+    }
+    .service-spotlight-box.spotlight-green {
+      background: linear-gradient(135deg, #064e3b 0%, #022c22 100%);
+      border: 2px solid #34d399;
+      color: var(--white);
+    }
+    
+    .service-spotlight-box::after {
+      content: '';
+      position: absolute;
+      top: -30px;
+      right: -30px;
+      width: 90px;
+      height: 90px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .spotlight-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .spotlight-social .spotlight-eyebrow { color: var(--brand-yellow); }
+    .spotlight-shield .spotlight-eyebrow { color: #60a5fa; }
+    .spotlight-green .spotlight-eyebrow { color: #34d399; }
+
+    .spotlight-stats-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .spotlight-stat-num {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.85rem;
+      font-weight: 900;
+      line-height: 1;
+      color: var(--white);
+      display: flex;
+      flex-direction: column;
+    }
+    .spotlight-stat-num small {
+      font-family: inherit;
+      font-size: 9.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      opacity: 0.8;
+      margin-top: 3px;
+    }
+
+    .spotlight-social-icons {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .spotlight-social-chip {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.16);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--white);
+      transition: var(--transition);
+    }
+    .spotlight-social-chip svg { width: 14px; height: 14px; fill: currentColor; }
+    .spotlight-social-chip:hover { transform: scale(1.15); background: var(--brand-yellow); color: var(--brand-blue); }
+
+    .spotlight-pills-col {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      align-items: flex-end;
+    }
+    .spotlight-mini-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10.5px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.95);
+      white-space: nowrap;
+    }
+
+    .spotlight-mini-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: var(--brand-yellow);
+      color: var(--brand-blue);
+      text-decoration: none;
+      font-size: 10.5px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      transition: var(--transition);
+      align-self: flex-start;
+      margin-top: 2px;
+    }
+    .spotlight-mini-btn:hover { background: #ffe14d; transform: translateX(2px); }
+    .spotlight-mini-btn svg { width: 12px; height: 12px; fill: currentColor; }
+
+    .spotlight-quote {
+      font-size: 11px;
+      line-height: 1.45;
+      color: rgba(255,255,255,0.85);
+      margin: 0;
+    }
+    .spotlight-quote strong { color: var(--brand-yellow); }
+    .spotlight-green .spotlight-quote strong { color: #6ee7b7; }
+
+    /* LISTA DEI PUNTI CHIAVE CON ICONE BADGE */
+    .service-card-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-bottom: 1.6rem;
+      flex: 1;
+      padding: 0;
+    }
+    .service-card-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 12.5px;
+      color: var(--text-slate);
+      line-height: 1.4;
+    }
+    .service-item-icon {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: rgba(0,68,255,0.08);
+      color: var(--brand-blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .service-card.accent-green .service-item-icon {
+      background: rgba(16,185,129,0.12);
+      color: #059669;
+    }
+    .service-item-icon svg { width: 12px; height: 12px; }
+
+    /* CTA BUTTONS */
+    .service-card-cta {
+      margin-top: auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 13px 22px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 900;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      transition: var(--transition);
+      box-sizing: border-box;
+      cursor: pointer;
+    }
+    .service-card-cta.btn-gold {
+      background: var(--brand-yellow);
+      color: var(--brand-blue);
+      border: 2.5px solid var(--brand-blue);
+      box-shadow: 0 6px 18px rgba(255,217,15,0.35);
+    }
+    .service-card-cta.btn-gold:hover {
+      background: #ffe14d;
+      box-shadow: 0 8px 24px rgba(255,217,15,0.55);
+      gap: 12px;
+    }
+    .service-card-cta.btn-blue-outline {
+      background: #f8fafc;
+      color: var(--brand-blue);
+      border: 2px solid var(--brand-blue);
+    }
+    .service-card-cta.btn-blue-outline:hover {
+      background: var(--brand-blue);
+      color: var(--white);
+      gap: 12px;
+      box-shadow: 0 6px 20px rgba(0,68,255,0.25);
+    }
+    .service-card-cta.btn-emerald-solid {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: var(--white);
+      border: 2px solid #059669;
+      box-shadow: 0 6px 20px rgba(16,185,129,0.35);
+    }
+    .service-card-cta.btn-emerald-solid:hover {
+      background: linear-gradient(135deg, #059669 0%, #047857 100%);
+      box-shadow: 0 8px 25px rgba(16,185,129,0.5);
+      gap: 12px;
+    }
 
     /* CTA CONTATTI - REIMPAGINATA CON IMMAGINE */
     .cta-box { background: var(--brand-blue); border-radius: 32px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,68,255,0.2); width: 100%; display: flex; flex-direction: column; border: 4px solid var(--brand-yellow); }
@@ -386,10 +650,22 @@
     .contact-form-status.success { color: #059669; }
     .contact-form-status.error { color: #dc2626; }
   </style>
-</head>
 <body>
 
-  <!-- NAVBAR CON HAMBURGER -->
+  <!-- SITE PRELOADER LUXURY CON LOGO ED ORBITING SATELLITE -->
+  <div id="site-preloader" class="site-preloader">
+    <div class="preloader-content">
+      <div class="preloader-orbit-wrap">
+        <div class="preloader-glow-aura"></div>
+        <img src="logo.svg" alt="Logo Immobiliare con Michele" class="preloader-logo-img">
+        <div class="preloader-orbit-track">
+          <div class="preloader-satellite-dot"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAVBAR CON RICERCA E HAMBURGER -->
   <nav class="navbar" aria-label="Navigazione principale">
     <a href="index.html" class="brand">
       <div class="brand-icon-box">
@@ -400,20 +676,36 @@
       </div>
     </a>
     
-    <ul class="nav-links">
-      <li><a href="#home" class="nav-link">Home</a></li>
-      <li><a href="#servizi" class="nav-link">Servizi</a></li>
-      <li><a href="#contatti" class="nav-link">Contatti</a></li>
-      <li><a href="catalogo.html" class="btn-catalog-nav">Catalogo</a></li>
-      <li><a href="valutazione.html" class="btn-valuation-nav">Valutazione</a></li>
-    </ul>
+    <div class="nav-actions">
+      <!-- TRIGGER RICERCA E FILTRI -->
+      <div class="nav-search-trigger" onclick="openNavSearch(event)" role="button" tabindex="0" aria-label="Cerca e filtra immobili">
+        <svg class="nav-search-icon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"></path></svg>
+        <span class="nav-search-text">Cerca casa o filtra...</span>
+        <span class="nav-search-filter-tag">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"></path></svg>
+          Filtri
+        </span>
+      </div>
 
-    <button id="mobile-toggle" class="mobile-toggle" aria-label="Apri il menu" aria-expanded="false" aria-controls="mobile-menu">
-      <svg width="32" height="32" fill="none" stroke="var(--brand-yellow)" stroke-width="2.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-    </button>
+      <!-- BOTTONE RICERCA MOBILE -->
+      <button class="nav-mobile-search-btn" onclick="openNavSearch(event)" aria-label="Cerca nel catalogo">
+        <svg width="22" height="22" fill="none" stroke="var(--brand-yellow)" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"></path></svg>
+      </button>
+
+      <!-- MENU HAMBURGER (DESKTOP & MOBILE) -->
+      <button id="mobile-toggle" class="mobile-toggle" aria-label="Apri il menu" aria-expanded="false" aria-controls="mobile-menu">
+        <svg fill="none" stroke="var(--brand-yellow)" stroke-width="2.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        <span class="mobile-toggle-label">Menu</span>
+      </button>
+    </div>
   </nav>
 
+  <!-- MENU A DISCESA UNIFICATO -->
   <div id="mobile-menu" class="mobile-menu">
+    <button type="button" class="mobile-menu-search-btn" onclick="openNavSearch(event)">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"></path></svg>
+      Cerca e Filtra Immobili
+    </button>
     <a href="#home" class="nav-link">Home</a>
     <a href="#servizi" class="nav-link">Servizi</a>
     <a href="#contatti" class="nav-link">Contatti</a>
@@ -441,14 +733,69 @@
 
       <!-- VETRINA -->
       <section id="vetrina" class="section">
-        <div class="section-header reveal">
-          <span class="section-label">Proposte Top</span>
-          <h2 class="section-title">In Evidenza</h2>
+        <div style="text-align: center; margin-bottom: 0.25rem;">
+          <span class="section-label">Disponibili di Recente</span>
         </div>
+        <!-- TICKER INFINITO PROPOSTE DEL MOMENTO -->
+        <div class="vetrina-ticker-wrapper">
+          <div class="vetrina-ticker-track">
+            <div class="vetrina-ticker-group">
+              <span class="ticker-text">PROPOSTE DEL MOMENTO</span>
+              <span class="ticker-star">✦</span>
+              <span class="ticker-text">PROPOSTE DEL MOMENTO</span>
+              <span class="ticker-star">✦</span>
+              <span class="ticker-text">PROPOSTE DEL MOMENTO</span>
+              <span class="ticker-star">✦</span>
+              <span class="ticker-text">PROPOSTE DEL MOMENTO</span>
+              <span class="ticker-star">✦</span>
+            </div>
+            <div class="vetrina-ticker-group" aria-hidden="true">
+              <span class="ticker-text">PROPOSTE DEL MOMENTO</span>
+              <span class="ticker-star">✦</span>
+              <span class="ticker-text">PROPOSTE DEL MOMENTO</span>
+              <span class="ticker-star">✦</span>
+              <span class="ticker-text">PROPOSTE DEL MOMENTO</span>
+              <span class="ticker-star">✦</span>
+              <span class="ticker-text">PROPOSTE DEL MOMENTO</span>
+              <span class="ticker-star">✦</span>
+            </div>
+          </div>
+        </div>
+
         <div id="featured-grid" class="properties-grid">
-          <!-- Popolato da JS -->
+          <!-- Skeleton loaders mostrati durante il fetch dei dati -->
+          <div class="card card-skeleton">
+            <div class="skeleton-img"></div>
+            <div class="skeleton-body">
+              <div class="skeleton-badge"></div>
+              <div class="skeleton-title"></div>
+              <div class="skeleton-line"></div>
+              <div class="skeleton-features"><div class="skeleton-chip"></div><div class="skeleton-chip"></div><div class="skeleton-chip"></div></div>
+              <div class="skeleton-footer"><div class="skeleton-price"></div><div class="skeleton-btn"></div></div>
+            </div>
+          </div>
+          <div class="card card-skeleton">
+            <div class="skeleton-img"></div>
+            <div class="skeleton-body">
+              <div class="skeleton-badge"></div>
+              <div class="skeleton-title"></div>
+              <div class="skeleton-line"></div>
+              <div class="skeleton-features"><div class="skeleton-chip"></div><div class="skeleton-chip"></div><div class="skeleton-chip"></div></div>
+              <div class="skeleton-footer"><div class="skeleton-price"></div><div class="skeleton-btn"></div></div>
+            </div>
+          </div>
+          <div class="card card-skeleton">
+            <div class="skeleton-img"></div>
+            <div class="skeleton-body">
+              <div class="skeleton-badge"></div>
+              <div class="skeleton-title"></div>
+              <div class="skeleton-line"></div>
+              <div class="skeleton-features"><div class="skeleton-chip"></div><div class="skeleton-chip"></div><div class="skeleton-chip"></div></div>
+              <div class="skeleton-footer"><div class="skeleton-price"></div><div class="skeleton-btn"></div></div>
+            </div>
+          </div>
         </div>
-        <div style="text-align: center; margin-top: 2.5rem;">
+        <div style="text-align: center; margin-top: clamp(1.25rem, 2vh, 1.75rem);">
           <a href="catalogo.html" class="btn-primary" style="background: white; color: var(--brand-blue); border: 2px solid var(--brand-blue); box-shadow: none;">Sfoglia Tutto il Catalogo</a>
         </div>
       </section>
@@ -461,192 +808,197 @@
             <h2 class="section-title">I Miei Servizi</h2>
           </div>
 
-          <!-- 01 COMPRAVENDITA -->
-          <div class="service-block reveal">
-            <span class="service-block-num">01</span>
-            <div class="service-block-top">
-              <div class="service-block-icon">
-                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-              </div>
-              <div class="service-block-heading">
-                <div class="service-block-title-row">
-                  <h3 class="service-block-title">Compravendita</h3>
+          <div class="services-grid">
+            <!-- 01 COMPRAVENDITA (Social Powerhouse & Compravendita) -->
+            <div class="service-card card-featured reveal">
+              <span class="service-card-num">01</span>
+              <div class="service-card-head">
+                <div class="service-card-icon">
+                  <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
                 </div>
-                <p class="service-block-tagline">Vuoi vendere o comprare casa? Scopri come pubblicizzo il tuo immobile o ti guido nella ricerca della casa ideale.</p>
+                <div>
+                  <h3 class="service-card-title">Compravendita</h3>
+                </div>
               </div>
-            </div>
-
-            <div class="service-block-body">
-              <div class="service-spotlight">
-                <span class="service-spotlight-eyebrow">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
-                  Un metodo vincente
-                </span>
-                <div class="service-spotlight-stats">
-                  <div class="service-spotlight-number"><span class="count-up" data-count-to="300" data-count-suffix="K+">300K+</span><small>views al mese</small></div>
-                  <span class="service-spotlight-divider"></span>
-                  <div class="service-spotlight-brands">
-                    <span class="service-spotlight-brand" title="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></span>
-                    <span class="service-spotlight-brand" title="Facebook"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z"/></svg></span>
-                    <span class="service-spotlight-brand" title="TikTok"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg></span>
+              <p class="service-card-desc">Vuoi vendere o comprare casa? Valorizzo il tuo immobile e ti guido passo dopo passo.</p>
+              
+              <!-- Spotlight Social Virale con Contatore & Icone -->
+              <div class="service-spotlight-box spotlight-social">
+                <div class="spotlight-eyebrow">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+                  <span>Marketing Virale & Social</span>
+                </div>
+                <div class="spotlight-stats-row">
+                  <div class="spotlight-stat-num">
+                    <span class="count-up" data-count-to="300" data-count-suffix="K+">300K+</span>
+                    <small>Views al Mese</small>
+                  </div>
+                  <div class="spotlight-social-icons">
+                    <a href="https://www.instagram.com/immobiliareconmichele/" target="_blank" rel="noopener" class="spotlight-social-chip" title="Instagram">
+                      <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                    </a>
+                    <a href="https://www.facebook.com" target="_blank" rel="noopener" class="spotlight-social-chip" title="Facebook">
+                      <svg viewBox="0 0 24 24"><path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z"/></svg>
+                    </a>
+                    <a href="https://www.tiktok.com" target="_blank" rel="noopener" class="spotlight-social-chip" title="TikTok">
+                      <svg viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
+                    </a>
                   </div>
                 </div>
-                <p class="service-spotlight-copy">Il tuo immobile visto da <strong>centinaia di migliaia di persone</strong>. Fotografie, video e pubblicazione sui principali social media e portali.</p>
-                <span class="service-spotlight-credit">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
-                  Un marketing professionale, coinvolgente e moderno che bussa alla porta.
-                </span>
-                <a href="https://www.instagram.com/immobiliareconmichele/" target="_blank" rel="noopener" class="service-spotlight-btn">
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
-                  Seguici su Instagram
+                <p class="spotlight-quote">Il tuo immobile visto da <strong>centinaia di migliaia di persone</strong> con video professionali e reel d'impatto.</p>
+                <a href="https://www.instagram.com/immobiliareconmichele/" target="_blank" rel="noopener" class="spotlight-mini-btn">
+                  <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                  <span>Seguici su Instagram ➔</span>
                 </a>
               </div>
 
-              <div class="service-journey">
-                <div class="service-journey-step">
-                  <span class="service-journey-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg></span>
-                  <div class="service-feature-text">
-                    <strong>Trattativa dedicata</strong>
-                    <p>Gestisco le visite e la trattativa per portarti la migliore offerta reale.</p>
-                  </div>
-                </div>
-                <div class="service-journey-step">
-                  <span class="service-journey-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"></path></svg></span>
-                  <div class="service-feature-text">
-                    <strong>Pratiche fino al rogito</strong>
-                    <p>Proposta, preliminare e assistenza in studio notarile, passo dopo passo.</p>
-                  </div>
-                </div>
-              </div>
+              <!-- Punti Chiave -->
+              <ul class="service-card-list">
+                <li class="service-card-item">
+                  <span class="service-item-icon"><svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg></span>
+                  <span><strong>Marketing Multicanale:</strong> reel, social e portali</span>
+                </li>
+                <li class="service-card-item">
+                  <span class="service-item-icon"><svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg></span>
+                  <span><strong>Trattativa Dedicata:</strong> clienti profilati e visite mirate</span>
+                </li>
+                <li class="service-card-item">
+                  <span class="service-item-icon"><svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg></span>
+                  <span><strong>Pratiche fino al Rogito:</strong> proposta, preliminare e notaio</span>
+                </li>
+                <li class="service-card-item">
+                  <span class="service-item-icon"><svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg></span>
+                  <span><strong>Ricerca su Misura:</strong> assistenza completa a chi compra</span>
+                </li>
+              </ul>
+
+              <a href="#contatti" class="service-card-cta btn-gold">
+                <span>Parliamone Insieme</span>
+                <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+              </a>
             </div>
 
-            <div class="service-block-foot">
-              <div class="service-block-extra">
-                <span class="service-block-extra-title">Anche se compri</span>
-                <div class="service-block-extra-items">
-                  <span class="service-block-extra-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"></path></svg> Ricerca su misura</span>
-                  <span class="service-block-extra-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg> Verifiche pre-acquisto</span>
-                  <span class="service-block-extra-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg> Fino alle chiavi in mano</span>
+            <!-- 02 LOCAZIONI SICURE -->
+            <div class="service-card reveal">
+              <span class="service-card-num">02</span>
+              <div class="service-card-head">
+                <div class="service-card-icon">
+                  <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"></path></svg>
+                </div>
+                <div>
+                  <h3 class="service-card-title">Locazioni Sicure</h3>
                 </div>
               </div>
-              <a href="#contatti" class="service-block-cta">Parliamone insieme <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg></a>
-            </div>
-          </div>
+              <p class="service-card-desc">Cerchi un inquilino affidabile o una casa in affitto? Burocrazia azzerata e massima tutela.</p>
 
-          <!-- 02 LOCAZIONI SICURE -->
-          <div class="service-block accent-blue reveal">
-            <span class="service-block-num">02</span>
-            <div class="service-block-top">
-              <div class="service-block-icon">
-                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"></path></svg>
-              </div>
-              <div class="service-block-heading">
-                <div class="service-block-title-row">
-                  <h3 class="service-block-title">Locazioni Sicure</h3>
+              <!-- Spotlight Garanzia & Tutela -->
+              <div class="service-spotlight-box spotlight-shield">
+                <div class="spotlight-eyebrow">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                  <span>Garanzia & Protezione</span>
                 </div>
-                <p class="service-block-tagline">Cerchi un inquilino affidabile o una casa in affitto? Seleziono attentamente i profili migliori e gestisco tutta la burocrazia del contratto per farti dormire sereno.</p>
-              </div>
-            </div>
-
-            <div class="service-block-body">
-              <div class="service-journey">
-                <div class="service-journey-step">
-                  <span class="service-journey-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"></path></svg></span>
-                  <div class="service-feature-text">
-                    <strong>Selezione inquilini</strong>
-                    <p>Verifico referenze, garanzie e affidabilità prima di ogni contratto.</p>
+                <div class="spotlight-stats-row">
+                  <div class="spotlight-stat-num">
+                    <span class="count-up" data-count-to="100" data-count-suffix="%">100%</span>
+                    <small>Tutela Contrattuale</small>
+                  </div>
+                  <div class="spotlight-pills-col">
+                    <span class="spotlight-mini-tag">🛡️ Zero Insoluti</span>
+                    <span class="spotlight-mini-tag">⚡ Registrazione 48h</span>
                   </div>
                 </div>
-                <div class="service-journey-step">
-                  <span class="service-journey-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg></span>
-                  <div class="service-feature-text">
-                    <strong>Contratto a norma</strong>
-                    <p>Redigo e registro il contratto secondo la normativa vigente.</p>
-                  </div>
-                </div>
-                <div class="service-journey-step">
-                  <span class="service-journey-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg></span>
-                  <div class="service-feature-text">
-                    <strong>Consegna e cauzione</strong>
-                    <p>Gestisco consegna chiavi, verbale d'ingresso e deposito cauzionale.</p>
-                  </div>
+                <p class="spotlight-quote">Selezione <strong>rigorosa dei redditi</strong> e gestione di tutta la burocrazia per farti dormire sereno.</p>
+                <div class="spotlight-eyebrow" style="color: rgba(255,255,255,0.7); font-size: 9.5px; margin-top: 2px;">
+                  <span>📋 Registrazione Telematica Agenzia Entrate</span>
                 </div>
               </div>
-            </div>
 
-            <div class="service-block-foot">
-              <div class="service-block-extra">
-                <span class="service-block-extra-title">Anche se cerchi casa</span>
-                <div class="service-block-extra-items">
-                  <span class="service-block-extra-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"></path></svg> Ti aiuto a trovare l'affitto giusto, zona e budget compresi</span>
-                </div>
-              </div>
-              <a href="#contatti" class="service-block-cta">Parliamone insieme <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg></a>
-            </div>
-          </div>
+              <!-- Punti Chiave -->
+              <ul class="service-card-list">
+                <li class="service-card-item">
+                  <span class="service-item-icon"><svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg></span>
+                  <span><strong>Selezione Inquilini:</strong> verifica buste paga e referenze</span>
+                </li>
+                <li class="service-card-item">
+                  <span class="service-item-icon"><svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg></span>
+                  <span><strong>Contratto a Norma:</strong> stesura e registrazione telematica</span>
+                </li>
+                <li class="service-card-item">
+                  <span class="service-item-icon"><svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg></span>
+                  <span><strong>Consegna & Cauzione:</strong> verbale e inventario d'ingresso</span>
+                </li>
+                <li class="service-card-item">
+                  <span class="service-item-icon"><svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg></span>
+                  <span><strong>Supporto Affittuari:</strong> ricerca mirata per il tuo budget</span>
+                </li>
+              </ul>
 
-          <!-- 03 VALUTAZIONE GRATUITA -->
-          <div class="service-block accent-green reveal">
-            <span class="service-block-num">03</span>
-            <div class="service-block-top">
-              <div class="service-block-icon">
-                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
-              </div>
-              <div class="service-block-heading">
-                <div class="service-block-title-row">
-                  <h3 class="service-block-title">Valutazione Gratuita<span class="pulse-dot service-block-live-dot"></span></h3>
-                </div>
-                <p class="service-block-tagline">Ti dico quanto vale il tuo immobile basandomi sul mercato attuale: insieme troviamo il prezzo giusto.</p>
-              </div>
+              <a href="#contatti" class="service-card-cta btn-blue-outline">
+                <span>Parliamone Insieme</span>
+                <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+              </a>
             </div>
 
-            <div class="service-block-body">
-              <div class="service-spotlight">
-                <span class="service-spotlight-eyebrow">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
-                  Zero costi, zero pensieri
-                </span>
-                <div class="service-spotlight-stats">
-                  <div class="service-spotlight-number">100%<small>gratuita</small></div>
-                  <span class="service-spotlight-divider"></span>
-                  <div class="service-spotlight-social">
-                    <span class="service-spotlight-social-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg> Nessun obbligo</span>
-                    <span class="service-spotlight-social-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Risposta rapida</span>
+            <!-- 03 VALUTAZIONE GRATUITA -->
+            <div class="service-card accent-green reveal">
+              <span class="service-card-num">03</span>
+              <div class="service-card-head">
+                <div class="service-card-icon">
+                  <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                </div>
+                <div>
+                  <h3 class="service-card-title">Valutazione Gratuita <span class="pulse-dot service-block-live-dot"></span></h3>
+                </div>
+              </div>
+              <p class="service-card-desc">Ti dico quanto vale davvero il tuo immobile basandomi su dati reali del mercato locale.</p>
+
+              <!-- Spotlight Stima Gratuita -->
+              <div class="service-spotlight-box spotlight-green">
+                <div class="spotlight-eyebrow">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  <span>Zero Costi • Zero Vincoli</span>
+                </div>
+                <div class="spotlight-stats-row">
+                  <div class="spotlight-stat-num">
+                    <span class="count-up" data-count-to="0" data-count-suffix="€">0€</span>
+                    <small>100% Gratuita</small>
+                  </div>
+                  <div class="spotlight-pills-col">
+                    <span class="spotlight-mini-tag">⏱️ Risposta in 24h</span>
+                    <span class="spotlight-mini-tag">📄 Report Scritto</span>
                   </div>
                 </div>
-                <p class="service-spotlight-copy">Ricevi una stima <strong>chiara e onesta</strong>, basata sui dati reali della tua zona: nessun costo, nessuna sorpresa.</p>
-                <span class="service-spotlight-credit">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
-                  Sopralluogo e report scritto inclusi
-                </span>
+                <p class="spotlight-quote">Ricevi una stima <strong>chiara e onesta</strong> basata sulle compravendite reali a Porto Torres e Sassari.</p>
+                <div class="spotlight-eyebrow" style="color: #a7f3d0; font-size: 9.5px; margin-top: 2px;">
+                  <span>📍 Sopralluogo e stima reale inclusi</span>
+                </div>
               </div>
 
-              <div class="service-journey">
-                <div class="service-journey-step">
-                  <span class="service-journey-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg></span>
-                  <div class="service-feature-text">
-                    <strong>Sopralluogo dell'immobile</strong>
-                    <p>Analizzo stato, superfici, finiture e punti di forza della casa.</p>
-                  </div>
-                </div>
-                <div class="service-journey-step">
-                  <span class="service-journey-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg></span>
-                  <div class="service-feature-text">
-                    <strong>Analisi comparativa di zona</strong>
-                    <p>Confronto con immobili simili venduti o in vendita nella tua zona.</p>
-                  </div>
-                </div>
-                <div class="service-journey-step">
-                  <span class="service-journey-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg></span>
-                  <div class="service-feature-text">
-                    <strong>Report scritto</strong>
-                    <p>Ricevi una stima chiara con un prezzo di vendita consigliato.</p>
-                  </div>
-                </div>
-              </div>
+              <!-- Punti Chiave -->
+              <ul class="service-card-list">
+                <li class="service-card-item">
+                  <span class="service-item-icon"><svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg></span>
+                  <span><strong>Sopralluogo Tecnico:</strong> analisi stato, superfici e finiture</span>
+                </li>
+                <li class="service-card-item">
+                  <span class="service-item-icon"><svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg></span>
+                  <span><strong>Analisi Comparativa:</strong> dati reali di compravendita</span>
+                </li>
+                <li class="service-card-item">
+                  <span class="service-item-icon"><svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg></span>
+                  <span><strong>Report Dettagliato:</strong> prezzo di vendita strategico</span>
+                </li>
+                <li class="service-card-item">
+                  <span class="service-item-icon"><svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg></span>
+                  <span><strong>Consulenza Immediata:</strong> massimizza il valore</span>
+                </li>
+              </ul>
+
+              <a href="valutazione.html" class="service-card-cta btn-emerald-solid">
+                <span>Richiedi Valutazione</span>
+                <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+              </a>
             </div>
-
-            <a href="valutazione.html" class="service-block-cta cta-strong">Richiedi la tua valutazione gratuita <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg></a>
           </div>
         </section>
       </div>
@@ -855,6 +1207,92 @@
     </div>
   </div>
 
+  <!-- MODAL RICERCA E FILTRI NAVBAR -->
+  <div id="nav-search-modal" class="nav-search-modal-overlay" onclick="handleNavSearchOverlayClick(event)">
+    <div class="nav-search-modal-card">
+      <div class="nav-search-modal-header">
+        <div class="nav-search-header-title">
+          <svg width="22" height="22" fill="none" stroke="var(--brand-blue)" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"></path></svg>
+          <h3>Cerca nel Catalogo</h3>
+        </div>
+        <button type="button" class="btn-close-search-modal" onclick="closeNavSearch()" aria-label="Chiudi ricerca">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+
+      <form id="nav-search-form" onsubmit="handleNavSearchSubmit(event)">
+        <!-- Input testo principale -->
+        <div class="nav-search-input-box">
+          <svg class="nav-search-input-icon" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"></path></svg>
+          <input type="text" id="nav-search-q" class="nav-search-input" placeholder="Zona, via, o parole chiave (es. Lungomare, Terrazzo)..." autocomplete="off">
+        </div>
+
+        <!-- Selettore Contratto (Pillole) -->
+        <div class="nav-search-section">
+          <label class="nav-search-label">Contratto</label>
+          <div class="nav-search-pills" id="nav-search-status-pills">
+            <button type="button" class="nav-pill active" data-value="Tutti" onclick="selectNavStatus(this)">Tutti</button>
+            <button type="button" class="nav-pill" data-value="Vendita" onclick="selectNavStatus(this)">Vendita</button>
+            <button type="button" class="nav-pill" data-value="Affitto" onclick="selectNavStatus(this)">Affitto</button>
+          </div>
+          <input type="hidden" id="nav-search-status" value="Tutti">
+        </div>
+
+        <!-- Griglia Filtri (Zona, Tipologia, Prezzo) -->
+        <div class="nav-search-grid">
+          <div class="nav-search-field">
+            <label class="nav-search-label" for="nav-search-zone">Zona</label>
+            <select id="nav-search-zone" class="nav-search-select">
+              <option value="Tutte">Qualsiasi zona</option>
+              <option value="Porto Torres">Porto Torres</option>
+              <option value="Sassari">Sassari</option>
+              <option value="Stintino">Stintino</option>
+              <option value="Sorso">Sorso</option>
+              <option value="Alghero">Alghero</option>
+              <option value="Castelsardo">Castelsardo</option>
+            </select>
+          </div>
+
+          <div class="nav-search-field">
+            <label class="nav-search-label" for="nav-search-type">Tipologia</label>
+            <select id="nav-search-type" class="nav-search-select">
+              <option value="Tutte">Qualsiasi tipologia</option>
+              <option value="Appartamento">Appartamento</option>
+              <option value="Villa">Villa</option>
+              <option value="Attico">Attico / Mansarda</option>
+              <option value="Indipendente">Casa Indipendente</option>
+              <option value="Locale Commerciale">Locale Commerciale</option>
+              <option value="Terreno">Terreno</option>
+            </select>
+          </div>
+
+          <div class="nav-search-field full">
+            <label class="nav-search-label" for="nav-search-price">Budget Massimo</label>
+            <select id="nav-search-price" class="nav-search-select">
+              <option value="0">Qualsiasi prezzo</option>
+              <option value="80000">Fino a 80.000 €</option>
+              <option value="120000">Fino a 120.000 €</option>
+              <option value="160000">Fino a 160.000 €</option>
+              <option value="200000">Fino a 200.000 €</option>
+              <option value="250000">Fino a 250.000 €</option>
+              <option value="350000">Fino a 350.000 €</option>
+              <option value="500000">Fino a 500.000 €</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Footer Azioni -->
+        <div class="nav-search-actions">
+          <button type="button" class="nav-search-btn-reset" onclick="resetNavSearch()">Azzera</button>
+          <button type="submit" class="nav-search-btn-submit">
+            <span>Mostra Risultati</span>
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script src="shared.js"></script>
   <script>
     // Ingresso cinetico dell'hero, in sequenza:
@@ -984,7 +1422,56 @@
       });
     }
 
-    animateHero();
+    function initPreloader() {
+      if (history.scrollRestoration) {
+        history.scrollRestoration = 'manual';
+      }
+      window.scrollTo(0, 0);
+
+      const preloader = document.getElementById('site-preloader');
+      if (!preloader) {
+        animateHero();
+        return;
+      }
+
+      if (!motionOK) {
+        preloader.remove();
+        animateHero();
+        return;
+      }
+
+      // Initial state
+      gsap.set('.preloader-orbit-wrap', { scale: 0.75, opacity: 0 });
+
+      // Smooth scale-in of the logo & orbiting orb
+      gsap.to('.preloader-orbit-wrap', {
+        scale: 1,
+        opacity: 1,
+        duration: 0.6,
+        ease: 'back.out(1.6)'
+      });
+
+      // Dismiss preloader smoothly and trigger hero animation
+      const dismiss = () => {
+        gsap.timeline()
+          .to('.preloader-orbit-wrap', { scale: 0.9, opacity: 0, duration: 0.35, ease: 'power2.in' })
+          .to(preloader, {
+            opacity: 0,
+            duration: 0.45,
+            ease: 'power3.inOut',
+            onComplete: () => {
+              preloader.classList.add('loaded');
+              preloader.remove();
+              window.scrollTo(0, 0);
+              animateHero();
+            }
+          }, '-=0.15');
+      };
+
+      setTimeout(dismiss, 1100);
+    }
+
+    initPreloader();
     initScrollReveals();
     initScrollSpy();
     initCardStagger();
