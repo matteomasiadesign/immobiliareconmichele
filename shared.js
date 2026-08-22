@@ -242,6 +242,7 @@ function initCardStagger(selector = '.card') {
         }
     });
 
+    const isMobile = window.innerWidth < 768;
     const cards = document.querySelectorAll(selector);
 
     cards.forEach((card, index) => {
@@ -250,14 +251,13 @@ function initCardStagger(selector = '.card') {
         
         gsap.from(card, {
             opacity: 0,
-            y: 40,
-            rotation: 1,
-            duration: 0.7,
-            delay: index * 0.08,
-            ease: 'back.out(1.2)',
+            y: isMobile ? 12 : 36,
+            duration: isMobile ? 0.45 : 0.7,
+            delay: isMobile ? 0 : index * 0.08,
+            ease: isMobile ? 'power2.out' : 'back.out(1.2)',
             scrollTrigger: {
                 trigger: card.parentElement,
-                start: 'top 80%',
+                start: 'top 85%',
                 markers: false
             }
         });
