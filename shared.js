@@ -399,6 +399,7 @@ function openModal(id) {
     actionsContainer.querySelector('.btn-share')
         .addEventListener('click', () => shareProperty(p.id, p.title));
 
+    initModalCarouselTouch();
     showModal();
 }
 
@@ -417,53 +418,62 @@ function updateModalImage() {
     const imgEl = document.getElementById('mod-img');
     const prevBtn = document.getElementById('mod-prev-img');
     const nextBtn = document.getElementById('mod-next-img');
+    const zoomBtn = document.getElementById('mod-zoom-btn');
     const dotsContainer = document.getElementById('mod-img-dots');
 
     if (!currentModalImages || currentModalImages.length === 0) {
-        imgEl.src = '';
-        prevBtn.style.display = 'none';
-        nextBtn.style.display = 'none';
-        dotsContainer.innerHTML = '';
+        if (imgEl) imgEl.src = '';
+        if (prevBtn) prevBtn.style.display = 'none';
+        if (nextBtn) nextBtn.style.display = 'none';
+        if (zoomBtn) zoomBtn.style.display = 'none';
+        if (dotsContainer) dotsContainer.innerHTML = '';
         return;
     }
 
-    if (motionOK) {
+    if (motionOK && imgEl) {
         gsap.fromTo(imgEl, { opacity: 0 }, { opacity: 1, duration: 0.25, ease: 'power1.out' });
     }
-    imgEl.src = currentModalImages[currentImageIndex];
+    if (imgEl) imgEl.src = currentModalImages[currentImageIndex];
+    if (zoomBtn) zoomBtn.style.display = 'flex';
 
     if (currentModalImages.length > 1) {
-        prevBtn.style.display = 'flex';
-        nextBtn.style.display = 'flex';
-        dotsContainer.innerHTML = currentModalImages.map((_, i) =>
-            `<div class="gallery-dot ${i === currentImageIndex ? 'active' : ''}" onclick="goToImage(${i})"></div>`
-        ).join('');
+        if (prevBtn) prevBtn.style.display = 'flex';
+        if (nextBtn) nextBtn.style.display = 'flex';
+        if (dotsContainer) {
+            dotsContainer.innerHTML = currentModalImages.map((_, i) =>
+                `<div class="gallery-dot ${i === currentImageIndex ? 'active' : ''}" onclick="goToImage(${i}, event)"></div>`
+            ).join('');
+        }
     } else {
-        prevBtn.style.display = 'none';
-        nextBtn.style.display = 'none';
-        dotsContainer.innerHTML = '';
+        if (prevBtn) prevBtn.style.display = 'none';
+        if (nextBtn) nextBtn.style.display = 'none';
+        if (dotsContainer) dotsContainer.innerHTML = '';
     }
 }
 
-function nextImage() {
+function nextImage(e) {
+    if (e && e.stopPropagation) e.stopPropagation();
     if (currentModalImages.length <= 1) return;
     currentImageIndex = (currentImageIndex + 1) % currentModalImages.length;
     updateModalImage();
 }
 
-function prevImage() {
+function prevImage(e) {
+    if (e && e.stopPropagation) e.stopPropagation();
     if (currentModalImages.length <= 1) return;
     currentImageIndex = (currentImageIndex - 1 + currentModalImages.length) % currentModalImages.length;
     updateModalImage();
 }
 
-function goToImage(index) {
+function goToImage(index, e) {
+    if (e && e.stopPropagation) e.stopPropagation();
     if (index < 0 || index >= currentModalImages.length) return;
     currentImageIndex = index;
     updateModalImage();
 }
 
 function closeModal() {
+    closeLightbox();
     const overlay = document.getElementById('property-modal');
     const card = overlay.querySelector('.modal-card');
     if (motionOK) {
@@ -475,6 +485,175 @@ function closeModal() {
         overlay.style.display = 'none';
     }
 }
+
+// GESTIONE SWIPE TOUCH SCREEN (MOBILE)
+function attachSwipeListeners(element, onSwipeLeft, onSwipeRight, onSwipeDown) {
+    if (!element) return;
+    let startX = 0, startY = 0, currentX = 0, currentY = 0, startTime = 0;
+    let isTracking = false;
+
+    element.addEventListener('touchstart', (e) => {
+        if (e.touches.length !== 1) return;
+        const touch = e.touches[0];
+        startX = touch.clientX;
+        startY = touch.clientY;
+        currentX = startX;
+        currentY = startY;
+        startTime = Date.now();
+        isTracking = true;
+    }, { passive: true });
+
+    element.addEventListener('touchmove', (e) => {
+        if (!isTracking || e.touches.length !== 1) return;
+        currentX = e.touches[0].clientX;
+        currentY = e.touches[0].clientY;
+    }, { passive: true });
+
+    element.addEventListener('touchend', (e) => {
+        if (!isTracking) return;
+        isTracking = false;
+        const deltaX = currentX - startX;
+        const deltaY = currentY - startY;
+        const absX = Math.abs(deltaX);
+        const absY = Math.abs(deltaY);
+
+        if (absX > 35 && absX > absY) {
+            if (deltaX < 0) {
+                if (typeof onSwipeLeft === 'function') onSwipeLeft();
+            } else {
+                if (typeof onSwipeRight === 'function') onSwipeRight();
+            }
+        } else if (deltaY > 60 && absY > absX && typeof onSwipeDown === 'function') {
+            onSwipeDown();
+        }
+    }, { passive: true });
+}
+
+function initModalCarouselTouch() {
+    const containers = document.querySelectorAll('.modal-carousel-container');
+    containers.forEach(container => {
+        if (container.dataset.swipeInit) return;
+        container.dataset.swipeInit = '1';
+        attachSwipeListeners(container, () => nextImage(), () => prevImage());
+    });
+}
+
+// FULLSCREEN LIGHTBOX (INGRANDIMENTO FOTO)
+function ensureLightboxDOM() {
+    if (document.getElementById('photo-lightbox')) return;
+    const div = document.createElement('div');
+    div.id = 'photo-lightbox';
+    div.className = 'lightbox-overlay';
+    div.style.display = 'none';
+    div.innerHTML = `
+      <div class="lightbox-topbar">
+        <div id="lightbox-counter" class="lightbox-counter">1 / 1</div>
+        <button class="lightbox-btn-close" onclick="closeLightbox()" aria-label="Chiudi ingrandimento">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="lightbox-stage" id="lightbox-stage">
+        <button id="lightbox-prev" class="lightbox-nav-btn prev" onclick="prevLightboxImage(event)" aria-label="Foto precedente">
+          <svg width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+        </button>
+        <div class="lightbox-img-wrapper" id="lightbox-img-wrapper">
+          <img id="lightbox-img" src="" alt="Foto ingrandita" class="lightbox-img">
+        </div>
+        <button id="lightbox-next" class="lightbox-nav-btn next" onclick="nextLightboxImage(event)" aria-label="Foto successiva">
+          <svg width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+      <div class="lightbox-bottom">
+        <div class="lightbox-hint">Trascina per scorrere • Tocca per chiudere</div>
+      </div>
+    `;
+    document.body.appendChild(div);
+
+    div.addEventListener('click', (e) => {
+        if (e.target === div || e.target.id === 'lightbox-stage' || e.target.id === 'lightbox-img-wrapper' || e.target.classList.contains('lightbox-bottom')) {
+            closeLightbox();
+        }
+    });
+
+    const stage = document.getElementById('lightbox-stage');
+    if (stage) {
+        attachSwipeListeners(stage, nextLightboxImage, prevLightboxImage, closeLightbox);
+    }
+}
+
+function openLightbox(index = 0) {
+    if (!currentModalImages || currentModalImages.length === 0) return;
+    ensureLightboxDOM();
+    currentImageIndex = (index >= 0 && index < currentModalImages.length) ? index : 0;
+    updateLightboxImage();
+    const lb = document.getElementById('photo-lightbox');
+    lb.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function updateLightboxImage() {
+    const img = document.getElementById('lightbox-img');
+    const counter = document.getElementById('lightbox-counter');
+    const prevBtn = document.getElementById('lightbox-prev');
+    const nextBtn = document.getElementById('lightbox-next');
+    if (!img || !currentModalImages || currentModalImages.length === 0) return;
+
+    if (motionOK) {
+        gsap.fromTo(img, { opacity: 0.4, scale: 0.98 }, { opacity: 1, scale: 1, duration: 0.2, ease: 'power1.out' });
+    }
+    img.src = currentModalImages[currentImageIndex];
+    if (counter) counter.innerText = `${currentImageIndex + 1} / ${currentModalImages.length}`;
+
+    if (currentModalImages.length > 1) {
+        if (prevBtn) prevBtn.style.display = 'flex';
+        if (nextBtn) nextBtn.style.display = 'flex';
+    } else {
+        if (prevBtn) prevBtn.style.display = 'none';
+        if (nextBtn) nextBtn.style.display = 'none';
+    }
+
+    updateModalImage();
+}
+
+function nextLightboxImage(e) {
+    if (e && e.stopPropagation) e.stopPropagation();
+    if (!currentModalImages || currentModalImages.length <= 1) return;
+    currentImageIndex = (currentImageIndex + 1) % currentModalImages.length;
+    updateLightboxImage();
+}
+
+function prevLightboxImage(e) {
+    if (e && e.stopPropagation) e.stopPropagation();
+    if (!currentModalImages || currentModalImages.length <= 1) return;
+    currentImageIndex = (currentImageIndex - 1 + currentModalImages.length) % currentModalImages.length;
+    updateLightboxImage();
+}
+
+function closeLightbox() {
+    const lb = document.getElementById('photo-lightbox');
+    if (lb) lb.style.display = 'none';
+    const modal = document.getElementById('property-modal');
+    if (!modal || modal.style.display === 'none') {
+        document.body.style.overflow = '';
+    }
+}
+
+// Navigazione da tastiera globale per modale e lightbox
+document.addEventListener('keydown', (e) => {
+    const lightbox = document.getElementById('photo-lightbox');
+    if (lightbox && lightbox.style.display !== 'none') {
+        if (e.key === 'Escape') closeLightbox();
+        else if (e.key === 'ArrowRight') nextLightboxImage();
+        else if (e.key === 'ArrowLeft') prevLightboxImage();
+    } else {
+        const modal = document.getElementById('property-modal');
+        if (modal && modal.style.display !== 'none') {
+            if (e.key === 'Escape') closeModal();
+            else if (e.key === 'ArrowRight') nextImage();
+            else if (e.key === 'ArrowLeft') prevImage();
+        }
+    }
+});
 
 function shareProperty(id, title) {
     const url = window.location.origin + window.location.pathname + '?id=' + id;
