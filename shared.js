@@ -372,6 +372,7 @@ function openModal(id) {
     if (p.sqm) { document.getElementById('mod-sqm').innerText = p.sqm; sqmItem.style.display = ''; modGrid.classList.add('has-sqm'); }
     else { sqmItem.style.display = 'none'; modGrid.classList.remove('has-sqm'); }
     document.getElementById('mod-parking').innerText = p.has_parking ? "Sì" : "No";
+    document.getElementById('mod-desc').innerText = p.description || '';
     const isReserved = !p.price || Number(p.price) <= 0;
     document.getElementById('mod-price').innerText = isReserved
         ? "Trattativa riservata"
