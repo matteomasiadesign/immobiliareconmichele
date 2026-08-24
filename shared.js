@@ -35,6 +35,8 @@ const hoverOK = typeof window.matchMedia === 'function'
 // caricare l'embed di Instagram per ogni annuncio.
 function propertyCardHTML(p) {
     const images = p.images || [];
+    const isReserved = !p.price || Number(p.price) <= 0;
+    const priceDisplay = isReserved ? 'Trattativa riservata' : `€${Number(p.price).toLocaleString('it-IT')}`;
     return `
     <div class="card" data-id="${escapeHtml(p.id)}">
       <div class="card-img-container">
@@ -65,7 +67,7 @@ function propertyCardHTML(p) {
         <div class="card-footer">
           <div>
             <span class="card-price-label">Prezzo</span>
-            <span class="card-price">€${p.price.toLocaleString('it-IT')}</span>
+            <span class="card-price" ${isReserved ? 'style="font-size:1.05rem; font-weight:800;"' : ''}>${priceDisplay}</span>
           </div>
           <span class="card-cta">Scopri
             <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
@@ -370,8 +372,10 @@ function openModal(id) {
     if (p.sqm) { document.getElementById('mod-sqm').innerText = p.sqm; sqmItem.style.display = ''; modGrid.classList.add('has-sqm'); }
     else { sqmItem.style.display = 'none'; modGrid.classList.remove('has-sqm'); }
     document.getElementById('mod-parking').innerText = p.has_parking ? "Sì" : "No";
-    document.getElementById('mod-desc').innerText = p.description;
-    document.getElementById('mod-price').innerText = "€" + p.price.toLocaleString('it-IT') + (p.status === 'Affitto' ? " /mese" : "");
+    const isReserved = !p.price || Number(p.price) <= 0;
+    document.getElementById('mod-price').innerText = isReserved
+        ? "Trattativa riservata"
+        : ("€" + Number(p.price).toLocaleString('it-IT') + (p.status === 'Affitto' ? " /mese" : ""));
 
     const actionsContainer = document.getElementById('mod-actions-container');
     actionsContainer.innerHTML = `

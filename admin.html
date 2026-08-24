@@ -2467,8 +2467,14 @@
             </select>
           </div>
           <div class="form-group">
-            <label class="form-label">Prezzo (€)</label>
-            <input required type="number" id="prop-price" class="form-input">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.35rem;">
+              <label class="form-label" style="margin-bottom:0;">Prezzo (€)</label>
+              <label class="checkbox-row" style="font-size:11.5px; gap:6px; cursor:pointer;" title="Seleziona se il prezzo non deve essere reso noto al pubblico (compare come 'Trattativa riservata')">
+                <input type="checkbox" id="prop-reserved-price" onchange="toggleReservedPriceUI()">
+                <span class="checkbox-label" style="font-size:11.5px; font-weight:600; color:var(--brand-blue);">Trattativa riservata</span>
+              </label>
+            </div>
+            <input required type="number" id="prop-price" class="form-input" placeholder="es. 150000">
           </div>
         </div>
         <div class="form-row">
@@ -3516,16 +3522,42 @@
         renderImagePreviews();
     }
 
+    function toggleReservedPriceUI() {
+        const isReserved = document.getElementById('prop-reserved-price')?.checked;
+        const priceInput = document.getElementById('prop-price');
+        if (!priceInput) return;
+        if (isReserved) {
+            priceInput.value = '';
+            priceInput.required = false;
+            priceInput.disabled = true;
+            priceInput.placeholder = 'Trattativa riservata';
+            priceInput.style.backgroundColor = 'var(--surface-2)';
+            priceInput.style.color = 'var(--ink-3)';
+            priceInput.style.cursor = 'not-allowed';
+        } else {
+            priceInput.disabled = false;
+            priceInput.required = true;
+            priceInput.placeholder = 'es. 150000';
+            priceInput.style.backgroundColor = '';
+            priceInput.style.color = '';
+            priceInput.style.cursor = '';
+        }
+    }
+
     async function handlePropSubmit(e) {
         e.preventDefault();
         if(uploadedImageUrls.length===0) return alert("Inserisci almeno una foto!");
         showLoader("Salvataggio Immobile...");
         const id = document.getElementById('prop-id').value;
 
+        const isReserved = document.getElementById('prop-reserved-price').checked;
+        const rawPrice = document.getElementById('prop-price').value;
+        const priceVal = isReserved ? 0 : (rawPrice ? Number(rawPrice) : 0);
+
         const payload = {
             title: document.getElementById('prop-title').value,
             status: document.getElementById('prop-status').value,
-            price: Number(document.getElementById('prop-price').value),
+            price: priceVal,
             zone: document.getElementById('prop-zone').value,
             property_type: document.getElementById('prop-type').value,
             rooms: Number(document.getElementById('prop-rooms').value),
@@ -3600,7 +3632,7 @@
                 owner_name: '',
                 assignment_duration: '6 mesi',
                 acquisition_date: property.acquisition_date || new Date().toISOString().split('T')[0],
-                initial_price: property.price,
+                initial_price: (property.price && Number(property.price) > 0) ? property.price : 0,
                 commission_seller_perc: 0,
                 commission_buyer_perc: 0,
                 property_id: property.id
@@ -3687,7 +3719,7 @@
     }
 
     function rigaImmobileSenzaIncarico(p) {
-        const dettagli = [p.zone, p.property_type, p.price ? `€${Number(p.price).toLocaleString('it-IT')}` : '']
+        const dettagli = [p.zone, p.property_type, (p.price && Number(p.price) > 0) ? `€${Number(p.price).toLocaleString('it-IT')}` : 'Trattativa riservata']
             .filter(Boolean).join(' · ');
         return `
         <div class="item-row">
@@ -3714,7 +3746,14 @@
         switchTab('tab-vetrina');
         openPropertyForm();                       // azzera anche incaricoDaCollegare
         document.getElementById('prop-title').value = t.property_title || '';
-        if (t.initial_price)    document.getElementById('prop-price').value = t.initial_price;
+        if (t.initial_price && Number(t.initial_price) > 0) {
+            document.getElementById('prop-price').value = t.initial_price;
+            document.getElementById('prop-reserved-price').checked = false;
+        } else {
+            document.getElementById('prop-price').value = '';
+            document.getElementById('prop-reserved-price').checked = true;
+        }
+        toggleReservedPriceUI();
         if (t.acquisition_date) document.getElementById('prop-acq-date').value = t.acquisition_date;
         incaricoDaCollegare = t.id;
     }
@@ -3738,7 +3777,10 @@
         document.getElementById('prop-id').value = p.id;
         document.getElementById('prop-title').value = p.title;
         document.getElementById('prop-status').value = p.status;
-        document.getElementById('prop-price').value = p.price;
+        const isReserved = !p.price || Number(p.price) <= 0;
+        document.getElementById('prop-reserved-price').checked = isReserved;
+        document.getElementById('prop-price').value = isReserved ? '' : p.price;
+        toggleReservedPriceUI();
         document.getElementById('prop-zone').value = p.zone;
         document.getElementById('prop-type').value = p.property_type;
         document.getElementById('prop-rooms').value = p.rooms;
@@ -3781,6 +3823,8 @@
         incaricoDaCollegare = null;
         document.getElementById('prop-id').value = "";
         document.querySelector('#modal-property-form form').reset();
+        document.getElementById('prop-reserved-price').checked = false;
+        toggleReservedPriceUI();
         document.getElementById('prop-visible').checked = true;
         uploadedImageUrls = [];
         renderImagePreviews();
@@ -3888,7 +3932,7 @@
                 <div class="property-card-body">
                     <p class="item-title">${escapeHtml(p.title)}</p>
                     <p class="property-card-meta">${escapeHtml(p.zone)} • ${escapeHtml(p.property_type)}</p>
-                    <span class="property-card-price">€${p.price.toLocaleString('it-IT')}</span>
+                    <span class="property-card-price">${(p.price && Number(p.price) > 0) ? `€${Number(p.price).toLocaleString('it-IT')}` : '<span style="color:var(--brand-blue);font-size:13.5px;font-weight:600;">Trattativa riservata</span>'}</span>
                     ${(p.acquisition_date || p.expiry_date) ? `
                     <div class="property-card-gestionale">
                         ${p.acquisition_date ? `<span>Acquisizione: ${new Date(p.acquisition_date).toLocaleDateString('it-IT')}</span>` : ''}
@@ -4376,7 +4420,7 @@
         const p = properties.find(x => x.id == propId);
         if (!p) return;
         document.getElementById('trans-title').value = p.title;
-        document.getElementById('trans-initial-price').value = p.price;
+        document.getElementById('trans-initial-price').value = (p.price && Number(p.price) > 0) ? p.price : '';
         if (p.acquisition_date) document.getElementById('trans-acq-date').value = p.acquisition_date;
     }
 
@@ -4495,7 +4539,7 @@
                     owner_name: '',
                     assignment_duration: '6 mesi',
                     acquisition_date: p.acquisition_date || (p.created_at ? p.created_at.split('T')[0] : new Date().toISOString().split('T')[0]),
-                    initial_price: p.price,
+                    initial_price: (p.price && Number(p.price) > 0) ? p.price : 0,
                     commission_seller_perc: 0,
                     commission_buyer_perc: 0,
                     property_id: p.id
@@ -4798,17 +4842,19 @@
         const zonaLibera  = !zonaCercata || ZONE_LIBERE.includes(zonaCercata);
         const zonaOk      = zonaLibera || testiCompatibili(p.zone, b.desired_zone);
         const tipoOk      = testiCompatibili(p.property_type, b.desired_type);
-        const entroBudget = !b.max_budget || p.price <= b.max_budget;
+        const pPrice = Number(p.price) || 0;
+        const isReserved = pPrice <= 0;
+        const entroBudget = !b.max_budget || isReserved || pPrice <= b.max_budget;
         // Il 10% sopra si mostra lo stesso: un buon mediatore la casa giusta
         // leggermente fuori budget la fa vedere comunque, dicendolo.
-        const pocoSopra   = !entroBudget && b.max_budget && p.price <= b.max_budget * 1.1;
+        const pocoSopra   = !isReserved && !entroBudget && b.max_budget && pPrice <= b.max_budget * 1.1;
 
         if (!zonaOk || !tipoOk || (!entroBudget && !pocoSopra)) return null;
 
         const motivi = [];
         if (!zonaLibera && zonaOk) motivi.push('zona');
         if (normalizza(b.desired_type) && tipoOk) motivi.push('tipologia');
-        if (b.max_budget && entroBudget) motivi.push('budget');
+        if (b.max_budget && entroBudget && !isReserved) motivi.push('budget');
 
         // Serve almeno un criterio QUALITATIVO: zona o tipologia. Il budget
         // da solo non e' un abbinamento - dice quanto uno puo' spendere,
@@ -4850,7 +4896,7 @@
             if (!p) return;
             const trovati = clientiPerImmobile(p);
             titolo.innerText = 'Chi potrebbe volerlo';
-            sub.innerText = `${escapeHtml(p.title)} · €${p.price.toLocaleString('it-IT')}`;
+            sub.innerText = `${escapeHtml(p.title)} · ${(p.price && Number(p.price) > 0) ? `€${Number(p.price).toLocaleString('it-IT')}` : 'Trattativa riservata'}`;
             list.innerHTML = trovati.length
                 ? trovati.map(({ b, esito }) => rigaAbbinamentoCliente(b, esito)).join('')
                 : emptyState({ titolo: 'Nessun cliente in rubrica lo sta cercando',
@@ -4902,7 +4948,7 @@
             <img class="item-thumbnail" src="${p.images && p.images[0] ? p.images[0] : 'https://via.placeholder.com/128x100'}" loading="lazy" alt="">
             <div class="item-texts">
               <p class="item-title">${escapeHtml(p.title)}${nascosto ? ' <span class="status-badge bg-orange">Non sul sito</span>' : ''}</p>
-              <p class="item-details-text">${escapeHtml(p.zone)} · ${escapeHtml(p.property_type)} · <b>€${p.price.toLocaleString('it-IT')}</b></p>
+              <p class="item-details-text">${escapeHtml(p.zone)} · ${escapeHtml(p.property_type)} · <b>${(p.price && Number(p.price) > 0) ? `€${Number(p.price).toLocaleString('it-IT')}` : 'Trattativa riservata'}</b></p>
               <div class="match-chips">${chipMotivi(esito)}</div>
             </div>
           </div>

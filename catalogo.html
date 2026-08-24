@@ -598,7 +598,7 @@
     let priceBounds = { min: 0, max: 0 };
 
     function initPriceSlider() {
-      const prices = properties.map(p => Number(p.price)).filter(v => !isNaN(v));
+      const prices = properties.map(p => Number(p.price)).filter(v => !isNaN(v) && v > 0);
       if (prices.length === 0) { priceBounds = { min: 0, max: 0 }; }
       else {
         // Arrotondo per avere estremi puliti (step da 5.000€)
@@ -674,7 +674,7 @@
 
         // Filtro Prezzo (slider)
         const price = Number(p.price);
-        if(!isNaN(price) && (price < pMin || price > pMax)) return false;
+        if(!isNaN(price) && price > 0 && (price < pMin || price > pMax)) return false;
         
         // Filtro Testuale Libero
         if(searchQuery !== "") {
