@@ -1175,16 +1175,13 @@
             <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path></svg>
           </button>
           <img id="mod-img" src="" class="modal-img" alt="Foto immobile">
-          <button id="mod-zoom-btn" class="carousel-btn zoom" onclick="openLightbox(currentImageIndex); event.stopPropagation();" aria-label="Ingrandisci foto" title="Ingrandisci a tutto schermo">
-            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-5h-4m4 0v4m0-4l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
+          <button id="mod-zoom-btn" class="carousel-zoom-btn" onclick="openLightbox(currentImageIndex); event.stopPropagation();" aria-label="Ingrandisci foto a tutto schermo" title="Ingrandisci a tutto schermo">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7"></path></svg>
+            <span>Tocca per ingrandire</span>
           </button>
           <button id="mod-next-img" class="carousel-btn next" onclick="nextImage(event)" aria-label="Foto successiva">
             <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
           </button>
-          <div class="carousel-zoom-hint">
-            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7"></path></svg>
-            <span>Tocca per ingrandire</span>
-          </div>
           <div id="mod-img-dots" class="carousel-dots"></div>
         </div>
         
