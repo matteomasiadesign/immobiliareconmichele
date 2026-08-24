@@ -405,7 +405,14 @@ function openModal(id) {
 
 function showModal() {
     const overlay = document.getElementById('property-modal');
+    if (!overlay) return;
     const card = overlay.querySelector('.modal-card');
+    const scrollEl = overlay.querySelector('.modal-scroll');
+    if (scrollEl) scrollEl.scrollTop = 0;
+
+    document.body.style.overflow = 'hidden';
+    if (lenis) lenis.stop();
+
     if (motionOK) {
         gsap.set(overlay, { display: 'flex' });
         gsap.fromTo(card, { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: 0.35, ease: 'power2.out' });
@@ -474,7 +481,11 @@ function goToImage(index, e) {
 
 function closeModal() {
     closeLightbox();
+    document.body.style.overflow = '';
+    if (lenis) lenis.start();
+
     const overlay = document.getElementById('property-modal');
+    if (!overlay) return;
     const card = overlay.querySelector('.modal-card');
     if (motionOK) {
         gsap.to(card, {
@@ -485,6 +496,14 @@ function closeModal() {
         overlay.style.display = 'none';
     }
 }
+
+// Chiusura al tocco sullo sfondo della modale
+document.addEventListener('click', (e) => {
+    const overlay = document.getElementById('property-modal');
+    if (overlay && overlay.style.display !== 'none' && e.target === overlay) {
+        closeModal();
+    }
+});
 
 // GESTIONE SWIPE TOUCH SCREEN (MOBILE)
 function attachSwipeListeners(element, onSwipeLeft, onSwipeRight, onSwipeDown) {

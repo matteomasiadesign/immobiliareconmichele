@@ -1163,13 +1163,13 @@
   </div>
 
   <!-- MODALE DETTAGLIO IMMOBILE -->
-  <div id="property-modal" class="modal-overlay">
-    <div class="modal-card">
+  <div id="property-modal" class="modal-overlay" data-lenis-prevent>
+    <div class="modal-card" data-lenis-prevent>
       <button onclick="closeModal()" class="btn-close-modal">
         <svg style="width: 24px; height: 24px; flex-shrink: 0;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
       </button>
 
-      <div class="modal-scroll">
+      <div class="modal-scroll" data-lenis-prevent>
         <div class="modal-carousel-container" onclick="openLightbox(currentImageIndex)">
           <button id="mod-prev-img" class="carousel-btn prev" onclick="prevImage(event)" aria-label="Foto precedente">
             <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path></svg>
