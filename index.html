@@ -824,8 +824,8 @@
             </div>
           </div>
         </div>
-        <div style="text-align: center; margin-top: clamp(1.25rem, 2vh, 1.75rem);">
-          <a href="catalogo.html" class="btn-primary" style="background: white; color: var(--brand-blue); border: 2px solid var(--brand-blue); box-shadow: none;">Sfoglia Tutto il Catalogo</a>
+        <div style="text-align: center; margin-top: clamp(1.25rem, 2vh, 1.75rem); position: relative; z-index: 10;">
+          <a href="catalogo.html" class="btn-primary" style="background: white; color: var(--brand-blue); border: 2px solid var(--brand-blue); box-shadow: none; position: relative; z-index: 10;">Sfoglia il Catalogo Completo</a>
         </div>
       </section>
 
@@ -1481,23 +1481,23 @@
 
       // Dismiss preloader smoothly and trigger hero animation
       const dismiss = () => {
+        preloader.style.pointerEvents = 'none';
         gsap.timeline()
-          .to('.preloader-orbit-wrap', { scale: 0.9, opacity: 0, duration: 0.35, ease: 'power2.in' })
+          .to('.preloader-orbit-wrap', { scale: 0.9, opacity: 0, duration: 0.3, ease: 'power2.in' })
           .to(preloader, {
             opacity: 0,
-            duration: 0.45,
+            duration: 0.35,
             ease: 'power3.inOut',
             onComplete: () => {
               preloader.classList.add('loaded');
               preloader.remove();
-              window.scrollTo(0, 0);
               animateHero();
               if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
             }
-          }, '-=0.15');
+          }, '-=0.1');
       };
 
-      setTimeout(dismiss, 1100);
+      setTimeout(dismiss, 450);
     }
 
     initPreloader();
@@ -1506,7 +1506,7 @@
     initCardStagger();
     initCountUp();
 
-    window.addEventListener('DOMContentLoaded', async () => {
+    async function loadVetrina() {
       try {
         const { data, error } = await _supabase.from('properties_public').select('*').order('created_at', { ascending: false });
         if (!error && data) {
@@ -1521,7 +1521,13 @@
           }
         }
       } catch (err) { console.error(err); }
-    });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loadVetrina);
+    } else {
+      loadVetrina();
+    }
 
     function renderVetrina() {
       const grid = document.getElementById('featured-grid');
