@@ -691,6 +691,14 @@
        convive con "Vendita"/"Affitto" e non deve sembrare un terzo tipo di
        contratto ma il fatto compiuto. */
     .bg-sold { background: var(--good); color: var(--surface); }
+    /* "Luxury" per gli immobili della collezione esclusiva */
+    .bg-luxury {
+      background: linear-gradient(135deg, #18181b, #27272a);
+      color: #fbbf24;
+      border: 1px solid rgba(251, 191, 36, 0.45);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+      letter-spacing: 0.02em;
+    }
 
     /* ---------- SCHELETRI E STATI VUOTI ----------
        Il velo nero su tutta la pagina faceva aspettare al buio: lo scheletro
@@ -2178,6 +2186,11 @@
             <option value="visible">Solo visibili sul sito</option>
             <option value="hidden">Solo nascosti</option>
           </select>
+          <select id="prop-filter-luxury" onchange="renderPropertiesList()" class="form-select filter-select">
+            <option value="">Tutte le collezioni</option>
+            <option value="standard">Solo Standard</option>
+            <option value="luxury">💎 Solo Luxury</option>
+          </select>
           <button type="button" onclick="openPropertyForm()" class="btn-submit btn-add-immobile">+ Aggiungi Immobile</button>
         </div>
       </div>
@@ -2507,6 +2520,7 @@
         <div class="checkbox-container">
           <label class="checkbox-row"><input type="checkbox" id="prop-parking"><span class="checkbox-label">Parcheggio auto</span></label>
           <label class="checkbox-row"><input type="checkbox" id="prop-featured"><span class="checkbox-label" style="color: var(--brand-blue);">In evidenza / Mostra per primi</span></label>
+          <label class="checkbox-row"><input type="checkbox" id="prop-luxury"><span class="checkbox-label" style="color: #b45309; font-weight: 600;">💎 Immobile Luxury (destinato alla Collezione Luxury)</span></label>
         </div>
 
         <div class="form-section-label">Gestionale (uso interno, non visibile ai clienti sul sito)</div>
@@ -3567,6 +3581,7 @@
             reel_url: document.getElementById('prop-instagram').value || null,
             has_parking: document.getElementById('prop-parking').checked,
             is_featured: document.getElementById('prop-featured').checked,
+            is_luxury: Boolean(document.getElementById('prop-luxury').checked),
             images: uploadedImageUrls,
             is_visible: document.getElementById('prop-visible').checked,
             acquisition_date: document.getElementById('prop-acq-date').value || null,
@@ -3790,6 +3805,7 @@
         document.getElementById('prop-instagram').value = p.reel_url || '';
         document.getElementById('prop-parking').checked = p.has_parking;
         document.getElementById('prop-featured').checked = p.is_featured;
+        document.getElementById('prop-luxury').checked = Boolean(p.is_luxury);
         document.getElementById('prop-visible').checked = p.is_visible !== false;
         document.getElementById('prop-acq-date').value = p.acquisition_date || '';
         document.getElementById('prop-exp-date').value = p.expiry_date || '';
@@ -3825,6 +3841,7 @@
         document.querySelector('#modal-property-form form').reset();
         document.getElementById('prop-reserved-price').checked = false;
         toggleReservedPriceUI();
+        document.getElementById('prop-luxury').checked = false;
         document.getElementById('prop-visible').checked = true;
         uploadedImageUrls = [];
         renderImagePreviews();
@@ -3853,6 +3870,7 @@
         document.getElementById('prop-search').value = '';
         document.getElementById('prop-filter-status').value = '';
         document.getElementById('prop-filter-visibility').value = '';
+        if (document.getElementById('prop-filter-luxury')) document.getElementById('prop-filter-luxury').value = '';
         renderPropertiesList();
     }
 
@@ -3860,6 +3878,7 @@
         const search = document.getElementById('prop-search').value.toLowerCase();
         const statusFilter = document.getElementById('prop-filter-status').value;
         const visFilter = document.getElementById('prop-filter-visibility').value;
+        const luxuryFilter = document.getElementById('prop-filter-luxury')?.value || '';
         const list = document.getElementById('properties-list');
         list.innerHTML = "";
 
@@ -3867,7 +3886,8 @@
             const matchesSearch = p.title.toLowerCase().includes(search) || p.zone.toLowerCase().includes(search);
             const matchesStatus = !statusFilter || p.status === statusFilter;
             const matchesVis = !visFilter || (visFilter === 'visible' ? p.is_visible !== false : p.is_visible === false);
-            return matchesSearch && matchesStatus && matchesVis;
+            const matchesLuxury = !luxuryFilter || (luxuryFilter === 'luxury' ? p.is_luxury === true : p.is_luxury !== true);
+            return matchesSearch && matchesStatus && matchesVis && matchesLuxury;
         });
 
         // Gli immobili "in evidenza" (mostra per primi) vengono sempre prima
@@ -3878,14 +3898,15 @@
         if (filtered.length === 0) {
             // Distinguo "archivio vuoto" da "i filtri non lasciano passare
             // nulla": sono due situazioni diverse e chiedono azioni diverse.
-            const filtrato = search || statusFilter || visFilter;
+            const filtrato = search || statusFilter || visFilter || luxuryFilter;
             list.innerHTML = filtrato
                 ? emptyState({
                     titolo: 'Nessun immobile con questi filtri',
                     testo: [
                         search ? `ricerca "${search}"` : '',
                         statusFilter ? `contratto ${statusFilter.toLowerCase()}` : '',
-                        visFilter === 'visible' ? 'solo visibili' : (visFilter === 'hidden' ? 'solo nascosti' : '')
+                        visFilter === 'visible' ? 'solo visibili' : (visFilter === 'hidden' ? 'solo nascosti' : ''),
+                        luxuryFilter === 'luxury' ? 'solo luxury 💎' : (luxuryFilter === 'standard' ? 'solo standard' : '')
                     ].filter(Boolean).join(' · '),
                     azione: 'Azzera i filtri',
                     onAzione: 'resetPropFilters()'
@@ -3925,6 +3946,7 @@
                     <img src="${p.images[0]||'https://via.placeholder.com/300x225'}" loading="lazy">
                     <div class="property-card-badges">
                         <span class="status-badge ${p.status==='Vendita'?'bg-blue':'bg-green'}">${p.status}</span>
+                        ${p.is_luxury ? '<span class="status-badge bg-luxury" title="Immobile appartenente alla Collezione Luxury">💎 Luxury</span>' : ''}
                         ${venduto ? '<span class="status-badge bg-sold" title="Vendita registrata nello storico incarichi">✓ Venduto</span>' : ''}
                         ${p.is_featured ? '<span class="status-badge bg-yellow">★ Primi</span>' : ''}
                     </div>

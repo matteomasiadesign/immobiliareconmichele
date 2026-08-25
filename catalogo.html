@@ -588,9 +588,10 @@
     function populateFilters() {
       const zoneSelect = document.getElementById('filter-zone');
       const typeSelect = document.getElementById('filter-type');
+      const standardProps = properties.filter(p => !p.is_luxury);
       
-      const zones = [...new Set(properties.map(p => p.zone ? p.zone.trim() : ''))].filter(Boolean);
-      const types = [...new Set(properties.map(p => p.property_type ? p.property_type.trim() : ''))].filter(Boolean);
+      const zones = [...new Set(standardProps.map(p => p.zone ? p.zone.trim() : ''))].filter(Boolean);
+      const types = [...new Set(standardProps.map(p => p.property_type ? p.property_type.trim() : ''))].filter(Boolean);
       
       zones.forEach(z => { const opt = document.createElement('option'); opt.value = z; opt.innerText = z; zoneSelect.appendChild(opt); });
       types.forEach(t => { const opt = document.createElement('option'); opt.value = t; opt.innerText = t; typeSelect.appendChild(opt); });
@@ -602,7 +603,8 @@
     let priceBounds = { min: 0, max: 0 };
 
     function initPriceSlider() {
-      const prices = properties.map(p => Number(p.price)).filter(v => !isNaN(v) && v > 0);
+      const standardProps = properties.filter(p => !p.is_luxury);
+      const prices = standardProps.map(p => Number(p.price)).filter(v => !isNaN(v) && v > 0);
       if (prices.length === 0) { priceBounds = { min: 0, max: 0 }; }
       else {
         // Arrotondo per avere estremi puliti (step da 5.000€)
@@ -670,7 +672,10 @@
       const priceMaxF = Number(document.getElementById('price-max').value);
       const [pMin, pMax] = priceMinF <= priceMaxF ? [priceMinF, priceMaxF] : [priceMaxF, priceMinF];
 
-      const filtered = properties.filter(p => {
+      // Esclude gli annunci della sezione Luxury dal catalogo comune
+      const standardProperties = properties.filter(p => !p.is_luxury);
+
+      const filtered = standardProperties.filter(p => {
         // Filtro Dropdown
         if(statusF !== "Tutti" && p.status !== statusF) return false;
         if(zoneF !== "Tutte" && p.zone !== zoneF) return false;

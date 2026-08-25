@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Collezione Luxury · Immobiliare con Michele</title>
+
+  <meta name="description" content="Dimore di pregio, ville esclusive e immobili di alto profilo in Sardegna con assistenza dedicata e massima riservatezza.">
+  <meta name="theme-color" content="#090d16">
+
+  <link rel="icon" href="logo.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-title" content="Michele Luxury">
+  <link rel="manifest" href="manifest.webmanifest">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500..700&family=Teko:wght@400..700&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="gsap.min.js"></script>
+  <script src="scrolltrigger.min.js"></script>
+  <script src="lenis.min.js"></script>
+  <link rel="stylesheet" href="shared.css">
+
+  <style>
+    :root {
+      --brand-blue: #0044FF;
+      --brand-yellow: #FFD90F;
+      --gold-main: #FFD90F;
+      --gold-light: #FFD90F;
+      --gold-glow: rgba(255, 217, 15, 0.25);
+      --lux-bg: #050b1d;
+      --lux-card: #0c1735;
+      --lux-card-border: rgba(0, 68, 255, 0.25);
+      --lux-card-hover: rgba(255, 217, 15, 0.45);
+      --lux-text: #f8fafc;
+      --lux-text-muted: #94a3b8;
+      --white: #ffffff;
+      --border-color: rgba(255, 255, 255, 0.1);
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Space Grotesk", "Segoe UI", Roboto, sans-serif; }
+    
+    html, body {
+      background-color: var(--lux-bg);
+      color: var(--lux-text);
+      min-height: 100vh;
+      max-width: 100%;
+      overflow-x: clip;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* HERO SECTION */
+    .lux-hero {
+      position: relative;
+      padding: 4.5rem 1.5rem 3.5rem;
+      text-align: center;
+      overflow: hidden;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      background: radial-gradient(circle at 50% 20%, rgba(0, 68, 255, 0.25) 0%, rgba(5, 11, 29, 0) 70%);
+    }
+    @media (min-width: 768px) {
+      .lux-hero { padding: 6rem 2rem 4.5rem; }
+    }
+    
+    .lux-badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 217, 15, 0.12);
+      border: 1px solid rgba(255, 217, 15, 0.4);
+      color: var(--brand-yellow);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      border-radius: 999px;
+      margin-bottom: 1.25rem;
+    }
+    .lux-hero-title {
+      font-family: 'Teko', 'Space Grotesk', sans-serif;
+      font-size: clamp(2.8rem, 7vw, 4.8rem);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      color: #ffffff;
+      line-height: 1.05;
+      margin-bottom: 1rem;
+      max-width: 920px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .lux-hero-title span {
+      color: var(--brand-yellow);
+      background: linear-gradient(135deg, #ffffff 20%, var(--brand-yellow) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .lux-hero-subtitle {
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: var(--lux-text-muted);
+      max-width: 680px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.6;
+      font-weight: 500;
+    }
+
+    .lux-pillars {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    @media (min-width: 640px) {
+      .lux-pillars { grid-template-columns: repeat(3, 1fr); }
+    }
+    .pillar-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 1.25rem 1rem;
+      transition: var(--transition);
+    }
+    .pillar-card:hover {
+      border-color: rgba(255, 217, 15, 0.4);
+      background: rgba(0, 68, 255, 0.08);
+      transform: translateY(-2px);
+    }
+    .pillar-icon {
+      color: var(--brand-yellow);
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+    .pillar-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13.5px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: #fff;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+    .pillar-desc {
+      font-size: 12px;
+      color: var(--lux-text-muted);
+      line-height: 1.4;
+    }
+
+    /* MAIN CONTAINER */
+    .lux-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 3rem 1.25rem 5rem;
+      width: 100%;
+      flex: 1 0 auto;
+    }
+    @media (min-width: 768px) {
+      .lux-container { padding: 4rem 2rem 6rem; }
+    }
+
+    .lux-section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 2.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding-bottom: 1.25rem;
+    }
+    .lux-section-heading {
+      font-family: 'Teko', 'Space Grotesk', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #ffffff;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      line-height: 1;
+    }
+    .lux-count-tag {
+      font-size: 12px;
+      color: var(--brand-yellow);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* BESPOKE LUXURY CARD STYLES */
+    .lux-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2.25rem;
+    }
+    @media (min-width: 640px) {
+      .lux-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (min-width: 1024px) {
+      .lux-grid { grid-template-columns: repeat(2, 1fr); gap: 2.5rem; }
+    }
+    @media (min-width: 1280px) {
+      .lux-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .lux-card {
+      background: linear-gradient(180deg, #0e1c3e 0%, #081126 100%);
+      border: 1.5px solid rgba(0, 68, 255, 0.35);
+      border-radius: 24px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.4s ease;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
+    }
+    .lux-card:hover {
+      transform: translateY(-8px);
+      border-color: var(--brand-yellow);
+      box-shadow: 0 24px 50px rgba(0, 68, 255, 0.3), 0 0 20px rgba(255, 217, 15, 0.15);
+    }
+
+    .lux-card-img-box {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 10.5;
+      overflow: hidden;
+      background: #030611;
+    }
+    .lux-card-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+      display: block;
+    }
+    .lux-card:hover .lux-card-img.lux-img-primary {
+      transform: scale(1.06);
+    }
+    .lux-img-hover {
+      position: absolute;
+      top: 0;
+      left: 0;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .lux-card:hover .lux-img-hover {
+      opacity: 1;
+      transform: scale(1.06);
+    }
+
+    .lux-badge-overlay-top {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 5;
+    }
+    .lux-badge-contract {
+      background: rgba(5, 11, 29, 0.82);
+      border: 1px solid rgba(255, 217, 15, 0.4);
+      color: var(--brand-yellow);
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 5px 12px;
+      border-radius: 999px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .lux-badge-exclusive {
+      background: linear-gradient(135deg, rgba(0, 68, 255, 0.85), rgba(0, 31, 140, 0.9));
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #ffffff;
+      font-size: 10.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 5px 11px;
+      border-radius: 999px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 12px rgba(0,68,255,0.35);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .lux-card-actions-top {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 5;
+    }
+    .lux-share-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(5, 11, 29, 0.82);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      transition: var(--transition);
+    }
+    .lux-share-btn:hover {
+      background: var(--brand-yellow);
+      color: #050b1d;
+      border-color: var(--brand-yellow);
+      transform: scale(1.08);
+    }
+
+    .lux-card-img-scrim {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60%;
+      background: linear-gradient(180deg, transparent 0%, rgba(5, 11, 29, 0.85) 100%);
+      pointer-events: none;
+    }
+    .lux-card-category-tag {
+      position: absolute;
+      bottom: 12px;
+      left: 16px;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--brand-yellow);
+      z-index: 4;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.8);
+    }
+
+    .lux-card-content {
+      padding: 1.5rem 1.6rem 1.6rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .lux-card-zone {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--lux-text-muted);
+      margin-bottom: 0.5rem;
+    }
+    .lux-card-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.3;
+      margin-bottom: 0.75rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .lux-card-excerpt {
+      font-size: 13px;
+      color: #94a3b8;
+      line-height: 1.5;
+      margin-bottom: 1.2rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .lux-card-features-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 1.25rem;
+    }
+    .lux-feat-item {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: 10px;
+      padding: 6px 11px;
+      font-size: 12px;
+      color: #cbd5e1;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .lux-feat-item strong {
+      color: #ffffff;
+    }
+
+    .lux-card-divider {
+      height: 1px;
+      background: rgba(255, 255, 255, 0.08);
+      margin-top: auto;
+      margin-bottom: 1.25rem;
+    }
+
+    .lux-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 1rem;
+    }
+    .lux-price-wrap {
+      display: flex;
+      flex-direction: column;
+    }
+    .lux-price-caption {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--lux-text-muted);
+      margin-bottom: 2px;
+    }
+    .lux-price-amount {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: var(--brand-yellow);
+      line-height: 1.1;
+    }
+    .lux-price-amount.is-reserved {
+      font-size: 1.15rem;
+      color: var(--brand-yellow);
+      letter-spacing: 0.02em;
+    }
+
+    .lux-btn-explore {
+      background: linear-gradient(135deg, var(--brand-blue), #002db3);
+      border: 1.5px solid rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 4px 15px rgba(0, 68, 255, 0.35);
+      flex-shrink: 0;
+    }
+    .lux-card:hover .lux-btn-explore {
+      background: var(--brand-yellow);
+      color: #050b1d;
+      border-color: var(--brand-yellow);
+      box-shadow: 0 6px 20px rgba(255, 217, 15, 0.4);
+      transform: translateX(2px);
+    }
+
+    /* EMPTY STATE LUXURY */
+    .lux-empty {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 4rem 1.5rem;
+      background: rgba(255,255,255,0.02);
+      border: 1px dashed rgba(255, 217, 15, 0.35);
+      border-radius: 24px;
+    }
+    .lux-empty-icon {
+      font-size: 40px;
+      margin-bottom: 1rem;
+      color: var(--brand-yellow);
+    }
+    .lux-empty h3 {
+      font-family: 'Teko', 'Space Grotesk', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      color: #fff;
+      margin-bottom: 0.5rem;
+    }
+    .lux-empty p {
+      font-size: 14px;
+      color: var(--lux-text-muted);
+      max-width: 480px;
+      margin: 0 auto 1.5rem;
+      line-height: 1.5;
+    }
+
+    /* PRIVATE ADVISORY BANNER */
+    .lux-advisory-section {
+      background: linear-gradient(180deg, #0c183a 0%, #060d24 100%);
+      border: 1px solid rgba(0, 68, 255, 0.3);
+      border-radius: 24px;
+      padding: 2.75rem 1.75rem;
+      margin: 4.5rem auto 0;
+      max-width: 940px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45);
+    }
+    @media (min-width: 768px) {
+      .lux-advisory-section { padding: 3.5rem 2.5rem; }
+    }
+    .lux-advisory-section::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 500px;
+      height: 350px;
+      background: radial-gradient(circle, rgba(0, 68, 255, 0.18), transparent 70%);
+      pointer-events: none;
+    }
+    .advisory-badge {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--brand-yellow);
+      background: rgba(255, 217, 15, 0.1);
+      border: 1px solid rgba(255, 217, 15, 0.3);
+      padding: 5px 14px;
+      border-radius: 999px;
+      display: inline-block;
+      margin-bottom: 1rem;
+      position: relative;
+    }
+    .advisory-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.35rem, 2.5vw, 1.75rem);
+      font-weight: 700;
+      text-transform: none;
+      letter-spacing: -0.01em;
+      color: #ffffff;
+      margin-bottom: 0.75rem;
+      position: relative;
+      line-height: 1.3;
+    }
+    .advisory-text {
+      color: var(--lux-text-muted);
+      font-size: 14.5px;
+      max-width: 620px;
+      margin: 0 auto 1.75rem;
+      line-height: 1.6;
+      position: relative;
+      font-weight: 400;
+    }
+    .advisory-cta-box {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      position: relative;
+    }
+    .btn-lux-whatsapp {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #25D366;
+      color: #fff;
+      padding: 14px 26px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 8px 25px rgba(37, 211, 102, 0.3);
+      transition: var(--transition);
+    }
+    .btn-lux-whatsapp:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(37, 211, 102, 0.45);
+    }
+    .btn-lux-phone {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255, 217, 15, 0.4);
+      color: #fff;
+      padding: 14px 26px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+    .btn-lux-phone:hover {
+      background: rgba(255, 217, 15, 0.15);
+      border-color: var(--brand-yellow);
+      transform: translateY(-2px);
+    }
+
+    /* FOOTER */
+    .lux-footer {
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding: 3rem 1.5rem;
+      text-align: center;
+      font-size: 12.5px;
+      color: var(--lux-text-muted);
+      background: #030611;
+    }
+    .lux-footer a { color: var(--brand-yellow); text-decoration: none; }
+    
+    /* RESPONSIVE REFINEMENTS PER SMARTPHONE & PICCOLI SCHERMI */
+    @media (max-width: 640px) {
+      .lux-hero {
+        padding: 3.5rem 1rem 2.25rem;
+      }
+      .lux-badge-pill {
+        font-size: 10px;
+        padding: 5px 12px;
+        margin-bottom: 0.9rem;
+      }
+      .lux-hero-title {
+        font-size: clamp(2.3rem, 11vw, 3.2rem);
+        margin-bottom: 0.75rem;
+      }
+      .lux-hero-subtitle {
+        font-size: 14.5px;
+        margin-bottom: 1.75rem;
+        line-height: 1.5;
+      }
+      .lux-pillars {
+        gap: 0.65rem;
+      }
+      .pillar-card {
+        padding: 0.9rem 0.85rem;
+      }
+      .lux-container {
+        padding: 2rem 1rem 4rem;
+      }
+      .lux-section-header {
+        margin-bottom: 1.5rem;
+        gap: 0.5rem;
+      }
+      .lux-section-heading {
+        font-size: 2.1rem;
+      }
+      .lux-grid {
+        gap: 1.5rem;
+      }
+      .lux-card {
+        border-radius: 20px;
+      }
+      .lux-card-content {
+        padding: 1.15rem 1rem 1.25rem;
+      }
+      .lux-card-title {
+        font-size: 1.15rem;
+        margin-bottom: 0.5rem;
+      }
+      .lux-card-excerpt {
+        font-size: 12.5px;
+        margin-bottom: 1rem;
+      }
+      .lux-card-features-row {
+        gap: 6px;
+        margin-bottom: 1rem;
+      }
+      .lux-feat-item {
+        padding: 5px 8px;
+        font-size: 11.5px;
+        border-radius: 8px;
+      }
+      .lux-price-amount {
+        font-size: 1.3rem;
+      }
+      .lux-btn-explore {
+        padding: 9px 14px;
+        font-size: 11px;
+      }
+      .lux-advisory-section {
+        padding: 2.25rem 1.25rem;
+        margin-top: 3.5rem;
+        border-radius: 20px;
+      }
+      .advisory-title {
+        font-size: 1.35rem;
+      }
+      .advisory-text {
+        font-size: 13.5px;
+        margin-bottom: 1.4rem;
+      }
+      .advisory-cta-box {
+        flex-direction: column;
+        width: 100%;
+        gap: 10px;
+      }
+      .btn-lux-whatsapp, .btn-lux-phone {
+        width: 100%;
+        justify-content: center;
+        padding: 12px 18px;
+        font-size: 13.5px;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .lux-card-footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      .lux-btn-explore {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
+    /* LUXURY MODAL THEME OVERRIDES */
+    #property-modal .modal-card {
+      background: #0c1735;
+      border: 1px solid rgba(0, 68, 255, 0.4);
+      color: #f8fafc;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.85);
+    }
+    #property-modal .modal-content {
+      background: #0c1735;
+    }
+    #property-modal .modal-type {
+      color: var(--brand-yellow);
+    }
+    #property-modal .modal-title {
+      color: #ffffff;
+      font-family: 'Teko', 'Space Grotesk', sans-serif;
+      font-size: 2.2rem;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+    #property-modal .modal-grid-item {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    #property-modal .modal-grid-number,
+    #property-modal .modal-grid-unit {
+      color: #ffffff;
+    }
+    #property-modal .modal-desc-title {
+      color: var(--brand-yellow);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    #property-modal .modal-desc {
+      color: #cbd5e1;
+    }
+    #property-modal .modal-footer {
+      background: #050b1d;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      border-left: 1px solid rgba(255,255,255,0.08);
+      padding: 1.25rem 1.75rem 1.4rem;
+    }
+    #property-modal .modal-price {
+      color: var(--brand-yellow);
+    }
+    #property-modal .btn-call {
+      background: linear-gradient(135deg, var(--brand-blue), #002db3);
+      color: #ffffff;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    #property-modal .btn-share {
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.2);
+      color: #ffffff;
+    }
+    #property-modal .btn-share:hover {
+      background: var(--brand-yellow);
+      color: #050b1d;
+      border-color: var(--brand-yellow);
+    }
+    #property-modal .btn-close-modal {
+      background: rgba(255,255,255,0.1);
+      color: #ffffff;
+    }
+    #property-modal .btn-close-modal:hover {
+      background: var(--brand-yellow);
+      color: #050b1d;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR IDENTICA AL SITO NORMALE -->
+  <nav class="navbar" aria-label="Navigazione principale">
+    <a href="index.html" class="brand">
+      <div class="brand-icon-box">
+        <img src="logo.svg" alt="Logo Immobiliare con Michele" style="width: 100%; height: 100%; object-fit: contain;">
+      </div>
+      <div class="brand-text">
+        <span class="brand-title">Immobiliare con Michele</span>
+      </div>
+    </a>
+    
+    <div class="nav-actions">
+      <!-- MENU HAMBURGER (DESKTOP & MOBILE) -->
+      <button id="mobile-toggle" class="mobile-toggle" aria-label="Apri il menu" aria-expanded="false" aria-controls="mobile-menu">
+        <svg fill="none" stroke="var(--brand-yellow)" stroke-width="2.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        <span class="mobile-toggle-label">Menu</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- MENU A DISCESA UNIFICATO -->
+  <div id="mobile-menu" class="mobile-menu">
+    <a href="index.html" class="nav-link" style="display: flex; align-items: center; gap: 8px;">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"></path></svg>
+      Torna al sito
+    </a>
+    <a href="https://wa.me/393475143301?text=Buongiorno%20Michele,%20desidero%20maggiori%20informazioni%20sugli%20immobili%20della%20Collezione%20Luxury." target="_blank" rel="noopener" class="btn-valuation-nav" style="background:#25D366; color:#fff; border-color:#25D366; display:flex; align-items:center; justify-content:center; gap:8px;">
+      <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+      Contatta Michele
+    </a>
+  </div>
+
+  <!-- LUXURY HERO -->
+  <section class="lux-hero">
+    <div class="lux-badge-pill">
+      <span>✦ Collezione Esclusiva ✦</span>
+    </div>
+    <h1 class="lux-hero-title">
+      Dimore di Pregio &amp; <span>Residenze d'Autore</span>
+    </h1>
+    <p class="lux-hero-subtitle">
+      Una selezione accurata di proprietà prestigiose e soluzioni abitative uniche in Sardegna, curate con la massima riservatezza e una consulenza d'eccellenza.
+    </p>
+
+    <div class="lux-pillars">
+      <div class="pillar-card">
+        <div class="pillar-icon">💎</div>
+        <div class="pillar-title">Selezione Rigorosa</div>
+        <div class="pillar-desc">Solo immobili con standard architettonici ed estetici superiori.</div>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-icon">🔒</div>
+        <div class="pillar-title">Trattative Riservate</div>
+        <div class="pillar-desc">Totale discrezione e tutela della privacy per acquirenti e venditori.</div>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-icon">👑</div>
+        <div class="pillar-title">Consulenza Dedicata</div>
+        <div class="pillar-desc">Accompagnamento one-to-one in ogni fase dell'acquisizione.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- IMMOBILI LUXURY CONTAINER -->
+  <main class="lux-container">
+    <div class="lux-section-header">
+      <div>
+        <h2 class="lux-section-heading">Le Nostre Dimore</h2>
+        <p style="font-size: 13.5px; color: var(--lux-text-muted); margin-top: 4px;">Proprietà disponibili per visione e trattativa privata</p>
+      </div>
+      <div id="lux-count-indicator" class="lux-count-tag">Caricamento portfolio...</div>
+    </div>
+
+    <!-- GRIGLIA IMMOBILI LUXURY -->
+    <div id="properties-grid" class="lux-grid">
+      <!-- Generato dinamicamente via JS -->
+    </div>
+
+    <!-- SEZIONE PRIVATE ADVISORY -->
+    <section class="lux-advisory-section">
+      <div class="advisory-badge">✦ Servizio Riservato &amp; Personalizzato ✦</div>
+      <h2 class="advisory-title">Desideri valorizzare o cercare una proprietà esclusiva?</h2>
+      <p class="advisory-text">
+        Affidati a un percorso personalizzato, con piano di valorizzazione multimediale, accesso a una rete esclusiva di acquirenti e costante tutela della tua riservatezza.
+      </p>
+      <div class="advisory-cta-box">
+        <a href="https://wa.me/393475143301?text=Buongiorno%20Michele,%20desidero%20una%20consulenza%20riservata%20per%20un%20immobile%20di%20pregio." target="_blank" rel="noopener" class="btn-lux-whatsapp">
+          <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+          Richiedi Consulenza Privata
+        </a>
+        <a href="tel:+393475143301" class="btn-lux-phone">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+          Chiama Michele Erre
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <!-- MODALE DETTAGLIO IMMOBILE -->
+  <div id="property-modal" class="modal-overlay" data-lenis-prevent>
+    <div class="modal-card" data-lenis-prevent>
+      <button onclick="closeModal()" class="btn-close-modal">
+        <svg style="width: 24px; height: 24px; flex-shrink: 0;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+      </button>
+
+      <div class="modal-scroll" data-lenis-prevent>
+        <div class="modal-carousel-container" onclick="openLightbox(currentImageIndex)">
+          <button id="mod-prev-img" class="carousel-btn prev" onclick="prevImage(event)" aria-label="Foto precedente">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path></svg>
+          </button>
+          <img id="mod-img" src="" class="modal-img" alt="Foto immobile">
+          <button id="mod-zoom-btn" class="carousel-zoom-btn" onclick="openLightbox(currentImageIndex); event.stopPropagation();" aria-label="Ingrandisci foto a tutto schermo" title="Ingrandisci a tutto schermo">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7"></path></svg>
+            <span>Tocca per ingrandire</span>
+          </button>
+          <button id="mod-next-img" class="carousel-btn next" onclick="nextImage(event)" aria-label="Foto successiva">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+          </button>
+          <div id="mod-img-dots" class="carousel-dots"></div>
+        </div>
+        
+        <div class="modal-content">
+          <span id="mod-type" class="modal-type"></span>
+          <h2 id="mod-title" class="modal-title"></h2>
+          <div class="modal-zone">
+            <svg style="width: 14px; height: 14px; flex-shrink: 0;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            <span id="mod-zone"></span>
+          </div>
+          
+          <div class="modal-grid" id="mod-grid">
+            <div class="modal-grid-item">
+              <svg class="modal-grid-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+              <span class="modal-grid-value"><span id="mod-rooms" class="modal-grid-number"></span></span>
+              <span class="modal-grid-label">Locali</span>
+            </div>
+            <div class="modal-grid-item">
+              <svg class="modal-grid-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+              <span class="modal-grid-value"><span id="mod-bathrooms" class="modal-grid-number"></span></span>
+              <span class="modal-grid-label">Bagni</span>
+            </div>
+            <div class="modal-grid-item" id="mod-sqm-item" style="display:none;">
+              <svg class="modal-grid-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4h4M16 4h4v4M20 16v4h-4M8 20H4v-4"></path></svg>
+              <span class="modal-grid-value"><span id="mod-sqm" class="modal-grid-number"></span><span class="modal-grid-unit">m²</span></span>
+              <span class="modal-grid-label">Superficie</span>
+            </div>
+            <div class="modal-grid-item">
+              <svg class="modal-grid-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"></rect><path stroke-linecap="round" stroke-linejoin="round" d="M9.5 17V7h3a3 3 0 010 6h-3"></path></svg>
+              <span class="modal-grid-value"><span id="mod-parking" class="modal-grid-number"></span></span>
+              <span class="modal-grid-label">Parcheggio</span>
+            </div>
+          </div>
+
+          <div class="modal-desc-title">Descrizione Completa</div>
+          <div id="mod-desc" class="modal-desc"></div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <div class="modal-price-box">
+          <span class="modal-price-label">Prezzo Richiesto</span>
+          <div id="mod-price" class="modal-price"></div>
+        </div>
+        <div class="modal-actions" id="mod-actions-container"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LUXURY FOOTER -->
+  <footer class="lux-footer">
+    <p style="margin-bottom: 6px; font-weight:600; color: #fff;">Michele Erre · Consulenza &amp; Mediazione Immobiliare di Pregio</p>
+    <p>Porto Torres (SS) · P.IVA 02925580905 · Iscrizione Ruolo Agenti Immobiliari</p>
+    <p style="margin-top: 10px; font-size: 11px; opacity: 0.6;">© 2026 Immobiliare con Michele. Tutti i diritti riservati.</p>
+  </footer>
+
+  <!-- Include modale dettaglio annuncio e script condiviso -->
+  <script src="shared.js"></script>
+
+  <script>
+    // IMMOBILI DIMOSTRATIVI LUXURY (Visibili esclusivamente in questa pagina per sviluppo e anteprima grafica)
+    const MOCK_LUXURY_PROPERTIES = [
+      {
+        id: 'mock-villa-stintino',
+        title: 'Villa Panoramica con Piscina a Sfioro su Cala Lupo',
+        status: 'Vendita',
+        price: 1350000,
+        zone: 'Stintino · Cala Lupo',
+        property_type: 'Villa Singola Esclusiva',
+        rooms: 6,
+        bathrooms: 4,
+        sqm: 320,
+        has_parking: true,
+        is_featured: true,
+        is_luxury: true,
+        description: "Prestigiosa residenza unifamiliare immersa nella macchia mediterranea di Stintino, a pochi passi dalle acque cristalline di Cala Lupo. La villa si sviluppa su due livelli con ampie vetrate scorrevoli a tutta altezza che aprono la zona living su un patio panoramico con piscina a sfioro riscaldata e vista mozzafiato sul Golfo dell'Asinara. Finiture in granito sardo, parquet in rovere naturale, impianto domotico completo e giardino privato di 1.500 mq con solarium e zona lounge all'aperto.",
+        reel_url: 'https://www.instagram.com',
+        images: [
+          'https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=80'
+        ]
+      },
+      {
+        id: 'mock-attico-balai',
+        title: 'Attico di Pregio con Terrazza Solarium e Vista Golfo',
+        status: 'Vendita',
+        price: 0, // Trattativa riservata
+        zone: 'Porto Torres · Lungomare Balai',
+        property_type: 'Attico & Superattico',
+        rooms: 5,
+        bathrooms: 3,
+        sqm: 210,
+        has_parking: true,
+        is_featured: true,
+        is_luxury: true,
+        description: "Esclusivo attico situato in prima linea sul mare sul rinomato lungomare di Porto Torres. L'immobile vanta una terrazza panoramica di oltre 100 mq attrezzata con pergolato bioclimatico, zona barbecue e vasca idromassaggio jacuzzi vista mare. Triplo salone con camino di design, cucina a isola su misura, master suite con cabina armadio e bagno en-suite in marmo. Box auto doppio automatizzato compreso.",
+        reel_url: '',
+        images: [
+          'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1600607687644-c7171b42498f?auto=format&fit=crop&w=1200&q=80'
+        ]
+      }
+    ];
+
+    function luxuryPropertyCardHTML(p) {
+      const images = p.images || [];
+      const isReserved = !p.price || Number(p.price) <= 0;
+      const priceDisplay = isReserved ? 'Trattativa riservata' : `€${Number(p.price).toLocaleString('it-IT')}`;
+      const excerpt = p.description ? (p.description.length > 120 ? p.description.substring(0, 120) + '...' : p.description) : '';
+
+      return `
+      <article class="lux-card" data-id="${escapeHtml(p.id)}">
+        <div class="lux-card-img-box">
+          <div class="lux-badge-overlay-top">
+            <span class="lux-badge-contract">In ${escapeHtml(p.status)}</span>
+            <span class="lux-badge-exclusive"><span>💎</span> Luxury</span>
+          </div>
+
+          <div class="lux-card-actions-top">
+            ${p.reel_url ? `
+            <a href="${escapeHtml(p.reel_url)}" target="_blank" rel="noopener" class="card-badge-reel" title="Guarda il Reel" aria-label="Guarda il Reel su Instagram">
+              <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            </a>` : ''}
+            <button type="button" class="lux-share-btn" title="Condividi annuncio" aria-label="Condividi annuncio">
+              <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
+            </button>
+          </div>
+
+          <img src="${escapeHtml(images[0] || '')}" class="lux-card-img lux-img-primary" alt="${escapeHtml(p.title)}" loading="lazy">
+          ${images.length > 1 ? `<img src="${escapeHtml(images[1])}" class="lux-card-img lux-img-hover" alt="" loading="lazy">` : ''}
+          
+          <div class="lux-card-img-scrim"></div>
+          <div class="lux-card-category-tag">${escapeHtml(p.property_type || 'Immobile di Pregio')}</div>
+        </div>
+
+        <div class="lux-card-content">
+          <div class="lux-card-zone">
+            <svg width="14" height="14" fill="none" stroke="var(--brand-yellow)" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            <span>${escapeHtml(p.zone || '')}</span>
+          </div>
+
+          <h3 class="lux-card-title">${escapeHtml(p.title)}</h3>
+          
+          ${excerpt ? `<p class="lux-card-excerpt">${escapeHtml(excerpt)}</p>` : ''}
+
+          <div class="lux-card-features-row">
+            ${p.rooms ? `
+            <div class="lux-feat-item" title="${p.rooms} Locali">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+              <span><strong>${p.rooms}</strong> Locali</span>
+            </div>` : ''}
+            ${p.bathrooms ? `
+            <div class="lux-feat-item" title="${p.bathrooms} Bagni">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+              <span><strong>${p.bathrooms}</strong> Bagni</span>
+            </div>` : ''}
+            ${p.sqm ? `
+            <div class="lux-feat-item" title="${p.sqm} Metri quadri">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4h4M16 4h4v4M20 16v4h-4M8 20H4v-4"></path></svg>
+              <span><strong>${p.sqm}</strong> m²</span>
+            </div>` : ''}
+            ${p.has_parking ? `
+            <div class="lux-feat-item" title="Posto auto compreso">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"></rect><path stroke-linecap="round" stroke-linejoin="round" d="M9.5 17V7h3a3 3 0 010 6h-3"></path></svg>
+              <span>Auto</span>
+            </div>` : ''}
+          </div>
+
+          <div class="lux-card-divider"></div>
+
+          <div class="lux-card-footer">
+            <div class="lux-price-wrap">
+              <span class="lux-price-caption">Valore / Richiesta</span>
+              <span class="lux-price-amount ${isReserved ? 'is-reserved' : ''}">
+                ${isReserved ? '✦ Trattativa Riservata' : priceDisplay}
+              </span>
+            </div>
+            <button type="button" class="lux-btn-explore" aria-label="Visualizza dettagli della dimora">
+              <span>Esplora</span>
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"></path></svg>
+            </button>
+          </div>
+        </div>
+      </article>`;
+    }
+
+    // Delegazione click per apertura modale e condivisione su .lux-card
+    document.addEventListener('click', (e) => {
+      if (e.target.closest('.card-badge-reel')) return;
+      const shareBtn = e.target.closest('.lux-share-btn');
+      if (shareBtn) {
+        e.stopPropagation();
+        const id = shareBtn.closest('[data-id]')?.dataset.id;
+        const p = properties.find(x => x.id === id);
+        if (p && typeof shareProperty === 'function') shareProperty(p.id, p.title);
+        return;
+      }
+      const card = e.target.closest('.lux-card[data-id]');
+      if (card) {
+        openModal(card.dataset.id);
+      }
+    });
+
+    async function loadLuxuryProperties() {
+      const countEl = document.getElementById('lux-count-indicator');
+      const grid = document.getElementById('properties-grid');
+
+      try {
+        let dbLuxury = [];
+        try {
+          const { data, error } = await _supabase
+            .from('properties_public')
+            .select('*')
+            .order('created_at', { ascending: false });
+          if (!error && data) {
+            dbLuxury = data.filter(p => p.is_luxury === true);
+          }
+        } catch (err) {
+          console.warn('Supabase offline o non ancora popolato con immobili luxury:', err);
+        }
+
+        // Unisce gli eventuali immobili reali del DB con gli immobili fittizi per anteprima grafica
+        properties = [...dbLuxury, ...MOCK_LUXURY_PROPERTIES];
+
+        if (countEl) {
+          countEl.innerText = `${properties.length} ${properties.length === 1 ? 'dimora di pregio' : 'dimore di pregio'}`;
+        }
+
+        grid.innerHTML = properties.map(luxuryPropertyCardHTML).join('');
+        if (typeof initCardStagger === 'function') initCardStagger();
+
+        // Apre il modale se presente un ID nell'URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const propertyId = urlParams.get('id');
+        if (propertyId) {
+          setTimeout(() => openModal(propertyId), 300);
+        }
+
+      } catch (err) {
+        console.error('Errore nel caricamento delle proprietà luxury:', err);
+        properties = [...MOCK_LUXURY_PROPERTIES];
+        if (countEl) countEl.innerText = `${properties.length} dimore di pregio`;
+        grid.innerHTML = properties.map(luxuryPropertyCardHTML).join('');
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loadLuxuryProperties);
+    } else {
+      loadLuxuryProperties();
+    }
+  </script>
+</body>
+</html>

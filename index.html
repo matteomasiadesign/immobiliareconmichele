@@ -1535,9 +1535,11 @@
 
     function renderVetrina() {
       const grid = document.getElementById('featured-grid');
-      let featured = properties.filter(p => p.is_featured);
+      // Mostra solo gli immobili standard (i luxury compaiono esclusivamente nell'area luxury)
+      const standardProperties = properties.filter(p => !p.is_luxury);
+      let featured = standardProperties.filter(p => p.is_featured);
       if (featured.length < 4) {
-        const others = properties.filter(p => !p.is_featured);
+        const others = standardProperties.filter(p => !p.is_featured);
         featured = [...featured, ...others.slice(0, 4 - featured.length)];
       }
       featured = featured.slice(0, 4);

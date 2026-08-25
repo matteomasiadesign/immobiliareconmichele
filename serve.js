@@ -94,6 +94,10 @@ const server = http.createServer((req, res) => {
 
   if (pathname === '/') {
     pathname = '/index.html';
+  } else if (pathname === '/luxury' || pathname === '/luxury/') {
+    pathname = '/luxury.html';
+  } else if (!path.extname(pathname) && fs.existsSync(path.join(PUBLIC_DIR, pathname + '.html'))) {
+    pathname = pathname + '.html';
   }
 
   // Prevenzione directory traversal
@@ -179,7 +183,8 @@ function serveFile(filePath, res) {
 server.listen(PORT, () => {
   console.log(`\n==================================================`);
   console.log(`  Live Preview Server attivo!`);
-  console.log(`  Home:  http://localhost:${PORT}/`);
-  console.log(`  Admin: http://localhost:${PORT}/admin.html`);
+  console.log(`  Home:   http://localhost:${PORT}/`);
+  console.log(`  Admin:  http://localhost:${PORT}/admin.html`);
+  console.log(`  Luxury: http://localhost:${PORT}/luxury`);
   console.log(`==================================================\n`);
 });

@@ -12,7 +12,8 @@ libreria ufficiale caricata da CDN.
 | File | A cosa serve | Accesso |
 |---|---|---|
 | `index.html` | Vetrina: hero, immobili in evidenza, contatti | pubblico |
-| `catalogo.html` | Tutti gli annunci, con filtri | pubblico |
+| `catalogo.html` | Tutti gli annunci standard, con filtri | pubblico |
+| `luxury.html` | Collezione Luxury: annunci di pregio e trattative riservate | pubblico |
 | `valutazione.html` | Modulo richiesta valutazione gratuita | pubblico |
 | `admin.html` | Gestionale: annunci, contatti, statistiche, bozze | login |
 | `incarico.html` | Incarico di mediazione → PDF | login |
@@ -27,7 +28,7 @@ anche per la gemella: in quel caso va nel file condiviso, non duplicata.
 | File | Usato da | Contiene |
 |---|---|---|
 | `config.js` | tutte | URL e chiave pubblica Supabase — **il solo posto in cui stanno** |
-| `shared.css` / `shared.js` | index, catalogo, valutazione | navbar, menu mobile, FAB, card annuncio, modale, animazioni |
+| `shared.css` / `shared.js` | index, catalogo, luxury, valutazione | navbar, menu mobile, FAB, card annuncio, modale, animazioni |
 | `documenti.css` / `documenti.js` | incarico, proposta | stile del modulo e salvataggio bozze |
 | `pdf-helpers.js` | incarico, proposta | `creaPdfKit()`: intestazione, sezioni, firme del PDF |
 
@@ -69,6 +70,8 @@ Sono scritti per essere sicuri da rieseguire (`IF NOT EXISTS`).
    "acquirenti": ogni persona ha un ruolo (acquirente / venditore / entrambi) e
    gli incarichi puntano al proprietario in rubrica invece di ricordarne il nome
    come testo libero. Va **dopo** il punto 7, di cui usa la colonna `deleted_at`.
+9. `supabase-luxury-upgrade.sql` — colonna `is_luxury` su `properties` e aggiornamento
+   della vista `properties_public` per distinguere la collezione Luxury dal catalogo comune.
 
 Dopo aver applicato l'ultimo script, in **Documenti → Aggiorna rubrica** c'è un
 pulsante che rilegge gli incarichi e le proposte già salvati e ne porta in

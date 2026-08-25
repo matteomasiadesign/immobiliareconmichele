@@ -557,149 +557,7 @@ function initModalCarouselTouch() {
     });
 }
 
-// FULLSCREEN LIGHTBOX (INGRANDIMENTO FOTO & PINCH-TO-ZOOM)
-let lightboxScale = 1;
-let lightboxTx = 0;
-let lightboxTy = 0;
-
-function applyLightboxTransform(animate = false) {
-    const img = document.getElementById('lightbox-img');
-    if (!img) return;
-    if (animate) {
-        img.style.transition = 'transform 0.25s cubic-bezier(0.16, 1, 0.3, 1)';
-    } else {
-        img.style.transition = 'none';
-    }
-    img.style.transform = `translate3d(${lightboxTx}px, ${lightboxTy}px, 0) scale(${lightboxScale})`;
-}
-
-function resetLightboxZoom(animate = false) {
-    lightboxScale = 1;
-    lightboxTx = 0;
-    lightboxTy = 0;
-    applyLightboxTransform(animate);
-}
-
-function initLightboxTouchGestures() {
-    const wrapper = document.getElementById('lightbox-img-wrapper');
-    if (!wrapper || wrapper.dataset.gesturesInit) return;
-    wrapper.dataset.gesturesInit = '1';
-
-    let initialPinchDist = 0;
-    let initialPinchScale = 1;
-    let isPinching = false;
-
-    let panStartX = 0;
-    let panStartY = 0;
-    let isPanning = false;
-
-    let swipeStartX = 0;
-    let swipeStartY = 0;
-    let lastTapTime = 0;
-
-    wrapper.addEventListener('touchstart', (e) => {
-        if (e.touches.length === 2) {
-            isPinching = true;
-            isPanning = false;
-            initialPinchDist = Math.hypot(
-                e.touches[0].clientX - e.touches[1].clientX,
-                e.touches[0].clientY - e.touches[1].clientY
-            );
-            initialPinchScale = lightboxScale;
-        } else if (e.touches.length === 1) {
-            const touch = e.touches[0];
-            const now = Date.now();
-
-            // Doppio tocco per zoom 2.5x rapido
-            if (now - lastTapTime < 300) {
-                lastTapTime = 0;
-                if (lightboxScale > 1.1) {
-                    resetLightboxZoom(true);
-                } else {
-                    lightboxScale = 2.4;
-                    const rect = wrapper.getBoundingClientRect();
-                    const offsetX = (touch.clientX - (rect.left + rect.width / 2)) * 0.7;
-                    const offsetY = (touch.clientY - (rect.top + rect.height / 2)) * 0.7;
-                    lightboxTx = -offsetX;
-                    lightboxTy = -offsetY;
-                    applyLightboxTransform(true);
-                }
-                return;
-            }
-            lastTapTime = now;
-
-            if (lightboxScale > 1.05) {
-                isPanning = true;
-                panStartX = touch.clientX - lightboxTx;
-                panStartY = touch.clientY - lightboxTy;
-            } else {
-                swipeStartX = touch.clientX;
-                swipeStartY = touch.clientY;
-            }
-        }
-    }, { passive: true });
-
-    wrapper.addEventListener('touchmove', (e) => {
-        if (e.touches.length === 2 && isPinching) {
-            const currentDist = Math.hypot(
-                e.touches[0].clientX - e.touches[1].clientX,
-                e.touches[0].clientY - e.touches[1].clientY
-            );
-            if (initialPinchDist > 0) {
-                lightboxScale = Math.min(Math.max(initialPinchScale * (currentDist / initialPinchDist), 0.9), 4.5);
-                applyLightboxTransform(false);
-            }
-        } else if (e.touches.length === 1 && isPanning && lightboxScale > 1.05) {
-            const touch = e.touches[0];
-            lightboxTx = touch.clientX - panStartX;
-            lightboxTy = touch.clientY - panStartY;
-            applyLightboxTransform(false);
-        }
-    }, { passive: true });
-
-    wrapper.addEventListener('touchend', (e) => {
-        if (isPinching) {
-            if (e.touches.length < 2) {
-                isPinching = false;
-                if (lightboxScale < 1.05) {
-                    resetLightboxZoom(true);
-                }
-            }
-        } else if (isPanning && lightboxScale > 1.05) {
-            if (e.touches.length === 0) {
-                isPanning = false;
-            }
-        } else if (e.touches.length === 0 && lightboxScale <= 1.05) {
-            // Swipe a scala normale 1x
-            const touch = e.changedTouches[0];
-            if (!touch) return;
-            const deltaX = touch.clientX - swipeStartX;
-            const deltaY = touch.clientY - swipeStartY;
-            const absX = Math.abs(deltaX);
-            const absY = Math.abs(deltaY);
-
-            if (absX > 35 && absX > absY) {
-                if (deltaX < 0) nextLightboxImage();
-                else prevLightboxImage();
-            } else if (deltaY > 65 && absY > absX) {
-                closeLightbox();
-            }
-        }
-    }, { passive: true });
-
-    wrapper.addEventListener('wheel', (e) => {
-        e.preventDefault();
-        const delta = e.deltaY < 0 ? 0.25 : -0.25;
-        const newScale = Math.min(Math.max(lightboxScale + delta, 1), 4);
-        if (newScale === 1) {
-            resetLightboxZoom(true);
-        } else {
-            lightboxScale = newScale;
-            applyLightboxTransform(true);
-        }
-    }, { passive: false });
-}
-
+// FULLSCREEN LIGHTBOX (INGRANDIMENTO FOTO)
 function ensureLightboxDOM() {
     if (document.getElementById('photo-lightbox')) return;
     const div = document.createElement('div');
@@ -725,25 +583,27 @@ function ensureLightboxDOM() {
         </button>
       </div>
       <div class="lightbox-bottom">
-        <div class="lightbox-hint">Pinza per zoomare • Scorri con le dita • Tocca per chiudere</div>
+        <div class="lightbox-hint">Trascina per scorrere • Tocca per chiudere</div>
       </div>
     `;
     document.body.appendChild(div);
 
     div.addEventListener('click', (e) => {
-        if ((e.target === div || e.target.id === 'lightbox-stage' || e.target.classList.contains('lightbox-bottom')) && lightboxScale <= 1.05) {
+        if (e.target === div || e.target.id === 'lightbox-stage' || e.target.id === 'lightbox-img-wrapper' || e.target.classList.contains('lightbox-bottom')) {
             closeLightbox();
         }
     });
 
-    initLightboxTouchGestures();
+    const stage = document.getElementById('lightbox-stage');
+    if (stage) {
+        attachSwipeListeners(stage, nextLightboxImage, prevLightboxImage, closeLightbox);
+    }
 }
 
 function openLightbox(index = 0) {
     if (!currentModalImages || currentModalImages.length === 0) return;
     ensureLightboxDOM();
     currentImageIndex = (index >= 0 && index < currentModalImages.length) ? index : 0;
-    resetLightboxZoom(false);
     updateLightboxImage();
     const lb = document.getElementById('photo-lightbox');
     lb.style.display = 'flex';
@@ -756,8 +616,6 @@ function updateLightboxImage() {
     const prevBtn = document.getElementById('lightbox-prev');
     const nextBtn = document.getElementById('lightbox-next');
     if (!img || !currentModalImages || currentModalImages.length === 0) return;
-
-    resetLightboxZoom(false);
 
     if (motionOK) {
         gsap.fromTo(img, { opacity: 0.4, scale: 0.98 }, { opacity: 1, scale: 1, duration: 0.2, ease: 'power1.out' });
@@ -791,13 +649,11 @@ function prevLightboxImage(e) {
 }
 
 function closeLightbox() {
-    resetLightboxZoom(false);
     const lb = document.getElementById('photo-lightbox');
     if (lb) lb.style.display = 'none';
     const modal = document.getElementById('property-modal');
     if (!modal || modal.style.display === 'none') {
         document.body.style.overflow = '';
-        if (lenis) lenis.start();
     }
 }
 

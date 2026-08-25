@@ -364,39 +364,27 @@
 .gallery-dot.active { background: var(--brand-yellow); transform: scale(1.2); }
 
 /* FULLSCREEN LIGHTBOX */
-.lightbox-overlay { position: fixed; inset: 0; width: 100vw; height: 100vh; height: 100dvh; background-color: rgba(5, 10, 20, 0.97); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); z-index: 3000; display: flex; flex-direction: column; justify-content: space-between; user-select: none; touch-action: none; animation: lightboxFadeIn 0.2s ease-out; overflow: hidden; }
+.lightbox-overlay { position: fixed; inset: 0; width: 100vw; height: 100vh; height: 100dvh; background-color: rgba(5, 10, 20, 0.96); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); z-index: 3000; display: flex; flex-direction: column; justify-content: space-between; user-select: none; touch-action: none; animation: lightboxFadeIn 0.25s ease-out; }
 @keyframes lightboxFadeIn { from { opacity: 0; } to { opacity: 1; } }
-.lightbox-topbar { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; z-index: 20; pointer-events: none; }
-.lightbox-counter { color: white; font-weight: 800; font-size: 13px; background: rgba(255, 255, 255, 0.14); padding: 6px 14px; border-radius: 999px; letter-spacing: 0.05em; pointer-events: auto; backdrop-filter: blur(8px); }
-.lightbox-btn-close { width: 44px; height: 44px; border-radius: 50%; background: rgba(255, 255, 255, 0.14); color: white; border: 1px solid rgba(255, 255, 255, 0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; pointer-events: auto; backdrop-filter: blur(8px); transition: var(--transition); }
+.lightbox-topbar { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; z-index: 10; }
+.lightbox-counter { color: white; font-weight: 800; font-size: 14px; background: rgba(255, 255, 255, 0.12); padding: 6px 14px; border-radius: 999px; letter-spacing: 0.05em; }
+.lightbox-btn-close { width: 44px; height: 44px; border-radius: 50%; background: rgba(255, 255, 255, 0.12); color: white; border: 1px solid rgba(255, 255, 255, 0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: var(--transition); }
 .lightbox-btn-close:hover { background: var(--brand-blue); transform: scale(1.08); }
-.lightbox-stage { flex: 1; position: relative; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; overflow: hidden; }
-.lightbox-img-wrapper { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; position: relative; touch-action: none; }
-.lightbox-img { max-width: 96vw; max-height: 82vh; max-height: 82dvh; object-fit: contain; border-radius: 8px; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6); user-select: none; -webkit-user-drag: none; transform-origin: center center; will-change: transform; }
+.lightbox-stage { flex: 1; position: relative; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; overflow: hidden; padding: 0 10px; }
+.lightbox-img-wrapper { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; position: relative; }
+.lightbox-img { max-width: 95vw; max-height: 80vh; max-height: 80dvh; object-fit: contain; border-radius: 10px; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6); transition: opacity 0.2s ease; user-select: none; -webkit-user-drag: none; }
 .lightbox-nav-btn { position: absolute; top: 50%; transform: translateY(-50%); width: 50px; height: 50px; border-radius: 50%; background: rgba(255, 255, 255, 0.14); color: white; border: 1px solid rgba(255, 255, 255, 0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; backdrop-filter: blur(8px); transition: var(--transition); }
 .lightbox-nav-btn:hover { background: var(--brand-blue); transform: translateY(-50%) scale(1.08); }
-.lightbox-nav-btn.prev { left: 16px; }
-.lightbox-nav-btn.next { right: 16px; }
-.lightbox-bottom { padding: 10px 18px 16px; display: flex; justify-content: center; align-items: center; z-index: 20; pointer-events: none; }
-.lightbox-hint { color: rgba(255, 255, 255, 0.7); font-size: 11.5px; font-weight: 600; letter-spacing: 0.02em; text-align: center; background: rgba(0, 0, 0, 0.35); padding: 4px 14px; border-radius: 20px; backdrop-filter: blur(6px); }
+.lightbox-nav-btn.prev { left: 20px; }
+.lightbox-nav-btn.next { right: 20px; }
+.lightbox-bottom { padding: 12px 20px 20px; display: flex; justify-content: center; align-items: center; z-index: 10; }
+.lightbox-hint { color: rgba(255, 255, 255, 0.65); font-size: 12px; font-weight: 600; letter-spacing: 0.02em; text-align: center; }
 
-/* OTTIMIZZAZIONE MASSIMA PER SMARTPHONE IN ORIZZONTALE (LANDSCAPE) */
-@media (orientation: landscape), (max-height: 520px) {
-  .lightbox-topbar { position: absolute; top: 10px; left: 12px; right: 12px; padding: 0; }
-  .lightbox-bottom { display: none; }
-  .lightbox-stage { padding: 0; width: 100vw; height: 100vh; height: 100dvh; }
-  .lightbox-img-wrapper { width: 100%; height: 100%; }
-  .lightbox-img { max-width: 100vw; max-height: 100vh; max-height: 100dvh; border-radius: 0; width: 100%; height: 100%; }
-  .lightbox-nav-btn { width: 40px; height: 40px; }
-  .lightbox-nav-btn.prev { left: 8px; }
-  .lightbox-nav-btn.next { right: 8px; }
-}
-
-@media (max-width: 768px) and (orientation: portrait) {
+@media (max-width: 768px) {
   .lightbox-nav-btn { width: 42px; height: 42px; }
-  .lightbox-nav-btn.prev { left: 8px; }
-  .lightbox-nav-btn.next { right: 8px; }
-  .lightbox-img { max-width: 98vw; max-height: 78vh; max-height: 78dvh; border-radius: 6px; }
+  .lightbox-nav-btn.prev { left: 10px; }
+  .lightbox-nav-btn.next { right: 10px; }
+  .lightbox-img { max-width: 98vw; max-height: 76vh; max-height: 76dvh; border-radius: 6px; }
 }
 
 .modal-content { padding: 1.25rem; }
@@ -432,26 +420,26 @@
 @media (min-width: 640px) { .modal-actions { width: auto; } }
 
 /* BOTTONI MODALE UNIFORMI E RESPONSIVE */
-.btn-call { flex: 1 1 auto; min-width: 0; height: 50px; background-color: var(--brand-blue); color: var(--white); text-decoration: none; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 13px; border-radius: 16px; transition: var(--transition); text-transform: uppercase; letter-spacing: 0.05em; padding: 0 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.btn-reel { width: 50px; height: 50px; flex-shrink: 0; background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: var(--white); text-decoration: none; display: flex; align-items: center; justify-content: center; border-radius: 16px; transition: var(--transition); }
-.btn-wa { width: 50px; height: 50px; flex-shrink: 0; background-color: #059669; color: var(--white); text-decoration: none; display: flex; align-items: center; justify-content: center; border-radius: 16px; transition: var(--transition); }
-.btn-wa svg { width: 28px; height: 28px; }
+.btn-call { flex: 1 1 auto; min-width: 0; height: 46px; background-color: var(--brand-blue); color: var(--white); text-decoration: none; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 12.5px; border-radius: 14px; transition: var(--transition); text-transform: uppercase; letter-spacing: 0.05em; padding: 0 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.btn-reel { width: 46px; height: 46px; flex-shrink: 0; background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: var(--white); text-decoration: none; display: flex; align-items: center; justify-content: center; border-radius: 14px; transition: var(--transition); }
+.btn-wa { width: 46px; height: 46px; flex-shrink: 0; background-color: #059669; color: var(--white); text-decoration: none; display: flex; align-items: center; justify-content: center; border-radius: 14px; transition: var(--transition); }
+.btn-wa svg { width: 24px; height: 24px; }
 
 /* BOTTONE CONDIVIDI */
-.btn-share { width: 50px; height: 50px; flex-shrink: 0; background-color: var(--white); color: var(--brand-blue); border: 2px solid var(--border-color); text-decoration: none; display: flex; align-items: center; justify-content: center; border-radius: 16px; transition: var(--transition); cursor: pointer; }
+.btn-share { width: 46px; height: 46px; flex-shrink: 0; background-color: var(--white); color: var(--brand-blue); border: 2px solid var(--border-color); text-decoration: none; display: flex; align-items: center; justify-content: center; border-radius: 14px; transition: var(--transition); cursor: pointer; }
 .btn-share:hover { background-color: #f1f5f9; border-color: var(--brand-blue); }
 
 /* OTTIMIZZAZIONE SPAZIO MODALE SU DESKTOP */
 @media (min-width: 992px) {
-  .modal-card { max-width: 1300px; height: 85vh; display: grid; grid-template-columns: 65% 35%; grid-template-rows: 1fr auto; }
+  .modal-card { max-width: 1260px; height: 86vh; max-height: 850px; display: grid; grid-template-columns: 58% 42%; grid-template-rows: 1fr auto; }
   .modal-scroll { display: contents; /* Annulla il div wrapper per usare la griglia direttamente */ }
   .modal-carousel-container { grid-column: 1 / 2; grid-row: 1 / 3; height: 100%; width: 100%; aspect-ratio: auto; background-color: #0f172a; }
   .modal-img { object-fit: contain; }
-  .modal-content { grid-column: 2 / 3; grid-row: 1 / 2; overflow-y: auto; padding: 3rem 2.5rem 2rem 2.5rem; border-left: 1px solid var(--border-color); }
-  .modal-footer { grid-column: 2 / 3; grid-row: 2 / 3; border-top: 1px solid var(--border-color); border-left: 1px solid var(--border-color); padding: 1.5rem 2.5rem; }
+  .modal-content { grid-column: 2 / 3; grid-row: 1 / 2; overflow-y: auto; min-height: 0; padding: 2.5rem 2rem 1.5rem 2rem; border-left: 1px solid var(--border-color); }
+  .modal-footer { grid-column: 2 / 3; grid-row: 2 / 3; border-top: 1px solid var(--border-color); border-left: 1px solid var(--border-color); padding: 1.25rem 2rem 1.5rem; display: flex; flex-direction: row; justify-content: space-between; align-items: center; gap: 0.75rem; }
 
   /* Adattamento bottone di chiusura per il layout desktop */
-  .btn-close-modal { top: 24px; right: 24px; background-color: var(--bg-slate); color: var(--text-slate); border: 1px solid var(--border-color); }
+  .btn-close-modal { top: 20px; right: 20px; background-color: var(--bg-slate); color: var(--text-slate); border: 1px solid var(--border-color); }
   .btn-close-modal:hover { background-color: var(--brand-blue); color: var(--white); border-color: var(--brand-blue); }
 }
 
