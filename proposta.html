@@ -111,12 +111,6 @@
                 ℹ️ Compilare tutti i campi marcati con <span class="required">*</span> per generare il PDF
             </div>
 
-            <div class="button-area">
-                <button type="button" class="btn-example" onclick="compilaDatiEsempio()">
-                    Compila Dati di Esempio
-                </button>
-            </div>
-
             <form id="proposaForm">
                 <!-- PROPONENTE -->
                 <div class="section">
@@ -593,55 +587,6 @@
 
         const form = document.getElementById('proposaForm');
         const loading = document.getElementById('loading');
-
-        function compilaDatiEsempio() {
-            document.querySelector('input[name="proponenteNome"]').value = 'Marco Rossini';
-            document.querySelector('input[name="proponenteCF"]').value = 'RSSMRC85M15L219Q';
-            document.querySelector('input[name="proponenteLuogoNascita"]').value = 'Porto Torres';
-            document.querySelector('input[name="proponenteDataNascita"]').value = '1985-05-15';
-            document.querySelector('input[name="proponenteDocumento"]').value = 'Patente CA 1234567';
-            document.querySelector('input[name="proponenteVia"]').value = 'Via Roma 42, Porto Torres (SS)';
-            document.querySelector('input[name="proponenteTel"]').value = '0792345678';
-            document.querySelector('input[name="proponenteCell"]').value = '3391234567';
-            document.querySelector('input[name="proponenteEmail"]').value = 'marco.rossini@email.com';
-
-            document.querySelector('input[name="venditoreNome"]').value = 'Anna Piras';
-            document.querySelector('input[name="venditoreCF"]').value = 'PRIANNA75D45L219T';
-            document.querySelector('input[name="venditoreVia"]').value = 'Via Garibaldi 28, Porto Torres (SS)';
-            document.querySelector('input[name="venditoreTel"]').value = '0792876543';
-            document.querySelector('input[name="venditoreEmail"]').value = 'anna.piras@email.com';
-
-            document.querySelector('textarea[name="immobileUbicazione"]').value = 'Porto Torres (SS) - Via Sassari 15, interno 3 - Piano 2° di una palazzina signorile del 1995';
-            document.querySelector('textarea[name="immobileComposizione"]').value = 'Appartamento di 120 mq: ingresso, soggiorno, cucina abitabile, 3 camere da letto, 2 bagni, ripostiglio, balcone 15 mq';
-            document.querySelector('input[name="immobileDestinazione"]').value = 'Abitazione civile';
-            document.querySelector('input[name="immobileCategoria"]').value = 'A/2 - Abitazioni di tipo civile';
-            
-            document.getElementById('catAllineato').checked = true;
-            document.getElementById('planConforme').checked = true;
-            document.getElementById('agibDotato').checked = true;
-            document.getElementById('ediliziPrivata').checked = true;
-            document.getElementById('terrPiena').checked = true;
-            document.getElementById('occupLibero').checked = true;
-
-            document.querySelector('input[name="spesiCondominiali"]').value = '1200';
-
-            document.querySelector('input[name="prezzoTotale"]').value = '380000';
-            document.querySelector('input[name="caparra1"]').value = '60000';
-            document.querySelector('input[name="dataCaparra1"]').value = '2026-07-10';
-            document.querySelector('input[name="versamento2"]').value = '100000';
-            document.querySelector('input[name="dataVersamento2"]').value = '2026-08-20';
-            document.querySelector('input[name="importoRogito"]').value = '220000';
-
-            document.querySelector('input[name="dataRogito"]').value = '2026-09-15';
-            document.querySelector('input[name="notaio"]').value = 'Notaio Dott. Giuseppe Satta - Via Roma 10, Porto Torres';
-            document.getElementById('consRogito').checked = true;
-
-            document.querySelector('input[name="provvigione"]').value = '7600';
-            document.getElementById('privacyAccepted').checked = true;
-
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            alert('Dati compilati! Clicca "Genera PDF" per il risultato.');
-        }
 
         // ====== SALVATAGGIO BOZZA (gestionale) ======
         // Salvataggio, ricarica da ?id=... e invio del form sono identici a

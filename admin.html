@@ -2527,12 +2527,42 @@
         <div class="checkbox-container">
           <label class="checkbox-row"><input type="checkbox" id="prop-visible" checked><span class="checkbox-label" style="color:#059669;">Visibile sul sito</span></label>
         </div>
-        <div class="form-row">
-          <div class="form-group"><label class="form-label">Data acquisizione incarico</label><input type="date" id="prop-acq-date" class="form-input"></div>
-          <div class="form-group"><label class="form-label">Data scadenza incarico</label><input type="date" id="prop-exp-date" class="form-input"></div>
+
+        <div style="background:var(--surface-2); border:1px solid var(--line); border-radius:12px; padding:12px 14px; margin-top:10px;">
+          <label class="checkbox-row" style="cursor:pointer;">
+            <input type="checkbox" id="prop-has-mandate" onchange="toggleMandateFields()">
+            <span class="checkbox-label" style="font-weight:700; color:var(--ink); font-size:13px;">✍️ Incarico di mediazione già firmato</span>
+          </label>
+          <p class="form-hint" style="margin:4px 0 0 24px; font-size:11px; color:var(--ink-3);">
+            Seleziona solo se il cliente ha firmato l'incarico. L'immobile entrerà nello storico incarichi e nelle statistiche (conteggio incarichi attivi e scadenze).
+          </p>
+
+          <div id="group-mandate-details" style="display:none; margin-top:12px; padding-top:12px; border-top:1px solid var(--line);">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Data inizio / Firma</label>
+                <input type="date" id="prop-acq-date" class="form-input" onchange="autoCalculateExpiryDate()">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Durata Incarico</label>
+                <select id="prop-mandate-duration" class="form-select" onchange="autoCalculateExpiryDate()">
+                  <option value="6 mesi">6 Mesi</option>
+                  <option value="1 anno">1 Anno</option>
+                  <option value="2 anni">2 Anni</option>
+                  <option value="custom">Personalizzata</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Data Scadenza Incarico</label>
+                <input type="date" id="prop-exp-date" class="form-input">
+              </div>
+            </div>
+          </div>
         </div>
 
-        <button type="submit" id="prop-submit-btn" class="btn-submit">Pubblica Immobile</button>
+        <button type="submit" id="prop-submit-btn" class="btn-submit" style="margin-top:1.25rem;">Pubblica Immobile</button>
       </form>
     </div>
   </div>
@@ -2583,6 +2613,59 @@
       <div style="display:flex; gap:10px;">
         <button onclick="closeModals()" class="btn-submit btn-quiet">Annulla</button>
         <button id="confirm-delete-buyer-btn" class="btn-submit" style="background:var(--crit);">Elimina</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Visualizza Documento & Storico Modifiche -->
+  <div id="modal-view-doc" class="modal-overlay">
+    <div class="modal-content" style="max-width:680px; max-height:85vh; display:flex; flex-direction:column; padding:0; overflow:hidden;">
+      <div class="modal-header" style="padding:1.25rem 1.5rem 1rem; border-bottom:1px solid var(--line); margin:0;">
+        <div style="min-width:0;">
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px; flex-wrap:wrap;">
+            <span id="view-doc-tipo-badge" class="status-badge"></span>
+            <span id="view-doc-status-badge"></span>
+          </div>
+          <h3 class="panel-title" id="view-doc-title" style="margin:0; font-size:17px; white-space:normal;"></h3>
+        </div>
+        <button type="button" class="btn-close-modal" onclick="closeModals()">✕</button>
+      </div>
+
+      <div style="flex:1; overflow-y:auto; padding:1.25rem 1.5rem;">
+        <!-- Sezione 1: Scheda Dati Atto -->
+        <div style="margin-bottom:1.5rem;">
+          <h4 style="font-size:12.5px; text-transform:uppercase; letter-spacing:0.05em; color:var(--ink-2); margin-bottom:10px; display:flex; align-items:center; gap:6px; font-weight:700;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            Dati Principali dell'Atto
+          </h4>
+          <div id="view-doc-details-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:10px; background:var(--surface-2); padding:12px 14px; border-radius:10px; border:1px solid var(--line);">
+          </div>
+        </div>
+
+        <!-- Sezione 2: Storico e Timeline Modifiche (Audit Log) -->
+        <div>
+          <h4 style="font-size:12.5px; text-transform:uppercase; letter-spacing:0.05em; color:var(--ink-2); margin-bottom:10px; display:flex; align-items:center; gap:6px; font-weight:700;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            Storico Modifiche & Revisioni
+          </h4>
+          <div id="view-doc-history-timeline" style="background:var(--surface-2); padding:14px; border-radius:10px; border:1px solid var(--line);">
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="padding:1rem 1.5rem; border-top:1px solid var(--line); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; background:var(--surface-1);">
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <a id="view-doc-pdf-btn" href="#" target="_blank" class="btn-mini primary" style="padding:7px 12px; display:inline-flex; align-items:center; gap:6px; font-weight:600; text-decoration:none;">
+            🖨️ Scarica PDF
+          </a>
+          <a id="view-doc-edit-btn" href="#" class="btn-mini" style="padding:7px 12px; display:inline-flex; align-items:center; gap:6px; font-weight:600; text-decoration:none;">
+            ✏️ Modifica
+          </a>
+          <button type="button" id="view-doc-status-btn" class="btn-mini" style="padding:7px 12px;">
+            🏷️ Cambia Stato
+          </button>
+        </div>
+        <button type="button" onclick="closeModals()" class="btn-submit btn-quiet" style="padding:6px 14px; margin:0;">Chiudi</button>
       </div>
     </div>
   </div>
@@ -3432,7 +3515,6 @@
         showSkeletons();
         hideLoader();
         await Promise.all([loadProperties(), loadTransactions(), loadBuyers(), loadDocumenti(), loadAppuntamenti()]);
-        await syncActiveIncarichi();
         renderOverviewStats();
         // I quattro caricamenti corrono in parallelo: se l'agenda arriva
         // per prima, le sue righe si disegnano quando "properties" e
@@ -3568,6 +3650,11 @@
         const rawPrice = document.getElementById('prop-price').value;
         const priceVal = isReserved ? 0 : (rawPrice ? Number(rawPrice) : 0);
 
+        const hasMandate = Boolean(document.getElementById('prop-has-mandate').checked);
+        const mandateDuration = document.getElementById('prop-mandate-duration').value || '6 mesi';
+        const acqDate = hasMandate ? (document.getElementById('prop-acq-date').value || null) : null;
+        const expDate = hasMandate ? (document.getElementById('prop-exp-date').value || null) : null;
+
         const payload = {
             title: document.getElementById('prop-title').value,
             status: document.getElementById('prop-status').value,
@@ -3584,8 +3671,10 @@
             is_luxury: Boolean(document.getElementById('prop-luxury').checked),
             images: uploadedImageUrls,
             is_visible: document.getElementById('prop-visible').checked,
-            acquisition_date: document.getElementById('prop-acq-date').value || null,
-            expiry_date: document.getElementById('prop-exp-date').value || null
+            has_mandate: hasMandate,
+            mandate_duration: mandateDuration,
+            acquisition_date: acqDate,
+            expiry_date: expDate
         };
         const res = id
             ? await _supabase.from('properties').update(payload).eq('id', id).select().single()
@@ -3597,11 +3686,7 @@
             return;
         }
 
-        // PRIMA di ensurePropertyTransaction, non dopo: quella funzione crea
-        // un incarico se non ne trova nessuno collegato a questo immobile.
-        // Legando qui - e ricaricando, cosi' se lo ritrova in "transactions" -
-        // l'incarico che aspettava viene riconosciuto invece di essere
-        // duplicato da uno nuovo e vuoto.
+        // Se era in attesa di collegamento esplicito
         if (res.data && incaricoDaCollegare) {
             const { error } = await _supabase.from('transactions')
                 .update({ property_id: res.data.id, property_title: payload.title })
@@ -3611,8 +3696,17 @@
             else await loadTransactions();
         }
 
-        if (payload.is_visible && res.data) {
-            await ensurePropertyTransaction(res.data);
+        // Gestione storico incarichi: SOLO se l'incarico è effettivamente firmato!
+        if (payload.has_mandate && res.data) {
+            await ensurePropertyTransaction(res.data, payload);
+        } else if (!payload.has_mandate && res.data) {
+            // Se l'utente non ha segnato l'incarico come firmato, rimuoviamo eventuali incarichi
+            // fittizi auto-creati in precedenza (senza mai toccare vendite chiuse o con proprietario)
+            const existing = transactions.find(t => t.property_id == res.data.id);
+            if (existing && existing.status !== 'Venduto' && (!existing.owner_name || !existing.owner_name.trim()) && (!existing.commission_seller_perc || existing.commission_seller_perc == 0) && (!existing.commission_buyer_perc || existing.commission_buyer_perc == 0)) {
+                await _supabase.from('transactions').delete().eq('id', existing.id);
+                await loadTransactions();
+            }
         }
 
         closePropertyForm();
@@ -3620,23 +3714,17 @@
         hideLoader();
     }
 
-    // Se un immobile e' visibile sul sito, il suo incarico collegato deve
-    // risultare "attivo" (In Vendita) nel gestionale: lo crea se manca,
-    // oppure lo riattiva se era rimasto in un altro stato.
-    //
-    // Un incarico gia' "Venduto" pero' non si tocca mai. Quella riga e'
-    // l'unica traccia della vendita (data e prezzo di chiusura, provvigioni
-    // incassate): riportarla "In Vendita" bastava a farla sparire dal
-    // fatturato dell'anno e dalle statistiche. Succedeva senza avvisare, a
-    // ogni salvataggio dell'immobile collegato o rimettendolo sul sito.
-    // La stessa regola vale gia' in syncActiveIncarichi.
-    async function ensurePropertyTransaction(property) {
+    // Gestisce la presenza nello storico incarichi SOLO per gli immobili con incarico firmato
+    async function ensurePropertyTransaction(property, payload) {
         const existing = transactions.find(t => t.property_id == property.id);
         if (existing) {
-            if (existing.status === 'Venduto') return;
+            if (existing.status === 'Venduto') return; // Mai sovrascrivere una vendita chiusa
             const updates = {};
             if (existing.status !== 'In Vendita') updates.status = 'In Vendita';
             if (existing.property_title !== property.title) updates.property_title = property.title;
+            if (payload && payload.acquisition_date && existing.acquisition_date !== payload.acquisition_date) updates.acquisition_date = payload.acquisition_date;
+            if (payload && payload.mandate_duration && existing.assignment_duration !== payload.mandate_duration) updates.assignment_duration = payload.mandate_duration;
+            if (property.price && Number(property.price) > 0 && (!existing.initial_price || existing.initial_price == 0)) updates.initial_price = property.price;
             if (Object.keys(updates).length > 0) {
                 await _supabase.from('transactions').update(updates).eq('id', existing.id);
             }
@@ -3645,8 +3733,8 @@
                 status: 'In Vendita',
                 property_title: property.title,
                 owner_name: '',
-                assignment_duration: '6 mesi',
-                acquisition_date: property.acquisition_date || new Date().toISOString().split('T')[0],
+                assignment_duration: (payload && payload.mandate_duration) ? payload.mandate_duration : (property.mandate_duration || '6 mesi'),
+                acquisition_date: (payload && payload.acquisition_date) ? payload.acquisition_date : (property.acquisition_date || new Date().toISOString().split('T')[0]),
                 initial_price: (property.price && Number(property.price) > 0) ? property.price : 0,
                 commission_seller_perc: 0,
                 commission_buyer_perc: 0,
@@ -3669,14 +3757,11 @@
     // Solo gli incarichi IN CORSO: uno scaduto o gia' venduto non deve
     // essere pubblicato, e segnalarlo sarebbe un invito a sbagliare.
     function incarichiSenzaAnnuncio() {
-        return transactions.filter(t => t.status === 'In Vendita' && !t.property_id);
+        return transactions.filter(t => isIncaricoFirmato(t) && t.status === 'In Vendita' && !t.property_id);
     }
 
-    // Solo gli immobili VISIBILI sul sito: uno nascosto e' una bozza, e
-    // pretendere l'incarico per una bozza vorrebbe dire avere il pannello
-    // sempre acceso. E' la stessa condizione che usa syncActiveIncarichi.
     function immobiliSenzaIncarico() {
-        return properties.filter(p => p.is_visible !== false && !transactions.some(t => t.property_id == p.id));
+        return properties.filter(p => p.is_visible !== false && p.has_mandate === true && !transactions.some(t => t.property_id == p.id));
     }
 
     const ICONA_AVVISO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.3 3.9L2 18a2 2 0 001.7 3h16.6a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg>';
@@ -3786,6 +3871,39 @@
         if (nuovo) editTransaction(nuovo.id);
     }
 
+    function toggleMandateFields() {
+        const hasMandate = document.getElementById('prop-has-mandate')?.checked;
+        const group = document.getElementById('group-mandate-details');
+        if (group) group.style.display = hasMandate ? 'block' : 'none';
+        if (hasMandate) {
+            if (!document.getElementById('prop-acq-date').value) {
+                document.getElementById('prop-acq-date').value = new Date().toISOString().split('T')[0];
+            }
+            autoCalculateExpiryDate();
+        }
+    }
+
+    function autoCalculateExpiryDate() {
+        const acqVal = document.getElementById('prop-acq-date').value;
+        const duration = document.getElementById('prop-mandate-duration').value;
+        const expInput = document.getElementById('prop-exp-date');
+        if (!acqVal || !expInput) return;
+        if (duration === 'custom') return; // L'utente puo' inserire a mano qualsiasi data
+
+        const [y, m, d] = acqVal.split('-').map(Number);
+        const date = new Date(y, m - 1, d);
+        let monthsToAdd = 6;
+        if (duration === '1 anno') monthsToAdd = 12;
+        else if (duration === '2 anni') monthsToAdd = 24;
+        else if (duration === '6 mesi') monthsToAdd = 6;
+
+        date.setMonth(date.getMonth() + monthsToAdd);
+        const expY = date.getFullYear();
+        const expM = String(date.getMonth() + 1).padStart(2, '0');
+        const expD = String(date.getDate()).padStart(2, '0');
+        expInput.value = `${expY}-${expM}-${expD}`;
+    }
+
     function startPropEdit(id) {
         const p = properties.find(x => x.id == id);
         if(!p) return;
@@ -3807,8 +3925,14 @@
         document.getElementById('prop-featured').checked = p.is_featured;
         document.getElementById('prop-luxury').checked = Boolean(p.is_luxury);
         document.getElementById('prop-visible').checked = p.is_visible !== false;
+
+        const hasMandate = Boolean(p.has_mandate);
+        document.getElementById('prop-has-mandate').checked = hasMandate;
+        document.getElementById('prop-mandate-duration').value = p.mandate_duration || '6 mesi';
         document.getElementById('prop-acq-date').value = p.acquisition_date || '';
         document.getElementById('prop-exp-date').value = p.expiry_date || '';
+        toggleMandateFields();
+
         uploadedImageUrls = [...p.images];
         renderImagePreviews();
         document.getElementById('prop-form-title').innerText = "Modifica Immobile";
@@ -3843,6 +3967,11 @@
         toggleReservedPriceUI();
         document.getElementById('prop-luxury').checked = false;
         document.getElementById('prop-visible').checked = true;
+        document.getElementById('prop-has-mandate').checked = false;
+        document.getElementById('prop-mandate-duration').value = '6 mesi';
+        document.getElementById('prop-acq-date').value = '';
+        document.getElementById('prop-exp-date').value = '';
+        toggleMandateFields();
         uploadedImageUrls = [];
         renderImagePreviews();
     }
@@ -3947,6 +4076,7 @@
                     <div class="property-card-badges">
                         <span class="status-badge ${p.status==='Vendita'?'bg-blue':'bg-green'}">${p.status}</span>
                         ${p.is_luxury ? '<span class="status-badge bg-luxury" title="Immobile appartenente alla Collezione Luxury">💎 Luxury</span>' : ''}
+                        ${p.has_mandate ? '<span class="status-badge" style="background:#e0f2fe; color:#0369a1; border:1px solid #bae6fd; font-weight:700;" title="Incarico di mediazione firmato">✍️ Incarico</span>' : ''}
                         ${venduto ? '<span class="status-badge bg-sold" title="Vendita registrata nello storico incarichi">✓ Venduto</span>' : ''}
                         ${p.is_featured ? '<span class="status-badge bg-yellow">★ Primi</span>' : ''}
                     </div>
@@ -3955,9 +4085,9 @@
                     <p class="item-title">${escapeHtml(p.title)}</p>
                     <p class="property-card-meta">${escapeHtml(p.zone)} • ${escapeHtml(p.property_type)}</p>
                     <span class="property-card-price">${(p.price && Number(p.price) > 0) ? `€${Number(p.price).toLocaleString('it-IT')}` : '<span style="color:var(--brand-blue);font-size:13.5px;font-weight:600;">Trattativa riservata</span>'}</span>
-                    ${(p.acquisition_date || p.expiry_date) ? `
+                    ${(p.has_mandate && (p.acquisition_date || p.expiry_date)) ? `
                     <div class="property-card-gestionale">
-                        ${p.acquisition_date ? `<span>Acquisizione: ${new Date(p.acquisition_date).toLocaleDateString('it-IT')}</span>` : ''}
+                        ${p.acquisition_date ? `<span>Firma: ${new Date(p.acquisition_date).toLocaleDateString('it-IT')}</span>` : ''}
                         ${expiryHTML}
                     </div>` : ''}
                     ${inCerca > 0 ? `
@@ -4053,8 +4183,9 @@
         const sel = document.getElementById('stats-year'); 
         const years = new Set([new Date().getFullYear()]); 
         transactions.forEach(t => { 
-            years.add(new Date(t.acquisition_date).getFullYear()); 
-            if(t.sale_date) years.add(new Date(t.sale_date).getFullYear()); 
+            if (!isIncaricoFirmato(t)) return;
+            if (t.acquisition_date) years.add(new Date(t.acquisition_date).getFullYear()); 
+            if (t.sale_date) years.add(new Date(t.sale_date).getFullYear()); 
         }); 
         const sorted = Array.from(years).sort((a,b)=>b-a); 
         const curr = sel.value || new Date().getFullYear().toString(); 
@@ -4083,6 +4214,7 @@
         let pieE = 0; 
         
         transactions.forEach(t => {
+            if (!isIncaricoFirmato(t)) return;
             const dAcq = new Date(t.acquisition_date);
             
             if(dAcq.getFullYear() === yr) { 
@@ -4291,6 +4423,7 @@
       renderFiltroScadenza();
 
       const filtered = transactions
+        .filter(t => isIncaricoFirmato(t))
         .filter(t => !transFilterScadenza || isInScadenza(t))
         .filter(t => t.property_title.toLowerCase().includes(s) || (t.owner_name||'').toLowerCase().includes(s));
       const today = new Date();
@@ -4536,22 +4669,17 @@
         }
     }
 
-    // Tiene allineati "Immobili" e "Incarichi": ogni immobile che è
-    // visibile sul sito, non ha una scadenza già passata (o non ne ha
-    // affatto) e non risulta venduto deve comparire tra gli incarichi in
-    // corso. Crea l'incarico collegato se manca, e riattiva quelli che
-    // erano finiti in un altro stato (es. "Scaduto") ma non sono venduti.
-    // Gira automaticamente ad ogni accesso al pannello, ed è richiamabile
-    // a mano dal pulsante "Sincronizza con Immobili".
+    // Tiene allineati "Immobili" e "Incarichi": SOLO per gli immobili che
+    // hanno la spunta di incarico firmato (p.has_mandate === true) e sono attivi.
     async function syncActiveIncarichi(showAlert = false) {
         const today = new Date(); today.setHours(0, 0, 0, 0);
         const toCreate = [];
         const toReactivate = [];
 
         properties.forEach(p => {
-            const isVisible = p.is_visible !== false;
+            if (!p.has_mandate) return; // SOLO gli immobili con incarico firmato!
             const notExpired = !p.expiry_date || new Date(p.expiry_date) >= today;
-            if (!isVisible || !notExpired) return; // non deve risultare "in corso"
+            if (!notExpired) return;
 
             const linked = transactions.find(t => t.property_id == p.id);
             if (!linked) {
@@ -4559,7 +4687,7 @@
                     status: 'In Vendita',
                     property_title: p.title,
                     owner_name: '',
-                    assignment_duration: '6 mesi',
+                    assignment_duration: p.mandate_duration || '6 mesi',
                     acquisition_date: p.acquisition_date || (p.created_at ? p.created_at.split('T')[0] : new Date().toISOString().split('T')[0]),
                     initial_price: (p.price && Number(p.price) > 0) ? p.price : 0,
                     commission_seller_perc: 0,
@@ -4572,7 +4700,7 @@
         });
 
         if (toCreate.length === 0 && toReactivate.length === 0) {
-            if (showAlert) alert("Tutti gli immobili idonei sono già tra gli incarichi in corso.");
+            if (showAlert) alert("Tutti gli immobili con incarico firmato sono già sincronizzati nello storico.");
             return;
         }
 
@@ -4587,7 +4715,7 @@
                 if (error) throw error;
             }
             await loadTransactions();
-            if (showAlert) alert(`Sincronizzati ${toCreate.length + toReactivate.length} incarichi (${toCreate.length} creati, ${toReactivate.length} riattivati).`);
+            if (showAlert) alert(`Sincronizzati ${toCreate.length + toReactivate.length} incarichi firmati (${toCreate.length} creati, ${toReactivate.length} riattivati).`);
         } catch (err) {
             if (showAlert) alert("Errore sincronizzazione: " + err.message);
         } finally {
@@ -4656,6 +4784,20 @@
         await _supabase.from('buyers').update({ is_read: true }).eq('id', id);
     }
 
+    // Un incarico e' valido e conta nelle statistiche e nello storico SOLO se:
+    // 1. E' una vendita chiusa/registrata ('Venduto')
+    // 2. Se collegato a un immobile: quell'immobile ha has_mandate === true
+    // 3. Se inserito a mano: ha un proprietario o provvigioni reali o non e' un placeholder vuoto
+    function isIncaricoFirmato(t) {
+        if (!t) return false;
+        if (t.status === 'Venduto') return true;
+        if (t.property_id) {
+            const p = properties.find(x => x.id == t.property_id);
+            return p ? Boolean(p.has_mandate) : false;
+        }
+        return Boolean(t.owner_name && t.owner_name.trim()) || (parseFloat(t.commission_seller_perc) > 0 || parseFloat(t.commission_buyer_perc) > 0);
+    }
+
     // Provvigione incassata su un incarico chiuso (venditore + acquirente).
     function commissionOf(t) {
         const pV = parseFloat(t.commission_seller_perc) || 0;
@@ -4663,25 +4805,15 @@
         return ((t.final_price * pV) / 100) + ((t.final_price * pA) / 100);
     }
 
-    /* Un incarico creato in automatico (pubblicando un immobile, oppure dalla
-       sincronizzazione che gira a ogni accesso) nasce con le provvigioni a
-       zero: serve a tenere il conto degli incarichi in corso, ma non porta
-       nessun dato economico.
-
-       Finche' resta cosi', quella casa vale 0 euro di fatturato anche se la
-       vendi davvero e inserisci il prezzo di chiusura. Zero su ENTRAMBE le
-       percentuali: 0% solo lato acquirente e' normale (paga solo il venditore),
-       ed e' un incarico completo a tutti gli effetti. */
     function isIncaricoIncompleto(t) {
         const pV = parseFloat(t.commission_seller_perc) || 0;
         const pA = parseFloat(t.commission_buyer_perc) || 0;
         return pV === 0 && pA === 0;
     }
 
-    // Solo quelli ancora aperti: su un incarico gia' scaduto e mai andato in
-    // porto non c'e' niente da recuperare.
+    // Solo quelli aperti e firmati
     function incarichiDaCompletare() {
-        return transactions.filter(t => t.status !== 'Scaduto' && isIncaricoIncompleto(t));
+        return transactions.filter(t => isIncaricoFirmato(t) && t.status !== 'Scaduto' && isIncaricoIncompleto(t));
     }
 
     // Data di scadenza di un incarico, dedotta dalla durata scelta.
@@ -4698,15 +4830,11 @@
         return Math.ceil((expiryOf(t) - oggi) / 86400000);
     }
 
-    /* Un solo posto a decidere cosa vuol dire "in scadenza", usato sia dal
-       numero nella panoramica sia dall'elenco che si apre cliccandolo: se le
-       due regole divergessero, la scheda direbbe 3 e la lista ne mostrerebbe 2. */
     function isInScadenza(t) {
-        return t.status === 'In Vendita' && giorniAllaScadenza(t) <= 90;
+        return isIncaricoFirmato(t) && t.status === 'In Vendita' && giorniAllaScadenza(t) <= 90;
     }
 
-    // Scrive un "chip" di confronto accanto a un numero. Un numero da solo non
-    // dice se e' un buon numero: serve sempre un "rispetto a cosa".
+    // Scrive un "chip" di confronto accanto a un numero.
     function setDelta(id, testo, tipo) {
         const el = document.getElementById(id);
         if (!el) return;
@@ -4745,8 +4873,7 @@
           <circle cx="${ultimo[0]}" cy="${ultimo[1]}" r="2.2" fill="${col}"></circle>`;
     }
 
-    // Statistiche della Panoramica. Oltre al valore, ognuna porta un confronto
-    // e, dove serve, un'indicazione di cosa fare.
+    // Statistiche della Panoramica (calcolate SOLO sugli incarichi firmati e vendite reali)
     function renderOverviewStats() {
         const listingsEl = document.getElementById('ov-stat-listings');
         if (!listingsEl) return; // tab non ancora nel DOM
@@ -4763,22 +4890,18 @@
                  nascosti > 0 ? `${nascosti} nascost${nascosti === 1 ? 'o' : 'i'}` : '', 'flat');
         setText('ov-foot-listings', inEvidenza > 0 ? `di cui ${inEvidenza} in evidenza` : 'nessuno in evidenza');
 
-        /* --- incarichi in corso --- */
-        const attivi = transactions.filter(t => t.status === 'In Vendita').length;
+        /* --- incarichi in corso (SOLO FIRMATI) --- */
+        const attivi = transactions.filter(t => isIncaricoFirmato(t) && t.status === 'In Vendita').length;
         const presiQuestoMese = transactions.filter(t => {
+            if (!isIncaricoFirmato(t)) return false;
             const d = new Date(t.acquisition_date);
             return d.getFullYear() === yr && d.getMonth() === today.getMonth();
         }).length;
         document.getElementById('ov-stat-active').innerText = attivi;
-        // "+1" da solo non dice +1 rispetto a cosa: il chip si porta dietro il
-        // suo termine di paragone, perche' il piede qui sotto puo' essere
-        // occupato dall'avviso sulle provvigioni mancanti.
         setDelta('ov-delta-active',
                  presiQuestoMese > 0 ? `+${presiQuestoMese} questo mese` : '',
                  presiQuestoMese > 0 ? 'up' : 'flat');
 
-        // Se ci sono incarichi senza provvigione il piede lo dice al posto del
-        // conteggio del mese: e' l'informazione che chiede di fare qualcosa.
         const daCompletare = incarichiDaCompletare();
         document.getElementById('ov-card-active').classList.toggle('is-alert', daCompletare.length > 0);
         if (daCompletare.length > 0) {
@@ -4790,7 +4913,7 @@
                 : 'nessuno acquisito questo mese');
         }
 
-        /* --- in scadenza entro 90 giorni --- */
+        /* --- in scadenza entro 90 giorni (SOLO FIRMATI) --- */
         const scadenza = transactions.filter(isInScadenza);
         const inScadenza = scadenza.length;
         const giorniMin = inScadenza > 0 ? Math.min(...scadenza.map(giorniAllaScadenza)) : null;
@@ -4805,19 +4928,10 @@
                 ? `il più vecchio è scaduto da <b>${Math.abs(giorniMin)} giorni</b>`
                 : `il più vicino: <b>fra ${giorniMin} giorni</b>`));
 
-        // La scheda diventa cliccabile solo se c'e' davvero qualcosa da
-        // vedere: un riquadro che si apre su una lista vuota e' una promessa
-        // non mantenuta.
         cardScad.classList.toggle('is-clickable', inScadenza > 0);
         cardScad.setAttribute('role', inScadenza > 0 ? 'button' : 'presentation');
         cardScad.setAttribute('tabindex', inScadenza > 0 ? '0' : '-1');
         cardScad.setAttribute('title', inScadenza > 0 ? 'Apri l\'elenco degli incarichi in scadenza' : '');
-
-        /* La scheda del fatturato che stava qui non e' stata spostata ma
-           tolta: in Statistiche ce n'era gia' una, per giunta migliore -
-           segue l'anno scelto con il selettore invece di essere inchiodata
-           a quello corrente. Duplicarle avrebbe voluto dire due numeri
-           diversi con la stessa etichetta nella stessa schermata. */
 
         updateNavCounts();
         renderDailyPulse();
@@ -5015,8 +5129,9 @@
                     ${dataAtto ? `Data atto: <b>${formatDataAtto(dataAtto)}</b> · ` : ''}Ultimo salvataggio: ${formatSalvataggio(d.updated_at)}
                   </p>
                 </div></div>
-                <div class="item-actions-box">
-                  <a class="btn-mini primary" href="${d.tipo}.html?id=${encodeURIComponent(d.id)}">Apri</a>
+                <div class="item-actions-box" style="display:flex; gap:6px;">
+                  <button type="button" class="btn-mini" onclick="closeModals(); openViewDocModal('${d.id}')" title="Visualizza dettagli e storico">👁️ Visualizza</button>
+                  <a class="btn-mini primary" href="${d.tipo}.html?id=${encodeURIComponent(d.id)}" title="Modifica atto">✏️ Modifica</a>
                 </div>
               </div>`;
             }).join('')
@@ -5811,7 +5926,7 @@
 
     function incarichiDaFare() {
         return transactions
-            .filter(t => t.status === 'In Vendita' && giorniAllaScadenza(t) <= GIORNI_SCADENZA_DA_FARE)
+            .filter(t => isIncaricoFirmato(t) && t.status === 'In Vendita' && giorniAllaScadenza(t) <= GIORNI_SCADENZA_DA_FARE)
             .map(t => ({ _tipo: 'incarico', dato: t, giorni: giorniAllaScadenza(t) }))
             .sort((a, b) => a.giorni - b.giorni);
     }
@@ -6438,7 +6553,10 @@
               </td>
               <td data-cell="azioni" style="text-align:center;">
                 <div class="doc-actions-box">
-                  <a href="${d.tipo}.html?id=${encodeURIComponent(d.id)}" class="btn-action edit" title="Apri e visualizza/modifica">
+                  <button onclick="openViewDocModal('${d.id}')" class="btn-action" title="Visualizza dettagli e storico modifiche" style="color:var(--brand-blue);">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                  </button>
+                  <a href="${d.tipo}.html?id=${encodeURIComponent(d.id)}" class="btn-action edit" title="Modifica documento">
                     <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"/></svg>
                   </a>
                   <button onclick="openStatoDocModal('${d.id}')" class="btn-action" title="Cambia stato (Firmato/Consegnato/Bozza) e note">
@@ -6454,6 +6572,130 @@
               </td>
             </tr>`;
         }).join('');
+    }
+
+    function openViewDocModal(id) {
+        const d = documenti.find(x => x.id == id);
+        if (!d) return;
+
+        const tipoStr = d.tipo === 'incarico' ? 'Incarico di Mediazione' : 'Proposta di Acquisto';
+        const stato = statoDiDocumento(d);
+        const dati = d.dati || {};
+
+        document.getElementById('view-doc-tipo-badge').innerText = tipoStr;
+        document.getElementById('view-doc-tipo-badge').className = `status-badge ${d.tipo === 'incarico' ? 'bg-blue' : 'bg-yellow'}`;
+
+        const statusBadgeEl = document.getElementById('view-doc-status-badge');
+        statusBadgeEl.innerHTML = badgeStatoDocumento(stato);
+
+        document.getElementById('view-doc-title').innerText = d.titolo || 'Senza titolo';
+
+        // Dettagli Atto Grid
+        const detailsGrid = document.getElementById('view-doc-details-grid');
+        const items = [];
+
+        const formatVal = (v) => (v !== undefined && v !== null && String(v).trim() !== '') ? escapeHtml(String(v)) : '—';
+        const formatEuro = (v) => (v && Number(v) > 0) ? `€ ${Number(v).toLocaleString('it-IT')}` : '—';
+
+        if (d.tipo === 'incarico') {
+            items.push(`<div><span style="font-size:11px; color:var(--ink-2); display:block;">Proprietario</span><b>${formatVal(dati.propNome)}</b></div>`);
+            if (dati.propCell || dati.propTel) items.push(`<div><span style="font-size:11px; color:var(--ink-2); display:block;">Recapito</span><b>${formatVal(dati.propCell || dati.propTel)}</b></div>`);
+            if (dati.propCF) items.push(`<div><span style="font-size:11px; color:var(--ink-2); display:block;">Codice Fiscale</span><b>${formatVal(dati.propCF)}</b></div>`);
+            items.push(`<div><span style="font-size:11px; color:var(--ink-2); display:block;">Prezzo Incarico</span><b style="color:var(--brand-blue);">${formatEuro(dati.prezzo)}</b></div>`);
+            if (dati.provvigionePerc || dati.provvigioneEuro) {
+                items.push(`<div><span style="font-size:11px; color:var(--ink-2); display:block;">Provvigione</span><b>${dati.provvigionePerc ? dati.provvigionePerc + '%' : ''} ${dati.provvigioneEuro ? `(${formatEuro(dati.provvigioneEuro)})` : ''}</b></div>`);
+            }
+            if (dati.incaricoInizio || dati.incaricoFine) {
+                items.push(`<div><span style="font-size:11px; color:var(--ink-2); display:block;">Periodo Incarico</span><b>${formatDataAtto(dati.incaricoInizio)} ➔ ${formatDataAtto(dati.incaricoFine)}</b></div>`);
+            }
+            if (dati.formaIncarico) {
+                items.push(`<div><span style="font-size:11px; color:var(--ink-2); display:block;">Esclusività</span><b>${dati.formaIncarico === 'esclusiva' ? 'Esclusiva e Irrevocabile' : 'Non esclusiva'}</b></div>`);
+            }
+        } else {
+            items.push(`<div><span style="font-size:11px; color:var(--ink-2); display:block;">Proponente (Acquirente)</span><b>${formatVal(dati.proponenteNome)}</b></div>`);
+            items.push(`<div><span style="font-size:11px; color:var(--ink-2); display:block;">Venditore</span><b>${formatVal(dati.venditoreNome)}</b></div>`);
+            items.push(`<div><span style="font-size:11px; color:var(--ink-2); display:block;">Prezzo Offerto</span><b style="color:var(--brand-blue);">${formatEuro(dati.prezzoTotale)}</b></div>`);
+            if (dati.caparra1) items.push(`<div><span style="font-size:11px; color:var(--ink-2); display:block;">Caparra</span><b>${formatEuro(dati.caparra1)}</b></div>`);
+            if (dati.rogitoData) items.push(`<div><span style="font-size:11px; color:var(--ink-2); display:block;">Rogito Previsto</span><b>${formatDataAtto(dati.rogitoData)}</b></div>`);
+        }
+
+        if (dati.immUbicazione) {
+            items.push(`<div style="grid-column: 1 / -1;"><span style="font-size:11px; color:var(--ink-2); display:block;">Immobile / Ubicazione</span><b>${formatVal(dati.immUbicazione)}</b></div>`);
+        }
+        if (dati.note || dati._note_doc) {
+            items.push(`<div style="grid-column: 1 / -1;"><span style="font-size:11px; color:var(--ink-2); display:block;">Note</span><span style="font-style:italic; font-size:12.5px;">${formatVal(dati.note || dati._note_doc)}</span></div>`);
+        }
+
+        detailsGrid.innerHTML = items.join('');
+
+        // Timeline Storico Modifiche (Audit Log)
+        const historyTimeline = document.getElementById('view-doc-history-timeline');
+        const history = Array.isArray(dati._history) ? dati._history : [];
+
+        const creazIso = d.created_at || (history.find(h => h.action === 'creazione')?.timestamp) || d.updated_at;
+        const creazStr = creazIso ? new Date(creazIso).toLocaleString('it-IT', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—';
+        const updStr = d.updated_at ? new Date(d.updated_at).toLocaleString('it-IT', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—';
+
+        let timelineHtml = `
+            <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:12px; padding-bottom:10px; border-bottom:1px dashed var(--line); font-size:12px;">
+                <div>📅 <b>Creazione:</b> <span style="color:var(--ink); font-weight:600;">${creazStr}</span></div>
+                <div>🕒 <b>Ultima modifica:</b> <span style="color:var(--ink); font-weight:600;">${updStr}</span></div>
+            </div>
+        `;
+
+        if (history.length === 0) {
+            timelineHtml += `
+                <div style="display:flex; gap:10px; align-items:flex-start;">
+                    <div style="background:#dbeafe; color:#1d4ed8; width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; flex-shrink:0;">✨</div>
+                    <div>
+                        <div style="font-size:12.5px; font-weight:600; color:var(--ink);">Documento salvato nel gestionale</div>
+                        <div style="font-size:11px; color:var(--ink-2);">${creazStr}</div>
+                    </div>
+                </div>
+            `;
+        } else {
+            timelineHtml += '<div style="display:flex; flex-direction:column; gap:12px;">';
+            const reversedHistory = [...history].slice().reverse();
+            reversedHistory.forEach((h) => {
+                const hTime = h.timestamp ? new Date(h.timestamp).toLocaleString('it-IT', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—';
+                let icon = '✏️';
+                let iconBg = '#f1f5f9';
+                let iconColor = '#475569';
+                if (h.action === 'creazione') { icon = '✨'; iconBg = '#dbeafe'; iconColor = '#1d4ed8'; }
+                else if (h.action === 'stato') { icon = '✍️'; iconBg = '#dcfce7'; iconColor = '#15803d'; }
+                else if (h.action === 'duplicazione') { icon = '📑'; iconBg = '#fef3c7'; iconColor = '#b45309'; }
+
+                timelineHtml += `
+                    <div style="display:flex; gap:10px; align-items:flex-start;">
+                        <div style="background:${iconBg}; color:${iconColor}; width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; flex-shrink:0; margin-top:2px;">${icon}</div>
+                        <div style="flex:1;">
+                            <div style="display:flex; justify-content:space-between; align-items:baseline; gap:8px;">
+                                <span style="font-size:12.5px; font-weight:600; color:var(--ink);">${escapeHtml(h.summary || 'Modifica')}</span>
+                                <span style="font-size:11px; color:var(--ink-2); white-space:nowrap;">${hTime}</span>
+                            </div>
+                            ${(Array.isArray(h.details) && h.details.length > 0) ? `
+                                <ul style="margin:4px 0 0; padding-left:16px; font-size:11.5px; color:var(--ink-2);">
+                                    ${h.details.map(det => `<li>${escapeHtml(det)}</li>`).join('')}
+                                </ul>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            timelineHtml += '</div>';
+        }
+
+        historyTimeline.innerHTML = timelineHtml;
+
+        // Buttons
+        document.getElementById('view-doc-pdf-btn').href = `${d.tipo}.html?id=${encodeURIComponent(d.id)}&mode=view`;
+        document.getElementById('view-doc-edit-btn').href = `${d.tipo}.html?id=${encodeURIComponent(d.id)}`;
+        document.getElementById('view-doc-status-btn').onclick = () => {
+            closeModals();
+            openStatoDocModal(d.id);
+        };
+
+        document.getElementById('modal-view-doc').style.display = 'flex';
     }
 
     let pendingFirmaDocId = null;
@@ -6480,16 +6722,30 @@
         if (!d) return;
 
         const dataFirma = document.getElementById('confirm-firma-date').value || new Date().toISOString().split('T')[0];
+        const history = Array.isArray(d.dati?._history) ? [...d.dati._history] : [];
+        const nowIso = new Date().toISOString();
+        if (history.length === 0) {
+            history.push({ timestamp: d.created_at || nowIso, action: 'creazione', summary: 'Creazione del documento', details: [] });
+        }
+        history.push({
+            timestamp: nowIso,
+            action: 'stato',
+            summary: `Stato impostato su FIRMATO (data firma: ${new Date(dataFirma).toLocaleDateString('it-IT')})`,
+            details: [`Contrassegnato come FIRMATO dal cliente con data ${dataFirma}`]
+        });
+
         const datiAggiornati = {
             ...(d.dati || {}),
             _stato_doc: 'firmato',
             _data_documento: dataFirma,
-            dataFirma: dataFirma
+            dataFirma: dataFirma,
+            _history: history
         };
 
         showLoader("Salvataggio stato firmato...");
         const { error } = await _supabase.from('documenti_bozze').update({
-            dati: datiAggiornati
+            dati: datiAggiornati,
+            updated_at: nowIso
         }).eq('id', pendingFirmaDocId);
 
         hideLoader();
@@ -6507,14 +6763,28 @@
         const d = documenti.find(x => x.id == pendingFirmaDocId);
         if (!d) return;
 
+        const history = Array.isArray(d.dati?._history) ? [...d.dati._history] : [];
+        const nowIso = new Date().toISOString();
+        if (history.length === 0) {
+            history.push({ timestamp: d.created_at || nowIso, action: 'creazione', summary: 'Creazione del documento', details: [] });
+        }
+        history.push({
+            timestamp: nowIso,
+            action: 'stato',
+            summary: 'Stato reimpostato a Bozza in lavorazione',
+            details: ['Rimosso contrassegno di firma']
+        });
+
         const datiAggiornati = {
             ...(d.dati || {}),
-            _stato_doc: 'bozza'
+            _stato_doc: 'bozza',
+            _history: history
         };
 
         showLoader("Aggiornamento a bozza...");
         const { error } = await _supabase.from('documenti_bozze').update({
-            dati: datiAggiornati
+            dati: datiAggiornati,
+            updated_at: nowIso
         }).eq('id', pendingFirmaDocId);
 
         hideLoader();
@@ -6563,12 +6833,33 @@
         const nuovoStato = document.getElementById('doc-status-select').value;
         const nuovaData = document.getElementById('doc-date-input').value;
         const nuoveNote = document.getElementById('doc-notes-input').value.trim();
+        const nowIso = new Date().toISOString();
+
+        const history = Array.isArray(d.dati?._history) ? [...d.dati._history] : [];
+        if (history.length === 0) {
+            history.push({ timestamp: d.created_at || nowIso, action: 'creazione', summary: 'Creazione del documento', details: [] });
+        }
+
+        const changes = [];
+        if (nuovoStato !== d.dati?._stato_doc) changes.push(`Stato: ${nuovoStato}`);
+        if (nuovaData !== (d.dati?._data_documento || d.dati?.dataFirma)) changes.push(`Data atto: ${nuovaData ? new Date(nuovaData).toLocaleDateString('it-IT') : 'rimossa'}`);
+        if (nuoveNote !== (d.dati?._note_doc || '')) changes.push(`Note aggiornate`);
+
+        if (changes.length > 0) {
+            history.push({
+                timestamp: nowIso,
+                action: 'stato',
+                summary: `Aggiornato: ${changes.join(', ')}`,
+                details: changes
+            });
+        }
 
         const datiAggiornati = {
             ...(d.dati || {}),
             _stato_doc: nuovoStato,
             _data_documento: nuovaData || null,
-            _note_doc: nuoveNote || null
+            _note_doc: nuoveNote || null,
+            _history: history
         };
 
         if (nuovaData) {
@@ -6577,7 +6868,8 @@
 
         showLoader("Aggiornamento stato...");
         const { error } = await _supabase.from('documenti_bozze').update({
-            dati: datiAggiornati
+            dati: datiAggiornati,
+            updated_at: nowIso
         }).eq('id', id);
 
         hideLoader();
@@ -6596,20 +6888,26 @@
         if (!orig) return;
 
         const conf = confirm(
-            `Vuoi creare una NUOVA bozza duplicando «${orig.titolo || 'questo documento'}»?\n\n` +
-            `Il documento originale (anche se già firmato) rimarrà intatto nello storico.`
+            `Vuoi creare una NUOVA bozza separata duplicando «${orig.titolo || 'questo documento'}»?\n\n` +
+            `L'atto originale rimarrà intatto nello storico con tutta la sua cronologia.`
         );
         if (!conf) return;
 
         showLoader("Duplicazione documento...");
 
+        const nowIso = new Date().toISOString();
         const datiClonati = {
             ...(orig.dati || {}),
             _stato_doc: 'bozza',
-            _note_doc: `Revisione duplicata da documento precedente (${new Date().toLocaleDateString('it-IT')})`
+            _note_doc: `Nuova revisione duplicata da documento precedente (${new Date().toLocaleDateString('it-IT')})`,
+            _history: [{
+                timestamp: nowIso,
+                action: 'duplicazione',
+                summary: `Nuova revisione creata da «${orig.titolo || 'documento'}»`,
+                details: [`Duplicato dall'originale del ${new Date(orig.created_at || nowIso).toLocaleDateString('it-IT')}`]
+            }]
         };
 
-        const nowIso = new Date().toISOString();
         const payload = {
             tipo: orig.tipo,
             titolo: (orig.titolo || 'Documento') + ' (Nuova bozza)',

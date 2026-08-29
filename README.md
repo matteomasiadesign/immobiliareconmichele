@@ -72,6 +72,8 @@ Sono scritti per essere sicuri da rieseguire (`IF NOT EXISTS`).
    come testo libero. Va **dopo** il punto 7, di cui usa la colonna `deleted_at`.
 9. `supabase-luxury-upgrade.sql` — colonna `is_luxury` su `properties` e aggiornamento
    della vista `properties_public` per distinguere la collezione Luxury dal catalogo comune.
+10. `supabase-incarichi-firmati-upgrade.sql` — colonne `has_mandate` e `mandate_duration`
+    su `properties` e aggiornamento vista `properties_public` per gestire lo storico e le statistiche dei soli incarichi firmati.
 
 Dopo aver applicato l'ultimo script, in **Documenti → Aggiorna rubrica** c'è un
 pulsante che rilegge gli incarichi e le proposte già salvati e ne porta in
