@@ -380,11 +380,10 @@ function openModal(id) {
     const energySub = document.getElementById('mod-energy-sub');
     if (energyEl && energyItem) {
         const eClass = p.energy_class || 'In fase di definizione';
-        energyEl.innerText = eClass;
-        const cleanClass = eClass.toLowerCase().replace(/[^a-z0-9]/g, '');
-        energyEl.className = `modal-grid-number energy-badge-pill energy-${cleanClass.startsWith('a') ? 'a' : (cleanClass || 'def')}`;
+        energyEl.innerText = (eClass === 'In fase di definizione') ? 'In def.' : eClass;
+        energyEl.className = 'modal-grid-number';
         if (energySub) {
-            energySub.innerText = p.energy_performance ? p.energy_performance : (eClass === 'In fase di definizione' ? 'APE in rilascio' : 'Attestato APE');
+            energySub.innerText = p.energy_performance ? p.energy_performance : 'Classe APE';
         }
     }
 

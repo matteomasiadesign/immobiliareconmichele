@@ -392,21 +392,90 @@
 .modal-type { display: inline-block; background: rgba(0,68,255,0.05); color: var(--brand-blue); font-size: 11px; font-weight: 900; text-transform: uppercase; padding: 4px 10px; border-radius: 12px; margin-bottom: 0.5rem; }
 .modal-title { font-family: 'Space Grotesk', -apple-system, sans-serif; font-size: 1.6rem; font-weight: 700; color: var(--text-slate); line-height: 1.15; margin-bottom: 0.5rem; }
 .modal-zone { color: var(--brand-blue); font-weight: 800; font-size: 13px; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 6px; }
-.modal-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1.5rem; }
-.modal-grid.has-sqm { grid-template-columns: repeat(4, 1fr); }
-.modal-grid-item { background: #f8fafc; border: 1px solid var(--border-color); border-radius: 16px; padding: 14px 8px; text-align: center; }
-/* display:block perche' un SVG e' inline di suo, e sugli elementi inline il
-   margine verticale non ha effetto: l'icona resterebbe appiccicata al numero. */
-.modal-grid-icon { display: block; width: 16px; height: 16px; color: var(--brand-blue); margin: 0 auto 6px; }
+.modal-grid {
+  display: flex;
+  align-items: stretch;
+  background: #f8fafc;
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+}
+.modal-grid-item {
+  flex: 1 1 0px;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  border-right: 1px solid var(--border-color);
+  padding: 12px 6px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+.modal-grid-item:last-child {
+  border-right: none;
+}
+.modal-grid-icon {
+  display: block;
+  width: 15px;
+  height: 15px;
+  color: var(--brand-blue);
+  margin: 0 auto 3px;
+  opacity: 0.85;
+}
+.modal-grid-value {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 2px;
+  line-height: 1.15;
+  margin-bottom: 2px;
+}
+.modal-grid-number {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: var(--text-slate);
+  letter-spacing: -0.01em;
+}
+.modal-grid-unit {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+.modal-grid-label {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: block;
+}
 
-/* La gerarchia e' il punto: prima valore ed etichetta erano 13px contro 9px,
-   quindi il dato non si distingueva dalla sua didascalia e la fascia risultava
-   spenta. Con 18px contro 9px il numero guida la lettura senza gridare: sopra
-   i 20 le quattro caselle diventavano un cartellone. */
-.modal-grid-value { display: flex; align-items: baseline; justify-content: center; gap: 3px; line-height: 1; margin-bottom: 6px; }
-.modal-grid-number { font-size: 1.125rem; font-weight: 900; color: var(--text-slate); }
-.modal-grid-unit { font-size: 13px; font-weight: 800; color: var(--text-muted); }
-.modal-grid-label { font-size: 9px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; display: block; }
+@media (max-width: 520px) {
+  .modal-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .modal-grid-item {
+    border-right: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+    padding: 10px 6px;
+  }
+  .modal-grid-item:nth-child(2n) {
+    border-right: none;
+  }
+  .modal-grid-item:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    border-right: none;
+    border-bottom: none;
+  }
+  .modal-grid-item:nth-last-child(-n+2):not(:last-child:nth-child(odd)) {
+    border-bottom: none;
+  }
+}
 .modal-desc-title { font-size: 11px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; }
 .modal-desc { font-size: 14px; line-height: 1.6; color: var(--text-slate); font-weight: 500; white-space: pre-line; margin-bottom: 1.5rem; }
 

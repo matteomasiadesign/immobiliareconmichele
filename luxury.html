@@ -742,13 +742,28 @@
       text-transform: uppercase;
       letter-spacing: 0.02em;
     }
-    #property-modal .modal-grid-item {
-      background: rgba(255,255,255,0.04);
+    #property-modal .modal-grid {
+      background: rgba(255,255,255,0.03);
       border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+    }
+    #property-modal .modal-grid-item {
+      background: transparent;
+      border: none;
+      border-right: 1px solid rgba(255,255,255,0.08);
+    }
+    #property-modal .modal-grid-item:last-child {
+      border-right: none;
+    }
+    #property-modal .modal-grid-icon {
+      color: var(--brand-yellow);
     }
     #property-modal .modal-grid-number,
     #property-modal .modal-grid-unit {
       color: #ffffff;
+    }
+    #property-modal .modal-grid-label {
+      color: #94a3b8;
     }
     #property-modal .modal-desc-title {
       color: var(--brand-yellow);
@@ -950,8 +965,8 @@
             </div>
             <div class="modal-grid-item" id="mod-energy-item">
               <svg class="modal-grid-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-              <span class="modal-grid-value"><span id="mod-energy-class" class="modal-grid-number energy-badge-pill energy-def"></span></span>
-              <span class="modal-grid-label" id="mod-energy-sub">Classe Energetica</span>
+              <span class="modal-grid-value"><span id="mod-energy-class" class="modal-grid-number"></span></span>
+              <span class="modal-grid-label" id="mod-energy-sub">Classe APE</span>
             </div>
           </div>
 
