@@ -8,8 +8,10 @@ ALTER TABLE public.properties
 ADD COLUMN IF NOT EXISTS energy_class TEXT DEFAULT 'In fase di definizione',
 ADD COLUMN IF NOT EXISTS energy_performance TEXT DEFAULT NULL;
 
--- 2. Aggiorna la view pubblica properties_public per esporre i nuovi campi
-CREATE OR REPLACE VIEW public.properties_public AS
+-- 2. Ricrea in modo pulito la view pubblica con tutte le colonne
+DROP VIEW IF EXISTS public.properties_public CASCADE;
+
+CREATE VIEW public.properties_public AS
 SELECT 
     id,
     title,
