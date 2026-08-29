@@ -721,10 +721,6 @@
 }
 
 /* CLASSI ENERGETICHE (APE) */
-.feature-energy {
-  font-weight: 700;
-  color: var(--text-slate);
-}
 .energy-badge-pill {
   display: inline-flex;
   align-items: center;
