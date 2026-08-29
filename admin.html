@@ -586,31 +586,148 @@
     .form-section-label:first-of-type { margin-top: 0; }
     .btn-cancel-edit { font-size: 12.5px; font-weight: 550; color: var(--crit); background: none; border: none; cursor: pointer; display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
 
-    .photo-fields-box { background-color: var(--surface-2); padding: 1rem; border-radius: var(--radius); border: 1px solid var(--line); margin-bottom: 1rem; width: 100%; }
-    .file-input-custom {
-      border: 1.5px dashed var(--line); padding: 20px; border-radius: 10px; text-align: center;
-      background-color: var(--surface); cursor: pointer; transition: var(--transition);
-      font-size: 12.5px; font-weight: 500; color: var(--ink-2); display: block;
+    .photo-fields-box { background-color: var(--surface-2); padding: 1.25rem; border-radius: var(--radius); border: 1px solid var(--line); margin-bottom: 1rem; width: 100%; }
+    .prop-dropzone {
+      border: 2px dashed var(--line);
+      border-radius: 12px;
+      padding: 26px 20px;
+      text-align: center;
+      background-color: var(--surface);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      position: relative;
     }
-    .file-input-custom:hover { border-color: var(--accent); background-color: var(--accent-soft); color: var(--accent-ink); }
-    .preview-thumbs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(75px, 1fr)); gap: 12px; margin-top: 15px; }
-    .preview-thumb-container { position: relative; aspect-ratio: 4/3; cursor: grab; }
-    .preview-thumb-container:active { cursor: grabbing; }
-    .preview-thumb { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; border: 1px solid var(--line); transition: border .2s; }
-    .preview-thumb.cover-img { border: 2.5px solid var(--brand-yellow); box-shadow: 0 3px 10px rgba(255, 217, 15, .3); }
+    .prop-dropzone:hover {
+      border-color: var(--accent);
+      background-color: color-mix(in srgb, var(--accent) 4%, var(--surface));
+    }
+    .prop-dropzone.drag-active {
+      border-color: var(--accent);
+      border-style: solid;
+      background-color: color-mix(in srgb, var(--accent) 10%, var(--surface));
+      box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 20%, transparent);
+      transform: scale(1.01);
+    }
+    .prop-dropzone-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 2px;
+      transition: transform 0.2s;
+    }
+    .prop-dropzone:hover .prop-dropzone-icon,
+    .prop-dropzone.drag-active .prop-dropzone-icon {
+      transform: translateY(-2px);
+    }
+    .prop-dropzone-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .prop-dropzone-sub {
+      font-size: 11.5px;
+      color: var(--ink-2);
+    }
+    .photo-count-info {
+      font-size: 11.5px;
+      color: var(--ink-2);
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .preview-thumbs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .preview-thumb-container {
+      position: relative;
+      aspect-ratio: 4/3;
+      cursor: grab;
+      border-radius: 8px;
+      overflow: visible;
+      transition: transform 0.15s ease;
+    }
+    .preview-thumb-container:hover {
+      transform: scale(1.02);
+    }
+    .preview-thumb-container:active {
+      cursor: grabbing;
+    }
+    .preview-thumb {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      display: block;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .preview-thumb.cover-img {
+      border: 2.5px solid var(--brand-yellow);
+      box-shadow: 0 4px 14px rgba(255, 217, 15, 0.45);
+    }
     .cover-badge {
-      position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%);
-      background-color: var(--brand-yellow); color: #0038d1; font-family: var(--mono); font-size: 8px;
-      font-weight: 600; padding: 2px 6px; border-radius: 12px; pointer-events: none; white-space: nowrap;
-      letter-spacing: .05em; text-transform: uppercase;
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: var(--brand-yellow);
+      color: #002eab;
+      font-family: var(--mono);
+      font-size: 8.5px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 12px;
+      pointer-events: none;
+      white-space: nowrap;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.15);
     }
     .btn-set-cover, .btn-remove-thumb {
-      position: absolute; top: -8px; width: 24px; height: 24px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center; cursor: pointer;
-      font-size: 11px; box-shadow: var(--shadow-1); z-index: 10; border: 2px solid var(--surface);
+      position: absolute;
+      top: -6px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      z-index: 10;
+      border: 1.5px solid var(--surface);
+      transition: transform 0.15s;
     }
-    .btn-set-cover { left: -8px; background-color: var(--surface); color: var(--warn); border-color: var(--warn); }
-    .btn-remove-thumb { right: -8px; background-color: var(--crit); color: #fff; font-weight: bold; }
+    .btn-set-cover:hover, .btn-remove-thumb:hover {
+      transform: scale(1.15);
+    }
+    .btn-set-cover {
+      left: -6px;
+      background-color: var(--surface);
+      color: var(--warn);
+      border-color: var(--warn);
+    }
+    .btn-remove-thumb {
+      right: -6px;
+      background-color: var(--crit);
+      color: #fff;
+      font-weight: 900;
+    }
 
     .checkbox-container {
       background-color: var(--surface-2); padding: 1rem; border-radius: var(--radius);
@@ -2502,13 +2619,20 @@
           <div class="form-group"><label class="form-label">Mq</label><input type="number" id="prop-sqm" class="form-input"></div>
         </div>
 
-        <div class="form-section-label">Foto</div>
+        <div class="form-section-label">Foto &amp; Galleria Immagini</div>
         <div class="photo-fields-box">
-          <label class="form-label">Immagini (Trascina per riordinare)</label>
-          <label class="file-input-custom">
-            Trascina o tocca per aggiungere foto...
+          <div id="prop-dropzone" class="prop-dropzone" onclick="document.getElementById('prop-file-uploader').click()">
             <input type="file" id="prop-file-uploader" accept="image/*" multiple onchange="handleImageSelection(event)" style="display: none;">
-          </label>
+            <div class="prop-dropzone-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            </div>
+            <div class="prop-dropzone-title">Trascina qui le foto dell'immobile</div>
+            <div class="prop-dropzone-sub">oppure <span style="color:var(--brand-blue); text-decoration:underline; font-weight:600;">sfoglia i file dal computer</span> (JPG, PNG, WEBP)</div>
+          </div>
+          <div id="photo-count-info" class="photo-count-info" style="display:none;">
+            <span id="photo-count-text" style="font-weight:600; color:var(--ink);"></span>
+            <span style="font-size:11px; color:var(--ink-3); font-style:italic;">Trascina le miniature per riordinare</span>
+          </div>
           <div id="prop-preview-grid" class="preview-thumbs-grid"></div>
         </div>
 
@@ -3542,21 +3666,66 @@
         }
     }
 
+    function initDropzoneEvents() {
+        const dropzone = document.getElementById('prop-dropzone');
+        if (!dropzone || dropzone.dataset.initialized) return;
+        dropzone.dataset.initialized = "true";
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropzone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropzone.classList.add('drag-active');
+            }, false);
+        });
+
+        ['dragleave', 'dragend'].forEach(eventName => {
+            dropzone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropzone.classList.remove('drag-active');
+            }, false);
+        });
+
+        dropzone.addEventListener('drop', async (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            dropzone.classList.remove('drag-active');
+            const files = e.dataTransfer?.files;
+            if (files && files.length > 0) {
+                await processImageFiles(files);
+            }
+        }, false);
+    }
+
     async function handleImageSelection(e) { 
         const files = e.target.files; 
         if (!files || files.length === 0) return; 
-        showLoader("Caricamento foto in corso..."); 
-        for (let i = 0; i < files.length; i++) { 
-            try { 
-                const url = await compressAndUpload(files[i]); 
-                uploadedImageUrls.push(url); 
-            } catch (err) { 
-                console.error("Errore foto", err); 
-            } 
-        } 
-        renderImagePreviews(); 
-        hideLoader(); 
+        await processImageFiles(files);
         e.target.value = ""; 
+    }
+
+    async function processImageFiles(files) {
+        if (!files || files.length === 0) return;
+        const validFiles = Array.from(files).filter(f => f.type.startsWith('image/'));
+        if (validFiles.length === 0) {
+            alert("Seleziona solo file immagine validi (JPG, PNG, WEBP)!");
+            return;
+        }
+
+        const total = validFiles.length;
+        showLoader(`Caricamento foto (1 di ${total})...`);
+        for (let i = 0; i < total; i++) {
+            showLoader(`Compressione e upload foto (${i + 1} di ${total})...`);
+            try {
+                const url = await compressAndUpload(validFiles[i]);
+                if (url) uploadedImageUrls.push(url);
+            } catch (err) {
+                console.error("Errore caricamento foto", err);
+            }
+        }
+        renderImagePreviews();
+        hideLoader();
     }
 
     function compressAndUpload(file) { 
@@ -3568,7 +3737,7 @@
                 img.src = event.target.result; 
                 img.onload = () => { 
                     const canvas = document.createElement('canvas'); 
-                    const MAX_W = 1080; 
+                    const MAX_W = 1280; 
                     let w = img.width; 
                     let h = img.height; 
                     if (w > MAX_W) { 
@@ -3584,26 +3753,43 @@
                         if(error) return reject(error);
                         const { data: { publicUrl } } = _supabase.storage.from('properties-images').getPublicUrl(fileName);
                         resolve(publicUrl);
-                    }, 'image/jpeg', 0.7);
+                    }, 'image/jpeg', 0.75);
                 }; 
+                img.onerror = reject;
             }; 
+            reader.onerror = reject;
         }); 
     }
 
     function renderImagePreviews() { 
         const grid = document.getElementById('prop-preview-grid'); 
+        const countInfo = document.getElementById('photo-count-info');
+        const countText = document.getElementById('photo-count-text');
+
+        if (!grid) return;
         grid.innerHTML = ""; 
+
+        if (countInfo && countText) {
+            if (uploadedImageUrls.length > 0) {
+                countInfo.style.display = 'flex';
+                countText.innerText = `📸 ${uploadedImageUrls.length} ${uploadedImageUrls.length === 1 ? 'foto caricata' : 'foto caricate'}`;
+            } else {
+                countInfo.style.display = 'none';
+            }
+        }
+
         uploadedImageUrls.forEach((url, i) => { 
             grid.innerHTML += `
-            <div class="preview-thumb-container">
+            <div class="preview-thumb-container" title="Trascina per cambiare l'ordine">
                 <img src="${url}" class="preview-thumb ${i===0 ? 'cover-img' : ''}">
-                ${i===0 ? '<span class="cover-badge">COPERTINA</span>' : `<button type="button" class="btn-set-cover" onclick="event.preventDefault(); uploadedImageUrls.unshift(uploadedImageUrls.splice(${i},1)[0]); renderImagePreviews();">⭐</button>`}
-                <button type="button" class="btn-remove-thumb" onclick="event.preventDefault(); removeUploadedImage(${i});">✕</button>
+                ${i===0 ? '<span class="cover-badge">⭐ COPERTINA</span>' : `<button type="button" class="btn-set-cover" title="Imposta come foto di copertina" onclick="event.preventDefault(); uploadedImageUrls.unshift(uploadedImageUrls.splice(${i},1)[0]); renderImagePreviews();">⭐</button>`}
+                <button type="button" class="btn-remove-thumb" title="Rimuovi foto" onclick="event.preventDefault(); removeUploadedImage(${i});">✕</button>
             </div>`; 
         }); 
+
         if(sortableInstance) sortableInstance.destroy();
         sortableInstance = new Sortable(grid, {
-            animation: 150, 
+            animation: 180, 
             ghostClass: 'sortable-ghost', 
             onEnd: (evt) => { 
                 uploadedImageUrls.splice(evt.newIndex, 0, uploadedImageUrls.splice(evt.oldIndex, 1)[0]); 
@@ -3947,6 +4133,7 @@
         } else {
             document.getElementById('prop-form-title').innerText = "Nuovo Immobile";
         }
+        initDropzoneEvents();
         document.getElementById('modal-property-form').classList.add('open');
         document.body.style.overflow = 'hidden';
     }
