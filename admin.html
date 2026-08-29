@@ -2618,6 +2618,30 @@
           <div class="form-group"><label class="form-label">Bagni</label><input required type="number" id="prop-bathrooms" class="form-input" value="1"></div>
           <div class="form-group"><label class="form-label">Superficie (Mq)</label><input type="number" id="prop-sqm" class="form-input" placeholder="es. 95"></div>
         </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Classe Energetica (APE)</label>
+            <select id="prop-energy-class" class="form-select">
+              <option value="In fase di definizione">In fase di definizione</option>
+              <option value="A4">A4 (Edificio a energia quasi zero - NZEB)</option>
+              <option value="A3">A3</option>
+              <option value="A2">A2</option>
+              <option value="A1">A1</option>
+              <option value="A">A</option>
+              <option value="B">B</option>
+              <option value="C">C</option>
+              <option value="D">D</option>
+              <option value="E">E</option>
+              <option value="F">F</option>
+              <option value="G">G</option>
+              <option value="Esente">Esente (Rustico / Non soggetto ad APE)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Prestazione Globale (IPE / EPgl,nren)</label>
+            <input type="text" id="prop-energy-ipe" class="form-input" placeholder="es. 145.2 kWh/m² anno">
+          </div>
+        </div>
         <div style="margin-top: 2px; margin-bottom: 1.25rem;">
           <label class="checkbox-row" style="background:var(--surface-2); padding:9px 12px; border-radius:8px; border:1px solid var(--line); cursor:pointer;">
             <input type="checkbox" id="prop-parking">
@@ -3877,7 +3901,9 @@
             has_mandate: hasMandate,
             mandate_duration: mandateDuration,
             acquisition_date: acqDate,
-            expiry_date: expDate
+            expiry_date: expDate,
+            energy_class: document.getElementById('prop-energy-class').value || 'In fase di definizione',
+            energy_performance: document.getElementById('prop-energy-ipe').value || null
         };
         const res = id
             ? await _supabase.from('properties').update(payload).eq('id', id).select().single()
@@ -4128,6 +4154,8 @@
         document.getElementById('prop-featured').checked = p.is_featured;
         document.getElementById('prop-luxury').checked = Boolean(p.is_luxury);
         document.getElementById('prop-visible').checked = p.is_visible !== false;
+        document.getElementById('prop-energy-class').value = p.energy_class || 'In fase di definizione';
+        document.getElementById('prop-energy-ipe').value = p.energy_performance || '';
 
         const hasMandate = Boolean(p.has_mandate);
         document.getElementById('prop-has-mandate').checked = hasMandate;
@@ -4171,6 +4199,8 @@
         toggleReservedPriceUI();
         document.getElementById('prop-luxury').checked = false;
         document.getElementById('prop-visible').checked = true;
+        document.getElementById('prop-energy-class').value = 'In fase di definizione';
+        document.getElementById('prop-energy-ipe').value = '';
         document.getElementById('prop-has-mandate').checked = false;
         document.getElementById('prop-mandate-duration').value = '6 mesi';
         document.getElementById('prop-acq-date').value = '';
@@ -4287,7 +4317,7 @@
                 </div>
                 <div class="property-card-body">
                     <p class="item-title">${escapeHtml(p.title)}</p>
-                    <p class="property-card-meta">${escapeHtml(p.zone)} • ${escapeHtml(p.property_type)}</p>
+                    <p class="property-card-meta">${escapeHtml(p.zone)} • ${escapeHtml(p.property_type)}${p.energy_class && p.energy_class !== 'In fase di definizione' ? ` • <span style="font-weight:700; color:var(--ink);">Classe ${escapeHtml(p.energy_class)}</span>` : ''}</p>
                     <span class="property-card-price">${(p.price && Number(p.price) > 0) ? `€${Number(p.price).toLocaleString('it-IT')}` : '<span style="color:var(--brand-blue);font-size:13.5px;font-weight:600;">Trattativa riservata</span>'}</span>
                     ${(p.has_mandate && (p.acquisition_date || p.expiry_date)) ? `
                     <div class="property-card-gestionale">

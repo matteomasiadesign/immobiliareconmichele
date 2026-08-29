@@ -63,6 +63,7 @@ function propertyCardHTML(p) {
           <span class="feature-item"><svg style="width: 12px; height: 12px; flex-shrink: 0;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg> ${p.rooms} Locali</span>
           <span class="feature-item"><svg style="width: 12px; height: 12px; flex-shrink: 0;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg> ${p.bathrooms} Bagni</span>
           ${p.sqm ? `<span class="feature-item"><svg style="width: 12px; height: 12px; flex-shrink: 0;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4h4M16 4h4v4M20 16v4h-4M8 20H4v-4"></path></svg> ${p.sqm} m²</span>` : ''}
+          ${p.energy_class && p.energy_class !== 'In fase di definizione' ? `<span class="feature-item feature-energy" title="Classe Energetica ${escapeHtml(p.energy_class)}"><svg style="width: 12px; height: 12px; flex-shrink: 0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg> ${escapeHtml(p.energy_class)}</span>` : ''}
         </div>
         <div class="card-footer">
           <div>
@@ -372,6 +373,21 @@ function openModal(id) {
     if (p.sqm) { document.getElementById('mod-sqm').innerText = p.sqm; sqmItem.style.display = ''; modGrid.classList.add('has-sqm'); }
     else { sqmItem.style.display = 'none'; modGrid.classList.remove('has-sqm'); }
     document.getElementById('mod-parking').innerText = p.has_parking ? "Sì" : "No";
+
+    // Classe Energetica & IPE
+    const energyEl = document.getElementById('mod-energy-class');
+    const energyItem = document.getElementById('mod-energy-item');
+    const energySub = document.getElementById('mod-energy-sub');
+    if (energyEl && energyItem) {
+        const eClass = p.energy_class || 'In fase di definizione';
+        energyEl.innerText = eClass;
+        const cleanClass = eClass.toLowerCase().replace(/[^a-z0-9]/g, '');
+        energyEl.className = `modal-grid-number energy-badge-pill energy-${cleanClass.startsWith('a') ? 'a' : (cleanClass || 'def')}`;
+        if (energySub) {
+            energySub.innerText = p.energy_performance ? p.energy_performance : (eClass === 'In fase di definizione' ? 'APE in rilascio' : 'Attestato APE');
+        }
+    }
+
     document.getElementById('mod-desc').innerText = p.description || '';
     const isReserved = !p.price || Number(p.price) <= 0;
     document.getElementById('mod-price').innerText = isReserved
