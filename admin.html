@@ -30,8 +30,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
   <script src="config.js"></script>
   <!-- Serve solo per portaInRubrica/personeDelDocumento: il gestionale usa
        le stesse identiche funzioni di incarico.html e proposta.html per
@@ -40,7 +38,6 @@
        Caricare il file non fa partire niente: initBozze la chiamano le
        pagine dei documenti, non questa. -->
   <script src="documenti.js"></script>
-  <script src="cartello-vetrina.js"></script>
 
   <style>
     /* ============================================================
@@ -1842,15 +1839,10 @@
     }
 
     @media (max-width: 380px) {
+      /* Sette colonne in 320px: 45px a casella, due pallini per riga. */
       .agenda-day { min-height: 46px; }
       .agenda-punti { gap: 2px; }
       .agenda-punti i { width: 4.5px; height: 4.5px; }
-    }
-
-    @media (max-width: 768px) {
-      .cartello-modal-body {
-        grid-template-columns: 1fr !important;
-      }
     }
   </style>
 
@@ -2719,102 +2711,6 @@
           <button type="submit" class="btn-submit" style="flex:1;">Salva Stato</button>
         </div>
       </form>
-    </div>
-  </div>
-
-  <!-- Modal Cartello Vetrina A4 / A3 -->
-  <div id="modal-cartello-vetrina" class="modal-overlay">
-    <div class="modal-content" style="max-width:880px; max-height:92vh; display:flex; flex-direction:column; padding:0; overflow:hidden;">
-      <div class="modal-header" style="padding:1.25rem 1.5rem 1rem; border-bottom:1px solid var(--line); margin:0;">
-        <div style="min-width:0;">
-          <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px; flex-wrap:wrap;">
-            <span class="status-badge bg-blue">🪧 Stampa Vetrina</span>
-            <span id="cartello-prop-status-badge"></span>
-          </div>
-          <h3 class="panel-title" id="cartello-prop-title" style="margin:0; font-size:17px; white-space:normal;">Cartello Vetrina Immobile</h3>
-        </div>
-        <button type="button" class="btn-close-modal" onclick="closeModals()">✕</button>
-      </div>
-
-      <div style="flex:1; overflow-y:auto; padding:1.25rem 1.5rem; display:grid; grid-template-columns:330px 1fr; gap:1.5rem;" class="cartello-modal-body">
-        <!-- Colonna Sinistra: Opzioni & Personalizzazione -->
-        <div style="display:flex; flex-direction:column; gap:13px;">
-          <input type="hidden" id="cartello-prop-id">
-          
-          <div class="form-group" style="margin-bottom:0;">
-            <label style="font-weight:700; font-size:11.5px; margin-bottom:4px; display:block; color:var(--ink-2); text-transform:uppercase; letter-spacing:0.04em;">📄 Formato Carta</label>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-              <button type="button" id="cartello-fmt-a4" class="btn-mini primary" onclick="setCartelloOption('format', 'a4')" style="text-align:center; padding:8px 0; font-weight:700;">A4 (210×297 mm)</button>
-              <button type="button" id="cartello-fmt-a3" class="btn-mini" onclick="setCartelloOption('format', 'a3')" style="text-align:center; padding:8px 0; font-weight:700;">A3 (297×420 mm)</button>
-            </div>
-          </div>
-
-          <div class="form-group" style="margin-bottom:0;">
-            <label style="font-weight:700; font-size:11.5px; margin-bottom:4px; display:block; color:var(--ink-2); text-transform:uppercase; letter-spacing:0.04em;">📐 Orientamento</label>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-              <button type="button" id="cartello-ori-p" class="btn-mini primary" onclick="setCartelloOption('orientation', 'p')" style="text-align:center; padding:8px 0; font-weight:700;">Verticale (Portrait)</button>
-              <button type="button" id="cartello-ori-l" class="btn-mini" onclick="setCartelloOption('orientation', 'l')" style="text-align:center; padding:8px 0; font-weight:700;">Orizzontale (Landscape)</button>
-            </div>
-          </div>
-
-          <div class="form-group" style="margin-bottom:0;">
-            <label style="font-weight:700; font-size:11.5px; margin-bottom:4px; display:block; color:var(--ink-2); text-transform:uppercase; letter-spacing:0.04em;">🎨 Stile Grafico</label>
-            <select id="cartello-theme-select" class="form-input" onchange="setCartelloOption('theme', this.value)" style="font-size:12.5px; font-weight:600; padding:7px 10px;">
-              <option value="auto">Automatico (in base all'immobile)</option>
-              <option value="light">Standard Luminoso (Bianco & Blu)</option>
-              <option value="luxury">Dark Luxury (Blu Notte & Oro)</option>
-            </select>
-          </div>
-
-          <div class="form-group" style="margin-bottom:0;">
-            <label style="font-weight:700; font-size:11.5px; margin-bottom:4px; display:block; color:var(--ink-2); text-transform:uppercase; letter-spacing:0.04em;">🖼️ Foto Incluse</label>
-            <select id="cartello-photos-select" class="form-input" onchange="setCartelloOption('photoCount', Number(this.value))" style="font-size:12.5px; padding:7px 10px;">
-              <option value="3">3 Foto (Hero grande + 2 miniature)</option>
-              <option value="1">1 Sola Foto (Hero panoramica)</option>
-            </select>
-          </div>
-
-          <div class="form-group" style="margin-bottom:0;">
-            <label style="font-weight:700; font-size:11.5px; margin-bottom:4px; display:block; color:var(--ink-2); text-transform:uppercase; letter-spacing:0.04em;">💶 Visualizzazione Prezzo</label>
-            <div style="display:flex; align-items:center; gap:8px; background:var(--surface-2); padding:8px 12px; border-radius:8px; border:1px solid var(--line);">
-              <input type="checkbox" id="cartello-show-price" checked onchange="setCartelloOption('showPrice', this.checked)" style="width:16px; height:16px; cursor:pointer;">
-              <label for="cartello-show-price" style="font-size:12px; font-weight:600; cursor:pointer; margin:0;">Mostra prezzo in chiaro</label>
-            </div>
-          </div>
-
-          <div class="form-group" style="margin-bottom:0;">
-            <label style="font-weight:700; font-size:11.5px; margin-bottom:4px; display:block; color:var(--ink-2); text-transform:uppercase; letter-spacing:0.04em;">✍️ Punti di Forza (Testo Promozionale)</label>
-            <textarea id="cartello-custom-text" class="form-input" rows="3" oninput="setCartelloOption('customText', this.value)" style="font-size:11.5px; resize:vertical; padding:8px;" placeholder="Punti di forza dell'immobile (es. terrazza vista mare, finiture di pregio, termoautonomo)..."></textarea>
-          </div>
-        </div>
-
-        <!-- Colonna Destra: Anteprima Visiva Live -->
-        <div style="background:var(--surface-2); border:1px solid var(--line); border-radius:12px; padding:16px; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:420px; overflow:hidden;">
-          <div style="font-size:11.5px; font-weight:700; color:var(--ink-2); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:12px; width:100%; display:flex; justify-content:space-between; align-items:center;">
-            <span>👁️ Anteprima di Stampa</span>
-            <span id="cartello-preview-dim-badge" class="status-badge bg-blue" style="font-size:10.5px;">A4 · Verticale</span>
-          </div>
-
-          <!-- Card mockup interattivo -->
-          <div id="cartello-live-mockup" style="width:100%; max-width:320px; background:#ffffff; border-radius:8px; box-shadow:0 10px 25px rgba(0,0,0,0.12); border:1px solid #cbd5e1; overflow:hidden; transition:all 0.3s ease; color:#0f172a; font-family:sans-serif; padding:10px;">
-          </div>
-        </div>
-      </div>
-
-      <div class="modal-footer" style="padding:1rem 1.5rem; border-top:1px solid var(--line); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; background:var(--surface-1);">
-        <div style="font-size:11.5px; color:var(--ink-2);">
-          💡 <i>Il file PDF viene impaginato e compilato a 300 DPI per la massima definizione di stampa.</i>
-        </div>
-        <div style="display:flex; gap:8px;">
-          <button type="button" onclick="scaricaCartelloPDF()" class="btn-mini primary" style="padding:8px 16px; font-size:13px; font-weight:700; display:inline-flex; align-items:center; gap:6px;">
-            📥 Scarica PDF
-          </button>
-          <button type="button" onclick="stampaCartelloPDF()" class="btn-mini" style="padding:8px 14px; font-size:13px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
-            🖨️ Stampa
-          </button>
-          <button type="button" onclick="closeModals()" class="btn-submit btn-quiet" style="padding:6px 14px; margin:0;">Chiudi</button>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -4209,9 +4105,6 @@
                         </button>
                         <div class="action-buttons">
                             <button onclick="togglePropertyFeatured('${p.id}')" class="btn-star-featured ${p.is_featured ? 'active' : ''}" title="Mostra per primi">★</button>
-                            <button onclick="openCartelloVetrinaModal('${p.id}')" class="btn-action" title="Genera Cartello Vetrina per la stampa (A4 / A3)" style="color:var(--brand-blue);">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
-                            </button>
                             <button onclick="openPropertyForm('${p.id}')" class="btn-action edit" title="Modifica">
                                 <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"/></svg>
                             </button>
@@ -4258,267 +4151,6 @@
         if (error) alert("Errore: " + error.message);
         await loadProperties();
         hideLoader();
-    }
-
-    /* =======================================================
-       CARTELLO VETRINA (A4 / A3 - VERTICALE & ORIZZONTALE)
-       ======================================================= */
-    let cartelloState = {
-        propertyId: null,
-        format: 'a4',
-        orientation: 'p',
-        theme: 'auto',
-        photoCount: 3,
-        showPrice: true,
-        customText: ''
-    };
-
-    function openCartelloVetrinaModal(propertyId) {
-        const p = properties.find(x => x.id == propertyId);
-        if (!p) return;
-
-        cartelloState = {
-            propertyId: p.id,
-            format: 'a4',
-            orientation: 'p',
-            theme: p.is_luxury ? 'luxury' : 'auto',
-            photoCount: (p.images && p.images.length >= 3) ? 3 : 1,
-            showPrice: true,
-            customText: (p.description || '').slice(0, 280)
-        };
-
-        document.getElementById('cartello-prop-id').value = p.id;
-        document.getElementById('cartello-prop-title').innerText = `Cartello Vetrina: «${p.title}»`;
-
-        const badgeEl = document.getElementById('cartello-prop-status-badge');
-        if (badgeEl) {
-            badgeEl.className = `status-badge ${p.is_luxury ? 'bg-luxury' : (p.status === 'Vendita' ? 'bg-blue' : 'bg-green')}`;
-            badgeEl.innerText = p.is_luxury ? '💎 Collezione Luxury' : p.status;
-        }
-
-        // Reset inputs
-        document.getElementById('cartello-theme-select').value = cartelloState.theme;
-        document.getElementById('cartello-photos-select').value = String(cartelloState.photoCount);
-        document.getElementById('cartello-show-price').checked = cartelloState.showPrice;
-        document.getElementById('cartello-custom-text').value = cartelloState.customText;
-
-        syncCartelloButtonsUI();
-        updateCartelloPreview();
-
-        document.getElementById('modal-cartello-vetrina').style.display = 'flex';
-    }
-
-    function setCartelloOption(key, value) {
-        cartelloState[key] = value;
-        syncCartelloButtonsUI();
-        updateCartelloPreview();
-    }
-
-    function syncCartelloButtonsUI() {
-        // Formato
-        const btnA4 = document.getElementById('cartello-fmt-a4');
-        const btnA3 = document.getElementById('cartello-fmt-a3');
-        if (btnA4 && btnA3) {
-            if (cartelloState.format === 'a4') {
-                btnA4.className = 'btn-mini primary';
-                btnA3.className = 'btn-mini';
-            } else {
-                btnA4.className = 'btn-mini';
-                btnA3.className = 'btn-mini primary';
-            }
-        }
-
-        // Orientamento
-        const btnP = document.getElementById('cartello-ori-p');
-        const btnL = document.getElementById('cartello-ori-l');
-        if (btnP && btnL) {
-            if (cartelloState.orientation === 'p') {
-                btnP.className = 'btn-mini primary';
-                btnL.className = 'btn-mini';
-            } else {
-                btnP.className = 'btn-mini';
-                btnL.className = 'btn-mini primary';
-            }
-        }
-
-        const badge = document.getElementById('cartello-preview-dim-badge');
-        if (badge) {
-            badge.innerText = `${cartelloState.format.toUpperCase()} · ${cartelloState.orientation === 'p' ? 'Verticale' : 'Orizzontale'}`;
-        }
-    }
-
-    function updateCartelloPreview() {
-        const p = properties.find(x => x.id == cartelloState.propertyId);
-        if (!p) return;
-
-        const mockup = document.getElementById('cartello-live-mockup');
-        if (!mockup) return;
-
-        const isLuxury = cartelloState.theme === 'luxury' || (cartelloState.theme === 'auto' && Boolean(p.is_luxury));
-        const isLandscape = cartelloState.orientation === 'l';
-        const bg = isLuxury ? '#0a142a' : '#ffffff';
-        const cardBg = isLuxury ? '#102040' : '#f8fafc';
-        const text = isLuxury ? '#ffffff' : '#0f172a';
-        const muted = isLuxury ? '#b4c3dc' : '#64748b';
-        const accent = isLuxury ? '#d4a853' : '#0044ff';
-        const border = isLuxury ? '#23375f' : '#e2e8f0';
-
-        mockup.style.background = bg;
-        mockup.style.color = text;
-        mockup.style.borderColor = border;
-        mockup.style.maxWidth = isLandscape ? '440px' : '320px';
-
-        const prezzoStr = (cartelloState.showPrice && p.price && Number(p.price) > 0)
-            ? `€ ${Number(p.price).toLocaleString('it-IT')}`
-            : 'TRATTATIVA RISERVATA';
-
-        const imgHero = (p.images && p.images[0]) ? p.images[0] : 'https://via.placeholder.com/400x260?text=Foto+Immobile';
-        const imgThumb1 = (cartelloState.photoCount >= 2 && p.images && p.images[1]) ? p.images[1] : null;
-        const imgThumb2 = (cartelloState.photoCount >= 3 && p.images && p.images[2]) ? p.images[2] : null;
-
-        const badgeContract = isLuxury ? '💎 LUXURY' : (p.status === 'Vendita' ? 'IN VENDITA' : 'IN AFFITTO');
-
-        if (!isLandscape) {
-            mockup.innerHTML = `
-                <div style="display:flex; justify-content:space-between; align-items:center; background:${cardBg}; padding:6px 8px; border-radius:6px; border:1px solid ${border}; margin-bottom:8px;">
-                    <div>
-                        <div style="font-weight:800; font-size:11px; color:${accent};">IMMOBILIARE CON MICHELE</div>
-                        <div style="font-size:8px; color:${muted};">Michele Erre · Tel. 334 857 6926</div>
-                    </div>
-                    <span style="background:${accent}; color:#fff; font-size:8px; font-weight:800; padding:2px 6px; border-radius:3px;">${badgeContract}</span>
-                </div>
-
-                <div style="position:relative; border-radius:6px; overflow:hidden; border:1px solid ${border}; margin-bottom:6px;">
-                    <img src="${imgHero}" style="width:100%; height:130px; object-fit:cover; display:block;">
-                </div>
-
-                ${(imgThumb1 || imgThumb2) ? `
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:4px; margin-bottom:8px;">
-                    ${imgThumb1 ? `<img src="${imgThumb1}" style="width:100%; height:42px; object-fit:cover; border-radius:4px; border:1px solid ${border};">` : ''}
-                    ${imgThumb2 ? `<img src="${imgThumb2}" style="width:100%; height:42px; object-fit:cover; border-radius:4px; border:1px solid ${border};">` : ''}
-                </div>` : ''}
-
-                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:6px; margin-bottom:8px;">
-                    <div>
-                        <div style="font-weight:700; font-size:11.5px; line-height:1.2; margin-bottom:2px;">${escapeHtml(p.title)}</div>
-                        <div style="font-size:8.5px; color:${muted};">📍 ${escapeHtml(p.zone || 'Porto Torres')} · ${escapeHtml(p.property_type || 'Residenziale')}</div>
-                    </div>
-                    <div style="background:${accent}; color:#fff; font-weight:800; font-size:10px; padding:4px 7px; border-radius:4px; white-space:nowrap;">
-                        ${prezzoStr}
-                    </div>
-                </div>
-
-                <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:4px; margin-bottom:8px;">
-                    <div style="background:${cardBg}; border:1px solid ${border}; border-radius:4px; padding:3px 2px; text-align:center; font-size:8px; font-weight:700;">📐 ${p.sqm ? p.sqm + ' MQ' : 'AMPIO'}</div>
-                    <div style="background:${cardBg}; border:1px solid ${border}; border-radius:4px; padding:3px 2px; text-align:center; font-size:8px; font-weight:700;">🛏️ ${p.rooms ? p.rooms + ' VANI' : 'LOCALI'}</div>
-                    <div style="background:${cardBg}; border:1px solid ${border}; border-radius:4px; padding:3px 2px; text-align:center; font-size:8px; font-weight:700;">🚿 ${p.bathrooms ? p.bathrooms + ' BAGNI' : 'BAGNO'}</div>
-                </div>
-
-                <div style="display:flex; gap:6px; background:${cardBg}; border:1px solid ${border}; border-radius:6px; padding:6px; align-items:center;">
-                    <div style="flex:1;">
-                        <div style="font-size:7.5px; font-weight:700; color:${accent}; margin-bottom:2px;">PUNTI DI FORZA</div>
-                        <div style="font-size:7.5px; color:${muted}; line-height:1.25; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;">
-                            ${escapeHtml(cartelloState.customText || p.description || 'Ottima soluzione immobiliare in posizione strategica.')}
-                        </div>
-                    </div>
-                    <div style="background:#fff; padding:3px; border-radius:4px; border:1px solid ${border}; text-align:center; flex-shrink:0;">
-                        <div style="width:38px; height:38px; background:#002266; color:#fff; display:flex; align-items:center; justify-content:center; font-size:6.5px; font-weight:800; border-radius:2px;">QR CODE</div>
-                        <div style="font-size:5px; color:#002266; font-weight:700; margin-top:2px;">INQUADRA</div>
-                    </div>
-                </div>
-            `;
-        } else {
-            mockup.innerHTML = `
-                <div style="display:grid; grid-template-columns:1.1fr 1fr; gap:8px;">
-                    <div>
-                        <img src="${imgHero}" style="width:100%; height:130px; object-fit:cover; border-radius:6px; border:1px solid ${border}; margin-bottom:4px;">
-                        ${(imgThumb1 || imgThumb2) ? `
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:4px;">
-                            ${imgThumb1 ? `<img src="${imgThumb1}" style="width:100%; height:36px; object-fit:cover; border-radius:4px; border:1px solid ${border};">` : ''}
-                            ${imgThumb2 ? `<img src="${imgThumb2}" style="width:100%; height:36px; object-fit:cover; border-radius:4px; border:1px solid ${border};">` : ''}
-                        </div>` : ''}
-                    </div>
-                    <div style="display:flex; flex-direction:column; justify-content:space-between;">
-                        <div>
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-                                <span style="font-weight:800; font-size:10px; color:${accent};">IMMOBILIARE CON MICHELE</span>
-                                <span style="background:${accent}; color:#fff; font-size:7.5px; font-weight:800; padding:1.5px 5px; border-radius:3px;">${badgeContract}</span>
-                            </div>
-                            <div style="font-weight:700; font-size:11px; line-height:1.2; margin-bottom:2px;">${escapeHtml(p.title)}</div>
-                            <div style="font-size:8px; color:${muted}; margin-bottom:6px;">📍 ${escapeHtml(p.zone || 'Porto Torres')}</div>
-                            <div style="background:${accent}; color:#fff; font-weight:800; font-size:10px; padding:3px 6px; border-radius:4px; text-align:center; margin-bottom:6px;">
-                                ${prezzoStr}
-                            </div>
-                            <div style="display:grid; grid-template-columns:1fr 1fr; gap:3px; margin-bottom:6px;">
-                                <div style="background:${cardBg}; border:1px solid ${border}; border-radius:3px; padding:2px; text-align:center; font-size:7.5px; font-weight:700;">📐 ${p.sqm ? p.sqm + ' MQ' : 'AMPIO'}</div>
-                                <div style="background:${cardBg}; border:1px solid ${border}; border-radius:3px; padding:2px; text-align:center; font-size:7.5px; font-weight:700;">🛏️ ${p.rooms ? p.rooms + ' VANI' : 'LOCALI'}</div>
-                            </div>
-                        </div>
-                        <div style="display:flex; gap:5px; background:${cardBg}; border:1px solid ${border}; border-radius:4px; padding:4px; align-items:center;">
-                            <div style="font-size:7px; color:${muted}; line-height:1.2; flex:1; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">
-                                ${escapeHtml(cartelloState.customText || p.description || 'Ottima opportunità immobiliare.')}
-                            </div>
-                            <div style="background:#fff; padding:2px; border-radius:3px; text-align:center; flex-shrink:0;">
-                                <div style="width:28px; height:28px; background:#002266; color:#fff; display:flex; align-items:center; justify-content:center; font-size:5px; font-weight:800; border-radius:2px;">QR</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-    }
-
-    async function scaricaCartelloPDF() {
-        const p = properties.find(x => x.id == cartelloState.propertyId);
-        if (!p) return;
-
-        showLoader(`Generazione Cartello Vetrina ${cartelloState.format.toUpperCase()}...`);
-        try {
-            const doc = await generaCartelloVetrinaPDF({
-                property: p,
-                format: cartelloState.format,
-                orientation: cartelloState.orientation,
-                theme: cartelloState.theme,
-                showPrice: cartelloState.showPrice,
-                customText: cartelloState.customText,
-                photoCount: cartelloState.photoCount
-            });
-
-            hideLoader();
-            const cleanTitle = (p.title || 'immobile').replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 30);
-            doc.save(`Cartello_Vetrina_${cartelloState.format.toUpperCase()}_${cleanTitle}.pdf`);
-        } catch (err) {
-            hideLoader();
-            alert("Errore nella generazione del cartello PDF: " + err.message);
-            console.error(err);
-        }
-    }
-
-    async function stampaCartelloPDF() {
-        const p = properties.find(x => x.id == cartelloState.propertyId);
-        if (!p) return;
-
-        showLoader("Preparazione stampa cartello...");
-        try {
-            const doc = await generaCartelloVetrinaPDF({
-                property: p,
-                format: cartelloState.format,
-                orientation: cartelloState.orientation,
-                theme: cartelloState.theme,
-                showPrice: cartelloState.showPrice,
-                customText: cartelloState.customText,
-                photoCount: cartelloState.photoCount
-            });
-
-            hideLoader();
-            doc.autoPrint();
-            const blobUrl = doc.output('bloburl');
-            window.open(blobUrl, '_blank');
-        } catch (err) {
-            hideLoader();
-            alert("Errore nella stampa: " + err.message);
-            console.error(err);
-        }
     }
 
 
