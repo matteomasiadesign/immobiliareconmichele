@@ -234,19 +234,54 @@
       transition: var(--transition);
     }
 
-    /* SEZIONI - PADDING E SCROLL MARGIN BILANCIATI */
-    .section { padding: clamp(1.25rem, 2vh, 2rem) 1rem; max-width: 1200px; margin: 0 auto; width: 100%; scroll-margin-top: 90px; }
-    @media (min-width: 768px) { .section { padding: clamp(1.5rem, 2.5vh, 2.5rem) 1.5rem; } }
-    .section-header { text-align: left; margin-bottom: clamp(1.5rem, 3vh, 2.25rem); }
-    .section-label { color: var(--brand-blue); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; background-color: rgba(0,68,255,0.06); padding: 5px 12px; border-radius: 999px; display: inline-block; margin-bottom: 0.5rem; }
+    /* SEZIONI - PADDING E SCROLL MARGIN PREMIUM CON AMPIO RESPIRO */
+    .section {
+      padding: clamp(3rem, 6vh, 4.75rem) 1rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+      scroll-margin-top: 90px;
+    }
+    @media (min-width: 768px) {
+      .section {
+        padding: clamp(4.5rem, 8vh, 6.5rem) 1.5rem;
+      }
+    }
+    .section-header {
+      text-align: left;
+      margin-bottom: clamp(2rem, 3.5vh, 3rem);
+    }
+    .section-label {
+      color: var(--brand-blue);
+      font-size: 11.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: rgba(0, 68, 255, 0.06);
+      border: 1px solid rgba(0, 68, 255, 0.15);
+      padding: 6px 14px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 0.85rem;
+      box-shadow: 0 2px 8px rgba(0, 68, 255, 0.04);
+    }
+    .section-label-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--brand-blue);
+      flex-shrink: 0;
+    }
     
     /* Titoli di sezione proporzionati ed eleganti */
-    .section-title { font-family: 'Teko', sans-serif !important; font-size: clamp(2.6rem, 5.5vw, 3.8rem); line-height: 0.9; font-weight: 700; color: var(--text-slate); text-transform: uppercase; letter-spacing: -0.01em; margin: 0; }
+    .section-title { font-family: 'Teko', sans-serif !important; font-size: clamp(2.8rem, 6vw, 4.2rem); line-height: 0.92; font-weight: 700; color: var(--text-slate); text-transform: uppercase; letter-spacing: -0.01em; margin: 0; }
     .section-title span { font-family: inherit !important; color: var(--brand-blue); }
     .section-title::after { display: none !important; }
 
     /* Vetrina: stacco bilanciato dall'hero */
-    #vetrina { padding-top: clamp(2rem, 3.5vh, 3rem); overflow-x: clip; }
+    #vetrina { padding-top: clamp(3.5rem, 6vh, 5rem); overflow-x: clip; }
 
     /* TICKER INFINITO TITOLO "PROPOSTE DEL MOMENTO" (DESKTOP & MOBILE) */
     .vetrina-ticker-wrapper {
@@ -370,10 +405,14 @@
     }
 
     /* SEZIONE SERVIZI - GRIGLIA A 2 COLONNE PREMIUM */
-    .servizi-band { background-color: rgba(0,68,255,0.03); }
-    .services-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+    .servizi-band {
+      background-color: rgba(0,68,255,0.025);
+      border-top: 1px solid rgba(0,68,255,0.06);
+      border-bottom: 1px solid rgba(0,68,255,0.06);
+    }
+    .services-grid { display: grid; grid-template-columns: 1fr; gap: 1.75rem; }
     @media (min-width: 860px) {
-      .services-grid { grid-template-columns: repeat(2, 1fr); gap: 1.85rem; align-items: stretch; }
+      .services-grid { grid-template-columns: repeat(2, 1fr); gap: 2.25rem; align-items: stretch; }
     }
 
     .service-card {
@@ -737,7 +776,7 @@
     /* FASCIA BANNER INVITO RAPIDO ALLA VALUTAZIONE */
     .valuation-cta-band {
       background: linear-gradient(135deg, #002db3 0%, #001f7a 50%, #08112e 100%);
-      padding: clamp(3rem, 6vh, 4.5rem) 0;
+      padding: clamp(4.5rem, 8vh, 6.5rem) 0;
       position: relative;
       overflow: hidden;
       border-top: 1px solid rgba(255,217,15,0.25);
@@ -809,10 +848,10 @@
     .val-cta-desc {
       font-size: clamp(0.95rem, 2vw, 1.05rem);
       color: #cbd5e1;
+      line-height: 1.55;
       font-weight: 500;
-      line-height: 1.6;
-      max-width: 620px;
-      margin-bottom: 1.25rem;
+      margin-bottom: 1.5rem;
+      max-width: 580px;
     }
     .val-cta-perks {
       display: flex;
@@ -823,9 +862,9 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      font-size: 12px;
-      font-weight: 700;
-      color: #e2e8f0;
+      font-size: 12.5px;
+      font-weight: 800;
+      color: var(--white);
     }
     .val-cta-perk svg {
       color: var(--brand-yellow);
@@ -833,12 +872,11 @@
     }
     .val-cta-action {
       display: flex;
-      flex-direction: column;
-      align-items: flex-start;
+      justify-content: flex-start;
     }
     @media (min-width: 900px) {
       .val-cta-action {
-        align-items: flex-end;
+        justify-content: flex-end;
       }
     }
     .val-cta-btn {
@@ -848,14 +886,15 @@
       gap: 10px;
       background: var(--brand-yellow);
       color: var(--brand-blue);
-      border: 2px solid var(--brand-yellow);
+      border: none;
       padding: 16px 32px;
       border-radius: 999px;
-      text-decoration: none;
-      font-weight: 900;
+      font-family: 'Space Grotesk', sans-serif;
       font-size: 14px;
+      font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.04em;
+      text-decoration: none;
       transition: var(--transition);
       box-shadow: 0 8px 30px rgba(255, 217, 15, 0.4);
       cursor: pointer;
@@ -874,8 +913,8 @@
 
     /* SEZIONE CONTATTI - MINIMAL LUXURY EDITORIAL */
     .contatti-section {
-      padding-top: clamp(2.5rem, 5vh, 4rem);
-      padding-bottom: clamp(3rem, 6vh, 4.5rem);
+      padding-top: clamp(4rem, 7.5vh, 6rem);
+      padding-bottom: clamp(4.5rem, 8.5vh, 7rem);
     }
     .contact-editorial-grid {
       display: grid;
@@ -1234,7 +1273,7 @@
       <!-- VETRINA -->
       <section id="vetrina" class="section">
         <div class="section-header reveal">
-          <span class="section-label">Disponibili di Recente</span>
+          <span class="section-label"><span class="section-label-dot"></span>Disponibili di Recente</span>
           <h2 class="section-title">Proposte del <span>Momento</span></h2>
         </div>
 
@@ -1271,7 +1310,7 @@
             </div>
           </div>
         </div>
-        <div style="text-align: center; margin-top: clamp(1.25rem, 2vh, 1.75rem); position: relative; z-index: 10; padding-inline: 1rem;">
+        <div style="text-align: center; margin-top: clamp(1.5rem, 2.5vh, 2.25rem); position: relative; z-index: 10; padding-inline: 1rem;">
           <a href="catalogo.html" class="btn-catalog-showcase">
             <span>Sfoglia il Catalogo Completo</span>
             <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
@@ -1283,8 +1322,8 @@
       <div class="servizi-band">
         <section id="servizi" class="section">
           <div class="section-header reveal">
-            <span class="section-label">Cosa faccio per te</span>
-            <h2 class="section-title">I Miei Servizi</h2>
+            <span class="section-label"><span class="section-label-dot"></span>I Miei Servizi</span>
+            <h2 class="section-title">Cosa faccio per <span>te</span></h2>
           </div>
 
           <div class="services-grid">
@@ -1461,7 +1500,7 @@
           
           <!-- COLONNA SINISTRA: TITOLO EDITORIALE & CANALI DIRETTI -->
           <div class="contact-editorial-left">
-            <span class="section-label contact-editorial-label">Parliamone</span>
+            <span class="section-label contact-editorial-label"><span class="section-label-dot"></span>Consulenza Diretta</span>
             <h2 class="contact-editorial-title">Parliamo del tuo <span>immobile</span></h2>
             <p class="contact-editorial-desc">
               Che tu voglia vendere al miglior valore di mercato, acquistare casa o trovare un inquilino referenziato a Porto Torres e nel Nord Sardegna: sono a tua disposizione per una consulenza trasparente, diretta e senza impegno.
