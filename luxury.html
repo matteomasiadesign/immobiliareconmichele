@@ -249,9 +249,20 @@
       opacity: 0;
       pointer-events: none;
     }
-    .lux-card:hover .lux-img-hover {
+    .lux-card:hover .lux-img-hover,
+    .lux-card-img-box.show-second-img .lux-img-hover {
       opacity: 1;
       transform: scale(1.06);
+    }
+    .lux-card-img-box.show-second-img .card-dot:first-child {
+      background: rgba(255, 255, 255, 0.55);
+      width: 5px;
+      border-radius: 50%;
+    }
+    .lux-card-img-box.show-second-img .card-dot:last-child {
+      background: var(--brand-yellow);
+      width: 10px;
+      border-radius: 4px;
     }
 
     .lux-badge-overlay-top {
@@ -1068,7 +1079,12 @@
           </div>
 
           <img src="${escapeHtml(images[0] || '')}" class="lux-card-img lux-img-primary" alt="${escapeHtml(p.title)}" loading="lazy">
-          ${images.length > 1 ? `<img src="${escapeHtml(images[1])}" class="lux-card-img lux-img-hover" alt="" loading="lazy">` : ''}
+          ${images.length > 1 ? `
+          <img src="${escapeHtml(images[1])}" class="lux-card-img lux-img-hover" alt="" loading="lazy">
+          <div class="card-img-dots" aria-hidden="true">
+            <span class="card-dot active"></span>
+            <span class="card-dot"></span>
+          </div>` : ''}
           
           <div class="lux-card-img-scrim"></div>
           <div class="lux-card-category-tag">${escapeHtml(p.property_type || 'Immobile di Pregio')}</div>
@@ -1125,7 +1141,7 @@
       </article>`;
     }
 
-    // Delegazione click per apertura modale e condivisione su .lux-card
+    // Delegazione click per apertura modale e anteprima foto su .lux-card
     document.addEventListener('click', (e) => {
       if (e.target.closest('.card-badge-reel')) return;
       const shareBtn = e.target.closest('.lux-share-btn');
@@ -1137,9 +1153,28 @@
         return;
       }
       const card = e.target.closest('.lux-card[data-id]');
-      if (card) {
-        openModal(card.dataset.id);
+      if (!card) {
+        document.querySelectorAll('.lux-card-img-box.show-second-img').forEach(el => el.classList.remove('show-second-img'));
+        return;
       }
+
+      const imgBox = e.target.closest('.lux-card-img-box');
+      if (imgBox) {
+        const hasSecondImg = imgBox.querySelector('.lux-img-hover');
+        if (hasSecondImg) {
+          if (imgBox.classList.contains('show-second-img')) {
+            openModal(card.dataset.id);
+          } else {
+            document.querySelectorAll('.lux-card-img-box.show-second-img').forEach(el => {
+              if (el !== imgBox) el.classList.remove('show-second-img');
+            });
+            imgBox.classList.add('show-second-img');
+          }
+          return;
+        }
+      }
+
+      openModal(card.dataset.id);
     });
 
     async function loadLuxuryProperties() {

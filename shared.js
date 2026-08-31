@@ -30,13 +30,13 @@ const hoverOK = typeof window.matchMedia === 'function'
     : true;
 
 // Markup della card annuncio, condiviso tra la vetrina (index.html) e il
-// catalogo (catalogo.html). Al passaggio del mouse mostra la seconda foto
-// (se presente) invece della prima, per un effetto dinamico senza dover
-// caricare l'embed di Instagram per ogni annuncio.
+// catalogo (catalogo.html). Se presente, la seconda foto viene mostrata al
+// passaggio del mouse su desktop o al primo tap sulla foto su mobile.
 function propertyCardHTML(p) {
     const images = p.images || [];
     const isReserved = !p.price || Number(p.price) <= 0;
     const priceDisplay = isReserved ? 'Trattativa riservata' : `€${Number(p.price).toLocaleString('it-IT')}`;
+    const hasMultipleImages = images.length > 1;
     return `
     <div class="card" data-id="${escapeHtml(p.id)}">
       <div class="card-img-container">
@@ -50,7 +50,12 @@ function propertyCardHTML(p) {
           </button>
         </div>
         <img src="${escapeHtml(images[0] || '')}" class="card-img card-img-primary" alt="${escapeHtml(p.title)}">
-        ${hoverOK && images.length > 1 ? `<img src="${escapeHtml(images[1])}" class="card-img card-img-hover" alt="" loading="lazy">` : ''}
+        ${hasMultipleImages ? `
+        <img src="${escapeHtml(images[1])}" class="card-img card-img-hover" alt="" loading="lazy">
+        <div class="card-img-dots" aria-hidden="true">
+          <span class="card-dot active"></span>
+          <span class="card-dot"></span>
+        </div>` : ''}
       </div>
       <div class="card-content">
         <span style="font-size:11px; font-weight:900; color:var(--brand-blue); text-transform:uppercase;">${escapeHtml(p.property_type)}</span>
@@ -79,15 +84,10 @@ function propertyCardHTML(p) {
 }
 
 // Apertura della scheda annuncio: un solo listener sul documento invece di un
-// onclick su ogni card. Dentro l'attributo il browser decodifica le entita'
-// PRIMA di eseguire il codice, quindi un titolo o un id con un apice potevano
-// spezzare la chiamata; con data-id il valore resta un dato e non diventa mai
-// codice. Vale anche per le card generate dopo (griglia filtrata, ricerca).
-// I due badge sulla foto (Reel e condividi) sono dentro la card ma hanno una
-// loro azione: si intercettano PRIMA e si esce, altrimenti il clic risalirebbe
-// fino alla card e aprirebbe anche la scheda. Si controllano qui invece che con
-// un event.stopPropagation() su ciascun badge perche' il listener e' uno solo:
-// l'ordine dei controlli e' gia' la precedenza, e non serve codice negli attributi.
+// onclick su ogni card.
+// - Cliccando sulla FOTO: al 1° tap visualizza la seconda foto (se presente),
+//   al 2° tap sulla foto già visualizzata apre la scheda.
+// - Cliccando nella PARTE SOTTOSTANTE (.card-content): apre direttamente la scheda.
 document.addEventListener('click', (e) => {
     if (e.target.closest('.card-badge-reel')) return;
 
@@ -100,7 +100,32 @@ document.addEventListener('click', (e) => {
     }
 
     const card = e.target.closest('.card[data-id]');
-    if (card) openModal(card.dataset.id);
+    if (!card) {
+        document.querySelectorAll('.card-img-container.show-second-img').forEach(el => el.classList.remove('show-second-img'));
+        return;
+    }
+
+    // Click sulla foto della card
+    const imgContainer = e.target.closest('.card-img-container');
+    if (imgContainer) {
+        const hasSecondImg = imgContainer.querySelector('.card-img-hover');
+        if (hasSecondImg) {
+            // Se la seconda immagine è già mostrata, il tap successivo apre la modale
+            if (imgContainer.classList.contains('show-second-img')) {
+                openModal(card.dataset.id);
+            } else {
+                // Primo tap: mostra la seconda foto e resetta le altre card
+                document.querySelectorAll('.card-img-container.show-second-img').forEach(el => {
+                    if (el !== imgContainer) el.classList.remove('show-second-img');
+                });
+                imgContainer.classList.add('show-second-img');
+            }
+            return;
+        }
+    }
+
+    // Click sulla parte sottostante o card con 1 sola foto: apre direttamente
+    openModal(card.dataset.id);
 });
 
 // --- ANIMAZIONI (GSAP) ---
