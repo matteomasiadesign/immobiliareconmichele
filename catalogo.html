@@ -47,24 +47,156 @@
     .catalog-container { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem; flex: 1 0 auto; width: 100%; display: flex; flex-direction: column; }
     @media (min-width: 768px) { .catalog-container { padding: 3rem 1.5rem; } }
     
-    .catalog-title { font-family: 'Teko', 'Space Grotesk', sans-serif; font-size: 2.2rem; font-weight: 700; color: var(--brand-blue); text-transform: uppercase; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
+    .catalog-title { font-family: 'Teko', sans-serif !important; font-size: clamp(2.4rem, 6vw, 3.6rem); font-weight: 700; color: var(--brand-blue); text-transform: uppercase; letter-spacing: -0.01em; margin-bottom: 0.25rem; line-height: 0.95; }
     
-    /* UNIFIED SEARCH BAR CON DROPDOWN FILTERS */
-    .search-wrapper { position: relative; margin-top: 1.5rem; margin-bottom: 2rem; display: flex; gap: 0.5rem; align-items: center; z-index: 90; }
-    @media (min-width: 768px) { .search-wrapper { margin-top: 2rem; margin-bottom: 3rem; } }
+    /* SEARCH BAR STICKY & FILTRI PREMIUM */
+    .search-sticky-bar {
+      position: sticky;
+      top: 80px;
+      z-index: 200;
+      background: rgba(248, 250, 252, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      margin: 1.25rem -1rem 2rem;
+      padding: 0.75rem 1rem;
+      transition: top 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, background 0.3s ease;
+      border-bottom: 1px solid rgba(226, 232, 240, 0.7);
+    }
+    @media (min-width: 768px) {
+      .search-sticky-bar {
+        margin: 1.5rem -1.5rem 2.5rem;
+        padding: 0.85rem 1.5rem;
+      }
+    }
+    .navbar.scrolled ~ .catalog-container .search-sticky-bar {
+      top: 64px;
+    }
     
-    .search-input-container { position: relative; flex-grow: 1; }
-    .search-icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none; width: 20px; height: 20px; }
-    .search-input { width: 100%; padding: 16px 16px 16px 3rem; background: var(--white); border: 1px solid var(--border-color); border-radius: 20px; font-size: 15px; font-weight: 600; color: var(--text-slate); outline: none; transition: var(--transition); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.02); }
-    .search-input:focus { border-color: var(--brand-blue); box-shadow: 0 0 0 4px rgba(0,68,255,0.1); }
+    .search-wrapper {
+      position: relative;
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      gap: 0.65rem;
+      align-items: center;
+      width: 100%;
+    }
     
-    .filter-dropdown-btn { background: var(--white); border: 1px solid var(--border-color); border-radius: 20px; padding: 0 1.25rem; height: 56px; display: flex; align-items: center; gap: 0.5rem; cursor: pointer; transition: var(--transition); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.02); color: var(--text-slate); font-weight: 700; font-size: 13px; text-transform: uppercase; flex-shrink: 0; }
-    .filter-dropdown-btn:hover, .filter-dropdown-btn.active { border-color: var(--brand-blue); color: var(--brand-blue); background-color: #f0f4ff; }
-    .filter-dropdown-btn svg { transition: transform 0.3s ease; }
-    .filter-dropdown-btn.active svg { transform: rotate(180deg); }
+    .search-input-container {
+      position: relative;
+      flex-grow: 1;
+    }
+    .search-icon {
+      position: absolute;
+      left: 1.15rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+      width: 18px;
+      height: 18px;
+    }
+    .search-input {
+      width: 100%;
+      height: 52px;
+      padding: 0 16px 0 2.85rem;
+      background: var(--white);
+      border: 1.5px solid var(--border-color);
+      border-radius: 999px;
+      font-size: 14.5px;
+      font-weight: 600;
+      color: var(--text-slate);
+      outline: none;
+      transition: var(--transition);
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    .search-input:focus {
+      border-color: var(--brand-blue);
+      box-shadow: 0 0 0 4px rgba(0,68,255,0.1), 0 6px 18px rgba(0,68,255,0.06);
+    }
     
-    .filter-dropdown-content { position: absolute; top: 100%; right: 0; margin-top: 0.5rem; background: var(--white); border: 1px solid var(--border-color); border-radius: 20px; padding: 1.5rem; box-shadow: 0 20px 40px -5px rgba(0,0,0,0.1); width: 300px; max-width: calc(100vw - 2rem); opacity: 0; transform: translateY(10px); pointer-events: none; transition: var(--transition); z-index: 95; display: flex; flex-direction: column; gap: 1rem; }
-    .filter-dropdown-content.open { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    .filter-dropdown-btn {
+      background: var(--white);
+      border: 1.5px solid var(--border-color);
+      border-radius: 999px;
+      padding: 0 1.35rem;
+      height: 52px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+      color: var(--text-slate);
+      font-weight: 800;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      flex-shrink: 0;
+    }
+    .filter-dropdown-btn:hover,
+    .filter-dropdown-btn.active {
+      border-color: var(--brand-blue);
+      color: var(--brand-blue);
+      background-color: #f0f4ff;
+    }
+    .filter-dropdown-btn.has-filters {
+      background: var(--brand-yellow);
+      border-color: var(--brand-blue);
+      color: var(--brand-blue);
+      box-shadow: 0 4px 14px rgba(255, 217, 15, 0.35);
+    }
+    .filter-dropdown-btn svg {
+      transition: transform 0.25s ease;
+      flex-shrink: 0;
+    }
+    .filter-dropdown-btn.active svg {
+      transform: rotate(180deg);
+    }
+    .filter-active-count {
+      background: var(--brand-blue);
+      color: var(--white);
+      font-size: 10px;
+      font-weight: 900;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+    
+    .filter-dropdown-content {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      background: var(--white);
+      border: 1.5px solid var(--border-color);
+      border-radius: 22px;
+      padding: 1.35rem;
+      box-shadow: 0 20px 50px -10px rgba(15, 23, 42, 0.25);
+      width: 320px;
+      max-width: calc(100vw - 2rem);
+      max-height: calc(100vh - 160px);
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events: none;
+      transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 250;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .filter-dropdown-content.open {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
     
     .filter-label { font-size: 10px; font-weight: 900; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; display: block; margin-bottom: 6px; }
     .filter-select { width: 100%; padding: 12px 14px; background-color: #f1f5f9; border: 1px solid var(--border-color); border-radius: 12px; font-size: 14px; font-weight: 600; color: var(--text-slate); outline: none; transition: var(--transition); appearance: none; cursor: pointer; }
@@ -87,7 +219,6 @@
     .range-slider input[type="range"]::-moz-range-track { background: none; }
 
     /* Griglia annunci e card: vedi shared.css */
-
     .empty-state { grid-column: 1 / -1; text-align: center; padding: 4rem 1rem; background: var(--white); border-radius: 24px; border: 1px solid var(--border-color); color: var(--text-muted); font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 1rem; }
 
     /* FAB e modale dettaglio annuncio (con carosello): vedi shared.css */
@@ -149,53 +280,56 @@
       <p style="color: var(--text-muted); font-weight: 500;">Esplora tutte le proposte disponibili. Usa la barra di ricerca o i filtri per trovare la combinazione perfetta per te.</p>
     </div>
 
-    <div class="search-wrapper reveal" id="search-wrapper">
-      <div class="search-input-container">
-        <svg class="search-icon" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"></path></svg>
-        <input type="text" id="search-text" class="search-input" placeholder="Cerca per zona, titolo o parole chiave..." oninput="renderGrid()">
-      </div>
-      
-      <button class="filter-dropdown-btn" id="filter-toggle-btn" onclick="toggleFilterDropdown(event)">
-        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"></path></svg>
-        <span class="hidden sm:inline">Filtri</span>
-      </button>
+    <div class="search-sticky-bar" id="search-sticky-bar">
+      <div class="search-wrapper" id="search-wrapper">
+        <div class="search-input-container">
+          <svg class="search-icon" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"></path></svg>
+          <input type="text" id="search-text" class="search-input" placeholder="Cerca per zona, titolo o parole chiave..." oninput="renderGrid()">
+        </div>
+        
+        <button class="filter-dropdown-btn" id="filter-toggle-btn" onclick="toggleFilterDropdown(event)" aria-label="Filtri catalogo">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"></path></svg>
+          <span class="hidden sm:inline">Filtri</span>
+          <span id="filter-active-count" class="filter-active-count" style="display: none;"></span>
+        </button>
 
-      <div class="filter-dropdown-content" id="filter-dropdown">
-        <div>
-          <label class="filter-label">Contratto</label>
-          <select id="filter-status" class="filter-select" onchange="renderGrid()">
-            <option value="Tutti">Tutti (Vendita e Affitto)</option>
-            <option value="Vendita">Solo Vendita</option>
-            <option value="Affitto">Solo Affitto</option>
-          </select>
-        </div>
-        <div>
-          <label class="filter-label">Zona</label>
-          <select id="filter-zone" class="filter-select" onchange="renderGrid()">
-            <option value="Tutte">Qualsiasi zona</option>
-          </select>
-        </div>
-        <div>
-          <label class="filter-label">Tipologia Immobile</label>
-          <select id="filter-type" class="filter-select" onchange="renderGrid()">
-            <option value="Tutte">Qualsiasi tipologia</option>
-          </select>
-        </div>
-        <div>
-          <label class="filter-label">Fascia di Prezzo</label>
-          <div class="price-values">
-            <span class="price-val" id="price-val-min">€0</span>
-            <span class="price-val-sep">—</span>
-            <span class="price-val" id="price-val-max">€0</span>
+        <div class="filter-dropdown-content" id="filter-dropdown">
+          <div>
+            <label class="filter-label">Contratto</label>
+            <select id="filter-status" class="filter-select" onchange="renderGrid()">
+              <option value="Tutti">Tutti (Vendita e Affitto)</option>
+              <option value="Vendita">Solo Vendita</option>
+              <option value="Affitto">Solo Affitto</option>
+            </select>
           </div>
-          <div class="range-slider">
-            <div class="range-track"></div>
-            <div class="range-track-fill" id="range-fill"></div>
-            <input type="range" id="price-min" min="0" max="100" value="0" oninput="onPriceInput()">
-            <input type="range" id="price-max" min="0" max="100" value="100" oninput="onPriceInput()">
+          <div>
+            <label class="filter-label">Zona</label>
+            <select id="filter-zone" class="filter-select" onchange="renderGrid()">
+              <option value="Tutte">Qualsiasi zona</option>
+            </select>
           </div>
+          <div>
+            <label class="filter-label">Tipologia Immobile</label>
+            <select id="filter-type" class="filter-select" onchange="renderGrid()">
+              <option value="Tutte">Qualsiasi tipologia</option>
+            </select>
+          </div>
+          <div>
+            <label class="filter-label">Fascia di Prezzo</label>
+            <div class="price-values">
+              <span class="price-val" id="price-val-min">€0</span>
+              <span class="price-val-sep">—</span>
+              <span class="price-val" id="price-val-max">€0</span>
+            </div>
+            <div class="range-slider">
+              <div class="range-track"></div>
+              <div class="range-track-fill" id="range-fill"></div>
+              <input type="range" id="price-min" min="0" max="100" value="0" oninput="onPriceInput()">
+              <input type="range" id="price-max" min="0" max="100" value="100" oninput="onPriceInput()">
+            </div>
+          </div>
+          <button class="filter-reset-btn" onclick="resetFilters()">Azzera Filtri</button>
         </div>
-        <button class="filter-reset-btn" onclick="resetFilters()">Azzera Filtri</button>
       </div>
     </div>
 
@@ -698,6 +832,26 @@
 
         return true;
       });
+
+      // Calcolo badge filtri attivi
+      let activeCount = 0;
+      if (statusF !== "Tutti") activeCount++;
+      if (zoneF !== "Tutte") activeCount++;
+      if (typeF !== "Tutte") activeCount++;
+      if (priceBounds.max > priceBounds.min && (pMin > priceBounds.min || pMax < priceBounds.max)) activeCount++;
+
+      const badge = document.getElementById('filter-active-count');
+      const filterBtn = document.getElementById('filter-toggle-btn');
+      if (badge && filterBtn) {
+        if (activeCount > 0) {
+          badge.textContent = activeCount;
+          badge.style.display = 'inline-flex';
+          filterBtn.classList.add('has-filters');
+        } else {
+          badge.style.display = 'none';
+          filterBtn.classList.remove('has-filters');
+        }
+      }
 
       const grid = document.getElementById('properties-grid');
       if(!grid) return;
