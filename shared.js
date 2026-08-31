@@ -118,18 +118,16 @@ if (motionOK) gsap.registerPlugin(ScrollTrigger);
 // animazioni legate allo scroll restano ancorate alla posizione nativa.
 let lenis = null;
 if (motionOK && typeof Lenis !== 'undefined') {
-    // allowNestedScroll: senza, Lenis intercetta OGNI evento della rotellina
-    // (anche del trackpad) e ci fa lo scroll verticale della pagina, chiamando
-    // preventDefault: i contenitori scrollabili interni, come il carosello
-    // "In Evidenza" della home, non ricevevano mai il gesto orizzontale e la
-    // componente verticale del dito finiva per far scivolare la pagina in su.
-    // Con l'opzione attiva Lenis controlla se sotto al puntatore c'e' un
-    // elemento che puo' davvero scorrere in quella direzione e in quel caso
-    // si tira indietro, lasciando fare al browser.
-    lenis = new Lenis({ duration: 1.1, smoothWheel: true, allowNestedScroll: true });
+    lenis = new Lenis({
+        duration: 0.9,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        smoothWheel: true,
+        allowNestedScroll: true,
+        touchMultiplier: 1.5
+    });
     lenis.on('scroll', ScrollTrigger.update);
     gsap.ticker.add((time) => lenis.raf(time * 1000));
-    gsap.ticker.lagSmoothing(0);
+    gsap.ticker.lagSmoothing(500, 33);
 
     // I link "#id" (menu, bottoni "Scopri di più", ecc.) devono scorrere
     // in modo fluido tramite Lenis invece del salto nativo del browser,
@@ -141,32 +139,25 @@ if (motionOK && typeof Lenis !== 'undefined') {
         const target = document.querySelector(link.getAttribute('href'));
         if (!target) return;
         e.preventDefault();
-        lenis.scrollTo(target, { offset: -100 });
+        lenis.scrollTo(target, { offset: -90 });
     });
 }
 
 // Rivela con un leggero fade+slide dal basso gli elementi che entrano nel
-// viewport durante lo scroll. Richiamabile più volte in sicurezza (es. dopo
-// il render dinamico delle card): gli elementi già rivelati non vengono
-// ri-animati.
+// viewport durante lo scroll. Richiamabile più volte in sicurezza.
 function initScrollReveals(selector = '.reveal') {
     if (!motionOK) return;
     document.querySelectorAll(selector).forEach(el => {
         if (el.dataset.revealed) return;
         el.dataset.revealed = '1';
         gsap.from(el, {
-            opacity: 0, y: 28, duration: 0.7, ease: 'power2.out',
-            scrollTrigger: { trigger: el, start: 'top 88%' }
+            opacity: 0, y: 24, duration: 0.6, ease: 'power2.out',
+            scrollTrigger: { trigger: el, start: 'top 90%', once: true }
         });
     });
-    ScrollTrigger.refresh();
 }
 
 // Navbar più compatta e con ombra più marcata dopo un piccolo scroll.
-// Non dipende da GSAP/motionOK: non è "movimento" in senso stretto (nessuna
-// grande animazione), solo un cambio di stato in base allo scroll, quindi
-// deve funzionare anche con "riduci animazioni" attivo o se il CDN di GSAP
-// non si carica.
 function initNavbarScroll() {
     const navbar = document.querySelector('.navbar');
     if (!navbar) return;
@@ -175,8 +166,7 @@ function initNavbarScroll() {
     onScroll();
 }
 
-// Parallax del contenuto hero durante lo scroll per un effetto di profondità.
-// Il testo e i bottoni si muovono lentamente verso l'alto mentre l'utente scrolla.
+// Parallax leggero del contenuto hero solo su desktop
 function initHeroParallax() {
     if (!motionOK) return;
     if (window.innerWidth < 992) return;
@@ -184,59 +174,22 @@ function initHeroParallax() {
     if (!heroContent) return;
 
     gsap.to(heroContent, {
-        y: 80,
-        opacity: 0.7,
+        y: 60,
+        opacity: 0.85,
         scrollTrigger: {
             trigger: '.hero',
             start: 'top top',
             end: 'bottom top',
-            scrub: 0.8,
+            scrub: 0.5,
             markers: false
         }
     });
 }
 
-// Animazioni per le sezioni: fade-in staggered quando entrano nel viewport.
-// Ogni sezione si rivela con un fade elegante dal basso.
-function initSectionAnimations() {
-    if (!motionOK) return;
-
-    const sections = document.querySelectorAll('.section, .servizi-band');
-
-    sections.forEach((section, index) => {
-        if (section.dataset.sectionAnimated) return;
-        section.dataset.sectionAnimated = '1';
-        
-        gsap.from(section, {
-            opacity: 0,
-            y: 50,
-            duration: 0.9,
-            ease: 'power2.out',
-            scrollTrigger: {
-                trigger: section,
-                start: 'top 75%',
-                end: 'top 25%',
-                scrub: false,
-                markers: false
-            }
-        });
-    });
-    ScrollTrigger.refresh();
-}
-
-// Effetto stagger sofisticato sui card: ogni card si rivela con un piccolo
-// ritardo, creando un effetto "onda" da sinistra a destra.
+// Effetto stagger sofisticato sui card
 function initCardStagger(selector = '.card') {
     if (!motionOK) return;
 
-    // Pulisce i ScrollTrigger la cui card animata è ormai fuori dal DOM.
-    // renderGrid()/renderVetrina() rimpiazzano la griglia con innerHTML a ogni
-    // cambio filtro/slider e richiamano questa funzione: il "trigger" di ogni
-    // ScrollTrigger è il contenitore (card.parentElement), che resta sempre
-    // nel DOM, quindi va controllato il target dell'animazione (la card
-    // stessa) e non il trigger. Senza questa pulizia ogni render aggiunge
-    // nuovi trigger senza mai rimuovere i vecchi, con un leak che cresce a
-    // ogni interazione nella stessa sessione di navigazione.
     ScrollTrigger.getAll().forEach(st => {
         const targets = st.animation ? st.animation.targets() : [];
         if (targets.length && targets.every(t => !t.isConnected)) {
@@ -254,18 +207,18 @@ function initCardStagger(selector = '.card') {
         
         gsap.from(card, {
             opacity: 0,
-            y: isMobile ? 12 : 36,
-            duration: isMobile ? 0.45 : 0.7,
-            delay: isMobile ? 0 : index * 0.08,
-            ease: isMobile ? 'power2.out' : 'back.out(1.2)',
+            y: isMobile ? 12 : 28,
+            duration: isMobile ? 0.4 : 0.6,
+            delay: isMobile ? 0 : Math.min(index * 0.06, 0.24),
+            ease: 'power2.out',
             scrollTrigger: {
                 trigger: card.parentElement,
-                start: 'top 85%',
+                start: 'top 88%',
+                once: true,
                 markers: false
             }
         });
     });
-    ScrollTrigger.refresh();
 }
 
 initNavbarScroll();
@@ -274,12 +227,12 @@ initNavbarScroll();
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         initHeroParallax();
-        initSectionAnimations();
+        initScrollReveals();
         initCardStagger();
     });
 } else {
     initHeroParallax();
-    initSectionAnimations();
+    initScrollReveals();
     initCardStagger();
 }
 
