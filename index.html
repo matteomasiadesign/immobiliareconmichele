@@ -114,11 +114,35 @@
     .hero-buttons { display: flex; flex-direction: column; gap: 0.75rem; align-items: center; justify-content: center; width: 100%; max-width: 320px; margin-inline: auto; }
     @media (min-width: 640px) { .hero-buttons { flex-direction: row; max-width: none; } }
     .btn-primary { background-color: var(--brand-blue); color: var(--brand-yellow); padding: 13px 26px; border-radius: 999px; text-decoration: none; font-weight: 900; font-size: 13px; text-transform: uppercase; box-shadow: 0 4px 15px rgba(0,68,255,0.3); transition: var(--transition); border: 2.5px solid var(--brand-yellow); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; width: 100%; }
-    .btn-secondary { background-color: rgba(255,255,255,0.14); color: var(--white); border: 2px solid rgba(255,255,255,0.3); padding: 12px 26px; border-radius: 999px; text-decoration: none; font-weight: 900; font-size: 13px; text-transform: uppercase; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); transition: var(--transition); display: inline-flex; align-items: center; justify-content: center; width: 100%; transform: translateZ(0); will-change: transform; }
+    .btn-secondary {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.08) 100%);
+      background-color: rgba(255, 255, 255, 0.14);
+      color: var(--white);
+      border: 1.5px solid rgba(255, 255, 255, 0.35);
+      padding: 13px 26px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 900;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      -webkit-backdrop-filter: blur(12px) saturate(160%);
+      backdrop-filter: blur(12px) saturate(160%);
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.18), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
     @media (min-width: 640px) { .btn-primary, .btn-secondary { width: auto; } }
     .btn-primary:hover { background-color: #0033CC; }
     .hero-buttons .btn-primary:hover { box-shadow: 0 4px 15px rgba(0,68,255,0.3), 0 0 22px rgba(255,217,15,0.65); }
-    .hero-buttons .btn-secondary:hover { background-color: rgba(255,255,255,0.22); box-shadow: 0 0 22px rgba(255,217,15,0.5); border-color: rgba(255,217,15,0.5); }
+    .hero-buttons .btn-secondary:hover {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.32) 0%, rgba(255, 255, 255, 0.16) 100%);
+      border-color: rgba(255, 217, 15, 0.6);
+      box-shadow: 0 0 24px rgba(255, 217, 15, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.5);
+    }
 
     /* HERO DESKTOP: layout asimmetrico perfettamente bilanciato */
     @media (min-width: 992px) {
@@ -1754,12 +1778,11 @@
     // basta animarle: nessuna manipolazione del DOM.
     function animateHero() {
       if (!motionOK) return;
-      gsap.timeline({ defaults: { opacity: 0, y: 16, duration: 0.5, ease: 'power2.out' } })
-        .from('.hero-line1', {})
-        .from('.hero-line2', {}, '-=0.35')
-        .from('.hero-text', {}, '-=0.3')
-        .from('.hero-buttons', {}, '-=0.3')
-        .from('.hero-scroll-cue', { opacity: 0, y: 12, duration: 0.5, ease: 'power2.out' }, '-=0.2');
+      gsap.fromTo('.hero-line1', { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' });
+      gsap.fromTo('.hero-line2', { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5, delay: 0.08, ease: 'power2.out' });
+      gsap.fromTo('.hero-text', { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.5, delay: 0.15, ease: 'power2.out' });
+      gsap.fromTo('.hero-buttons', { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.5, delay: 0.22, ease: 'power2.out' });
+      gsap.fromTo('.hero-scroll-cue', { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5, delay: 0.3, ease: 'power2.out' });
     }
 
     // Evidenzia nella navbar (desktop e mobile) la voce corrispondente
@@ -1909,18 +1932,17 @@
       // Dismiss preloader smoothly and trigger hero animation
       const dismiss = () => {
         preloader.style.pointerEvents = 'none';
-        gsap.timeline()
-          .to(preloader, {
-            opacity: 0,
-            duration: 0.35,
-            ease: 'power2.inOut',
-            onComplete: () => {
-              preloader.classList.add('loaded');
-              preloader.remove();
-              animateHero();
-              if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
-            }
-          });
+        animateHero();
+        gsap.to(preloader, {
+          opacity: 0,
+          duration: 0.35,
+          ease: 'power2.inOut',
+          onComplete: () => {
+            preloader.classList.add('loaded');
+            preloader.remove();
+            if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
+          }
+        });
       };
 
       setTimeout(dismiss, 350);
