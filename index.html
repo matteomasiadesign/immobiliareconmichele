@@ -114,11 +114,11 @@
     .hero-buttons { display: flex; flex-direction: column; gap: 0.75rem; align-items: center; justify-content: center; width: 100%; max-width: 320px; margin-inline: auto; }
     @media (min-width: 640px) { .hero-buttons { flex-direction: row; max-width: none; } }
     .btn-primary { background-color: var(--brand-blue); color: var(--brand-yellow); padding: 13px 26px; border-radius: 999px; text-decoration: none; font-weight: 900; font-size: 13px; text-transform: uppercase; box-shadow: 0 4px 15px rgba(0,68,255,0.3); transition: var(--transition); border: 2.5px solid var(--brand-yellow); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; width: 100%; }
-    .btn-secondary { background-color: rgba(255,255,255,0.1); color: var(--white); border: 2px solid rgba(255,255,255,0.25); padding: 12px 26px; border-radius: 999px; text-decoration: none; font-weight: 900; font-size: 13px; text-transform: uppercase; backdrop-filter: blur(4px); transition: var(--transition); display: inline-flex; align-items: center; justify-content: center; width: 100%; }
+    .btn-secondary { background-color: rgba(255,255,255,0.14); color: var(--white); border: 2px solid rgba(255,255,255,0.3); padding: 12px 26px; border-radius: 999px; text-decoration: none; font-weight: 900; font-size: 13px; text-transform: uppercase; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); transition: var(--transition); display: inline-flex; align-items: center; justify-content: center; width: 100%; transform: translateZ(0); will-change: transform; }
     @media (min-width: 640px) { .btn-primary, .btn-secondary { width: auto; } }
     .btn-primary:hover { background-color: #0033CC; }
     .hero-buttons .btn-primary:hover { box-shadow: 0 4px 15px rgba(0,68,255,0.3), 0 0 22px rgba(255,217,15,0.65); }
-    .hero-buttons .btn-secondary:hover { box-shadow: 0 0 22px rgba(255,217,15,0.5); border-color: rgba(255,217,15,0.5); }
+    .hero-buttons .btn-secondary:hover { background-color: rgba(255,255,255,0.22); box-shadow: 0 0 22px rgba(255,217,15,0.5); border-color: rgba(255,217,15,0.5); }
 
     /* HERO DESKTOP: layout asimmetrico perfettamente bilanciato */
     @media (min-width: 992px) {
@@ -1754,12 +1754,12 @@
     // basta animarle: nessuna manipolazione del DOM.
     function animateHero() {
       if (!motionOK) return;
-      gsap.timeline({ defaults: { opacity: 0, y: 20, duration: 0.6, ease: 'power2.out' } })
+      gsap.timeline({ defaults: { opacity: 0, y: 16, duration: 0.5, ease: 'power2.out' } })
         .from('.hero-line1', {})
-        .from('.hero-line2', {}, '-=0.4')
-        .from('.hero-text', {}, '-=0.35')
-        .from('.hero-buttons', {}, '-=0.35')
-        .from('.hero-scroll-cue', { opacity: 0, y: 15, duration: 0.7, ease: 'power2.out' }, '-=0.2');
+        .from('.hero-line2', {}, '-=0.35')
+        .from('.hero-text', {}, '-=0.3')
+        .from('.hero-buttons', {}, '-=0.3')
+        .from('.hero-scroll-cue', { opacity: 0, y: 12, duration: 0.5, ease: 'power2.out' }, '-=0.2');
     }
 
     // Evidenzia nella navbar (desktop e mobile) la voce corrispondente
@@ -1896,35 +1896,34 @@
       }
 
       // Initial state
-      gsap.set('.preloader-orbit-wrap', { scale: 0.75, opacity: 0 });
+      gsap.set('.preloader-orbit-wrap', { scale: 0.85, opacity: 0 });
 
       // Smooth scale-in of the logo & orbiting orb
       gsap.to('.preloader-orbit-wrap', {
         scale: 1,
         opacity: 1,
-        duration: 0.6,
-        ease: 'back.out(1.6)'
+        duration: 0.4,
+        ease: 'power2.out'
       });
 
       // Dismiss preloader smoothly and trigger hero animation
       const dismiss = () => {
         preloader.style.pointerEvents = 'none';
         gsap.timeline()
-          .to('.preloader-orbit-wrap', { scale: 0.9, opacity: 0, duration: 0.3, ease: 'power2.in' })
           .to(preloader, {
             opacity: 0,
             duration: 0.35,
-            ease: 'power3.inOut',
+            ease: 'power2.inOut',
             onComplete: () => {
               preloader.classList.add('loaded');
               preloader.remove();
               animateHero();
               if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
             }
-          }, '-=0.1');
+          });
       };
 
-      setTimeout(dismiss, 450);
+      setTimeout(dismiss, 350);
     }
 
     initPreloader();

@@ -645,37 +645,39 @@ html {
   position: relative;
   width: 120px;
   height: 120px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* Bagliore morbido dietro il logo */
+/* Bagliore morbido circolare nativo senza filtri di clipping */
 .preloader-glow-aura {
   position: absolute;
-  inset: -10px;
-  background: radial-gradient(circle, rgba(0,68,255,0.4) 0%, rgba(255,217,15,0.15) 50%, transparent 70%);
+  inset: 0;
   border-radius: 50%;
-  filter: blur(14px);
+  background: radial-gradient(circle, rgba(0,68,255,0.45) 0%, rgba(255,217,15,0.18) 55%, transparent 75%);
+  box-shadow: 0 0 45px rgba(0, 68, 255, 0.4);
   pointer-events: none;
 }
 
-/* Logo centrale intatto */
+/* Logo centrale intatto e circolare */
 .preloader-logo-img {
   width: 76px;
   height: 76px;
+  border-radius: 50%;
   object-fit: contain;
   position: relative;
   z-index: 2;
-  filter: drop-shadow(0 6px 20px rgba(0,68,255,0.45));
+  box-shadow: 0 0 25px rgba(0, 68, 255, 0.6), 0 0 50px rgba(255, 217, 15, 0.25);
 }
 
 /* Traccia circolare con satellite giallo orbitante */
 .preloader-orbit-track {
   position: absolute;
-  inset: 4px;
+  inset: 6px;
   border-radius: 50%;
-  border: 1.5px dashed rgba(255, 217, 15, 0.25);
+  border: 1.5px dashed rgba(255, 217, 15, 0.3);
   animation: preloaderOrbitSpin 2s linear infinite;
   pointer-events: none;
   z-index: 3;
