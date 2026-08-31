@@ -1670,6 +1670,15 @@
           </button>
           <img id="mod-img" src="" class="modal-img" alt="Foto immobile">
           <button id="mod-zoom-btn" class="carousel-zoom-btn" onclick="openLightbox(currentImageIndex); event.stopPropagation();" aria-label="Ingrandisci foto a tutto schermo" title="Ingrandisci a tutto schermo">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7"></path></svg>
+            <span>Tocca per ingrandire</span>
+          </button>
+          <button id="mod-next-img" class="carousel-btn next" onclick="nextImage(event)" aria-label="Foto successiva">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+          </button>
+          <div id="mod-img-dots" class="carousel-dots"></div>
+        </div>
+        
         <div class="modal-content">
           <span id="mod-type" class="modal-type"></span>
           <h2 id="mod-title" class="modal-title"></h2>
@@ -1678,18 +1687,15 @@
             <span id="mod-zone"></span>
           </div>
           
-          <!-- DATI CHIAVE. L'unita' di misura compare in UN posto solo: o
-               nell'etichetta, o accanto al numero. Prima l'etichetta diceva
-               "Bagni" e il valore ripeteva "1 Bagni", per giunta al plurale
-               anche quando era uno. Da qui il JS scrive solo il numero, e il
-               "m²" e' markup fisso: cosi' la ripetizione non puo' tornare.
-               Le icone sono le stesse delle card in griglia, per far
-               riconoscere gli stessi dati passando dalla vetrina alla scheda. -->
           <div class="modal-grid" id="mod-grid">
             <div class="modal-grid-item">
               <svg class="modal-grid-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
               <span class="modal-grid-value"><span id="mod-rooms" class="modal-grid-number"></span></span>
               <span class="modal-grid-label">Locali</span>
+            </div>
+            <div class="modal-grid-item">
+              <svg class="modal-grid-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+              <span class="modal-grid-value"><span id="mod-bathrooms" class="modal-grid-number"></span></span>
               <span class="modal-grid-label">Bagni</span>
             </div>
             <div class="modal-grid-item" id="mod-sqm-item" style="display:none;">
@@ -1704,6 +1710,9 @@
             </div>
             <div class="modal-grid-item" id="mod-energy-item">
               <svg class="modal-grid-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+              <span class="modal-grid-value"><span id="mod-energy-class" class="modal-grid-number"></span></span>
+              <span class="modal-grid-label" id="mod-energy-sub">Classe APE</span>
+            </div>
           </div>
 
           <div class="modal-desc-title">Descrizione Completa</div>
