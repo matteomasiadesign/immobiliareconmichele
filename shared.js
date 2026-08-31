@@ -307,31 +307,6 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// ROTATING SMART SEARCH PLACEHOLDER
-function initSearchRotatingText() {
-    const searchEl = document.querySelector('.nav-search-text');
-    if (!searchEl) return;
-
-    const queries = [
-        "Cerca casa o filtra...",
-        "Ville a Porto Torres...",
-        "Appartamenti vista mare...",
-        "Filtra per prezzo e vani..."
-    ];
-    let idx = 0;
-
-    setInterval(() => {
-        if (!searchEl) return;
-        searchEl.style.opacity = '0';
-        setTimeout(() => {
-            idx = (idx + 1) % queries.length;
-            searchEl.textContent = queries[idx];
-            searchEl.style.opacity = '1';
-        }, 250);
-    }, 3600);
-}
-initSearchRotatingText();
-
 // Evidenzia nella navbar la pagina in cui ci si trova
 function initCurrentPageNav() {
     const clean = (s) => s.split('#')[0].split('/').pop().replace(/\.html$/, '') || 'index';

@@ -3,14 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Valutazione Gratuita - Immobiliare con Michele</title>
-  <meta name="description" content="Scopri quanto vale il tuo immobile a Porto Torres e nel Nord Sardegna. Valutazione gratuita, senza impegno, con sopralluogo e report scritto.">
+  <title>Valutazione Gratuita Immobile - Immobiliare con Michele</title>
+  <meta name="description" content="Scopri quanto vale il tuo immobile a Porto Torres e nel Nord Sardegna. Valutazione gratuita in 3 semplici passaggi, senza impegno e con report dettagliato.">
 
-  <meta name="theme-color" content="#0044FF">
+  <meta name="theme-color" content="#002db3">
 
   <link rel="icon" href="logo.svg" type="image/svg+xml">
-
-  <!-- Icona e nome per l'aggiunta alla home: vedi index.html -->
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <meta name="apple-mobile-web-app-title" content="Immobiliare">
   <link rel="manifest" href="manifest.webmanifest">
@@ -29,117 +27,592 @@
   <style>
     :root {
       --brand-blue: #0044FF;
+      --brand-blue-deep: #002db3;
       --brand-yellow: #FFD90F;
       --brand-green: #10b981;
-      --bg-slate: #f8fafc;
-      --text-slate: #1e293b;
-      --text-muted: #64748b;
+      --bg-slate: #070d24;
+      --text-slate: #ffffff;
+      --text-muted: #94a3b8;
       --white: #ffffff;
-      --border-color: #e2e8f0;
-      --transition: all 0.2s ease-in-out;
+      --border-color: rgba(255, 255, 255, 0.14);
+      --transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    html, body { background-color: var(--bg-slate); color: var(--text-slate); min-height: 100vh; max-width: 100%; overflow-x: clip; display: flex; flex-direction: column; }
-
-    /* Navbar, menu mobile, FAB e logo: vedi shared.css */
-
-    .valuation-container { max-width: 900px; margin: 0 auto; padding: 2rem 1rem 3rem; flex: 1 0 auto; width: 100%; }
-    @media (min-width: 768px) { .valuation-container { padding: 3rem 1.5rem 4rem; } }
-
-    /* INTESTAZIONE */
-    .val-head { text-align: center; margin-bottom: 2rem; }
-    .val-badge { display: inline-flex; align-items: center; gap: 9px; background: rgba(16,185,129,0.1); color: #059669; font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.08em; padding: 8px 16px; border-radius: 999px; margin-bottom: 1.25rem; }
-    .val-title { font-family: 'Teko', 'Space Grotesk', sans-serif; font-size: 2rem; font-weight: 700; color: var(--text-slate); text-transform: uppercase; letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 1rem; }
-    @media (min-width: 768px) { .val-title { font-size: 3rem; } }
-    .val-title span { color: var(--brand-blue); }
-    .val-intro { font-size: 1rem; color: var(--text-muted); font-weight: 500; line-height: 1.6; max-width: 60ch; margin: 0 auto; }
-
-    /* TRE PUNTI DI RASSICURAZIONE */
-    .val-perks { display: grid; grid-template-columns: 1fr; gap: 0.75rem; margin: 2rem 0; }
-    @media (min-width: 640px) { .val-perks { grid-template-columns: repeat(3, 1fr); } }
-    .val-perk { display: flex; align-items: center; gap: 10px; background: var(--white); border: 1px solid var(--border-color); border-radius: 16px; padding: 14px 16px; }
-    .val-perk-icon { width: 32px; height: 32px; border-radius: 10px; background: rgba(16,185,129,0.1); color: var(--brand-green); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .val-perk-icon svg { width: 16px; height: 16px; }
-    .val-perk strong { display: block; font-size: 13px; font-weight: 800; color: var(--text-slate); }
-    .val-perk span { font-size: 11.5px; color: var(--text-muted); font-weight: 500; }
-
-    /* ITER: COME FUNZIONA */
-    .val-iter { margin: 2.5rem 0; }
-    .val-iter-head { text-align: center; margin-bottom: 1.75rem; }
-    .val-iter-kicker { font-size: 11px; font-weight: 900; color: var(--brand-blue); text-transform: uppercase; letter-spacing: 0.08em; }
-    .val-iter-sub { font-size: 13px; color: var(--text-muted); font-weight: 500; margin-top: 5px; }
-    .val-iter-steps { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
-    .val-iter-step { position: relative; display: flex; align-items: flex-start; gap: 14px; }
-    .val-iter-step::before { content: ''; position: absolute; left: 16px; top: 42px; bottom: -1.5rem; width: 2px; background: linear-gradient(180deg, var(--border-color), rgba(226,232,240,0.25)); }
-    .val-iter-step:last-child::before { display: none; }
-    .val-iter-num { width: 34px; height: 34px; border-radius: 50%; background: var(--brand-blue); color: var(--white); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900; flex-shrink: 0; box-shadow: 0 6px 14px -7px rgba(0,68,255,0.85); }
-    .val-iter-step:last-child .val-iter-num { background: var(--brand-green); box-shadow: 0 6px 14px -7px rgba(16,185,129,0.85); }
-    .val-iter-step strong { display: block; font-size: 14px; font-weight: 800; color: var(--text-slate); margin-bottom: 4px; }
-    .val-iter-step p { font-size: 12.5px; color: var(--text-muted); font-weight: 500; line-height: 1.55; }
-    @media (min-width: 768px) {
-      .val-iter-steps { grid-template-columns: repeat(3, 1fr); gap: 1rem; }
-      .val-iter-step { flex-direction: column; align-items: center; text-align: center; gap: 12px; padding: 0 0.5rem; }
-      .val-iter-step::before { left: calc(50% + 26px); right: calc(-50% + 26px); top: 16px; bottom: auto; width: auto; height: 2px; background: var(--border-color); }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: radial-gradient(ellipse at 50% 0%, #002db3 0%, #001a66 45%, #070d24 100%);
+      background-attachment: fixed;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      min-height: 100vh;
+      max-width: 100%;
+      overflow-x: clip;
+      display: flex;
+      flex-direction: column;
     }
 
-    /* FORM */
-    .val-card { background: var(--white); border-radius: 28px; padding: 1.75rem 1.5rem; border: 1px solid var(--border-color); border-top: 4px solid var(--brand-green); box-shadow: 0 16px 40px -22px rgba(15,23,42,0.18); }
-    @media (min-width: 768px) { .val-card { padding: 2.5rem 3rem; } }
+    .valuation-page-wrap {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: clamp(2rem, 4vh, 3.5rem) 1.25rem clamp(3rem, 6vh, 5rem);
+      flex: 1 0 auto;
+      width: 100%;
+      position: relative;
+      z-index: 2;
+    }
 
-    .val-section { margin-bottom: 2rem; }
-    .val-section:last-of-type { margin-bottom: 1.5rem; }
-    .val-section-title { display: flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 900; color: var(--brand-blue); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 1rem; }
-    .val-step-num { width: 22px; height: 22px; border-radius: 50%; background: var(--brand-blue); color: var(--white); display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 900; flex-shrink: 0; }
+    /* INTESTAZIONE SNELLA & NON RIDONDANTE */
+    .val-hero {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .val-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 217, 15, 0.12);
+      border: 1px solid rgba(255, 217, 15, 0.3);
+      color: var(--brand-yellow);
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 7px 16px;
+      border-radius: 999px;
+      margin-bottom: 1.15rem;
+    }
+    .val-title {
+      font-family: 'Teko', sans-serif !important;
+      font-size: clamp(2.8rem, 7vw, 4.6rem);
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      line-height: 0.92;
+      margin-bottom: 0.85rem;
+    }
+    .val-title span {
+      font-size: inherit !important;
+      letter-spacing: inherit !important;
+      color: var(--brand-yellow);
+      font-weight: 500;
+      line-height: 1.55;
+      max-width: 58ch;
+      margin: 0 auto 1.5rem;
+    }
 
-    .val-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
-    @media (min-width: 640px) { .val-grid { grid-template-columns: 1fr 1fr; } }
-    .val-field { display: flex; flex-direction: column; gap: 6px; }
-    .val-field.full { grid-column: 1 / -1; }
-    .val-label { font-size: 11.5px; font-weight: 800; color: var(--text-slate); }
-    .val-label .req { color: #dc2626; }
-    .val-label .opt { color: var(--text-muted); font-weight: 600; }
-    .val-input { width: 100%; padding: 14px 16px; background: #f1f5f9; border: 1px solid var(--border-color); border-radius: 14px; font-size: 14px; font-weight: 500; font-family: inherit; color: var(--text-slate); outline: none; transition: var(--transition); appearance: none; }
-    .val-input:focus { border-color: var(--brand-blue); background: var(--white); box-shadow: 0 0 0 4px rgba(0,68,255,0.1); }
-    .val-input:invalid:not(:placeholder-shown) { border-color: #fca5a5; }
-    select.val-input { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' stroke='%2364748b' stroke-width='2.5' viewBox='0 0 24 24'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; background-size: 16px; padding-right: 40px; }
-    textarea.val-input { resize: vertical; min-height: 90px; }
+    /* 3 GARANZIE MINIMALI IN LINEA */
+    .val-guarantees {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 0.75rem 1.5rem;
+      margin-bottom: 2.25rem;
+    }
+    .val-guarantee-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #e2e8f0;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 6px 14px;
+      border-radius: 999px;
+    }
+    .val-guarantee-item svg {
+      color: var(--brand-yellow);
+      flex-shrink: 0;
+    }
 
-    /* CARATTERISTICHE: checkbox come pillole selezionabili */
-    .val-hint { font-size: 12px; color: var(--text-muted); font-weight: 500; margin-bottom: 0.9rem; }
-    .val-checks { display: flex; flex-wrap: wrap; gap: 0.6rem; }
-    .val-check { position: relative; }
-    .val-check input { position: absolute; opacity: 0; width: 0; height: 0; }
-    .val-check span { display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 700; color: var(--text-slate); background: #f1f5f9; border: 1.5px solid var(--border-color); padding: 9px 15px; border-radius: 999px; cursor: pointer; transition: var(--transition); user-select: none; }
-    .val-check span::before { content: ''; width: 14px; height: 14px; border-radius: 5px; border: 1.5px solid #cbd5e1; background: var(--white); flex-shrink: 0; transition: var(--transition); }
-    .val-check input:checked + span { background: rgba(16,185,129,0.1); border-color: var(--brand-green); color: #047857; }
-    .val-check input:checked + span::before { background: var(--brand-green); border-color: var(--brand-green); box-shadow: inset 0 0 0 2px var(--white); }
-    .val-check input:focus-visible + span { outline: 2px solid var(--brand-blue); outline-offset: 3px; }
-    .val-check span:hover { border-color: var(--brand-green); }
+    /* WIZARD CARD CONTAINER */
+    .val-wizard-card {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1.5px solid rgba(255, 255, 255, 0.16);
+      border-radius: 28px;
+      padding: clamp(1.5rem, 3vw, 2.5rem);
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 217, 15, 0.1);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      position: relative;
+    }
 
-    .val-submit { width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 8px; background-color: var(--brand-yellow); color: var(--brand-blue); border: 3px solid var(--brand-blue); font-weight: 900; font-size: 14px; text-transform: uppercase; letter-spacing: 0.03em; padding: 17px 30px; border-radius: 999px; cursor: pointer; font-family: inherit; transition: var(--transition); }
-    .val-submit:hover:not(:disabled) { background-color: #ffe14d; }
-    .val-submit:disabled { opacity: 0.6; cursor: not-allowed; }
-    .val-submit svg { width: 15px; height: 15px; }
-    .val-privacy { font-size: 11.5px; color: var(--text-muted); font-weight: 500; text-align: center; margin-top: 1rem; line-height: 1.5; }
-    .val-status { font-size: 13.5px; font-weight: 700; text-align: center; margin-top: 1rem; min-height: 1.2em; }
-    .val-status.success { color: #059669; }
-    .val-status.error { color: #dc2626; }
+    /* PROGRESS BAR & STEPPER HEADER */
+    .wizard-stepper {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 1.5rem;
+    }
+    .stepper-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #94a3b8;
+      font-size: 12px;
+      font-weight: 700;
+      transition: var(--transition);
+    }
+    .stepper-pill.active {
+      background: rgba(0, 68, 255, 0.3);
+      border-color: var(--brand-yellow);
+      color: var(--white);
+      box-shadow: 0 4px 14px rgba(0, 68, 255, 0.3);
+    }
+    .stepper-pill.completed {
+      background: rgba(16, 185, 129, 0.15);
+      border-color: var(--brand-green);
+      color: #34d399;
+    }
+    .stepper-pill-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.15);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 900;
+      flex-shrink: 0;
+    }
+    .stepper-pill.active .stepper-pill-num {
+      background: var(--brand-yellow);
+      color: var(--brand-blue-deep);
+    }
+    .stepper-pill.completed .stepper-pill-num {
+      background: var(--brand-green);
+      color: var(--white);
+    }
+    .stepper-pill-text {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    @media (max-width: 580px) {
+      .stepper-pill { padding: 8px 10px; justify-content: center; }
+      .stepper-pill-text { display: none; }
+    }
 
-    /* SCHERMATA DI CONFERMA (sostituisce il form a invio riuscito) */
-    .val-done { display: none; text-align: center; padding: 1rem 0 0.5rem; }
-    .val-done.show { display: block; }
-    .val-done-icon { width: 64px; height: 64px; border-radius: 50%; background: rgba(16,185,129,0.12); color: var(--brand-green); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem; }
-    .val-done-icon svg { width: 32px; height: 32px; }
-    .val-done h2 { font-family: 'Teko', 'Space Grotesk', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--text-slate); text-transform: uppercase; margin-bottom: 0.75rem; }
-    .val-done p { font-size: 14px; color: var(--text-muted); font-weight: 500; line-height: 1.6; max-width: 46ch; margin: 0 auto 1.5rem; }
-    .val-done-actions { display: flex; flex-direction: column; gap: 0.75rem; align-items: center; }
-    @media (min-width: 560px) { .val-done-actions { flex-direction: row; justify-content: center; } }
-    .val-done-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 26px; border-radius: 999px; font-weight: 900; font-size: 13px; text-transform: uppercase; text-decoration: none; transition: var(--transition); }
-    .val-done-btn.primary { background: #25D366; color: var(--white); }
-    .val-done-btn.secondary { background: rgba(0,68,255,0.07); color: var(--brand-blue); }
-    .val-done-btn:hover { gap: 12px; }
-    .val-done-btn svg { width: 16px; height: 16px; }
+    .wizard-progress-track {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 999px;
+      margin-bottom: 2rem;
+      overflow: hidden;
+    }
+    .wizard-progress-bar {
+      height: 100%;
+      width: 33.33%;
+      background: linear-gradient(90deg, var(--brand-yellow), #ffec6e);
+      border-radius: 999px;
+      transition: width 0.35s ease;
+      box-shadow: 0 0 12px rgba(255, 217, 15, 0.6);
+    }
+
+    /* STEP CONTAINER & PANELS */
+    .wizard-step {
+      display: none;
+      animation: fadeInStep 0.3s ease forwards;
+    }
+    .wizard-step.active {
+      display: block;
+    }
+    @keyframes fadeInStep {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .step-header {
+      margin-bottom: 1.5rem;
+    }
+    .step-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.2rem, 3vw, 1.45rem);
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 0.35rem;
+    }
+    .step-desc {
+      font-size: 13.5px;
+      color: #94a3b8;
+      font-weight: 500;
+    }
+
+    /* FORM ELEMENTS & INPUTS */
+    .form-group {
+      margin-bottom: 1.35rem;
+    }
+    .form-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #e2e8f0;
+      margin-bottom: 0.5rem;
+    }
+    .form-label .req { color: var(--brand-yellow); }
+    .form-label .opt { color: #94a3b8; font-weight: 500; text-transform: none; font-size: 11px; }
+
+    .val-input-text {
+      width: 100%;
+      padding: 14px 18px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1.5px solid rgba(255, 255, 255, 0.16);
+      border-radius: 14px;
+      color: var(--white);
+      font-size: 14.5px;
+      font-weight: 500;
+      outline: none;
+      transition: var(--transition);
+      box-sizing: border-box;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    @media (max-width: 768px) {
+      .val-input-text {
+        font-size: 16px !important;
+      }
+    }
+    .val-input-text::placeholder { color: #64748b; }
+    .val-input-text:focus {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: var(--brand-yellow);
+      box-shadow: 0 0 0 3px rgba(255, 217, 15, 0.2);
+    }
+    textarea.val-input-text {
+      resize: vertical;
+      min-height: 85px;
+    }
+
+    /* SELETTORE A CARD PER TIPOLOGIA IMMOBILE */
+    .type-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+    @media (min-width: 640px) {
+      .type-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    .type-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1.5px solid rgba(255, 255, 255, 0.12);
+      border-radius: 16px;
+      padding: 14px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: var(--transition);
+      user-select: none;
+    }
+    .type-card:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 217, 15, 0.5);
+      transform: translateY(-2px);
+    }
+    .type-card.active {
+      background: rgba(0, 68, 255, 0.35);
+      border-color: var(--brand-yellow);
+      box-shadow: 0 8px 20px -4px rgba(0, 68, 255, 0.5), 0 0 0 1px var(--brand-yellow);
+    }
+    .type-card-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #93c5fd;
+      transition: var(--transition);
+    }
+    .type-card.active .type-card-icon {
+      background: var(--brand-yellow);
+      color: var(--brand-blue-deep);
+    }
+    .type-card-icon svg { width: 20px; height: 20px; }
+    .type-card-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.2;
+    }
+
+    /* PILLOLE SELEZIONABILI (Locali, Stato, Preferenze) */
+    .pills-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .val-pill {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1.5px solid rgba(255, 255, 255, 0.14);
+      color: #cbd5e1;
+      padding: 9px 16px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+      user-select: none;
+    }
+    .val-pill:hover {
+      border-color: rgba(255, 217, 15, 0.5);
+      color: var(--white);
+    }
+    .val-pill.active {
+      background: var(--brand-yellow);
+      border-color: var(--brand-yellow);
+      color: var(--brand-blue-deep);
+      font-weight: 800;
+      box-shadow: 0 4px 14px rgba(255, 217, 15, 0.35);
+    }
+
+    /* CHECKBOX CARATTERISTICHE MULTIPLE */
+    .checks-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.6rem;
+    }
+    @media (min-width: 640px) {
+      .checks-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    .feature-check {
+      position: relative;
+    }
+    .feature-check input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .feature-check span {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1.5px solid rgba(255, 255, 255, 0.12);
+      color: #cbd5e1;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+      user-select: none;
+    }
+    .feature-check span::before {
+      content: '';
+      width: 15px;
+      height: 15px;
+      border-radius: 4px;
+      border: 1.5px solid #64748b;
+      background: transparent;
+      flex-shrink: 0;
+      transition: var(--transition);
+    }
+    .feature-check input:checked + span {
+      background: rgba(16, 185, 129, 0.16);
+      border-color: #34d399;
+      color: var(--white);
+    }
+    .feature-check input:checked + span::before {
+      background: #10b981;
+      border-color: #10b981;
+      box-shadow: inset 0 0 0 2px #0f172a;
+    }
+    .feature-check span:hover {
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    /* FOOTER AZIONI WIZARD (AVANTI / INDIETRO) */
+    .wizard-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    @media (max-width: 480px) {
+      .wizard-actions {
+        flex-direction: column-reverse;
+        gap: 0.75rem;
+      }
+      .btn-step-next,
+      .btn-step-prev {
+        width: 100%;
+        margin-left: 0 !important;
+        justify-content: center;
+        padding: 14px 20px;
+      }
+    }
+    .btn-step-prev {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: #e2e8f0;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .btn-step-prev:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: var(--white);
+    }
+    .btn-step-next {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border-radius: 999px;
+      background: var(--brand-blue);
+      border: 2px solid var(--brand-yellow);
+      color: var(--white);
+      font-size: 13.5px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 4px 16px rgba(0, 68, 255, 0.4);
+      margin-left: auto;
+    }
+    .btn-step-next:hover {
+      background: #0037cc;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 68, 255, 0.6);
+    }
+    .btn-step-submit {
+      background: var(--brand-yellow);
+      color: var(--brand-blue-deep);
+      border: 2px solid var(--brand-yellow);
+      box-shadow: 0 6px 20px rgba(255, 217, 15, 0.4);
+    }
+    .btn-step-submit:hover {
+      background: #ffe14d;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(255, 217, 15, 0.6);
+    }
+    .btn-step-next:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    /* ERROR FEEDBACK */
+    .step-error-msg {
+      color: #fca5a5;
+      font-size: 13px;
+      font-weight: 700;
+      margin-top: 0.75rem;
+      display: none;
+      align-items: center;
+      gap: 6px;
+    }
+    .step-error-msg.show { display: flex; }
+
+    /* SCHERMATA CONFERMA */
+    .val-done-card {
+      display: none;
+      text-align: center;
+      padding: 1.5rem 0.5rem;
+    }
+    .val-done-card.show {
+      display: block;
+      animation: fadeInStep 0.4s ease forwards;
+    }
+    .val-done-icon-box {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: rgba(16, 185, 129, 0.2);
+      border: 2px solid #34d399;
+      color: #34d399;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      box-shadow: 0 0 25px rgba(16, 185, 129, 0.4);
+    }
+    .val-done-icon-box svg { width: 36px; height: 36px; }
+    .val-done-title {
+      font-family: 'Teko', sans-serif !important;
+      font-size: clamp(2.2rem, 5vw, 3.2rem);
+      font-weight: 700;
+      color: var(--white);
+      text-transform: uppercase;
+      letter-spacing: 0.01em;
+      margin-bottom: 0.75rem;
+      font-family: inherit !important;
+      font-weight: inherit !important;
+      color: var(--brand-yellow);
+    }
+      font-size: 15px;
+      color: #cbd5e1;
+      line-height: 1.6;
+      flex-direction: column;
+      gap: 0.85rem;
+      justify-content: center;
+      align-items: center;
+    }
+    @media (min-width: 540px) {
+      .val-done-buttons { flex-direction: row; }
+    }
+    .btn-done-wa {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 26px;
+      border-radius: 999px;
+      background: #25D366;
+      color: var(--white);
+      font-weight: 900;
+      font-size: 13.5px;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: var(--transition);
+      box-shadow: 0 4px 18px rgba(37, 211, 102, 0.4);
+    }
+    .btn-done-wa:hover {
+      background: #20ba5a;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(37, 211, 102, 0.6);
+    }
+    .btn-done-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 26px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: var(--white);
+      font-weight: 800;
+      font-size: 13.5px;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+    .btn-done-home:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
   </style>
 </head>
 <body>
@@ -171,7 +644,7 @@
         <svg width="22" height="22" fill="none" stroke="var(--brand-yellow)" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"></path></svg>
       </button>
 
-      <!-- MENU HAMBURGER (DESKTOP & MOBILE) -->
+      <!-- MENU HAMBURGER -->
       <button id="mobile-toggle" class="mobile-toggle" aria-label="Apri il menu" aria-expanded="false" aria-controls="mobile-menu">
         <svg fill="none" stroke="var(--brand-yellow)" stroke-width="2.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path></svg>
         <span class="mobile-toggle-label">Menu</span>
@@ -192,163 +665,277 @@
     <a href="valutazione.html" class="btn-valuation-nav">Valutazione</a>
   </div>
 
-  <main class="valuation-container">
-    <div class="val-head reveal">
-      <span class="val-badge"><span class="pulse-dot"></span> 100% Gratuita, senza impegno</span>
+  <!-- CONTENUTO PRINCIPALE -->
+  <main class="valuation-page-wrap">
+    
+    <!-- HEADER SNELLO SENZA RIDONDANZE -->
+    <div class="val-hero">
+      <span class="val-badge"><span class="pulse-dot"></span> Servizio Gratuito per Proprietari</span>
       <h1 class="val-title">Quanto vale <span>il tuo immobile?</span></h1>
-      <p class="val-intro">Raccontami in un minuto com'è fatto: ti richiamo io per fissare il sopralluogo e ti consegno una stima chiara, basata sui dati reali della tua zona.</p>
-    </div>
-
-    <div class="val-perks reveal">
-      <div class="val-perk">
-        <span class="val-perk-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg></span>
-        <div><strong>Nessun costo</strong><span>Non paghi nulla, mai</span></div>
-      </div>
-      <div class="val-perk">
-        <span class="val-perk-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></span>
-        <div><strong>Ti rispondo entro 24h</strong><span>Di persona, non un bot</span></div>
-      </div>
-      <div class="val-perk">
-        <span class="val-perk-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg></span>
-        <div><strong>Report scritto</strong><span>Con prezzo consigliato</span></div>
-      </div>
-    </div>
-
-    <div class="val-iter reveal">
-      <div class="val-iter-head">
-        <div class="val-iter-kicker">Come funziona</div>
-        <p class="val-iter-sub">Tre passaggi, nessun impegno.</p>
-      </div>
-      <div class="val-iter-steps">
-        <div class="val-iter-step">
-          <span class="val-iter-num">1</span>
-          <div>
-            <strong>Compili il form</strong>
-            <p>Ti bastano due minuti. Più dettagli mi lasci sull'immobile, più la stima parte precisa.</p>
-          </div>
-        </div>
-        <div class="val-iter-step">
-          <span class="val-iter-num">2</span>
-          <div>
-            <strong>Ti ricontatto entro 24 ore</strong>
-            <p>Leggo la tua richiesta e ti chiamo io, per fissare il sopralluogo quando ti è comodo.</p>
-          </div>
-        </div>
-        <div class="val-iter-step">
-          <span class="val-iter-num">3</span>
-          <div>
-            <strong>Ricevi il tuo report</strong>
-            <p>Un documento scritto con la valutazione del tuo immobile e il prezzo consigliato per la vendita.</p>
-          </div>
-        </div>
+      <p class="val-intro">Inserisci i dettagli in 3 semplici passaggi: riceverai una stima chiara e professionale basata sui valori reali di compravendita a Porto Torres e nel Nord Sardegna.</p>
+      
+      <!-- 3 PUNTI DI FORZA MINIMALI -->
+      <div class="val-guarantees">
+        <span class="val-guarantee-item">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+          100% Gratuito
+        </span>
+        <span class="val-guarantee-item">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+          Nessun Vincolo
+        </span>
+        <span class="val-guarantee-item">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Risposta in 24 Ore
+        </span>
       </div>
     </div>
 
-    <div class="val-card reveal">
-      <form id="valuation-form" onsubmit="handleValuationSubmit(event)" novalidate>
-        <div class="val-section">
-          <div class="val-section-title"><span class="val-step-num">1</span> I tuoi contatti</div>
-          <div class="val-grid">
-            <div class="val-field">
-              <label class="val-label" for="val-name">Nome e cognome <span class="req">*</span></label>
-              <input type="text" id="val-name" class="val-input" placeholder="Mario Rossi" required>
+    <!-- WIZARD INTERATTIVO -->
+    <div class="val-wizard-card">
+      
+      <!-- STEPPER HEADER -->
+      <div class="wizard-stepper">
+        <div class="stepper-pill active" id="step-pill-1">
+          <span class="stepper-pill-num">1</span>
+          <span class="stepper-pill-text">Immobile & Zona</span>
+        </div>
+        <div class="stepper-pill" id="step-pill-2">
+          <span class="stepper-pill-num">2</span>
+          <span class="stepper-pill-text">Caratteristiche</span>
+        </div>
+        <div class="stepper-pill" id="step-pill-3">
+          <span class="stepper-pill-num">3</span>
+          <span class="stepper-pill-text">I tuoi Recapiti</span>
+        </div>
+      </div>
+
+      <!-- PROGRESS TRACK -->
+      <div class="wizard-progress-track">
+        <div class="wizard-progress-bar" id="wizard-progress-bar"></div>
+      </div>
+
+      <!-- FORM WIZARD -->
+      <form id="valuation-wizard-form" onsubmit="handleWizardSubmit(event)" novalidate>
+        
+        <!-- STEP 1: IMMOBILE & ZONA -->
+        <div class="wizard-step active" id="step-panel-1">
+          <div class="step-header">
+            <h2 class="step-title">Dove si trova e che tipo di immobile è?</h2>
+            <p class="step-desc">Seleziona la tipologia e indica il comune o la zona per inquadrare la stima.</p>
+          </div>
+
+          <!-- Selezione Tipologia -->
+          <div class="form-group">
+            <label class="form-label">Tipologia Immobile <span class="req">*</span></label>
+            <div class="type-grid" id="type-grid">
+              <div class="type-card active" data-type="Appartamento" onclick="selectType(this)">
+                <div class="type-card-icon">
+                  <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                </div>
+                <span class="type-card-title">Appartamento</span>
+              </div>
+              <div class="type-card" data-type="Casa indipendente" onclick="selectType(this)">
+                <div class="type-card-icon">
+                  <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                </div>
+                <span class="type-card-title">Casa Indipendente</span>
+              </div>
+              <div class="type-card" data-type="Villa / Villetta" onclick="selectType(this)">
+                <div class="type-card-icon">
+                  <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"/></svg>
+                </div>
+                <span class="type-card-title">Villa / Villetta</span>
+              </div>
+              <div class="type-card" data-type="Attico / Mansarda" onclick="selectType(this)">
+                <div class="type-card-icon">
+                  <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21h18M3 10l9-7 9 7v11H3V10z"/></svg>
+                </div>
+                <span class="type-card-title">Attico / Mansarda</span>
+              </div>
+              <div class="type-card" data-type="Locale commerciale" onclick="selectType(this)">
+                <div class="type-card-icon">
+                  <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+                </div>
+                <span class="type-card-title">Locale Commerciale</span>
+              </div>
+              <div class="type-card" data-type="Terreno" onclick="selectType(this)">
+                <div class="type-card-icon">
+                  <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                </div>
+                <span class="type-card-title">Terreno</span>
+              </div>
             </div>
-            <div class="val-field">
-              <label class="val-label" for="val-phone">Numero di telefono <span class="req">*</span></label>
-              <input type="tel" id="val-phone" class="val-input" placeholder="333 123 4567" required>
-            </div>
-            <div class="val-field">
-              <label class="val-label" for="val-email">Email</label>
-              <input type="email" id="val-email" class="val-input" placeholder="facoltativa, per mandarti la valutazione scritta">
-            </div>
+            <input type="hidden" id="val-type-input" value="Appartamento">
+          </div>
+
+          <!-- Zona / Comune -->
+          <div class="form-group">
+            <label class="form-label" for="val-zone-input">Zona o Comune <span class="req">*</span></label>
+            <input type="text" id="val-zone-input" class="val-input-text" placeholder="Es. Porto Torres (Centro, Lungomare, Serra Li Pozzi, Sassari...)" required>
+          </div>
+
+          <!-- Superficie in mq -->
+          <div class="form-group">
+            <label class="form-label" for="val-sqm-input">Superficie Indicativa in Mq <span class="opt">(facoltativo)</span></label>
+            <input type="number" id="val-sqm-input" class="val-input-text" placeholder="Es. 90" min="10" max="10000">
+          </div>
+
+          <div class="step-error-msg" id="step-1-error">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+            <span>Inserisci la zona o comune dell'immobile per proseguire.</span>
+          </div>
+
+          <div class="wizard-actions">
+            <button type="button" class="btn-step-next" onclick="nextWizardStep(1)">
+              <span>Continua al Passo 2</span>
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+            </button>
           </div>
         </div>
 
-        <div class="val-section">
-          <div class="val-section-title"><span class="val-step-num">2</span> L'immobile da valutare</div>
-          <div class="val-grid">
-            <div class="val-field">
-              <label class="val-label" for="val-zone">Zona <span class="req">*</span></label>
-              <input type="text" id="val-zone" class="val-input" placeholder="Es. Porto Torres, centro" required>
+        <!-- STEP 2: CARATTERISTICHE & DETTAGLI -->
+        <div class="wizard-step" id="step-panel-2">
+          <div class="step-header">
+            <h2 class="step-title">Com'è composto e in che condizioni si trova?</h2>
+            <p class="step-desc">Aggiungi qualche dettaglio per aiutarmi a calcolare una stima ancora più precisa.</p>
+          </div>
+
+          <!-- Numero Locali -->
+          <div class="form-group">
+            <label class="form-label">Numero Locali <span class="opt">(facoltativo)</span></label>
+            <div class="pills-group" id="rooms-pills">
+              <span class="val-pill" data-val="1 Locale" onclick="selectPill(this, 'rooms')">1 Locale</span>
+              <span class="val-pill active" data-val="2-3 Locali" onclick="selectPill(this, 'rooms')">2-3 Locali</span>
+              <span class="val-pill" data-val="4 Locali" onclick="selectPill(this, 'rooms')">4 Locali</span>
+              <span class="val-pill" data-val="5+ Locali" onclick="selectPill(this, 'rooms')">5+ Locali</span>
             </div>
-            <div class="val-field">
-              <label class="val-label" for="val-type">Tipologia immobiliare <span class="req">*</span></label>
-              <select id="val-type" class="val-input" required onchange="toggleOtherType()">
-                <option value="">Seleziona...</option>
-                <option value="Appartamento">Appartamento</option>
-                <option value="Casa indipendente">Casa indipendente</option>
-                <option value="Villa / Villetta">Villa / Villetta</option>
-                <option value="Terreno">Terreno</option>
-                <option value="Locale commerciale / Struttura">Locale commerciale / Struttura</option>
-                <option value="Garage / Box">Garage / Box</option>
-                <option value="Altro">Altro (specifica)</option>
-              </select>
+            <input type="hidden" id="val-rooms-input" value="2-3 Locali">
+          </div>
+
+          <!-- Stato Immobile -->
+          <div class="form-group">
+            <label class="form-label">Stato dell'immobile <span class="opt">(facoltativo)</span></label>
+            <div class="pills-group" id="state-pills">
+              <span class="val-pill active" data-val="Buono / Abitabile" onclick="selectPill(this, 'state')">Buono / Abitabile</span>
+              <span class="val-pill" data-val="Ristrutturato recente" onclick="selectPill(this, 'state')">Ristrutturato di recente</span>
+              <span class="val-pill" data-val="Da ristrutturare" onclick="selectPill(this, 'state')">Da ristrutturare</span>
+              <span class="val-pill" data-val="Nuova costruzione" onclick="selectPill(this, 'state')">Nuova Costruzione</span>
             </div>
-            <div class="val-field full" id="val-type-other-field" style="display:none;">
-              <label class="val-label" for="val-type-other">Specifica la tipologia <span class="req">*</span></label>
-              <input type="text" id="val-type-other" class="val-input" placeholder="Descrivi che tipo di immobile è">
+            <input type="hidden" id="val-state-input" value="Buono / Abitabile">
+          </div>
+
+          <!-- Dotazioni & Caratteristiche -->
+          <div class="form-group">
+            <label class="form-label">Caratteristiche & Dotazioni <span class="opt">(seleziona quelle presenti)</span></label>
+            <div class="checks-grid" id="features-grid">
+              <label class="feature-check"><input type="checkbox" value="Ascensore"><span>Ascensore</span></label>
+              <label class="feature-check"><input type="checkbox" value="Balcone o Terrazzo"><span>Balcone / Terrazzo</span></label>
+              <label class="feature-check"><input type="checkbox" value="Box o Posto Auto"><span>Box / Garage</span></label>
+              <label class="feature-check"><input type="checkbox" value="Giardino privato"><span>Giardino</span></label>
+              <label class="feature-check"><input type="checkbox" value="Vista Mare"><span>Vista Mare</span></label>
+              <label class="feature-check"><input type="checkbox" value="Climatizzatore"><span>Aria Condizionata</span></label>
+              <label class="feature-check"><input type="checkbox" value="Riscaldamento Autonomo"><span>Risc. Autonomo</span></label>
+              <label class="feature-check"><input type="checkbox" value="Fotovoltaico"><span>Fotovoltaico</span></label>
+              <label class="feature-check"><input type="checkbox" value="Cantina / Soffitta"><span>Cantina / Soffitta</span></label>
             </div>
-            <div class="val-field">
-              <label class="val-label" for="val-sqm">Superficie indicativa <span class="opt">(facoltativo)</span></label>
-              <input type="number" id="val-sqm" class="val-input" placeholder="Es. 95" min="1" max="100000">
-            </div>
+          </div>
+
+          <!-- Note opzionali -->
+          <div class="form-group">
+            <label class="form-label" for="val-notes-input">Note aggiuntive <span class="opt">(facoltativo)</span></label>
+            <textarea id="val-notes-input" class="val-input-text" placeholder="Es. piano, spese condominiali, se è attualmente libero o locato..."></textarea>
+          </div>
+
+          <div class="wizard-actions">
+            <button type="button" class="btn-step-prev" onclick="prevWizardStep(2)">
+              <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+              <span>Indietro</span>
+            </button>
+            <button type="button" class="btn-step-next" onclick="nextWizardStep(2)">
+              <span>Continua ai Recapiti</span>
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+            </button>
           </div>
         </div>
 
-        <div class="val-section">
-          <div class="val-section-title"><span class="val-step-num">3</span> Caratteristiche</div>
-          <p class="val-hint">Seleziona tutto quello che si applica: più dettagli mi dai, più la stima sarà precisa.</p>
-          <div class="val-checks" id="val-features">
-            <label class="val-check"><input type="checkbox" value="Ristrutturato"><span>Ristrutturato</span></label>
-            <label class="val-check"><input type="checkbox" value="Da ristrutturare"><span>Da ristrutturare</span></label>
-            <label class="val-check"><input type="checkbox" value="Ascensore"><span>Ascensore</span></label>
-            <label class="val-check"><input type="checkbox" value="Box / Posto auto"><span>Box / Posto auto</span></label>
-            <label class="val-check"><input type="checkbox" value="Terrazzo / Balcone"><span>Terrazzo / Balcone</span></label>
-            <label class="val-check"><input type="checkbox" value="Giardino"><span>Giardino</span></label>
-            <label class="val-check"><input type="checkbox" value="Vista mare"><span>Vista mare</span></label>
-            <label class="val-check"><input type="checkbox" value="Cantina / Soffitta"><span>Cantina / Soffitta</span></label>
-            <label class="val-check"><input type="checkbox" value="Riscaldamento autonomo"><span>Riscaldamento autonomo</span></label>
-            <label class="val-check"><input type="checkbox" value="Aria condizionata"><span>Aria condizionata</span></label>
-            <label class="val-check"><input type="checkbox" value="Arredato"><span>Arredato</span></label>
-            <label class="val-check"><input type="checkbox" value="Ultimo piano"><span>Ultimo piano</span></label>
-            <label class="val-check"><input type="checkbox" value="Piano terra"><span>Piano terra</span></label>
-            <label class="val-check"><input type="checkbox" value="Fotovoltaico"><span>Fotovoltaico</span></label>
-            <label class="val-check"><input type="checkbox" value="Attualmente affittato"><span>Attualmente affittato</span></label>
+        <!-- STEP 3: I TUOI RECAPITI -->
+        <div class="wizard-step" id="step-panel-3">
+          <div class="step-header">
+            <h2 class="step-title">Dove posso inviarti la stima?</h2>
+            <p class="step-desc">I tuoi dati sono protetti e utilizzati solo per ricontattarti per la valutazione.</p>
+          </div>
+
+          <!-- Nome e Cognome -->
+          <div class="form-group">
+            <label class="form-label" for="val-name-input">Nome e Cognome <span class="req">*</span></label>
+            <input type="text" id="val-name-input" class="val-input-text" placeholder="Mario Rossi" required>
+          </div>
+
+          <!-- Telefono / WhatsApp -->
+          <div class="form-group">
+            <label class="form-label" for="val-phone-input">Telefono o WhatsApp <span class="req">*</span></label>
+            <input type="tel" id="val-phone-input" class="val-input-text" placeholder="333 123 4567" required>
+          </div>
+
+          <!-- Email -->
+          <div class="form-group">
+            <label class="form-label" for="val-email-input">Email <span class="opt">(facoltativa, per ricevere il report scritto)</span></label>
+            <input type="email" id="val-email-input" class="val-input-text" placeholder="mario.rossi@email.com">
+          </div>
+
+          <!-- Preferenza di contatto -->
+          <div class="form-group">
+            <label class="form-label">Come e quando preferisci essere contattato?</label>
+            <div class="pills-group" id="time-pills">
+              <span class="val-pill active" data-val="WhatsApp" onclick="selectPill(this, 'time')">Preferisco WhatsApp</span>
+              <span class="val-pill" data-val="Chiamata Mattina" onclick="selectPill(this, 'time')">Chiamata Mattina</span>
+              <span class="val-pill" data-val="Chiamata Pomeriggio" onclick="selectPill(this, 'time')">Chiamata Pomeriggio</span>
+              <span class="val-pill" data-val="Qualsiasi orario" onclick="selectPill(this, 'time')">Qualsiasi orario</span>
+            </div>
+            <input type="hidden" id="val-time-input" value="WhatsApp">
+          </div>
+
+          <div class="step-error-msg" id="step-3-error">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+            <span id="step-3-error-text">Compila il nome e il numero di telefono per inviare la richiesta.</span>
+          </div>
+
+          <div class="wizard-actions">
+            <button type="button" class="btn-step-prev" onclick="prevWizardStep(3)">
+              <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+              <span>Indietro</span>
+            </button>
+            <button type="submit" id="val-wizard-submit-btn" class="btn-step-next btn-step-submit">
+              <span>Richiedi Valutazione</span>
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </button>
           </div>
         </div>
 
-        <div class="val-section">
-          <div class="val-field full">
-            <label class="val-label" for="val-notes">Vuoi aggiungere altro? <span class="opt">(facoltativo)</span></label>
-            <textarea id="val-notes" class="val-input" placeholder="Es. piano, anno di costruzione, se è libero o abitato, tempistiche che hai in mente..."></textarea>
-          </div>
-        </div>
-
-        <button type="submit" id="val-submit-btn" class="val-submit">
-          Richiedi la valutazione gratuita
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
-        </button>
-        <div id="val-status" class="val-status"></div>
-        <p class="val-privacy">I dati che inserisci servono solo a ricontattarti per la valutazione. Nessuno spam, nessuna cessione a terzi.</p>
       </form>
 
-      <div id="val-done" class="val-done">
-        <div class="val-done-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+      <!-- SCHERMATA CONFERMA FINALE -->
+      <div id="val-done-card" class="val-done-card">
+        <div class="val-done-icon-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
         </div>
-        <h2>Richiesta inviata!</h2>
-        <p>Grazie, ho ricevuto tutto. Ti ricontatto entro 24 ore per fissare il sopralluogo e prepararti la stima. Se hai fretta, scrivimi pure su WhatsApp.</p>
-        <div class="val-done-actions">
-          <a href="https://wa.me/393348576926" target="_blank" rel="noopener" class="val-done-btn primary">
-            <svg fill="currentColor" viewBox="0 0 16 16"><path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/></svg>
-            Scrivimi su WhatsApp
+        <h2 class="val-done-title">Richiesta <span>Inviata!</span></h2>
+        <p class="val-done-p" id="val-done-msg">Grazie! Ho ricevuto tutti i dettagli del tuo immobile. Ti ricontatterò entro 24 ore per concordare il sopralluogo gratuito e consegnarti il report di stima.</p>
+        <div class="val-done-buttons">
+          <a href="https://wa.me/393348576926" target="_blank" rel="noopener" class="btn-done-wa">
+            <svg width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/></svg>
+            <span>Scrivimi su WhatsApp</span>
           </a>
-          <a href="index.html" class="val-done-btn secondary">Torna alla Home</a>
+          <a href="index.html" class="btn-done-home">Torna alla Home</a>
         </div>
       </div>
+
     </div>
+
   </main>
 
+  <!-- FOOTER -->
   <footer class="site-footer">
     <div class="footer-inner">
       <div class="footer-grid">
@@ -398,6 +985,7 @@
     </div>
   </footer>
 
+  <!-- FAB -->
   <div class="fab-container" id="fab-container">
       <div class="fab-menu" id="fab-menu">
           <a href="https://wa.me/393348576926" target="_blank" class="fab-action fab-wa">
@@ -413,6 +1001,7 @@
           <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
       </button>
   </div>
+
   <!-- MODAL RICERCA E FILTRI NAVBAR -->
   <div id="nav-search-modal" class="nav-search-modal-overlay" onclick="handleNavSearchOverlayClick(event)">
     <div class="nav-search-modal-card">
@@ -427,13 +1016,11 @@
       </div>
 
       <form id="nav-search-form" onsubmit="handleNavSearchSubmit(event)">
-        <!-- Input testo principale -->
         <div class="nav-search-input-box">
           <svg class="nav-search-input-icon" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"></path></svg>
           <input type="text" id="nav-search-q" class="nav-search-input" placeholder="Zona, via, o parole chiave (es. Lungomare, Terrazzo)..." autocomplete="off">
         </div>
 
-        <!-- Selettore Contratto (Pillole) -->
         <div class="nav-search-section">
           <label class="nav-search-label">Contratto</label>
           <div class="nav-search-pills" id="nav-search-status-pills">
@@ -444,7 +1031,6 @@
           <input type="hidden" id="nav-search-status" value="Tutti">
         </div>
 
-        <!-- Griglia Filtri (Zona, Tipologia, Prezzo) -->
         <div class="nav-search-grid">
           <div class="nav-search-field">
             <label class="nav-search-label" for="nav-search-zone">Zona</label>
@@ -487,7 +1073,6 @@
           </div>
         </div>
 
-        <!-- Footer Azioni -->
         <div class="nav-search-actions">
           <button type="button" class="nav-search-btn-reset" onclick="resetNavSearch()">Azzera</button>
           <button type="submit" class="nav-search-btn-submit">
@@ -501,104 +1086,160 @@
 
   <script src="shared.js"></script>
   <script>
-    initScrollReveals();
+    let currentStep = 1;
 
-    // "Altro" apre un campo libero: la tipologia serve a Michele per capire
-    // subito cosa sta valutando, quindi non deve restare un'etichetta vaga.
-    function toggleOtherType() {
-      const isOther = document.getElementById('val-type').value === 'Altro';
-      const field = document.getElementById('val-type-other');
-      document.getElementById('val-type-other-field').style.display = isOther ? 'flex' : 'none';
-      field.required = isOther;
-      if (!isOther) field.value = '';
+    function selectType(card) {
+      document.querySelectorAll('#type-grid .type-card').forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      document.getElementById('val-type-input').value = card.getAttribute('data-type');
     }
 
-    // Validazione manuale (il form e' novalidate) per poter mostrare un
-    // messaggio unico in italiano e portare il focus sul primo campo mancante,
-    // invece dei tooltip nativi che su mobile spesso restano invisibili.
-    function firstMissingField() {
-      const required = [
-        ['val-name', 'il tuo nome e cognome'],
-        ['val-phone', 'il tuo numero di telefono'],
-        ['val-zone', 'la zona in cui si trova l\'immobile'],
-        ['val-type', 'la tipologia dell\'immobile']
-      ];
-      if (document.getElementById('val-type').value === 'Altro') {
-        required.push(['val-type-other', 'che tipo di immobile è']);
-      }
-      for (const [id, label] of required) {
-        if (!document.getElementById(id).value.trim()) return { id, label };
-      }
-      return null;
+    function selectPill(pill, group) {
+      const container = pill.parentElement;
+      container.querySelectorAll('.val-pill').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      const val = pill.getAttribute('data-val');
+      if (group === 'rooms') document.getElementById('val-rooms-input').value = val;
+      if (group === 'state') document.getElementById('val-state-input').value = val;
+      if (group === 'time') document.getElementById('val-time-input').value = val;
     }
 
-    async function handleValuationSubmit(e) {
+    function updateStepperUI(targetStep) {
+      currentStep = targetStep;
+      
+      // Update step panels
+      document.querySelectorAll('.wizard-step').forEach((p, idx) => {
+        p.classList.toggle('active', idx + 1 === currentStep);
+      });
+
+      // Update stepper pills
+      for (let i = 1; i <= 3; i++) {
+        const pill = document.getElementById(`step-pill-${i}`);
+        pill.classList.remove('active', 'completed');
+        if (i === currentStep) {
+          pill.classList.add('active');
+        } else if (i < currentStep) {
+          pill.classList.add('completed');
+        }
+      }
+
+      // Update progress bar
+      const bar = document.getElementById('wizard-progress-bar');
+      if (currentStep === 1) bar.style.width = '33.33%';
+      if (currentStep === 2) bar.style.width = '66.66%';
+      if (currentStep === 3) bar.style.width = '100%';
+
+      // Scroll smoothly to top of card if needed
+      const card = document.querySelector('.val-wizard-card');
+      if (card) {
+        const rect = card.getBoundingClientRect();
+        if (rect.top < 80) {
+          window.scrollTo({ top: window.scrollY + rect.top - 90, behavior: 'smooth' });
+        }
+      }
+    }
+
+    function nextWizardStep(fromStep) {
+      if (fromStep === 1) {
+        const zone = document.getElementById('val-zone-input').value.trim();
+        const err = document.getElementById('step-1-error');
+        if (!zone) {
+          err.classList.add('show');
+          document.getElementById('val-zone-input').focus();
+          return;
+        }
+        err.classList.remove('show');
+        updateStepperUI(2);
+      } else if (fromStep === 2) {
+        updateStepperUI(3);
+      }
+    }
+
+    function prevWizardStep(fromStep) {
+      if (fromStep > 1) {
+        updateStepperUI(fromStep - 1);
+      }
+    }
+
+    async function handleWizardSubmit(e) {
       e.preventDefault();
-      const btn = document.getElementById('val-submit-btn');
-      const statusEl = document.getElementById('val-status');
-      statusEl.textContent = '';
-      statusEl.classList.remove('success', 'error');
+      
+      const name = document.getElementById('val-name-input').value.trim();
+      const phone = document.getElementById('val-phone-input').value.trim();
+      const email = document.getElementById('val-email-input').value.trim();
+      const timePref = document.getElementById('val-time-input').value;
+      const err = document.getElementById('step-3-error');
+      const btn = document.getElementById('val-wizard-submit-btn');
 
-      const missing = firstMissingField();
-      if (missing) {
-        statusEl.textContent = 'Manca ' + missing.label + '.';
-        statusEl.classList.add('error');
-        document.getElementById(missing.id).focus();
+      if (!name || !phone) {
+        err.classList.add('show');
+        if (!name) document.getElementById('val-name-input').focus();
+        else document.getElementById('val-phone-input').focus();
         return;
       }
-
-      const name = document.getElementById('val-name').value.trim();
-      const phone = document.getElementById('val-phone').value.trim();
-      const email = document.getElementById('val-email').value.trim();
-      const zone = document.getElementById('val-zone').value.trim();
-      const typeSel = document.getElementById('val-type').value;
-      const type = typeSel === 'Altro' ? document.getElementById('val-type-other').value.trim() : typeSel;
-      const sqm = document.getElementById('val-sqm').value.trim();
-      const notes = document.getElementById('val-notes').value.trim();
-      const features = Array.from(document.querySelectorAll('#val-features input:checked')).map(c => c.value);
+      err.classList.remove('show');
 
       btn.disabled = true;
-      btn.textContent = 'Invio in corso...';
+      btn.innerHTML = '<span>Invio in corso...</span>';
 
-      // Riassunto leggibile: e' quello che Michele vede in Panoramica e
-      // nelle note della rubrica, quindi va scritto per essere letto a colpo
-      // d'occhio dal telefono, non come dump di campi.
-      const noteParts = ['Richiesta di VALUTAZIONE GRATUITA dal sito'];
-      const scheda = [`Zona: ${zone}`, `Tipologia: ${type}`];
+      const type = document.getElementById('val-type-input').value;
+      const zone = document.getElementById('val-zone-input').value.trim();
+      const sqm = document.getElementById('val-sqm-input').value.trim();
+      const rooms = document.getElementById('val-rooms-input').value;
+      const state = document.getElementById('val-state-input').value;
+      const features = Array.from(document.querySelectorAll('#features-grid input:checked')).map(c => c.value);
+      const notes = document.getElementById('val-notes-input').value.trim();
+
+      // Formatta le note in modo ordinato per Michele
+      const noteParts = ['Richiesta di VALUTAZIONE IMMOBILIARE dal sito (Wizard 3 Step)'];
+      const scheda = [
+        `Zona: ${zone}`,
+        `Tipologia: ${type}`,
+        `Locali: ${rooms}`,
+        `Stato Immobile: ${state}`
+      ];
       if (sqm) scheda.push(`Superficie: ${sqm} mq`);
       if (features.length) scheda.push(`Caratteristiche: ${features.join(', ')}`);
+      if (timePref) scheda.push(`Preferenza Contatto: ${timePref}`);
+      
       noteParts.push(scheda.join('\n'));
-      if (notes) noteParts.push(`Note del cliente:\n${notes}`);
+      if (notes) noteParts.push(`Note aggiuntive del proprietario:\n${notes}`);
 
-      const { error } = await _supabase.from('buyers').insert([{
-        full_name: name,
-        phone: phone,
-        email: email || null,
-        status: 'Attivo',
-        // Chi chiede quanto vale casa sua sta pensando di venderla: in
-        // rubrica e' un venditore, non uno che cerca casa. Prima finivano
-        // tutti nello stesso mucchio.
-        ruolo: 'venditore',
-        desired_zone: zone,
-        desired_type: type,
-        notes: noteParts.join('\n\n'),
-        source: 'sito',
-        is_read: false,
-        request_type: 'valutazione'
-      }]);
+      try {
+        const { error } = await _supabase.from('buyers').insert([{
+          full_name: name,
+          phone: phone,
+          email: email || null,
+          status: 'Attivo',
+          ruolo: 'venditore',
+          desired_zone: zone,
+          desired_type: type,
+          notes: noteParts.join('\n\n'),
+          source: 'sito',
+          is_read: false,
+          request_type: 'valutazione'
+        }]);
 
-      if (error) {
+        if (error) throw error;
+
+        // Successo
+        document.getElementById('valuation-wizard-form').style.display = 'none';
+        document.querySelector('.wizard-stepper').style.display = 'none';
+        document.querySelector('.wizard-progress-track').style.display = 'none';
+        
+        const doneCard = document.getElementById('val-done-card');
+        document.getElementById('val-done-msg').textContent = `Grazie ${name}! Ho ricevuto tutti i dettagli del tuo immobile a ${zone}. Ti ricontatterò entro 24 ore (${timePref}) per concordare il sopralluogo gratuito e consegnarti il report di stima.`;
+        doneCard.classList.add('show');
+        
+        window.scrollTo({ top: 120, behavior: 'smooth' });
+
+      } catch (errSubmit) {
+        console.error('Errore invio valutazione:', errSubmit);
         btn.disabled = false;
-        btn.innerHTML = 'Richiedi la valutazione gratuita <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>';
-        statusEl.textContent = "Errore nell'invio. Riprova o scrivimi su WhatsApp.";
-        statusEl.classList.add('error');
-        console.error(error);
-        return;
+        btn.innerHTML = '<span>Richiedi Valutazione</span><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>';
+        document.getElementById('step-3-error-text').textContent = "Si è verificato un errore durante l'invio. Riprova o contattami direttamente su WhatsApp.";
+        err.classList.add('show');
       }
-
-      document.getElementById('valuation-form').style.display = 'none';
-      document.getElementById('val-done').classList.add('show');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   </script>
 </body>

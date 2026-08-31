@@ -129,7 +129,7 @@
         align-items: center;
         justify-content: flex-start;
         text-align: left;
-        padding: clamp(1rem, 2.5vh, 2.5rem) 1rem clamp(1.5rem, 3vh, 3rem) 6vw;
+        padding: clamp(1rem, 2.5vh, 2.5rem) 1rem clamp(2.5rem, 4vh, 4.5rem) 6vw;
         background-position: center;
       }
       .hero-overlay { background: linear-gradient(100deg, rgba(15,23,42,0.88) 0%, rgba(15,23,42,0.6) 42%, rgba(15,23,42,0.15) 68%, rgba(15,23,42,0) 85%); }
@@ -142,15 +142,84 @@
       .hero-buttons { justify-content: flex-start; margin-inline: 0; }
     }
 
+    /* HERO SCROLL CUE - INVITO ALLO SCROLL WORLD-CLASS */
+    .hero-scroll-cue {
+      position: absolute;
+      bottom: clamp(0.75rem, 2vh, 1.5rem);
+      left: 50%;
+      transform: translateX(-50%);
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: rgba(255, 255, 255, 0.75);
+      z-index: 20;
+      transition: var(--transition);
+      cursor: pointer;
+      background: rgba(15, 23, 42, 0.4);
+      padding: 6px 14px 6px 10px;
+      border-radius: 999px;
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    @media (min-width: 992px) {
+      .hero-scroll-cue {
+        left: 6vw;
+        transform: none;
+      }
+    }
+    .hero-scroll-cue:hover {
+      color: var(--brand-yellow);
+      background: rgba(15, 23, 42, 0.7);
+      border-color: rgba(255, 217, 15, 0.5);
+      box-shadow: 0 0 16px rgba(255, 217, 15, 0.25);
+    }
+    .hero-scroll-mouse {
+      width: 18px;
+      height: 26px;
+      border: 2px solid rgba(255, 255, 255, 0.6);
+      border-radius: 10px;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      transition: var(--transition);
+    }
+    .hero-scroll-cue:hover .hero-scroll-mouse {
+      border-color: var(--brand-yellow);
+    }
+    .hero-scroll-wheel {
+      width: 3px;
+      height: 5px;
+      background: var(--brand-yellow);
+      border-radius: 2px;
+      position: absolute;
+      top: 4px;
+      animation: heroScrollWheel 1.8s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+    }
+    @keyframes heroScrollWheel {
+      0% { transform: translateY(0); opacity: 1; }
+      70% { transform: translateY(8px); opacity: 0; }
+      71% { transform: translateY(0); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+    .hero-scroll-text {
+      font-size: 10.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: var(--transition);
+    }
+
     /* SEZIONI - PADDING E SCROLL MARGIN BILANCIATI */
     .section { padding: clamp(1.25rem, 2vh, 2rem) 1rem; max-width: 1200px; margin: 0 auto; width: 100%; scroll-margin-top: 90px; }
     @media (min-width: 768px) { .section { padding: clamp(1.5rem, 2.5vh, 2.5rem) 1.5rem; } }
-    .section-header { text-align: center; margin-bottom: clamp(1.25rem, 2vh, 1.75rem); }
-    .section-label { color: var(--brand-blue); font-size: 10.5px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.08em; background-color: rgba(0,68,255,0.05); padding: 4px 10px; border-radius: 20px; display: inline-block; margin-bottom: 0.4rem; }
+    .section-header { text-align: left; margin-bottom: clamp(1.5rem, 3vh, 2.25rem); }
+    .section-label { color: var(--brand-blue); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; background-color: rgba(0,68,255,0.06); padding: 5px 12px; border-radius: 999px; display: inline-block; margin-bottom: 0.5rem; }
     
     /* Titoli di sezione proporzionati ed eleganti */
-    .section-title { font-family: 'Teko', 'Space Grotesk', -apple-system, sans-serif; font-size: clamp(2.2rem, min(4.5vw, 5.5vh), 3.4rem); line-height: 0.92; font-weight: 700; color: var(--text-slate); text-transform: uppercase; letter-spacing: -0.02em; margin-bottom: 0; }
-    .section-title::after { content: ''; display: block; width: 48px; height: 4px; border-radius: 2px; margin: 0.6rem auto 0; background: var(--brand-yellow); }
+    .section-title { font-family: 'Teko', sans-serif !important; font-size: clamp(2.6rem, 5.5vw, 3.8rem); line-height: 0.9; font-weight: 700; color: var(--text-slate); text-transform: uppercase; letter-spacing: -0.01em; margin: 0; }
+    .section-title span { font-family: inherit !important; color: var(--brand-blue); }
+    .section-title::after { display: none !important; }
 
     /* Vetrina: stacco bilanciato dall'hero */
     #vetrina { padding-top: clamp(2rem, 3.5vh, 3rem); overflow-x: clip; }
@@ -256,31 +325,37 @@
     }
 
     /* Griglia Desktop & Tablet */
-    @media (min-width: 768px) {
+    @media (min-width: 640px) {
       #featured-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: 1.5rem;
-      }
-    }
-    @media (min-width: 1024px) {
-      #featured-grid {
-        grid-template-columns: repeat(4, 1fr);
         gap: 1.25rem;
       }
     }
+    @media (min-width: 960px) {
+      #featured-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+      }
+    }
+    @media (min-width: 1280px) {
+      #featured-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.35rem;
+      }
+    }
 
-    /* SEZIONE SERVIZI - GRIGLIA A 3 COLONNE PREMIUM */
+    /* SEZIONE SERVIZI - GRIGLIA A 2 COLONNE PREMIUM */
     .servizi-band { background-color: rgba(0,68,255,0.03); }
     .services-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
-    @media (min-width: 960px) {
-      .services-grid { grid-template-columns: repeat(3, 1fr); gap: 1.5rem; align-items: stretch; }
+    @media (min-width: 860px) {
+      .services-grid { grid-template-columns: repeat(2, 1fr); gap: 1.85rem; align-items: stretch; }
     }
 
     .service-card {
       position: relative;
       background: var(--white);
-      border-radius: 26px;
+      border-radius: 28px;
       padding: 2rem 1.6rem 1.75rem;
       border: 1.5px solid var(--border-color);
       box-shadow: 0 16px 40px -15px rgba(15,23,42,0.08);
@@ -288,6 +363,11 @@
       flex-direction: column;
       transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, border-color 0.35s ease;
       overflow: hidden;
+    }
+    @media (min-width: 960px) {
+      .service-card {
+        padding: 2.5rem 2.25rem 2.25rem;
+      }
     }
     .service-card:hover {
       transform: translateY(-6px);
@@ -363,12 +443,13 @@
     }
 
     .service-card-desc {
-      font-size: 13px;
+      font-size: 13.5px;
       color: var(--text-muted);
       line-height: 1.5;
       font-weight: 500;
       margin-bottom: 1.25rem;
       min-height: 40px;
+      text-wrap: pretty;
     }
 
     /* SPOTLIGHT WIDGET DENTRO LE CARD */
@@ -376,11 +457,13 @@
       position: relative;
       overflow: hidden;
       border-radius: 20px;
-      padding: 1.15rem 1.2rem;
+      padding: 1.2rem 1.2rem;
       margin-bottom: 1.35rem;
       display: flex;
       flex-direction: column;
+      justify-content: space-between;
       gap: 0.75rem;
+      min-height: 236px;
       box-shadow: 0 10px 25px -5px rgba(0,0,0,0.12);
     }
     .service-spotlight-box.spotlight-social {
@@ -388,7 +471,8 @@
       border: 2px solid var(--brand-yellow);
       color: var(--white);
     }
-    .service-spotlight-box.spotlight-shield {
+    .service-spotlight-box.spotlight-shield,
+    .service-spotlight-box.spotlight-rent {
       background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
       border: 2px solid rgba(255,255,255,0.2);
       color: var(--white);
@@ -421,7 +505,8 @@
       letter-spacing: 0.08em;
     }
     .spotlight-social .spotlight-eyebrow { color: var(--brand-yellow); }
-    .spotlight-shield .spotlight-eyebrow { color: #60a5fa; }
+    .spotlight-shield .spotlight-eyebrow,
+    .spotlight-rent .spotlight-eyebrow { color: #60a5fa; }
     .spotlight-green .spotlight-eyebrow { color: #34d399; }
 
     .spotlight-stats-row {
@@ -509,6 +594,24 @@
     .spotlight-mini-btn:hover { background: #ffe14d; transform: translateX(2px); }
     .spotlight-mini-btn svg { width: 12px; height: 12px; fill: currentColor; }
 
+    .spotlight-mini-tag-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.22);
+      color: var(--white);
+      font-size: 10.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      align-self: flex-start;
+      margin-top: 2px;
+    }
+    .spotlight-mini-tag-badge svg { color: #34d399; width: 12px; height: 12px; flex-shrink: 0; }
+
     .spotlight-quote {
       font-size: 11px;
       line-height: 1.45;
@@ -523,22 +626,22 @@
       list-style: none;
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
-      margin-bottom: 1.6rem;
+      gap: 0.85rem;
+      margin-bottom: 1.75rem;
       flex: 1;
       padding: 0;
     }
     .service-card-item {
       display: flex;
       align-items: flex-start;
-      gap: 10px;
-      font-size: 12.5px;
+      gap: 12px;
+      font-size: 13.5px;
       color: var(--text-slate);
-      line-height: 1.4;
+      line-height: 1.45;
     }
     .service-item-icon {
-      width: 22px;
-      height: 22px;
+      width: 24px;
+      height: 24px;
       border-radius: 50%;
       background: rgba(0,68,255,0.08);
       color: var(--brand-blue);
@@ -552,7 +655,7 @@
       background: rgba(16,185,129,0.12);
       color: #059669;
     }
-    .service-item-icon svg { width: 12px; height: 12px; }
+    .service-item-icon svg { width: 13px; height: 13px; }
 
     /* CTA BUTTONS */
     .service-card-cta {
@@ -607,79 +710,417 @@
       gap: 12px;
     }
 
-    /* CTA CONTATTI - REIMPAGINATA CON IMMAGINE */
-    .cta-box { background: var(--brand-blue); border-radius: 32px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,68,255,0.2); width: 100%; display: flex; flex-direction: column; border: 4px solid var(--brand-yellow); }
-    @media (min-width: 768px) { .cta-box { flex-direction: row; } }
-    .cta-image-container { width: 100%; height: 250px; background-color: #0f172a; }
-    @media (min-width: 768px) { .cta-image-container { width: 40%; height: auto; min-height: 100%; } }
-    /* object-position alto perche' e' lo stesso identico file del ritratto in
-       cima alla pagina: lasciando il centro di default si rivedeva a fondo
-       pagina la stessa inquadratura dell'hero. Alzando il fuoco qui resta il
-       volto, quindi lo stesso scatto legge come una seconda foto. */
-    .cta-image { width: 100%; height: 100%; object-fit: cover; object-position: 50% 12%; }
-    @media (min-width: 768px) { .cta-image { object-position: 50% 25%; } }
-    /* Alone giallo tenue dall'alto: da' profondita' al blu piatto e porta
-       dentro il colore d'accento del brand, che qui era ridotto al solo filo
-       di bordo. Non tocca la leggibilita' del testo bianco. */
-    .cta-content { padding: 3rem 1.5rem; text-align: center; color: white; flex: 1; display: flex; flex-direction: column; justify-content: center; background: radial-gradient(120% 100% at 50% 0%, rgba(255,217,15,0.16) 0%, rgba(255,217,15,0) 62%); }
-    @media (min-width: 768px) { .cta-content { padding: 4rem 3rem; text-align: left; background: radial-gradient(90% 130% at 0% 0%, rgba(255,217,15,0.18) 0%, rgba(255,217,15,0) 60%); } }
-    /* Era 1.75rem: piu' piccolo del titolo di sezione che gli sta sopra, pur
-       essendo il vero invito all'azione di tutta la pagina. In piu' il Teko e'
-       condensato, quindi a parita' di corpo "rende" meno di un carattere
-       normale e sembrava ancora piu' piccolo. Ora sta sulla stessa scala dei
-       titoli di sezione, appena sotto. */
-    .cta-title { font-family: 'Teko', 'Space Grotesk', sans-serif; font-size: clamp(2.3rem, 9vw, 3.4rem); line-height: 0.92; font-weight: 700; text-transform: uppercase; letter-spacing: -0.02em; margin-bottom: 1rem; }
-    .cta-text { font-size: 1rem; color: #e2e8f0; margin-bottom: 2rem; max-width: 600px; line-height: 1.5; }
-    @media (max-width: 767px) { .cta-text { margin-left: auto; margin-right: auto; } }
-    .cta-buttons-wrapper { display: flex; flex-direction: column; gap: 1rem; align-items: center; }
-    @media (min-width: 640px) { .cta-buttons-wrapper { flex-direction: row; justify-content: center; } }
-    @media (min-width: 768px) { .cta-buttons-wrapper { justify-content: flex-start; } }
-    
-    /* Prima i due bottoni erano identici - stesso bianco, stessa forma - e
-       quindi nessuno dei due era L'azione: l'occhio non sapeva dove andare e
-       la card perdeva forza proprio nel punto che conta. Ora "Chiama Ora" e'
-       il primario in giallo brand (lo stesso contrasto giallo-su-blu che l'hero
-       usa per "a CASA") e WhatsApp resta a fianco come alternativa, in bianco
-       di solo contorno. Il verde di WhatsApp e' volutamente escluso: dentro un
-       riquadro blu con bordo giallo sarebbe il terzo colore e romperebbe. */
-    .btn-wa-large, .btn-call-large { padding: 16px 28px; border-radius: 999px; text-decoration: none; font-weight: 900; font-size: 14px; text-transform: uppercase; letter-spacing: 0.02em; display: inline-flex; align-items: center; gap: 8px; transition: var(--transition); width: 100%; justify-content: center; border: 2px solid transparent; }
-    .btn-call-large { background-color: var(--brand-yellow); color: var(--brand-blue); border-color: var(--brand-yellow); box-shadow: 0 6px 20px rgba(255,217,15,0.35); }
-    .btn-wa-large { background-color: rgba(255,255,255,0.08); color: var(--white); border-color: rgba(255,255,255,0.45); }
-    @media (min-width: 640px) { .btn-wa-large, .btn-call-large { width: auto; padding: 18px 34px; font-size: 15px; } }
-    /* Stessa reazione dei bottoni dell'hero (vedi .hero-buttons .btn-* :hover):
-       si accende un alone giallo attorno al bottone e nient'altro si muove.
-       Niente sollevamento: nell'hero non c'e', e quello che rende riconoscibile
-       il gesto e' proprio il fatto che il bottone resta fermo e si illumina.
-       Sul secondario anche il contorno passa da bianco a giallo, come li'.
-       I valori dell'alone sono ripresi tali e quali per non avere due
-       "quasi uguali" che a confronto stonano. */
-    .btn-call-large:hover { box-shadow: 0 6px 20px rgba(255,217,15,0.35), 0 0 22px rgba(255,217,15,0.65); }
-    .btn-wa-large:hover { box-shadow: 0 0 22px rgba(255,217,15,0.5); border-color: rgba(255,217,15,0.5); }
-    .btn-wa-large svg, .btn-call-large svg { width: 22px; height: 22px; flex-shrink: 0; }
+    /* FASCIA BANNER INVITO RAPIDO ALLA VALUTAZIONE */
+    .valuation-cta-band {
+      background: linear-gradient(135deg, #002db3 0%, #001f7a 50%, #08112e 100%);
+      padding: clamp(3rem, 6vh, 4.5rem) 0;
+      position: relative;
+      overflow: hidden;
+      border-top: 1px solid rgba(255,217,15,0.25);
+      border-bottom: 1px solid rgba(255,217,15,0.25);
+    }
+    .valuation-cta-band::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0, 68, 255, 0.4) 0%, rgba(0,0,0,0) 70%);
+      pointer-events: none;
+    }
+    .val-cta-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 0 1rem;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+    }
+    @media (min-width: 768px) {
+      .val-cta-inner {
+        padding: 0 1.5rem;
+      }
+    }
+    @media (min-width: 900px) {
+      .val-cta-inner {
+        grid-template-columns: 1.3fr 0.7fr;
+        gap: 3rem;
+      }
+    }
+    .val-cta-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,217,15,0.15);
+      border: 1.5px solid var(--brand-yellow);
+      color: var(--brand-yellow);
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 5px 14px;
+      border-radius: 999px;
+      margin-bottom: 0.75rem;
+    }
+    .val-cta-title {
+      font-family: 'Teko', sans-serif !important;
+      font-size: clamp(2.6rem, 5.5vw, 4rem);
+      line-height: 0.92;
+      font-weight: 700;
+      color: var(--white);
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+      margin-bottom: 0.75rem;
+    }
+    .val-cta-title span {
+      font-family: inherit !important;
+      color: var(--brand-yellow);
+    }
+    .val-cta-desc {
+      font-size: clamp(0.95rem, 2vw, 1.05rem);
+      color: #cbd5e1;
+      font-weight: 500;
+      line-height: 1.6;
+      max-width: 620px;
+      margin-bottom: 1.25rem;
+    }
+    .val-cta-perks {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.25rem;
+    }
+    .val-cta-perk {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #e2e8f0;
+    }
+    .val-cta-perk svg {
+      color: var(--brand-yellow);
+      flex-shrink: 0;
+    }
+    .val-cta-action {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    @media (min-width: 900px) {
+      .val-cta-action {
+        align-items: flex-end;
+      }
+    }
+    .val-cta-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: var(--brand-yellow);
+      color: var(--brand-blue);
+      border: 2px solid var(--brand-yellow);
+      padding: 16px 32px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 900;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      transition: var(--transition);
+      box-shadow: 0 8px 30px rgba(255, 217, 15, 0.4);
+      cursor: pointer;
+    }
+    .val-cta-btn:hover {
+      background: #ffe14d;
+      box-shadow: 0 12px 35px rgba(255, 217, 15, 0.6);
+      transform: translateY(-2px);
+    }
+    .val-cta-btn svg {
+      transition: var(--transition);
+    }
+    .val-cta-btn:hover svg {
+      transform: translateX(4px);
+    }
 
-    /* FAB e modale dettaglio annuncio (con carosello): vedi shared.css */
+    /* SEZIONE CONTATTI - MINIMAL LUXURY EDITORIAL */
+    .contatti-section {
+      padding-top: clamp(2.5rem, 5vh, 4rem);
+      padding-bottom: clamp(3rem, 6vh, 4.5rem);
+    }
+    .contact-editorial-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      align-items: start;
+    }
+    @media (min-width: 960px) {
+      .contact-editorial-grid {
+        grid-template-columns: 1fr 1.15fr;
+        gap: 3.5rem;
+      }
+    }
 
-    /* MODULO DI CONTATTO */
-    .contact-form-card { background: var(--white); border-radius: 32px; padding: 2rem 1.5rem; margin-top: 2rem; border: 1px solid var(--border-color); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); }
-    @media (min-width: 768px) { .contact-form-card { padding: 3rem; } }
-    .contact-form-header { display: flex; flex-direction: column; gap: 0.75rem; align-items: flex-start; margin-bottom: 1.75rem; }
-    @media (min-width: 640px) { .contact-form-header { flex-direction: row; align-items: center; justify-content: space-between; } }
-    .contact-form-header h3 { font-family: 'Space Grotesk', -apple-system, sans-serif; font-size: 1.3rem; font-weight: 700; text-transform: uppercase; color: var(--text-slate); }
-    .response-badge { display: inline-flex; align-items: center; gap: 9px; background: rgba(16,185,129,0.08); color: #059669; font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; padding: 8px 14px; border-radius: 20px; white-space: nowrap; }
-    /* .pulse-dot: vedi shared.css (usato anche in valutazione.html) */
+    /* COLONNA SINISTRA: TIPOGRAFIA EDITORIALE & CANALI DIRETTI */
+    .contact-editorial-left {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+    .contact-editorial-label {
+      align-self: flex-start;
+    }
+    .contact-editorial-title {
+      font-family: 'Teko', 'Space Grotesk', sans-serif !important;
+      font-size: clamp(2.8rem, 6vw, 4.4rem);
+      line-height: 0.88;
+      font-weight: 700;
+      color: var(--text-slate);
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+      margin: 0;
+    }
+    .contact-editorial-title span {
+      font-family: inherit !important;
+      font-weight: inherit;
+      color: var(--brand-blue);
+    }
+    .contact-editorial-desc {
+      font-size: clamp(0.95rem, 2vw, 1.08rem);
+      color: var(--text-muted);
+      line-height: 1.6;
+      font-weight: 500;
+      max-width: 520px;
+      margin: 0;
+    }
 
-    .contact-form-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
-    @media (min-width: 640px) { .contact-form-grid { grid-template-columns: 1fr 1fr; } }
-    .contact-form-card .form-input, .contact-form-card select, .contact-form-card textarea { width: 100%; padding: 14px 16px; background: #f1f5f9; border: 1px solid var(--border-color); border-radius: 14px; font-size: 14px; font-weight: 500; font-family: inherit; color: var(--text-slate); outline: none; transition: var(--transition); appearance: none; }
-    .contact-form-card .form-input:focus, .contact-form-card select:focus, .contact-form-card textarea:focus { border-color: var(--brand-blue); background: var(--white); box-shadow: 0 0 0 4px rgba(0,68,255,0.1); }
-    .contact-form-card textarea { grid-column: 1 / -1; resize: vertical; min-height: 90px; }
-    /* I campi di chi cerca casa: compaiono e spariscono col tipo di
-       richiesta, senza far saltare il resto del modulo. */
-    .contact-search-fields { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr; gap: 1rem; }
-    @media (min-width: 640px) { .contact-search-fields { grid-template-columns: 1fr 1fr; } .contact-search-fields input:last-child { grid-column: 1 / -1; } }
-    .contact-search-fields[hidden] { display: none; }
-    .contact-form-card .btn-primary { grid-column: 1 / -1; margin-top: 0.25rem; width: 100%; }
-    .contact-form-status { grid-column: 1 / -1; font-size: 13px; font-weight: 700; text-align: center; min-height: 1.2em; }
+    /* BOTTONE SFOGLIA CATALOGO VETRINA CON HOVER EVIDENTE */
+    .btn-catalog-showcase {
+      background: var(--white);
+      color: var(--brand-blue);
+      border: 2px solid var(--brand-blue);
+      padding: 13px 28px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 900;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: var(--transition);
+      box-shadow: 0 4px 15px rgba(0, 68, 255, 0.08);
+      cursor: pointer;
+      position: relative;
+      z-index: 10;
+      width: auto;
+      max-width: 100%;
+    }
+    .btn-catalog-showcase:hover {
+      background: var(--brand-blue);
+      color: var(--white);
+      border-color: var(--brand-blue);
+      box-shadow: 0 8px 25px rgba(0, 68, 255, 0.3);
+      transform: translateY(-2px);
+    }
+    .btn-catalog-showcase svg {
+      transition: var(--transition);
+    }
+    .btn-catalog-showcase:hover svg {
+      transform: translateX(3px);
+    }
+
+    /* CANALI DIRETTI SNELLITI */
+    .contact-quick-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 0.75rem;
+    }
+    .contact-quick-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 22px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-size: 13.5px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      transition: var(--transition);
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(15,23,42,0.06);
+    }
+    .contact-quick-btn.wa {
+      background: #25D366;
+      color: var(--white);
+      border: 2px solid #25D366;
+      box-shadow: 0 4px 16px rgba(37,211,102,0.3);
+    }
+    .contact-quick-btn.wa:hover {
+      background: #20ba5a;
+      box-shadow: 0 6px 22px rgba(37,211,102,0.45);
+      transform: translateY(-2px);
+    }
+    .contact-quick-btn.phone {
+      background: var(--white);
+      color: var(--brand-blue);
+      border: 2px solid var(--brand-blue);
+    }
+    .contact-quick-btn.phone:hover {
+      background: var(--brand-blue);
+      color: var(--white);
+      box-shadow: 0 6px 20px rgba(0,68,255,0.25);
+      transform: translateY(-2px);
+    }
+    .contact-quick-btn svg {
+      flex-shrink: 0;
+    }
+    .contact-quick-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 600;
+      margin-top: 0.35rem;
+    }
+    .contact-quick-meta svg {
+      color: var(--brand-blue);
+      flex-shrink: 0;
+    }
+
+    /* COLONNA DESTRA: MODULO INTEGRATO PULITO */
+    .contact-editorial-form-card {
+      background: var(--white);
+      border-radius: 28px;
+      padding: clamp(1.75rem, 3.5vw, 2.5rem);
+      border: 1.5px solid var(--border-color);
+      box-shadow: 0 16px 40px -15px rgba(15,23,42,0.07);
+    }
+    .contact-form-header {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    @media (min-width: 580px) {
+      .contact-form-header {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+    .contact-form-header h3 {
+      font-family: 'Space Grotesk', -apple-system, sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--text-slate);
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+      margin: 0;
+    }
+    .response-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(16,185,129,0.08);
+      color: #059669;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 6px 12px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+    .contact-form-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    @media (min-width: 540px) {
+      .contact-form-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    .form-field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .form-field-group.full {
+      grid-column: 1 / -1;
+    }
+    .form-field-label {
+      font-size: 11.5px;
+      font-weight: 800;
+      color: var(--text-slate);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .contact-editorial-form-card .form-input, .contact-editorial-form-card select, .contact-editorial-form-card textarea {
+      width: 100%;
+      padding: 13px 15px;
+      background: #f8fafc;
+      border: 1.5px solid var(--border-color);
+      border-radius: 14px;
+      font-size: 14px;
+      font-weight: 500;
+      font-family: inherit;
+      color: var(--text-slate);
+      outline: none;
+      transition: var(--transition);
+      appearance: none;
+    }
+    .contact-editorial-form-card .form-input:focus, .contact-editorial-form-card select:focus, .contact-editorial-form-card textarea:focus {
+      border-color: var(--brand-blue);
+      background: var(--white);
+      box-shadow: 0 0 0 4px rgba(0,68,255,0.08);
+    }
+    .contact-editorial-form-card textarea {
+      resize: vertical;
+      min-height: 85px;
+    }
+    .contact-search-fields {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    @media (min-width: 540px) {
+      .contact-search-fields {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    .contact-search-fields[hidden] {
+      display: none;
+    }
+    .contact-editorial-form-card .btn-primary {
+      grid-column: 1 / -1;
+      margin-top: 0.25rem;
+      width: 100%;
+      padding: 14px 24px;
+      font-size: 13.5px;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+    }
+    .contact-form-status {
+      grid-column: 1 / -1;
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+      min-height: 1.2em;
+    }
     .contact-form-status.success { color: #059669; }
     .contact-form-status.error { color: #dc2626; }
   </style>
@@ -758,37 +1199,19 @@
             <a href="#contatti" class="btn-secondary">Parla con Michele</a>
           </div>
         </div>
+        <a href="#vetrina" class="hero-scroll-cue" aria-label="Scorri per scoprire le proposte immobiliari">
+          <span class="hero-scroll-mouse">
+            <span class="hero-scroll-wheel"></span>
+          </span>
+          <span class="hero-scroll-text">Scorri</span>
+        </a>
       </section>
 
       <!-- VETRINA -->
       <section id="vetrina" class="section">
-        <div style="text-align: center; margin-bottom: 0.25rem;">
+        <div class="section-header reveal">
           <span class="section-label">Disponibili di Recente</span>
-        </div>
-        <!-- TICKER INFINITO PROPOSTE DEL MOMENTO -->
-        <div class="vetrina-ticker-wrapper">
-          <div class="vetrina-ticker-track">
-            <div class="vetrina-ticker-group">
-              <span class="ticker-text">PROPOSTE DEL MOMENTO</span>
-              <span class="ticker-star">✦</span>
-              <span class="ticker-text">PROPOSTE DEL MOMENTO</span>
-              <span class="ticker-star">✦</span>
-              <span class="ticker-text">PROPOSTE DEL MOMENTO</span>
-              <span class="ticker-star">✦</span>
-              <span class="ticker-text">PROPOSTE DEL MOMENTO</span>
-              <span class="ticker-star">✦</span>
-            </div>
-            <div class="vetrina-ticker-group" aria-hidden="true">
-              <span class="ticker-text">PROPOSTE DEL MOMENTO</span>
-              <span class="ticker-star">✦</span>
-              <span class="ticker-text">PROPOSTE DEL MOMENTO</span>
-              <span class="ticker-star">✦</span>
-              <span class="ticker-text">PROPOSTE DEL MOMENTO</span>
-              <span class="ticker-star">✦</span>
-              <span class="ticker-text">PROPOSTE DEL MOMENTO</span>
-              <span class="ticker-star">✦</span>
-            </div>
-          </div>
+          <h2 class="section-title">Proposte del <span>Momento</span></h2>
         </div>
 
         <div id="featured-grid" class="properties-grid">
@@ -825,7 +1248,10 @@
           </div>
         </div>
         <div style="text-align: center; margin-top: clamp(1.25rem, 2vh, 1.75rem); position: relative; z-index: 10; padding-inline: 1rem;">
-          <a href="catalogo.html" class="btn-primary" style="background: white; color: var(--brand-blue); border: 2px solid var(--brand-blue); box-shadow: none; position: relative; z-index: 10; width: auto; max-width: 100%; display: inline-flex; padding: 13px 28px;">Sfoglia il Catalogo Completo</a>
+          <a href="catalogo.html" class="btn-catalog-showcase">
+            <span>Sfoglia il Catalogo Completo</span>
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </a>
         </div>
       </section>
 
@@ -849,7 +1275,7 @@
                   <h3 class="service-card-title">Compravendita</h3>
                 </div>
               </div>
-              <p class="service-card-desc">Vuoi vendere o comprare casa? Valorizzo il tuo immobile e ti guido passo dopo passo.</p>
+              <p class="service-card-desc">Vuoi vendere o comprare casa? Valorizzo il tuo immobile e ti guido passo&nbsp;dopo&nbsp;passo.</p>
               
               <!-- Spotlight Social Virale con Contatore & Icone -->
               <div class="service-spotlight-box spotlight-social">
@@ -918,13 +1344,13 @@
                   <h3 class="service-card-title">Locazioni Sicure</h3>
                 </div>
               </div>
-              <p class="service-card-desc">Cerchi un inquilino affidabile o una casa in affitto? Burocrazia azzerata e massima tutela.</p>
+              <p class="service-card-desc">Cerchi un inquilino affidabile o una casa in affitto? Burocrazia azzerata e tutela&nbsp;totale.</p>
 
               <!-- Spotlight Garanzia & Tutela -->
-              <div class="service-spotlight-box spotlight-shield">
+              <div class="service-spotlight-box spotlight-rent">
                 <div class="spotlight-eyebrow">
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
-                  <span>Garanzia & Protezione</span>
+                  <span>Massima Tutela & Tranquillità</span>
                 </div>
                 <div class="spotlight-stats-row">
                   <div class="spotlight-stat-num">
@@ -932,13 +1358,14 @@
                     <small>Tutela Contrattuale</small>
                   </div>
                   <div class="spotlight-pills-col">
-                    <span class="spotlight-mini-tag">🛡️ Zero Insoluti</span>
-                    <span class="spotlight-mini-tag">⚡ Registrazione 48h</span>
+                    <span class="spotlight-mini-tag">Zero Insoluti</span>
+                    <span class="spotlight-mini-tag">Registrazione 48h</span>
                   </div>
                 </div>
                 <p class="spotlight-quote">Selezione <strong>rigorosa dei redditi</strong> e gestione di tutta la burocrazia per farti dormire sereno.</p>
-                <div class="spotlight-eyebrow" style="color: rgba(255,255,255,0.7); font-size: 9.5px; margin-top: 2px;">
-                  <span>📋 Registrazione Telematica Agenzia Entrate</span>
+                <div class="spotlight-mini-tag-badge">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                  <span>Registrazione Telematica Entrate</span>
                 </div>
               </div>
 
@@ -967,130 +1394,133 @@
                 <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
               </a>
             </div>
-
-            <!-- 03 VALUTAZIONE GRATUITA -->
-            <div class="service-card accent-green reveal">
-              <span class="service-card-num">03</span>
-              <div class="service-card-head">
-                <div class="service-card-icon">
-                  <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
-                </div>
-                <div>
-                  <h3 class="service-card-title">Valutazione Gratuita <span class="pulse-dot service-block-live-dot"></span></h3>
-                </div>
-              </div>
-              <p class="service-card-desc">Ti dico quanto vale davvero il tuo immobile basandomi su dati reali del mercato locale.</p>
-
-              <!-- Spotlight Stima Gratuita -->
-              <div class="service-spotlight-box spotlight-green">
-                <div class="spotlight-eyebrow">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                  <span>Zero Costi • Zero Vincoli</span>
-                </div>
-                <div class="spotlight-stats-row">
-                  <div class="spotlight-stat-num">
-                    <span class="count-up" data-count-to="0" data-count-suffix="€">0€</span>
-                    <small>100% Gratuita</small>
-                  </div>
-                  <div class="spotlight-pills-col">
-                    <span class="spotlight-mini-tag">⏱️ Risposta in 24h</span>
-                    <span class="spotlight-mini-tag">📄 Report Scritto</span>
-                  </div>
-                </div>
-                <p class="spotlight-quote">Ricevi una stima <strong>chiara e onesta</strong> basata sulle compravendite reali a Porto Torres e Sassari.</p>
-                <div class="spotlight-eyebrow" style="color: #a7f3d0; font-size: 9.5px; margin-top: 2px;">
-                  <span>📍 Sopralluogo e stima reale inclusi</span>
-                </div>
-              </div>
-
-              <!-- Punti Chiave -->
-              <ul class="service-card-list">
-                <li class="service-card-item">
-                  <span class="service-item-icon"><svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg></span>
-                  <span><strong>Sopralluogo Tecnico:</strong> analisi stato, superfici e finiture</span>
-                </li>
-                <li class="service-card-item">
-                  <span class="service-item-icon"><svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg></span>
-                  <span><strong>Analisi Comparativa:</strong> dati reali di compravendita</span>
-                </li>
-                <li class="service-card-item">
-                  <span class="service-item-icon"><svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg></span>
-                  <span><strong>Report Dettagliato:</strong> prezzo di vendita strategico</span>
-                </li>
-                <li class="service-card-item">
-                  <span class="service-item-icon"><svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg></span>
-                  <span><strong>Consulenza Immediata:</strong> massimizza il valore</span>
-                </li>
-              </ul>
-
-              <a href="valutazione.html" class="service-card-cta btn-emerald-solid">
-                <span>Richiedi Valutazione</span>
-                <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
-              </a>
-            </div>
           </div>
         </section>
       </div>
 
-      <!-- CALL TO ACTION CONTATTI - REIMPAGINATA CON IMMAGINE -->
-      <section id="contatti" class="section">
-        <div class="section-header reveal">
-          <span class="section-label">Parliamone</span>
-          <h2 class="section-title">Contatti</h2>
-        </div>
-        <div class="cta-box reveal">
-          <div class="cta-image-container">
-            <!-- Stesso ritratto dell'intestazione (prima duplicato in
-                 contatti.webp, byte per byte): un file solo, quindi il browser
-                 lo scarica una volta e qui lo riprende dalla cache. -->
-            <img src="michele.webp" alt="Contatta Michele Erre" class="cta-image" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=800&q=80'">
-          </div>
-          <div class="cta-content">
-            <h2 class="cta-title">Pronto a trovare casa?</h2>
-            <p class="cta-text">Evita perdite di tempo e burocrazia. Contattami ora per una consulenza rapida e gratuita sulla tua prossima casa o per valutare il tuo immobile.</p>
-            <div class="cta-buttons-wrapper">
-              <a href="tel:+393348576926" class="btn-call-large">
-                <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
-                Chiama Ora
-              </a>
-              <a href="https://wa.me/393348576926" target="_blank" class="btn-wa-large">
-                <svg fill="currentColor" viewBox="0 0 16 16"><path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/></svg>
-                WhatsApp
-              </a>
+      <!-- FASCIA BANNER INVITO RAPIDO ALLA VALUTAZIONE -->
+      <section class="valuation-cta-band">
+        <div class="val-cta-inner reveal">
+          <div class="val-cta-text">
+            <span class="val-cta-badge">Servizio Gratuito per i Proprietari</span>
+            <h2 class="val-cta-title">Vuoi vendere casa? <span>Scopri quanto vale</span></h2>
+            <p class="val-cta-desc">
+              Richiedi una stima personalizzata e accurata del tuo immobile a Porto Torres e nel Nord Sardegna: report dettagliato basato sulle compravendite reali della tua zona, senza alcun vincolo di mandato.
+            </p>
+            <div class="val-cta-perks">
+              <span class="val-cta-perk">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                100% Gratuita
+              </span>
+              <span class="val-cta-perk">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                Nessun Vincolo
+              </span>
+              <span class="val-cta-perk">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                Report Scritto in 24h
+              </span>
             </div>
           </div>
+          <div class="val-cta-action">
+            <a href="valutazione.html" class="val-cta-btn">
+              <span>Calcola la Stima Online</span>
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </a>
+          </div>
         </div>
+      </section>
 
-        <div class="contact-form-card reveal">
-          <div class="contact-form-header">
-            <h3>Scrivimi Direttamente</h3>
-            <span class="response-badge"><span class="pulse-dot"></span> Rispondo entro 24h</span>
-          </div>
-          <form id="contact-form" onsubmit="handleContactSubmit(event)">
-            <div class="contact-form-grid">
-              <input type="text" id="contact-name" class="form-input" placeholder="Nome e Cognome" required>
-              <input type="tel" id="contact-phone" class="form-input" placeholder="Telefono" required>
-              <input type="email" id="contact-email" class="form-input" placeholder="Email (facoltativa)" style="grid-column: 1 / -1;">
-              <select id="contact-interest" class="form-input" onchange="aggiornaCampiRicerca()" style="grid-column: 1 / -1;">
-                <option value="Cerco casa">Cerco casa</option>
-                <option value="Vendo casa">Vendo casa</option>
-                <option value="Voglio una valutazione">Voglio una valutazione gratuita</option>
-                <option value="Altro">Altro</option>
-              </select>
-              <!-- Chiesti solo a chi cerca casa: a chi vende non servono, e
-                   un modulo che chiede cose inutili si abbandona a meta'.
-                   Sono i tre dati che permettono a Michele di sapere subito
-                   se ha gia' in vetrina qualcosa di adatto. -->
-              <div id="contact-search-fields" class="contact-search-fields">
-                <input type="text" id="contact-zone" class="form-input" placeholder="In che zona? (es. Porto Torres)">
-                <input type="text" id="contact-type" class="form-input" placeholder="Che tipo di casa? (es. Trilocale)">
-                <input type="number" id="contact-budget" class="form-input" placeholder="Budget massimo in € (facoltativo)" min="0" step="1000">
-              </div>
-              <textarea id="contact-message" class="form-input" placeholder="Scrivimi qualcosa in più (facoltativo)"></textarea>
-              <button type="submit" id="contact-submit-btn" class="btn-primary">Invia Richiesta</button>
-              <div id="contact-form-status" class="contact-form-status"></div>
+      <!-- SEZIONE CONTATTI & CONSULENZA (MINIMAL LUXURY EDITORIAL) -->
+      <section id="contatti" class="section contatti-section">
+        <div class="contact-editorial-grid reveal">
+          
+          <!-- COLONNA SINISTRA: TITOLO EDITORIALE & CANALI DIRETTI -->
+          <div class="contact-editorial-left">
+            <span class="section-label contact-editorial-label">Parliamone</span>
+            <h2 class="contact-editorial-title">Parliamo del tuo <span>immobile</span></h2>
+            <p class="contact-editorial-desc">
+              Che tu voglia vendere al miglior valore di mercato, acquistare casa o trovare un inquilino referenziato a Porto Torres e nel Nord Sardegna: sono a tua disposizione per una consulenza trasparente, diretta e senza impegno.
+            </p>
+
+            <div class="contact-quick-actions">
+              <a href="https://wa.me/393348576926" target="_blank" rel="noopener" class="contact-quick-btn wa" aria-label="Scrivimi su WhatsApp">
+                <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/></svg>
+                <span>Scrivimi su WhatsApp</span>
+              </a>
+
+              <a href="tel:+393348576926" class="contact-quick-btn phone" aria-label="Chiama al telefono">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                <span>+39 334 857 6926</span>
+              </a>
             </div>
-          </form>
+
+            <div class="contact-quick-meta">
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              <span>Porto Torres • Sassari • Nord Sardegna</span>
+            </div>
+          </div>
+
+          <!-- COLONNA DESTRA: MODULO INTEGRATO ELEGANTE -->
+          <div class="contact-editorial-form-card">
+            <div class="contact-form-header">
+              <h3>Scrivimi un Messaggio</h3>
+              <span class="response-badge"><span class="pulse-dot"></span> Rispondo entro 24h</span>
+            </div>
+
+            <form id="contact-form" onsubmit="handleContactSubmit(event)">
+              <div class="contact-form-grid">
+                <div class="form-field-group">
+                  <label class="form-field-label" for="contact-name">Nome e Cognome <span style="color:#ef4444;">*</span></label>
+                  <input type="text" id="contact-name" class="form-input" placeholder="Mario Rossi" required>
+                </div>
+                <div class="form-field-group">
+                  <label class="form-field-label" for="contact-phone">Telefono <span style="color:#ef4444;">*</span></label>
+                  <input type="tel" id="contact-phone" class="form-input" placeholder="333 123 4567" required>
+                </div>
+                <div class="form-field-group full">
+                  <label class="form-field-label" for="contact-email">Email <span style="color:#94a3b8; font-weight:500; text-transform:none;">(facoltativa)</span></label>
+                  <input type="email" id="contact-email" class="form-input" placeholder="mario.rossi@email.it">
+                </div>
+                <div class="form-field-group full">
+                  <label class="form-field-label" for="contact-interest">Di cosa hai bisogno?</label>
+                  <select id="contact-interest" class="form-input" onchange="aggiornaCampiRicerca()">
+                    <option value="Cerco casa">Cerco casa da comprare o in affitto</option>
+                    <option value="Vendo casa">Voglio vendere il mio immobile</option>
+                    <option value="Voglio una valutazione">Voglio una valutazione gratuita</option>
+                    <option value="Altro">Altra richiesta o consulenza</option>
+                  </select>
+                </div>
+
+                <div id="contact-search-fields" class="contact-search-fields">
+                  <div class="form-field-group">
+                    <label class="form-field-label" for="contact-zone">Zona preferita</label>
+                    <input type="text" id="contact-zone" class="form-input" placeholder="Es. Porto Torres, Sassari...">
+                  </div>
+                  <div class="form-field-group">
+                    <label class="form-field-label" for="contact-type">Tipologia ricercata</label>
+                    <input type="text" id="contact-type" class="form-input" placeholder="Es. Trilocale, Villa con giardino...">
+                  </div>
+                  <div class="form-field-group full">
+                    <label class="form-field-label" for="contact-budget">Budget massimo indicativo (€)</label>
+                    <input type="number" id="contact-budget" class="form-input" placeholder="Es. 150000" min="0" step="1000">
+                  </div>
+                </div>
+
+                <div class="form-field-group full">
+                  <label class="form-field-label" for="contact-message">Dettagli o note <span style="color:#94a3b8; font-weight:500; text-transform:none;">(facoltativo)</span></label>
+                  <textarea id="contact-message" class="form-input" placeholder="Raccontami le tue esigenze o gli orari preferiti per il contatto..."></textarea>
+                </div>
+
+                <button type="submit" id="contact-submit-btn" class="btn-primary">
+                  <span>Invia Richiesta a Michele</span>
+                  <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" style="margin-left: 6px;"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                </button>
+                <div id="contact-form-status" class="contact-form-status"></div>
+              </div>
+            </form>
+          </div>
+
         </div>
       </section>
   </main>
@@ -1123,6 +1553,7 @@
           <div class="footer-links">
             <a href="#vetrina">Vetrina</a>
             <a href="#servizi">Servizi</a>
+            <a href="valutazione.html">Valutazione Gratuita</a>
             <a href="#contatti">Contatti</a>
             <a href="catalogo.html">Catalogo Completo</a>
           </div>
@@ -1157,7 +1588,7 @@
               <span>Chiama Ora</span>
           </a>
       </div>
-      <button class="fab-main" onclick="toggleFab()">
+      <button class="fab-main" onclick="toggleFab()" aria-label="Contattami">
           <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
       </button>
   </div>
@@ -1176,15 +1607,6 @@
           </button>
           <img id="mod-img" src="" class="modal-img" alt="Foto immobile">
           <button id="mod-zoom-btn" class="carousel-zoom-btn" onclick="openLightbox(currentImageIndex); event.stopPropagation();" aria-label="Ingrandisci foto a tutto schermo" title="Ingrandisci a tutto schermo">
-            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7"></path></svg>
-            <span>Tocca per ingrandire</span>
-          </button>
-          <button id="mod-next-img" class="carousel-btn next" onclick="nextImage(event)" aria-label="Foto successiva">
-            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
-          </button>
-          <div id="mod-img-dots" class="carousel-dots"></div>
-        </div>
-        
         <div class="modal-content">
           <span id="mod-type" class="modal-type"></span>
           <h2 id="mod-title" class="modal-title"></h2>
@@ -1205,10 +1627,6 @@
               <svg class="modal-grid-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
               <span class="modal-grid-value"><span id="mod-rooms" class="modal-grid-number"></span></span>
               <span class="modal-grid-label">Locali</span>
-            </div>
-            <div class="modal-grid-item">
-              <svg class="modal-grid-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-              <span class="modal-grid-value"><span id="mod-bathrooms" class="modal-grid-number"></span></span>
               <span class="modal-grid-label">Bagni</span>
             </div>
             <div class="modal-grid-item" id="mod-sqm-item" style="display:none;">
@@ -1223,9 +1641,6 @@
             </div>
             <div class="modal-grid-item" id="mod-energy-item">
               <svg class="modal-grid-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-              <span class="modal-grid-value"><span id="mod-energy-class" class="modal-grid-number"></span></span>
-              <span class="modal-grid-label" id="mod-energy-sub">Classe APE</span>
-            </div>
           </div>
 
           <div class="modal-desc-title">Descrizione Completa</div>
@@ -1343,13 +1758,14 @@
         .from('.hero-line1', {})
         .from('.hero-line2', {}, '-=0.4')
         .from('.hero-text', {}, '-=0.35')
-        .from('.hero-buttons', {}, '-=0.35');
+        .from('.hero-buttons', {}, '-=0.35')
+        .from('.hero-scroll-cue', { opacity: 0, y: 15, duration: 0.7, ease: 'power2.out' }, '-=0.2');
     }
 
     // Evidenzia nella navbar (desktop e mobile) la voce corrispondente
     // alla sezione attualmente al centro dello schermo durante lo scroll.
     function initScrollSpy() {
-      const sections = ['home', 'servizi', 'contatti'].map(id => document.getElementById(id)).filter(Boolean);
+      const sections = ['home', 'servizi', 'valutazione', 'contatti'].map(id => document.getElementById(id)).filter(Boolean);
       const navLinks = document.querySelectorAll('.nav-link[href^="#"]');
       if (!sections.length || !navLinks.length) return;
 
@@ -1363,6 +1779,8 @@
 
       sections.forEach(sec => observer.observe(sec));
     }
+
+
 
     // Invia una richiesta dal modulo "Contatti" direttamente nella rubrica
     // clienti (tabella "buyers"), cosi' compare nel pannello admin come

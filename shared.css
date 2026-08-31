@@ -5,6 +5,12 @@
  * (--brand-blue, --brand-yellow, --white, --text-slate, --text-muted, --border-color, --transition).
  */
 
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
 /* NAVBAR STICKY: full-width e stile classico con giallo brand */
 .navbar {
   background: linear-gradient(120deg, var(--brand-blue), #001f8c);
@@ -338,7 +344,10 @@
 .fab-container.active .fab-main svg { transform: rotate(45deg); }
 
 @media (max-width: 640px) {
-  .fab-container { bottom: 18px; right: 16px; }
+  .fab-container {
+    bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+    right: calc(16px + env(safe-area-inset-right, 0px));
+  }
   .fab-main { width: 56px; height: 56px; }
 }
 
@@ -516,9 +525,10 @@
    Bordo giallo in cima come quello sotto la navbar: chiude la pagina con lo
    stesso segno con cui si apre. L'alone giallo in alto a sinistra toglie
    piattezza al blu, come nella card contatti della home. */
-.site-footer { background: radial-gradient(80% 120% at 0% 0%, rgba(255,217,15,0.12) 0%, rgba(255,217,15,0) 55%), linear-gradient(160deg, var(--brand-blue), #001f80); color: var(--white); padding: 2.75rem 1.25rem 0; margin-top: auto; border-top: 4px solid var(--brand-yellow); }
-@media (min-width: 768px) { .site-footer { padding: 4rem 1.5rem 0; } }
-.footer-inner { max-width: 1200px; margin: 0 auto; }
+.site-footer { background: radial-gradient(80% 120% at 0% 0%, rgba(255,217,15,0.12) 0%, rgba(255,217,15,0) 55%), linear-gradient(160deg, var(--brand-blue), #001f80); color: var(--white); padding: 2.75rem 0 0; margin-top: auto; border-top: 4px solid var(--brand-yellow); }
+@media (min-width: 768px) { .site-footer { padding: 4rem 0 0; } }
+.footer-inner { max-width: 1200px; margin: 0 auto; width: 100%; padding: 0 1rem; }
+@media (min-width: 768px) { .footer-inner { padding: 0 1.5rem; } }
 
 /* Da telefono le tre colonne erano una sotto l'altra e tutte centrate: un
    nastro lungo da scorrere, con due liste di quattro voci ciascuna che da
@@ -839,4 +849,25 @@
   background: #f1f5f9;
   color: #475569;
   border: 1px solid #cbd5e1;
+}
+
+/* ==========================================================================
+   OTTIMIZZAZIONI MOBILE GLOBALI (SAFARI iOS & CHROME MOBILE)
+   ========================================================================== */
+@media (max-width: 768px) {
+  /* Previene lo zoom automatico forzato di iOS Safari sui campi con font-size < 16px */
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="number"],
+  input[type="search"],
+  select,
+  textarea,
+  .nav-search-input,
+  .nav-search-select,
+  .form-input,
+  .filter-select,
+  .search-input {
+    font-size: 16px !important;
+  }
 }
