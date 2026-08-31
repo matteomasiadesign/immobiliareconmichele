@@ -108,30 +108,43 @@
       display: block;
     }
 
-    /* 3 GARANZIE MINIMALI IN LINEA */
-    .val-guarantees {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      align-items: center;
-      gap: 0.75rem 1.5rem;
-      margin-bottom: 2.25rem;
-    }
-    .val-guarantee-item {
+    /* FASCIA DI FIDUCIA ELEGANTE E UNIFICATA */
+    .val-trust-strip {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      font-size: 12.5px;
+      justify-content: center;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 8px 18px;
+      border-radius: 999px;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+    }
+    .trust-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
       font-weight: 700;
       color: #e2e8f0;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      padding: 6px 14px;
-      border-radius: 999px;
     }
-    .val-guarantee-item svg {
+    .trust-item svg {
       color: var(--brand-yellow);
       flex-shrink: 0;
+    }
+    .trust-dot {
+      color: rgba(255, 255, 255, 0.25);
+      font-size: 13px;
+    }
+    @media (max-width: 480px) {
+      .val-trust-strip {
+        gap: 8px 12px;
+        padding: 8px 14px;
+        border-radius: 16px;
+      }
+      .trust-dot { display: none; }
     }
 
     /* WIZARD CARD CONTAINER */
@@ -150,24 +163,25 @@
     .wizard-stepper {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin-bottom: 1.5rem;
+      gap: 10px;
+      margin-bottom: 1.25rem;
     }
     .stepper-pill {
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 8px;
-      padding: 10px 14px;
-      border-radius: 12px;
+      padding: 10px 12px;
+      border-radius: 14px;
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.1);
       color: #94a3b8;
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 700;
       transition: var(--transition);
     }
     .stepper-pill.active {
-      background: rgba(0, 68, 255, 0.3);
+      background: rgba(0, 68, 255, 0.35);
       border-color: var(--brand-yellow);
       color: var(--white);
       box-shadow: 0 4px 14px rgba(0, 68, 255, 0.3);
@@ -199,12 +213,24 @@
     }
     .stepper-pill-text {
       white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      font-size: 12px;
     }
-    @media (max-width: 580px) {
-      .stepper-pill { padding: 8px 10px; justify-content: center; }
-      .stepper-pill-text { display: none; }
+    @media (max-width: 480px) {
+      .wizard-stepper {
+        gap: 6px;
+      }
+      .stepper-pill {
+        padding: 8px 6px;
+        gap: 5px;
+      }
+      .stepper-pill-num {
+        width: 20px;
+        height: 20px;
+        font-size: 10px;
+      }
+      .stepper-pill-text {
+        font-size: 11px;
+      }
     }
 
     .wizard-progress-track {
@@ -680,24 +706,26 @@
     
     <!-- HEADER SNELLO SENZA RIDONDANZE -->
     <div class="val-hero">
-      <span class="val-badge"><span class="pulse-dot"></span> Servizio Gratuito per Proprietari</span>
+      <span class="val-badge"><span class="pulse-dot"></span> Stima Professionale</span>
       <h1 class="val-title">Quanto vale <span>il tuo immobile?</span></h1>
-      <p class="val-intro">Inserisci i dettagli in 3 semplici passaggi: riceverai una stima chiara e professionale basata sui valori reali di compravendita a Porto Torres e nel Nord Sardegna.</p>
+      <p class="val-intro">Compila i 3 passaggi guidati: riceverai una stima personalizzata e gratuita basata sulle reali compravendite a Porto Torres e nel Nord Sardegna.</p>
       
-      <!-- 3 PUNTI DI FORZA MINIMALI -->
-      <div class="val-guarantees">
-        <span class="val-guarantee-item">
-          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-          100% Gratuito
-        </span>
-        <span class="val-guarantee-item">
-          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-          Nessun Vincolo
-        </span>
-        <span class="val-guarantee-item">
-          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          Risposta in 24 Ore
-        </span>
+      <!-- FASCIA DI FIDUCIA ELEGANTE -->
+      <div class="val-trust-strip">
+        <div class="trust-item">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+          <span>100% Gratuito</span>
+        </div>
+        <span class="trust-dot">•</span>
+        <div class="trust-item">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          <span>Nessun Vincolo</span>
+        </div>
+        <span class="trust-dot">•</span>
+        <div class="trust-item">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <span>Risposta in 24 Ore</span>
+        </div>
       </div>
     </div>
 
@@ -708,15 +736,15 @@
       <div class="wizard-stepper">
         <div class="stepper-pill active" id="step-pill-1">
           <span class="stepper-pill-num">1</span>
-          <span class="stepper-pill-text">Immobile & Zona</span>
+          <span class="stepper-pill-text">Immobile</span>
         </div>
         <div class="stepper-pill" id="step-pill-2">
           <span class="stepper-pill-num">2</span>
-          <span class="stepper-pill-text">Caratteristiche</span>
+          <span class="stepper-pill-text">Dettagli</span>
         </div>
         <div class="stepper-pill" id="step-pill-3">
           <span class="stepper-pill-num">3</span>
-          <span class="stepper-pill-text">I tuoi Recapiti</span>
+          <span class="stepper-pill-text">Recapiti</span>
         </div>
       </div>
 
