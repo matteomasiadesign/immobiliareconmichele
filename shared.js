@@ -275,10 +275,30 @@ function initCurrentPageNav() {
 initCurrentPageNav();
 
 // GESTIONE FLOATING MENU
-function toggleFab() {
-    document.getElementById('fab-menu').classList.toggle('open');
-    document.getElementById('fab-container').classList.toggle('active');
+function toggleFab(forceState) {
+    const menu = document.getElementById('fab-menu');
+    const container = document.getElementById('fab-container');
+    if (!menu || !container) return;
+    const shouldOpen = typeof forceState === 'boolean' ? forceState : !menu.classList.contains('open');
+    menu.classList.toggle('open', shouldOpen);
+    container.classList.toggle('active', shouldOpen);
 }
+
+document.addEventListener('click', (e) => {
+    const container = document.getElementById('fab-container');
+    if (!container) return;
+
+    // Se si clicca su una delle opzioni (WhatsApp o Chiamata), chiudi il menu
+    if (e.target.closest('.fab-action')) {
+        toggleFab(false);
+        return;
+    }
+
+    // Chiudi se clicco fuori dal container mentre è aperto
+    if (!container.contains(e.target)) {
+        toggleFab(false);
+    }
+});
 
 function openModal(id) {
     const p = properties.find(x => x.id === id);
