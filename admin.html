@@ -2494,6 +2494,194 @@
         min-height: 100vh;
       }
     }
+
+    /* ============================================================
+       TOP STICKY COMMAND BAR (Logo + Ricerca + Hamburger)
+       ============================================================ */
+    .top-command-bar {
+      position: sticky !important;
+      top: 0 !important;
+      z-index: 950 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      gap: 10px !important;
+      padding: 10px 14px !important;
+      margin: -20px -16px 20px !important;
+      background: color-mix(in srgb, var(--ground) 85%, transparent) !important;
+      backdrop-filter: blur(18px) !important;
+      -webkit-backdrop-filter: blur(18px) !important;
+      border-bottom: 1px solid var(--line) !important;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04) !important;
+    }
+
+    @media (min-width: 1040px) {
+      .top-command-bar {
+        margin: -32px -48px 28px !important;
+        padding: 14px 48px !important;
+      }
+      .tcb-logo { display: none !important; }
+      .hamburger-container { display: none !important; }
+    }
+
+    /* LOGO A SINISTRA */
+    .tcb-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      text-decoration: none;
+    }
+    .tcb-logo-img {
+      width: 36px;
+      height: 36px;
+      object-fit: contain;
+      border-radius: 9px;
+      display: block;
+    }
+    .tcb-logo-fallback {
+      width: 36px;
+      height: 36px;
+      background: var(--brand-yellow);
+      color: var(--brand-blue);
+      font-weight: 800;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+    }
+
+    /* BARRA DI RICERCA AL CENTRO */
+    .tcb-search {
+      flex: 1;
+      position: relative;
+      min-width: 0;
+      max-width: 520px;
+    }
+    .tcb-search input {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      padding: 9px 12px 9px 36px !important;
+      border-radius: 20px;
+      font-size: 13.5px;
+      color: var(--ink);
+      transition: var(--transition);
+      box-shadow: var(--shadow-1);
+    }
+    .tcb-search input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+      outline: none;
+    }
+    .tcb-search svg {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--ink-3);
+      pointer-events: none;
+    }
+
+    /* AZIONI A DESTRA */
+    .tcb-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .btn-tcb-icon {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      color: var(--ink);
+      width: 38px;
+      height: 38px;
+      border-radius: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: var(--shadow-1);
+      transition: var(--transition);
+      padding: 0;
+    }
+    .btn-tcb-icon:hover {
+      background: var(--surface-2);
+      border-color: var(--ink-3);
+    }
+    .btn-tcb-icon:active {
+      transform: scale(0.95);
+    }
+
+    /* HAMBURGER CONTAINER E DROPDOWN POPUP */
+    .hamburger-container {
+      position: relative;
+    }
+    .hamburger-dropdown {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      width: 200px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25), 0 2px 8px rgba(0, 0, 0, 0.08);
+      padding: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-8px) scale(0.94);
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.16s ease;
+      z-index: 1500;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    .hamburger-dropdown.open {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0) scale(1);
+    }
+
+    .h-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 14px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      text-align: left;
+      transition: background 0.14s ease;
+    }
+    .h-item:hover, .h-item:active {
+      background: var(--surface-2);
+    }
+    .h-item svg {
+      color: var(--ink-2);
+      flex-shrink: 0;
+    }
+    .h-divider {
+      height: 1px;
+      background: var(--line);
+      margin: 4px 6px;
+    }
+    .h-item-danger {
+      color: var(--crit) !important;
+    }
+    .h-item-danger svg {
+      color: var(--crit) !important;
+    }
+    .h-item-danger:hover {
+      background: var(--crit-bg) !important;
+    }
 </style>
 
   <script>
@@ -2521,97 +2709,10 @@
     <span id="loader-text" style="font-family: var(--display); font-weight: 700; letter-spacing: 0.04em;">Attendere prego...</span>
   </div>
 
-  
-  <!-- TOP NAVBAR STICKY PER MOBILE / TABLET -->
-  <nav class="navbar" id="top-navbar">
-    <a href="admin.html" class="brand">
-      <div class="brand-icon-box">
-        <img src="logo.svg" alt="Logo" style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px;" onerror="this.outerHTML='<div style=\'width: 32px; height: 32px; background: var(--brand-yellow); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--brand-blue); font-weight: bold;\'>ME</div>'">
-      </div>
-      <div class="brand-text">
-        <span class="brand-title">Michele Erre</span>
-      </div>
-    </a>
-    
-    <div id="nav-auth" class="nav-auth">
-      <button type="button" id="btn-theme" class="btn-head-icon" onclick="toggleTheme()" title="Cambia tema chiaro/scuro" aria-label="Cambia tema chiaro/scuro">
-        <svg class="i-moon" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path></svg>
-        <svg class="i-sun" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"></circle><path stroke-linecap="round" d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4l1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>
-      </button>
-      
-      <button type="button" class="btn-head-icon" id="btn-notifiche-top" onclick="apriRichieste()" title="Nuove richieste">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18 8a6 6 0 10-12 0c0 5-2 6-2 6h16s-2-1-2-6"/><path stroke-linecap="round" d="M13.7 20a2 2 0 01-3.4 0"/></svg>
-        <span class="count-pill" id="notifiche-count-top" style="display:none;">0</span>
-      </button>
+  <!-- Container di auth per compatibilità JS -->
+  <div id="nav-auth" style="display:none;"></div>
 
-      <button id="admin-mobile-toggle" class="admin-mobile-toggle" aria-label="Apri menu">
-        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-      </button>
-    </div>
-  </nav>
-
-  <!-- DRAWER / MENU MOBILE HAMBURGER -->
-  <div id="admin-mobile-menu" class="admin-mobile-menu">
-    <div class="mobile-menu-inner">
-      <button type="button" onclick="openCmdk(); closeMobileMenu();" class="mobile-menu-item search-item">
-        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path stroke-linecap="round" d="M20 20l-3.5-3.5"></path></svg>
-        <span>Cerca ovunque</span>
-        <kbd>Ctrl K</kbd>
-      </button>
-
-      <div class="mobile-menu-group">
-        <span class="mobile-menu-label">Navigazione</span>
-        <button type="button" onclick="switchTab('tab-overview'); closeMobileMenu();" class="mobile-menu-item">
-          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="3" width="7" height="7" rx="1.5"></rect><rect x="3" y="14" width="7" height="7" rx="1.5"></rect><rect x="14" y="14" width="7" height="7" rx="1.5"></rect></svg>
-          Panoramica
-        </button>
-        <button type="button" onclick="switchTab('tab-stats'); closeMobileMenu();" class="mobile-menu-item">
-          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>
-          Statistiche & Fatturato
-        </button>
-        <button type="button" onclick="switchTab('tab-crm'); closeMobileMenu();" class="mobile-menu-item">
-          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-          Clienti & Rubrica
-        </button>
-        <button type="button" onclick="switchTab('tab-documenti'); closeMobileMenu();" class="mobile-menu-item">
-          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 3H7a1 1 0 00-1 1v16a1 1 0 001 1h10a1 1 0 001-1V7z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M14 3v4h4"></path></svg>
-          Documenti & Bozze
-        </button>
-      </div>
-
-      <div class="mobile-menu-group">
-        <span class="mobile-menu-label">Azioni Rapide</span>
-        <a href="incarico.html" class="mobile-menu-item">
-          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-          Nuovo Incarico
-        </a>
-        <a href="proposta.html" class="mobile-menu-item">
-          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-          Nuova Proposta
-        </a>
-        <button type="button" onclick="openCestino(); closeMobileMenu();" class="mobile-menu-item">
-          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2m-9 0l1 13a1 1 0 001 1h8a1 1 0 001-1l1-13"/></svg>
-          Cestino (30gg)
-        </button>
-        <button type="button" onclick="openExport(); closeMobileMenu();" class="mobile-menu-item">
-          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
-          Esporta Backup Dati
-        </button>
-      </div>
-
-      <div class="mobile-menu-group" style="margin-top: auto; padding-top: 12px; border-top: 1px solid var(--line);">
-        <a href="index.html" class="mobile-menu-item">
-          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-          Torna al Sito Pubblico
-        </a>
-        <button onclick="handleLogout()" class="mobile-menu-item danger">
-          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-          Esci dal Pannello
-        </button>
-      </div>
-    </div>
-  </div>
-<div id="login-screen" class="login-container">
+  <div id="login-screen" class="login-container">
     <div class="login-card">
       <h2 style="margin-bottom: 20px; color:var(--brand-blue)">Accesso Riservato</h2>
       <form onsubmit="handleLogin(event)">
@@ -2736,18 +2837,62 @@
 <div class="app-main">
     
         
-        <div class="top-command-bar">
-          <div class="tcb-search" onclick="openCmdk()" style="cursor: pointer;">
-            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        
+        <!-- TOP STICKY COMMAND BAR (Logo + Ricerca + Hamburger) -->
+        <header class="top-command-bar" id="sticky-top-bar">
+          <!-- Logo a sinistra -->
+          <a href="admin.html" class="tcb-logo" title="Immobiliare con Michele">
+            <img src="logo.svg" alt="Logo" class="tcb-logo-img" onerror="this.outerHTML='<div class=\'tcb-logo-fallback\'>ME</div>'">
+          </a>
+
+          <!-- Barra di ricerca al centro -->
+          <div class="tcb-search" onclick="openCmdk()" style="cursor: pointer;" title="Cerca ovunque">
+            <svg width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
             <input type="text" placeholder="Cerca ovunque (Ctrl+K)..." readonly style="cursor: pointer;">
           </div>
-          <div class="tcb-actions desktop-only">
-            <button type="button" class="btn-primary-action" onclick="openPropertyForm()">
-              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path></svg>
-              Nuovo Immobile
+
+          <!-- Azioni a destra: Tema + Menu Hamburger -->
+          <div class="tcb-actions">
+            <!-- Pulsante Nuovo su desktop -->
+            <button type="button" class="btn-primary-action desktop-only" onclick="openPropertyForm()">
+              <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path></svg>
+              Nuovo
             </button>
+
+            <!-- Tasto Tema rapido -->
+            <button type="button" id="btn-theme" class="btn-tcb-icon" onclick="toggleTheme()" title="Cambia tema chiaro/scuro" aria-label="Cambia tema">
+              <svg class="i-moon" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path></svg>
+              <svg class="i-sun" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"></circle><path stroke-linecap="round" d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4l1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>
+            </button>
+
+            <!-- Container Hamburger Menu -->
+            <div class="hamburger-container">
+              <button type="button" id="admin-mobile-toggle" class="btn-tcb-icon btn-hamburger" onclick="toggleHamburgerMenu(event)" title="Menu Opzioni" aria-label="Menu opzioni">
+                <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+              </button>
+
+              <!-- Dropdown Menu con ESATTAMENTE le 3 voci richieste: Panoramica, Documenti, Esci -->
+              <div id="admin-mobile-menu" class="hamburger-dropdown">
+                <button type="button" class="h-item" onclick="switchTab('tab-overview'); closeHamburgerMenu();">
+                  <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="3" width="7" height="7" rx="1.5"></rect><rect x="3" y="14" width="7" height="7" rx="1.5"></rect><rect x="14" y="14" width="7" height="7" rx="1.5"></rect></svg>
+                  <span>Panoramica</span>
+                </button>
+
+                <button type="button" class="h-item" onclick="switchTab('tab-documenti'); closeHamburgerMenu();">
+                  <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 3H7a1 1 0 00-1 1v16a1 1 0 001 1h10a1 1 0 001-1V7z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M14 3v4h4"></path></svg>
+                  <span>Documenti</span>
+                </button>
+
+                <div class="h-divider"></div>
+
+                <button type="button" class="h-item h-item-danger" onclick="handleLogout()">
+                  <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                  <span>Esci</span>
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
+        </header>
 <div class="page-head">
       <div>
         <h1 id="page-title">Panoramica</h1>
@@ -8350,26 +8495,54 @@
     }
 
   
-    // Helper Mobile FAB & Drawer
+    
+    // Helper Mobile FAB & Hamburger
+    function toggleHamburgerMenu(e) {
+      if (e) { e.preventDefault(); e.stopPropagation(); }
+      const menu = document.getElementById('admin-mobile-menu');
+      if (menu) menu.classList.toggle('open');
+      // Chiude la nuvoletta FAB se aperta
+      const bubble = document.getElementById('fab-bubble-menu');
+      const fabBtn = document.getElementById('mobile-fab-btn');
+      if (bubble) bubble.classList.remove('active');
+      if (fabBtn) fabBtn.classList.remove('open');
+    }
+
+    function closeHamburgerMenu() {
+      const menu = document.getElementById('admin-mobile-menu');
+      if (menu) menu.classList.remove('open');
+    }
+
+    // Per retrocompatibilità con chiamate esistenti
+    function closeMobileMenu() {
+      closeHamburgerMenu();
+    }
+
     function toggleFabMenu(e) {
       if (e) { e.preventDefault(); e.stopPropagation(); }
       const bubble = document.getElementById('fab-bubble-menu');
       const btn = document.getElementById('mobile-fab-btn');
       if (bubble) bubble.classList.toggle('active');
       if (btn) btn.classList.toggle('open');
+      // Chiude l'hamburger se aperto
+      closeHamburgerMenu();
     }
 
-    function closeMobileMenu() {
-      const menu = document.getElementById('admin-mobile-menu');
-      if (menu) menu.classList.remove('open');
-    }
-
+    // Chiudi popup cliccando fuori
     document.addEventListener('click', (e) => {
+      // Menu hamburger
+      const menu = document.getElementById('admin-mobile-menu');
+      const toggleBtn = document.getElementById('admin-mobile-toggle');
+      if (menu && menu.classList.contains('open') && !menu.contains(e.target) && e.target !== toggleBtn && !toggleBtn?.contains(e.target)) {
+        menu.classList.remove('open');
+      }
+
+      // Nuvoletta FAB
       const bubble = document.getElementById('fab-bubble-menu');
-      const btn = document.getElementById('mobile-fab-btn');
-      if (bubble && bubble.classList.contains('active') && !bubble.contains(e.target) && e.target !== btn && !btn.contains(e.target)) {
+      const fabBtn = document.getElementById('mobile-fab-btn');
+      if (bubble && bubble.classList.contains('active') && !bubble.contains(e.target) && e.target !== fabBtn && !fabBtn?.contains(e.target)) {
         bubble.classList.remove('active');
-        if (btn) btn.classList.remove('open');
+        if (fabBtn) fabBtn.classList.remove('open');
       }
     });
 </script>
