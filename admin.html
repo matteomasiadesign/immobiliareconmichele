@@ -1947,7 +1947,7 @@
     
     /* Hide old navbar */
     .navbar { display: none !important; }
-    #admin-mobile-menu { display: none !important; }
+    
     
     body { font-family: 'Inter', var(--sans); }
     
@@ -2700,6 +2700,38 @@
 
       :root:not([data-theme="light"]) #btn-theme .i-moon,
       :root:not([data-theme="light"]) .btn-theme .i-moon { display: none !important; }
+    }
+
+
+
+    /* DROPDOWN HAMBURGER DEFINITIVO */
+    .hamburger-container {
+      position: relative;
+    }
+    .hamburger-dropdown {
+      position: absolute !important;
+      top: calc(100% + 10px) !important;
+      right: 0 !important;
+      width: 210px !important;
+      background: var(--surface) !important;
+      border: 1px solid var(--line) !important;
+      border-radius: 18px !important;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.28), 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+      padding: 8px !important;
+      display: none !important;
+      flex-direction: column !important;
+      gap: 4px !important;
+      z-index: 2500 !important;
+      backdrop-filter: blur(20px) !important;
+      -webkit-backdrop-filter: blur(20px) !important;
+    }
+    .hamburger-dropdown.open {
+      display: flex !important;
+      animation: hDropIn 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards !important;
+    }
+    @keyframes hDropIn {
+      from { opacity: 0; transform: translateY(-8px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
 </style>
@@ -8517,11 +8549,23 @@
 
   
     
+    
     // Helper Mobile FAB & Hamburger
     function toggleHamburgerMenu(e) {
-      if (e) { e.preventDefault(); e.stopPropagation(); }
+      if (e) { 
+        e.preventDefault(); 
+        e.stopPropagation(); 
+      }
       const menu = document.getElementById('admin-mobile-menu');
-      if (menu) menu.classList.toggle('open');
+      if (!menu) return;
+      
+      const isOpen = menu.classList.contains('open');
+      if (isOpen) {
+        menu.classList.remove('open');
+      } else {
+        menu.classList.add('open');
+      }
+
       // Chiude la nuvoletta FAB se aperta
       const bubble = document.getElementById('fab-bubble-menu');
       const fabBtn = document.getElementById('mobile-fab-btn');
@@ -8534,7 +8578,6 @@
       if (menu) menu.classList.remove('open');
     }
 
-    // Per retrocompatibilità con chiamate esistenti
     function closeMobileMenu() {
       closeHamburgerMenu();
     }
@@ -8549,23 +8592,28 @@
       closeHamburgerMenu();
     }
 
-    // Chiudi popup cliccando fuori
+    // Chiudi popup cliccando ovunque fuori
     document.addEventListener('click', (e) => {
       // Menu hamburger
       const menu = document.getElementById('admin-mobile-menu');
       const toggleBtn = document.getElementById('admin-mobile-toggle');
-      if (menu && menu.classList.contains('open') && !menu.contains(e.target) && e.target !== toggleBtn && !toggleBtn?.contains(e.target)) {
-        menu.classList.remove('open');
+      if (menu && menu.classList.contains('open')) {
+        if (!menu.contains(e.target) && e.target !== toggleBtn && !toggleBtn?.contains(e.target)) {
+          menu.classList.remove('open');
+        }
       }
 
       // Nuvoletta FAB
       const bubble = document.getElementById('fab-bubble-menu');
       const fabBtn = document.getElementById('mobile-fab-btn');
-      if (bubble && bubble.classList.contains('active') && !bubble.contains(e.target) && e.target !== fabBtn && !fabBtn?.contains(e.target)) {
-        bubble.classList.remove('active');
-        if (fabBtn) fabBtn.classList.remove('open');
+      if (bubble && bubble.classList.contains('active')) {
+        if (!bubble.contains(e.target) && e.target !== fabBtn && !fabBtn?.contains(e.target)) {
+          bubble.classList.remove('active');
+          if (fabBtn) fabBtn.classList.remove('open');
+        }
       }
     });
+
 </script>
 </body>
 </html>
