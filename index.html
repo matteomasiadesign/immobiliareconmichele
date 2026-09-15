@@ -48,6 +48,7 @@
   <script src="scrolltrigger.min.js"></script>
   <script src="lenis.min.js"></script>
   <link rel="stylesheet" href="shared.css">
+  <link rel="stylesheet" href="cookie-consent.css">
 
   <style>
     :root {
@@ -1634,6 +1635,13 @@
 
       <div class="footer-bottom">
         <span>P.IVA: 03076110901 | REA: SS - 227691 | PEC: erremichele12@pec.it</span>
+        <div class="footer-legal-links">
+          <a href="privacy.html" class="footer-legal-link" data-open-modal="privacy">Privacy Policy</a>
+          <span class="footer-legal-separator">&bull;</span>
+          <a href="cookie.html" class="footer-legal-link" data-open-modal="cookie">Cookie Policy</a>
+          <span class="footer-legal-separator">&bull;</span>
+          <a href="#" class="footer-legal-link" id="manage-cookies-link">Preferenze Cookie</a>
+        </div>
         <span>&copy; 2026 Immobiliare con Michele. Tutti i diritti riservati.</span>
       </div>
     </div>
@@ -1819,6 +1827,7 @@
   </div>
 
   <script src="shared.js"></script>
+  <script src="cookie-consent.js"></script>
   <script>
     // Ingresso cinetico dell'hero, in sequenza:
     // caption -> "Benvenuto" -> "a casa" -> testo -> bottoni.

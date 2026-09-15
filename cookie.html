@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Cookie Policy - Immobiliare con Michele</title>
+
+  <meta name="theme-color" content="#0044FF">
+  <link rel="icon" href="logo.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-title" content="Immobiliare">
+  <link rel="manifest" href="manifest.webmanifest">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500..700&family=Teko:wght@400..700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="shared.css">
+  <link rel="stylesheet" href="cookie-consent.css">
+
+  <style>
+    :root {
+      --brand-blue: #0044FF;
+      --brand-yellow: #FFD90F;
+      --bg-slate: #f8fafc;
+      --text-slate: #1e293b;
+      --text-muted: #64748b;
+      --white: #ffffff;
+      --border-color: #e2e8f0;
+      --transition: all 0.2s ease-in-out;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    html, body { background-color: var(--bg-slate); color: var(--text-slate); min-height: 100vh; max-width: 100%; overflow-x: clip; display: flex; flex-direction: column; }
+
+    .policy-wrapper {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 4rem;
+      flex: 1 0 auto;
+      width: 100%;
+    }
+    @media (min-width: 768px) {
+      .policy-wrapper { padding: 3.5rem 1.5rem 5rem; }
+    }
+
+    .policy-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 1.25rem;
+    }
+    .policy-breadcrumb a {
+      color: var(--brand-blue);
+      text-decoration: none;
+    }
+    .policy-breadcrumb a:hover {
+      text-decoration: underline;
+    }
+
+    .policy-header {
+      margin-bottom: 2.5rem;
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 1.5rem;
+    }
+    .policy-title {
+      font-family: 'Teko', sans-serif !important;
+      font-size: clamp(2.4rem, 6vw, 3.8rem);
+      font-weight: 700;
+      color: var(--brand-blue);
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+    .policy-updated {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .policy-card {
+      background: var(--white);
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      padding: 2rem 1.5rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+      line-height: 1.7;
+      color: #334155;
+    }
+    @media (min-width: 768px) {
+      .policy-card { padding: 3rem 2.75rem; }
+    }
+
+    .policy-card h2 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--brand-blue);
+      margin: 2rem 0 0.85rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .policy-card h2:first-of-type { margin-top: 0; }
+
+    .policy-card p {
+      margin-bottom: 1.15rem;
+      font-size: 0.96rem;
+    }
+
+    .policy-card ul {
+      padding-left: 1.5rem;
+      margin-bottom: 1.25rem;
+    }
+    .policy-card li {
+      margin-bottom: 0.45rem;
+      font-size: 0.95rem;
+    }
+
+    .policy-card strong {
+      color: var(--text-slate);
+    }
+
+    .policy-table-wrap {
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+    }
+    .policy-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      text-align: left;
+    }
+    .policy-table th, .policy-table td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .policy-table th {
+      background: #f8fafc;
+      font-weight: 700;
+      color: var(--text-slate);
+    }
+    .policy-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .cookie-action-box {
+      background: #f8fafc;
+      border: 1.5px solid var(--border-color);
+      border-left: 4px solid var(--brand-yellow);
+      border-radius: 14px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    @media (min-width: 640px) {
+      .cookie-action-box {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+    .cookie-action-text h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-slate);
+      margin-bottom: 0.25rem;
+    }
+    .cookie-action-text p {
+      margin: 0;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" aria-label="Navigazione principale">
+    <a href="index.html" class="brand">
+      <div class="brand-icon-box">
+        <img src="logo.svg" alt="Logo Immobiliare con Michele" style="width: 100%; height: 100%; object-fit: contain;">
+      </div>
+      <div class="brand-text">
+        <span class="brand-title">Immobiliare con Michele</span>
+      </div>
+    </a>
+    
+    <div class="nav-actions">
+      <a href="catalogo.html" class="nav-search-trigger" style="text-decoration: none;">
+        <span class="nav-search-text">Sfoglia Catalogo</span>
+      </a>
+
+      <button id="mobile-toggle" class="mobile-toggle" aria-label="Apri il menu" aria-expanded="false" aria-controls="mobile-menu">
+        <svg fill="none" stroke="var(--brand-yellow)" stroke-width="2.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        <span class="mobile-toggle-label">Menu</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- MENU A DISCESA UNIFICATO -->
+  <div id="mobile-menu" class="mobile-menu">
+    <a href="index.html" class="nav-link">Home</a>
+    <a href="index.html#servizi" class="nav-link">Servizi</a>
+    <a href="index.html#contatti" class="nav-link">Contatti</a>
+    <a href="catalogo.html" class="btn-catalog-nav">Catalogo</a>
+    <a href="valutazione.html" class="btn-valuation-nav">Valutazione</a>
+  </div>
+
+  <main class="policy-wrapper">
+    <nav class="policy-breadcrumb" aria-label="Breadcrumb">
+      <a href="index.html">Home</a>
+      <span>&rsaquo;</span>
+      <span>Cookie Policy</span>
+    </nav>
+
+    <header class="policy-header">
+      <h1 class="policy-title">Informativa Estesa sui Cookie</h1>
+      <p class="policy-updated">In conformità alla Direttiva 2002/58/CE (ePrivacy), al Regolamento UE 2016/679 (GDPR) e alle Linee Guida del Garante Privacy &bull; Ultimo aggiornamento: Settembre 2026</p>
+    </header>
+
+    <article class="policy-card">
+      <p>
+        La presente Cookie Policy descrive l'utilizzo di cookie e altre tecnologie similari di tracciamento o archiviazione locale (es. <code>localStorage</code>) adottate dal sito <strong>Immobiliare con Michele</strong> di Michele Erre.
+      </p>
+
+      <!-- BOX INTERATTIVO GESTIONE PREFERENZE -->
+      <div class="cookie-action-box">
+        <div class="cookie-action-text">
+          <h3>Gestione del Tuo Consenso</h3>
+          <p>Puoi rivedere o modificare le tue preferenze sui cookie in qualsiasi momento con effetto immediato.</p>
+        </div>
+        <button type="button" class="cc-btn cc-btn-accept" id="manage-cookies-link" style="white-space: nowrap;">
+          Impostazioni Cookie
+        </button>
+      </div>
+
+      <h2>1. Cosa sono i Cookie e le Tecnologie Affini?</h2>
+      <p>
+        I cookie sono piccoli file di testo che i siti visitati dall'utente inviano al suo dispositivo (computer, tablet o smartphone), dove vengono memorizzati per essere poi ritrasmessi agli stessi siti alla successiva visita del medesimo utente.
+      </p>
+      <p>
+        Oltre ai cookie, possono essere impiegate tecnologie affini come l'<strong>HTML5 Local Storage</strong>, che consente di salvare informazioni sul browser dell'utente in modo sicuro e senza scadenza automatica immediata, migliorando le prestazioni del sito.
+      </p>
+
+      <h2>2. Tipologie di Cookie Utilizzati</h2>
+      <p>Il sito classifica i cookie e gli archivi locali nelle seguenti categorie:</p>
+
+      <ul>
+        <li>
+          <strong>Cookie Tecnici e Strettamente Necessari:</strong> Sono essenziali per il corretto funzionamento del sito, la sicurezza della navigazione, la consultazione del catalogo immobili e il salvataggio della tua scelta di consenso. Ai sensi dell'art. 122 del Codice della Privacy e delle Linee Guida del Garante, per l'installazione di questi cookie non è richiesto il preventivo consenso dell'utente.
+        </li>
+        <li>
+          <strong>Cookie Analitici e di Misurazione (Opzionali):</strong> Sono utilizzati per raccogliere informazioni statistiche in forma anonima e aggregata sull'utilizzo del sito (ad esempio le pagine più visitate o il tempo di permanenza). Vengono installati ed eseguiti esclusivamente se l'utente esprime il proprio consenso esplicito.
+        </li>
+        <li>
+          <strong>Cookie di Profilazione e Marketing (Opzionali):</strong> Sono volti a creare profili relativi all'utente al fine di inviare messaggi pubblicitari in linea con le preferenze manifestate durante la navigazione o per tracciare le conversioni delle campagne (es. su Instagram o Facebook). Vengono attivati solo previo consenso esplicito dell'utente.
+        </li>
+      </ul>
+
+      <h2>3. Dettaglio delle Tecnologie Impiegate</h2>
+      <div class="policy-table-wrap">
+        <table class="policy-table">
+          <thead>
+            <tr>
+              <th>Nome / Chiave</th>
+              <th>Tipologia</th>
+              <th>Fornitore</th>
+              <th>Durata</th>
+              <th>Scopo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>imm_cookie_consent_v1</code></td>
+              <td>Tecnico (localStorage)</td>
+              <td>Proprietario</td>
+              <td>12 mesi</td>
+              <td>Memorizza in modo sicuro le preferenze espresse nel Cookie Banner (Accetta, Rifiuta, Categorie scelte).</td>
+            </tr>
+            <tr>
+              <td><code>sb-*-auth-token</code></td>
+              <td>Tecnico (localStorage/cookie)</td>
+              <td>Supabase Inc.</td>
+              <td>Sessione / Persistente</td>
+              <td>Mantiene la sessione autenticata nell'area gestionale admin e protegge le chiamate al catalogo immobiliare.</td>
+            </tr>
+            <tr>
+              <td>Google Fonts (CDN)</td>
+              <td>Tecnico (Asset di stile)</td>
+              <td>Google Ireland Ltd.</td>
+              <td>Sessione</td>
+              <td>Fornitura dei font tipografici del brand per una visualizzazione uniforme su tutti i dispositivi.</td>
+            </tr>
+            <tr>
+              <td>Script Analitici (es. GA4)</td>
+              <td>Analitico (Terze parti)</td>
+              <td>Google / Altri</td>
+              <td>Fino a 24 mesi</td>
+              <td><em>(Se abilitati)</em> Misurazione del volume di traffico e delle interazioni in forma anonimizzata.</td>
+            </tr>
+            <tr>
+              <td>Pixel Marketing (es. Meta)</td>
+              <td>Marketing / Profilazione</td>
+              <td>Meta Platforms Inc.</td>
+              <td>Fino a 12 mesi</td>
+              <td><em>(Se abilitati)</em> Monitoraggio del rendimento delle campagne sponsorizzate e remarketing immobiliare.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>4. Come Gestire o Disabilitare i Cookie nel Tuo Browser</h2>
+      <p>
+        Oltre a utilizzare il nostro pannello di personalizzazione, puoi gestire o bloccare i cookie direttamente dalle impostazioni del tuo browser. La disattivazione totale dei cookie tecnici potrebbe tuttavia compromettere la fruibilità di alcune funzioni del sito.
+      </p>
+      <ul>
+        <li><strong>Google Chrome:</strong> Menu Impostazioni &gt; Privacy e sicurezza &gt; Cookie e altri dati dei siti (<a href="https://support.google.com/chrome/answer/95647" target="_blank" rel="noopener">Guida Chrome</a>).</li>
+        <li><strong>Mozilla Firefox:</strong> Opzioni &gt; Privacy e sicurezza &gt; Cookie e dati dei siti web (<a href="https://support.mozilla.org/it/kb/Gestione%20dei%20cookie" target="_blank" rel="noopener">Guida Firefox</a>).</li>
+        <li><strong>Apple Safari:</strong> Preferenze &gt; Privacy &gt; Blocca tutti i cookie (<a href="https://support.apple.com/it-it/guide/safari/sfri11471/mac" target="_blank" rel="noopener">Guida Safari</a>).</li>
+        <li><strong>Microsoft Edge:</strong> Impostazioni &gt; Cookie e autorizzazioni sito &gt; Gestisci ed elimina cookie (<a href="https://support.microsoft.com/it-it/windows/eliminare-e-gestire-i-cookie-168dab11-0753-043d-7c16-ede5947fc64d" target="_blank" rel="noopener">Guida Edge</a>).</li>
+      </ul>
+
+      <h2>5. Titolare del Trattamento e Contatti</h2>
+      <p>
+        Titolare del trattamento dei dati è <strong>Michele Erre - Agente Immobiliare</strong>, Porto Torres (SS), P.IVA 03076110901, PEC: <a href="mailto:erremichele12@pec.it">erremichele12@pec.it</a>, Email: <a href="mailto:infoerreimmobili@gmail.com">infoerreimmobili@gmail.com</a>. Per qualsiasi richiesta relativa alla privacy o ai cookie, puoi consultare la nostra <a href="privacy.html">Privacy Policy completa</a>.
+      </p>
+    </article>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div class="footer-col footer-col-brand reveal">
+          <div class="footer-identity">
+            <img src="logo.svg" alt="" class="footer-logo" width="54" height="54">
+            <div>
+              <h3 class="footer-brand-title">Michele Erre</h3>
+              <span class="footer-brand-role">Agente Immobiliare</span>
+            </div>
+          </div>
+          <p class="footer-tagline">Ti aiuto a comprare, vendere o affittare casa a Porto Torres e nel Nord Sardegna, in modo trasparente e senza stress.</p>
+          <div class="footer-social">
+            <a href="https://www.instagram.com/immobiliareconmichele/" target="_blank" aria-label="Instagram">
+              <svg width="26" height="26" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            </a>
+            <a href="https://www.facebook.com/profile.php?id=61589075136306" target="_blank" aria-label="Facebook">
+              <svg width="26" height="26" fill="currentColor" viewBox="0 0 24 24"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="footer-col reveal">
+          <h4 class="footer-heading">Link Rapidi</h4>
+          <div class="footer-links">
+            <a href="index.html#vetrina">Vetrina</a>
+            <a href="index.html#servizi">Servizi</a>
+            <a href="valutazione.html">Valutazione Gratuita</a>
+            <a href="catalogo.html">Catalogo Completo</a>
+          </div>
+        </div>
+
+        <div class="footer-col reveal">
+          <h4 class="footer-heading">Contatti</h4>
+          <div class="footer-links">
+            <a href="tel:+393348576926"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>+39 334 857 6926</a>
+            <a href="mailto:infoerreimmobili@gmail.com"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>infoerreimmobili@gmail.com</a>
+            <span><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>Porto Torres (SS)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>P.IVA: 03076110901 | REA: SS - 227691 | PEC: erremichele12@pec.it</span>
+        <div class="footer-legal-links">
+          <a href="privacy.html" class="footer-legal-link">Privacy Policy</a>
+          <span class="footer-legal-separator">&bull;</span>
+          <a href="cookie.html" class="footer-legal-link">Cookie Policy</a>
+          <span class="footer-legal-separator">&bull;</span>
+          <a href="#" class="footer-legal-link" id="manage-cookies-link">Preferenze Cookie</a>
+        </div>
+        <span>&copy; 2026 Immobiliare con Michele. Tutti i diritti riservati.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="shared.js"></script>
+  <script src="cookie-consent.js"></script>
+</body>
+</html>
+

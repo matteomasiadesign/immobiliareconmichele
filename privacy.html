@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Privacy Policy - Immobiliare con Michele</title>
+
+  <meta name="theme-color" content="#0044FF">
+  <link rel="icon" href="logo.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-title" content="Immobiliare">
+  <link rel="manifest" href="manifest.webmanifest">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500..700&family=Teko:wght@400..700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="shared.css">
+  <link rel="stylesheet" href="cookie-consent.css">
+
+  <style>
+    :root {
+      --brand-blue: #0044FF;
+      --brand-yellow: #FFD90F;
+      --bg-slate: #f8fafc;
+      --text-slate: #1e293b;
+      --text-muted: #64748b;
+      --white: #ffffff;
+      --border-color: #e2e8f0;
+      --transition: all 0.2s ease-in-out;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    html, body { background-color: var(--bg-slate); color: var(--text-slate); min-height: 100vh; max-width: 100%; overflow-x: clip; display: flex; flex-direction: column; }
+
+    .policy-wrapper {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 4rem;
+      flex: 1 0 auto;
+      width: 100%;
+    }
+    @media (min-width: 768px) {
+      .policy-wrapper { padding: 3.5rem 1.5rem 5rem; }
+    }
+
+    .policy-breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 1.25rem;
+    }
+    .policy-breadcrumb a {
+      color: var(--brand-blue);
+      text-decoration: none;
+    }
+    .policy-breadcrumb a:hover {
+      text-decoration: underline;
+    }
+
+    .policy-header {
+      margin-bottom: 2.5rem;
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 1.5rem;
+    }
+    .policy-title {
+      font-family: 'Teko', sans-serif !important;
+      font-size: clamp(2.4rem, 6vw, 3.8rem);
+      font-weight: 700;
+      color: var(--brand-blue);
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+    .policy-updated {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .policy-card {
+      background: var(--white);
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      padding: 2rem 1.5rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+      line-height: 1.7;
+      color: #334155;
+    }
+    @media (min-width: 768px) {
+      .policy-card { padding: 3rem 2.75rem; }
+    }
+
+    .policy-card h2 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--brand-blue);
+      margin: 2rem 0 0.85rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .policy-card h2:first-of-type { margin-top: 0; }
+
+    .policy-card p {
+      margin-bottom: 1.15rem;
+      font-size: 0.96rem;
+    }
+
+    .policy-card ul {
+      padding-left: 1.5rem;
+      margin-bottom: 1.25rem;
+    }
+    .policy-card li {
+      margin-bottom: 0.45rem;
+      font-size: 0.95rem;
+    }
+
+    .policy-card strong {
+      color: var(--text-slate);
+    }
+
+    .policy-contact-box {
+      background: #f8fafc;
+      border: 1.5px solid var(--border-color);
+      border-left: 4px solid var(--brand-yellow);
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .policy-contact-box p {
+      margin-bottom: 0.4rem;
+    }
+    .policy-contact-box p:last-child {
+      margin-bottom: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" aria-label="Navigazione principale">
+    <a href="index.html" class="brand">
+      <div class="brand-icon-box">
+        <img src="logo.svg" alt="Logo Immobiliare con Michele" style="width: 100%; height: 100%; object-fit: contain;">
+      </div>
+      <div class="brand-text">
+        <span class="brand-title">Immobiliare con Michele</span>
+      </div>
+    </a>
+    
+    <div class="nav-actions">
+      <a href="catalogo.html" class="nav-search-trigger" style="text-decoration: none;">
+        <span class="nav-search-text">Sfoglia Catalogo</span>
+      </a>
+
+      <button id="mobile-toggle" class="mobile-toggle" aria-label="Apri il menu" aria-expanded="false" aria-controls="mobile-menu">
+        <svg fill="none" stroke="var(--brand-yellow)" stroke-width="2.75" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        <span class="mobile-toggle-label">Menu</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- MENU A DISCESA UNIFICATO -->
+  <div id="mobile-menu" class="mobile-menu">
+    <a href="index.html" class="nav-link">Home</a>
+    <a href="index.html#servizi" class="nav-link">Servizi</a>
+    <a href="index.html#contatti" class="nav-link">Contatti</a>
+    <a href="catalogo.html" class="btn-catalog-nav">Catalogo</a>
+    <a href="valutazione.html" class="btn-valuation-nav">Valutazione</a>
+  </div>
+
+  <main class="policy-wrapper">
+    <nav class="policy-breadcrumb" aria-label="Breadcrumb">
+      <a href="index.html">Home</a>
+      <span>&rsaquo;</span>
+      <span>Privacy Policy</span>
+    </nav>
+
+    <header class="policy-header">
+      <h1 class="policy-title">Informativa sul Trattamento dei Dati Personali</h1>
+      <p class="policy-updated">Conforme al Regolamento Generale sulla Protezione dei Dati (GDPR - UE 2016/679) e D.Lgs. 196/2003 e s.m.i. &bull; Ultimo aggiornamento: Settembre 2026</p>
+    </header>
+
+    <article class="policy-card">
+      <p>
+        Benvenuto sul sito di <strong>Immobiliare con Michele</strong>. La riservatezza e la sicurezza dei tuoi dati personali sono per noi di fondamentale importanza. In questa pagina descriviamo le modalità di gestione del sito web in riferimento al trattamento dei dati personali degli utenti che lo consultano e di coloro che usufruiscono dei nostri servizi di intermediazione immobiliare.
+      </p>
+
+      <h2>1. Titolare del Trattamento</h2>
+      <p>
+        Il Titolare del trattamento dei dati personali raccolti tramite questo sito e nell'esercizio dell'attività professionale è:
+      </p>
+      <div class="policy-contact-box">
+        <p><strong>Michele Erre - Agente Immobiliare</strong></p>
+        <p>P.IVA: <strong>03076110901</strong> | Codice REA: <strong>SS - 227691</strong></p>
+        <p>Sede operativa: <strong>Porto Torres (SS), Sardegna, Italia</strong></p>
+        <p>PEC: <a href="mailto:erremichele12@pec.it">erremichele12@pec.it</a></p>
+        <p>Email: <a href="mailto:infoerreimmobili@gmail.com">infoerreimmobili@gmail.com</a> | Telefono: <a href="tel:+393348576926">+39 334 857 6926</a></p>
+      </div>
+
+      <h2>2. Tipologie di Dati Personali Trattati</h2>
+      <p>I dati personali trattati possono comprendere:</p>
+      <ul>
+        <li><strong>Dati forniti direttamente dall'utente:</strong> nome, cognome, indirizzo email, recapito telefonico, indirizzo o coordinate dell'immobile, metratura, numero vani, stato manutentivo, fotografie o note inviate tramite i form di valutazione immobiliare, richiesta contatto o modulistica contrattuale.</li>
+        <li><strong>Dati di navigazione:</strong> gli applicativi informatici dedicati al funzionamento di questo sito web rilevano, nel corso del loro normale esercizio, alcuni dati (la cui trasmissione è implicita nell'uso dei protocolli di comunicazione di Internet) come indirizzi IP, tipo di browser, timestamp della richiesta, URL di provenienza. Questi dati non sono raccolti per essere associati a interessati identificati.</li>
+        <li><strong>Preferenze di consenso cookie:</strong> stato delle scelte di consenso manifestate attraverso il Cookie Banner.</li>
+      </ul>
+
+      <h2>3. Finalità e Basi Giuridiche del Trattamento</h2>
+      <p>I dati personali sono trattati esclusivamente per le seguenti finalità:</p>
+      <ul>
+        <li><strong>Evasione delle richieste di valutazione immobiliare e contatto:</strong> per ricontattare l'utente, formulare la stima analitica dell'immobile e rispondere ai quesiti inviati (Base giuridica: <em>Art. 6, par. 1, lett. b GDPR - Esecuzione di misure contrattuali o precontrattuali</em>).</li>
+        <li><strong>Attività di mediazione immobiliare e contrattuale:</strong> gestione dell'incarico di mediazione per vendita o locazione, visite all'immobile, raccolta e formalizzazione di proposte d'acquisto (Base giuridica: <em>Art. 6, par. 1, lett. b GDPR</em>).</li>
+        <li><strong>Adempimento di obblighi legali e antiriciclaggio:</strong> ottemperanza alla normativa in materia di intermediazione immobiliare, fatturazione e disciplina antiriciclaggio ex D.Lgs. 231/2007 (Base giuridica: <em>Art. 6, par. 1, lett. c GDPR - Obbligo di legge</em>).</li>
+        <li><strong>Sicurezza e tutela dei diritti:</strong> accertamento di responsabilità in caso di reati informatici o contenziosi legali (Base giuridica: <em>Art. 6, par. 1, lett. f GDPR - Legittimo interesse</em>).</li>
+        <li><strong>Statistiche e comunicazioni informative mirate:</strong> solo previo esplicito e separato consenso (Base giuridica: <em>Art. 6, par. 1, lett. a GDPR - Consenso dell'interessato</em>).</li>
+      </ul>
+
+      <h2>4. Modalità di Trattamento e Misure di Sicurezza</h2>
+      <p>
+        Il trattamento viene effettuato mediante strumenti informatici e telematici con logiche strettamente correlate alle finalità sopra indicate, adottando misure di sicurezza idonee a garantire la riservatezza, l'integrità e la disponibilità dei dati. Il database dell'applicazione poggia sull'infrastruttura sicura di <strong>Supabase</strong>, protetta da crittografia a riposo e in transito (TLS/SSL) e da politiche Row Level Security (RLS).
+      </p>
+
+      <h2>5. Periodo di Conservazione dei Dati</h2>
+      <p>
+        I dati personali sono conservati per il tempo strettamente necessario al conseguimento delle finalità per le quali sono stati raccolti:
+      </p>
+      <ul>
+        <li>Le richieste di valutazione immobiliare e messaggi di contatto non convertiti in mandato contrattuale: conservati per un massimo di <strong>24 mesi</strong>.</li>
+        <li>I documenti contrattuali (incarichi firmati, proposte accettate, documentazione contabile e fiscale): conservati per <strong>10 anni</strong> come prescritto dal Codice Civile e dalle normative fiscali.</li>
+        <li>I dati di navigazione e log tecnici: cancellati o anonimizzati entro 30 giorni.</li>
+      </ul>
+
+      <h2>6. Destinatari dei Dati e Trasferimento all'Estero</h2>
+      <p>
+        I dati raccolti non sono diffusi a soggetti indeterminati. Possono essere comunicati a soggetti esterni che operano per conto del Titolare quali Responsabili del Trattamento (art. 28 GDPR) o autonomi Titolari:
+      </p>
+      <ul>
+        <li>Fornitori di servizi tecnici e hosting (Supabase Inc., provider di hosting web conforme alle clausole contrattuali standard approvate dalla Commissione Europea).</li>
+        <li>Consulenti contabili, fiscali, legali e notarili strettamente funzionali alla chiusura delle pratiche immobiliari.</li>
+        <li>Pubbliche autorità nei casi espressamente previsti dalla legge.</li>
+      </ul>
+
+      <h2>7. Diritti dell'Interessato (Artt. 15-22 GDPR)</h2>
+      <p>
+        In conformità al Regolamento UE 2016/679, hai il diritto di:
+      </p>
+      <ul>
+        <li><strong>Accedere</strong> ai tuoi dati personali e richiederne copia;</li>
+        <li>Ottenere la <strong>rettifica</strong> dei dati inesatti o l'integrazione di quelli incompleti;</li>
+        <li>Chiedere la <strong>cancellazione</strong> dei dati («diritto all'oblio») qualora non più necessari o in caso di revoca del consenso;</li>
+        <li>Ottenere la <strong>limitazione</strong> del trattamento;</li>
+        <li>Richiedere la <strong>portabilità</strong> dei dati in un formato strutturato e leggibile da dispositivo automatico;</li>
+        <li><strong>Opporti</strong> al trattamento in qualsiasi momento per motivi connessi alla tua situazione particolare;</li>
+        <li><strong>Revocare il consenso</strong> prestato, in qualunque momento, senza pregiudicare la liceità del trattamento basata sul consenso prima della revoca;</li>
+        <li>Proporre reclamo all'Autorità Garante per la Protezione dei Dati Personali (Piazza Venezia n. 11, 00187 Roma - <a href="https://www.garanteprivacy.it" target="_blank" rel="noopener">www.garanteprivacy.it</a>).</li>
+      </ul>
+      <p>
+        Per esercitare tali diritti, puoi inoltrare la tua richiesta in forma scritta al Titolare all'indirizzo email <a href="mailto:infoerreimmobili@gmail.com">infoerreimmobili@gmail.com</a> o via PEC a <a href="mailto:erremichele12@pec.it">erremichele12@pec.it</a>.
+      </p>
+    </article>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div class="footer-col footer-col-brand reveal">
+          <div class="footer-identity">
+            <img src="logo.svg" alt="" class="footer-logo" width="54" height="54">
+            <div>
+              <h3 class="footer-brand-title">Michele Erre</h3>
+              <span class="footer-brand-role">Agente Immobiliare</span>
+            </div>
+          </div>
+          <p class="footer-tagline">Ti aiuto a comprare, vendere o affittare casa a Porto Torres e nel Nord Sardegna, in modo trasparente e senza stress.</p>
+          <div class="footer-social">
+            <a href="https://www.instagram.com/immobiliareconmichele/" target="_blank" aria-label="Instagram">
+              <svg width="26" height="26" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            </a>
+            <a href="https://www.facebook.com/profile.php?id=61589075136306" target="_blank" aria-label="Facebook">
+              <svg width="26" height="26" fill="currentColor" viewBox="0 0 24 24"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="footer-col reveal">
+          <h4 class="footer-heading">Link Rapidi</h4>
+          <div class="footer-links">
+            <a href="index.html#vetrina">Vetrina</a>
+            <a href="index.html#servizi">Servizi</a>
+            <a href="valutazione.html">Valutazione Gratuita</a>
+            <a href="catalogo.html">Catalogo Completo</a>
+          </div>
+        </div>
+
+        <div class="footer-col reveal">
+          <h4 class="footer-heading">Contatti</h4>
+          <div class="footer-links">
+            <a href="tel:+393348576926"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>+39 334 857 6926</a>
+            <a href="mailto:infoerreimmobili@gmail.com"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>infoerreimmobili@gmail.com</a>
+            <span><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>Porto Torres (SS)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>P.IVA: 03076110901 | REA: SS - 227691 | PEC: erremichele12@pec.it</span>
+        <div class="footer-legal-links">
+          <a href="privacy.html" class="footer-legal-link">Privacy Policy</a>
+          <span class="footer-legal-separator">&bull;</span>
+          <a href="cookie.html" class="footer-legal-link">Cookie Policy</a>
+          <span class="footer-legal-separator">&bull;</span>
+          <a href="#" class="footer-legal-link" id="manage-cookies-link">Preferenze Cookie</a>
+        </div>
+        <span>&copy; 2026 Immobiliare con Michele. Tutti i diritti riservati.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="shared.js"></script>
+  <script src="cookie-consent.js"></script>
+</body>
+</html>
+
