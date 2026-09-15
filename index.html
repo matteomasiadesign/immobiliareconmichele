@@ -1185,8 +1185,47 @@
       text-align: center;
       min-height: 1.2em;
     }
-    .contact-form-status.success { color: #059669; }
-    .contact-form-status.error { color: #dc2626; }
+    .privacy-consent-group {
+      grid-column: 1 / -1;
+      margin-top: 4px;
+      margin-bottom: 4px;
+    }
+    .privacy-consent-label {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .privacy-consent-label .privacy-checkbox {
+      width: 18px;
+      height: 18px;
+      min-width: 18px;
+      margin-top: 2px;
+      accent-color: var(--brand-blue);
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    .privacy-consent-text {
+      font-size: 12.5px;
+      line-height: 1.45;
+      color: #64748b;
+      font-weight: 500;
+    }
+    .privacy-consent-text a {
+      color: var(--brand-blue);
+      text-decoration: underline;
+      font-weight: 600;
+      text-underline-offset: 2px;
+      transition: opacity 0.2s ease;
+    }
+    .privacy-consent-text a:hover {
+      opacity: 0.8;
+    }
+    .privacy-consent-text .req {
+      color: #ef4444;
+      font-weight: 700;
+    }
   </style>
 <body>
 
@@ -1576,6 +1615,15 @@
                   <textarea id="contact-message" class="form-input" placeholder="Raccontami le tue esigenze o gli orari preferiti per il contatto..."></textarea>
                 </div>
 
+                <div class="form-field-group full privacy-consent-group">
+                  <label class="privacy-consent-label" for="contact-privacy">
+                    <input type="checkbox" id="contact-privacy" name="privacy" required class="privacy-checkbox">
+                    <span class="privacy-consent-text">
+                      Ho preso visione della <a href="privacy.html" data-open-modal="privacy" target="_blank">Privacy Policy</a> e acconsento al trattamento dei miei dati personali. <span class="req">*</span>
+                    </span>
+                  </label>
+                </div>
+
                 <button type="submit" id="contact-submit-btn" class="btn-primary">
                   <span>Invia Richiesta a Michele</span>
                   <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" style="margin-left: 6px;"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
@@ -1882,6 +1930,16 @@
       const email = document.getElementById('contact-email').value.trim();
       const interest = document.getElementById('contact-interest').value;
       const message = document.getElementById('contact-message').value.trim();
+      const privacyEl = document.getElementById('contact-privacy');
+
+      if (privacyEl && !privacyEl.checked) {
+        statusEl.textContent = 'È necessario confermare la presa visione della Privacy Policy per inviare il messaggio.';
+        statusEl.classList.remove('success');
+        statusEl.classList.add('error');
+        privacyEl.focus();
+        return;
+      }
+
       // Solo chi cerca casa compila questi tre, quindi si leggono solo in
       // quel caso: altrimenti finirebbero in rubrica i residui di una
       // scelta cambiata a meta' compilazione.
@@ -1902,6 +1960,7 @@
 
       const noteParts = [`Richiesta dal sito (${interest})`];
       if (message) noteParts.push(message);
+      noteParts.push('Consenso Privacy: Confermato');
 
       const { error } = await _supabase.from('buyers').insert([{
         full_name: name,

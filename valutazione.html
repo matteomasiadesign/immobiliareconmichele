@@ -471,6 +471,52 @@
       border-color: rgba(255, 255, 255, 0.3);
     }
 
+    /* CONSENSO PRIVACY WIZARD */
+    .privacy-consent-group {
+      margin-top: 1.25rem;
+      margin-bottom: 0.5rem;
+      padding: 12px 14px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+    }
+    .privacy-consent-label {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .privacy-consent-label .privacy-checkbox {
+      width: 18px;
+      height: 18px;
+      min-width: 18px;
+      margin-top: 2px;
+      accent-color: var(--brand-yellow);
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    .privacy-consent-text {
+      font-size: 12.5px;
+      line-height: 1.45;
+      color: #cbd5e1;
+      font-weight: 500;
+    }
+    .privacy-consent-text a {
+      color: var(--brand-yellow);
+      text-decoration: underline;
+      font-weight: 600;
+      text-underline-offset: 2px;
+      transition: opacity 0.2s ease;
+    }
+    .privacy-consent-text a:hover {
+      opacity: 0.85;
+    }
+    .privacy-consent-text .req {
+      color: var(--brand-yellow);
+      font-weight: 700;
+    }
+
     /* FOOTER AZIONI WIZARD (AVANTI / INDIETRO) */
     .wizard-actions {
       display: flex;
@@ -960,6 +1006,16 @@
             <input type="hidden" id="val-time-input" value="WhatsApp">
           </div>
 
+          <!-- Informativa Privacy -->
+          <div class="form-group privacy-consent-group">
+            <label class="privacy-consent-label" for="val-privacy-input">
+              <input type="checkbox" id="val-privacy-input" name="privacy" required class="privacy-checkbox">
+              <span class="privacy-consent-text">
+                Ho preso visione dell'<a href="privacy.html" data-open-modal="privacy" target="_blank">Informativa sulla Privacy</a> e acconsento al trattamento dei miei dati personali per ricevere la stima. <span class="req">*</span>
+              </span>
+            </label>
+          </div>
+
           <div class="step-error-msg" id="step-3-error">
             <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
             <span id="step-3-error-text">Compila il nome e il numero di telefono per inviare la richiesta.</span>
@@ -1240,13 +1296,22 @@
       const phone = document.getElementById('val-phone-input').value.trim();
       const email = document.getElementById('val-email-input').value.trim();
       const timePref = document.getElementById('val-time-input').value;
+      const privacyEl = document.getElementById('val-privacy-input');
       const err = document.getElementById('step-3-error');
       const btn = document.getElementById('val-wizard-submit-btn');
 
-      if (!name || !phone) {
+      if (!name || !phone || (privacyEl && !privacyEl.checked)) {
         err.classList.add('show');
-        if (!name) document.getElementById('val-name-input').focus();
-        else document.getElementById('val-phone-input').focus();
+        if (!name) {
+          document.getElementById('step-3-error-text').textContent = 'Compila il nome e cognome per proseguire.';
+          document.getElementById('val-name-input').focus();
+        } else if (!phone) {
+          document.getElementById('step-3-error-text').textContent = 'Compila il numero di telefono per proseguire.';
+          document.getElementById('val-phone-input').focus();
+        } else {
+          document.getElementById('step-3-error-text').textContent = 'È necessario confermare la presa visione della Privacy Policy per inviare la richiesta.';
+          privacyEl.focus();
+        }
         return;
       }
       err.classList.remove('show');
@@ -1275,6 +1340,7 @@
       if (timePref) scheda.push(`Preferenza Contatto: ${timePref}`);
       
       noteParts.push(scheda.join('\n'));
+      noteParts.push('Consenso Privacy: Confermato');
       if (notes) noteParts.push(`Note aggiuntive del proprietario:\n${notes}`);
 
       try {
