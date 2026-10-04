@@ -227,31 +227,45 @@ function descriviCampoDoc(name) {
         _data_documento: 'Data atto/firma',
         _note_doc: 'Note documento'
     };
-    return labels[name] || name;
+    if (labels[name]) return labels[name];
+    // Campo senza etichetta dedicata: "noteAggiuntive" -> "Note aggiuntive"
+    const leggibile = String(name).replace(/^_+/, '').replace(/([a-z0-9])([A-Z])/g, '$1 $2').toLowerCase();
+    return leggibile.charAt(0).toUpperCase() + leggibile.slice(1);
 }
 
 /**
- * Confronta due stati del documento e restituisce un elenco sintetico delle modifiche.
+ * Confronta due stati del documento e restituisce le modifiche campo per
+ * campo, con i valori completi (tagliati solo oltre 300 caratteri):
+ * [{ campo, label, da, a }]. Lo storico del gestionale le mostra come
+ * "valore vecchio -> valore nuovo".
  */
-function calcolaDifferenzeDati(vecchi = {}, nuovi = {}) {
-    const modificate = [];
+function calcolaModificheStrutturate(vecchi = {}, nuovi = {}) {
+    const taglia = (v) => v.length > 300 ? v.slice(0, 300) + '…' : v;
+    const modifiche = [];
     const tuttiKeys = new Set([...Object.keys(vecchi), ...Object.keys(nuovi)]);
     tuttiKeys.forEach(k => {
         if (k.startsWith('_') && k !== '_stato_doc' && k !== '_data_documento' && k !== '_note_doc') return;
         const v1 = (vecchi[k] !== undefined && vecchi[k] !== null) ? String(vecchi[k]).trim() : '';
         const v2 = (nuovi[k] !== undefined && nuovi[k] !== null) ? String(nuovi[k]).trim() : '';
         if (v1 !== v2) {
-            const label = descriviCampoDoc(k);
-            if (!v1 && v2) {
-                modificate.push(`Impostato ${label}: "${v2.length > 30 ? v2.slice(0, 30) + '...' : v2}"`);
-            } else if (v1 && !v2) {
-                modificate.push(`Cancellato ${label}`);
-            } else {
-                modificate.push(`Modificato ${label}: da "${v1.length > 20 ? v1.slice(0, 20) + '...' : v1}" a "${v2.length > 20 ? v2.slice(0, 20) + '...' : v2}"`);
-            }
+            modifiche.push({ campo: k, label: descriviCampoDoc(k), da: taglia(v1), a: taglia(v2) });
         }
     });
-    return modificate;
+    return modifiche;
+}
+
+/**
+ * Versione testuale (una riga per modifica) di calcolaModificheStrutturate.
+ * Resta nello storico accanto ai dati strutturati per i punti che leggono
+ * ancora il vecchio formato.
+ */
+function calcolaDifferenzeDati(vecchi = {}, nuovi = {}) {
+    const breve = (v, max) => v.length > max ? v.slice(0, max) + '...' : v;
+    return calcolaModificheStrutturate(vecchi, nuovi).map(m => {
+        if (!m.da && m.a) return `Impostato ${m.label}: "${breve(m.a, 30)}"`;
+        if (m.da && !m.a) return `Cancellato ${m.label}`;
+        return `Modificato ${m.label}: da "${breve(m.da, 20)}" a "${breve(m.a, 20)}"`;
+    });
 }
 
 /**
@@ -273,6 +287,20 @@ function initBozze({ tipo, supabase, form, loading, ricavaTitolo, generaPDF, dop
     let loadedDocData = null; // contiene l'intero record dal DB (compreso created_at)
     let loadedDocState = null; // memorizza solo dati del form
     const isViewMode = parametri.get('mode') === 'view';
+    // ?mode=view&pdf=1: il PDF parte da solo appena il documento e' caricato
+    const scaricaSubito = isViewMode && parametri.get('pdf') === '1';
+
+    // In sola lettura i campi sono disabilitati e FormData li salta: li
+    // riabilito per il tempo della lettura, cosi' il PDF esce completo.
+    // In modifica resta il comportamento di sempre (campi disabilitati esclusi).
+    function leggiDatiForm() {
+        if (!isViewMode) return Object.fromEntries(new FormData(form));
+        const disabilitati =[...form.querySelectorAll('input:disabled, select:disabled, textarea:disabled')];
+        disabilitati.forEach(el => { el.disabled = false; });
+        const dati = Object.fromEntries(new FormData(form));
+        disabilitati.forEach(el => { el.disabled = true; });
+        return dati;
+    }
 
     let collegamenti = {
         property_id: parametri.get('property_id') || null,
@@ -320,20 +348,21 @@ function initBozze({ tipo, supabase, form, loading, ricavaTitolo, generaPDF, dop
         if (submitBtn) {
             submitBtn.innerText = '🖨️ Scarica / Stampa PDF';
         }
-        const saveDraftBtn = document.getElementById('btn-save-draft');
-        if (saveDraftBtn) {
-            saveDraftBtn.style.display = 'none';
-        }
+        // Il salvataggio non serve in sola lettura
+        form.querySelectorAll('.btn-save, #btn-save-draft').forEach(el => {
+            el.style.display = 'none';
+        });
 
         const banner = document.createElement('div');
         banner.className = 'doc-view-banner';
         banner.style.cssText = 'background:#e0f2fe; color:#0369a1; border:1px solid #bae6fd; padding:12px 18px; border-radius:8px; margin-bottom:24px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;';
         banner.innerHTML = `
-            <div style="display:flex; align-items:center; gap:8px;">
+            <div style="display:flex; align-items:center; gap:8px; min-width:0; flex:1 1 240px;">
                 <span style="font-size:18px;">👁️</span>
-                <span><b>Modalità Sola Lettura:</b> puoi consultare l'atto o scaricare il PDF.</span>
+                <span><b>Modalità Sola Lettura:</b> puoi consultare l'atto o scaricare il PDF, senza modificare nulla.</span>
             </div>
-            <div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <a href="admin.html" class="btn-mini" style="background:#fff; color:#0369a1; border:1px solid #7dd3fc; padding:6px 12px; border-radius:6px; text-decoration:none; font-weight:600;">← Torna ai documenti</a>
                 <a href="${tipo}.html?id=${encodeURIComponent(currentDraftId)}" class="btn-mini" style="background:#0284c7; color:#fff; padding:6px 12px; border-radius:6px; text-decoration:none; font-weight:600;">✏️ Passa a Modifica</a>
             </div>
         `;
@@ -368,6 +397,7 @@ function initBozze({ tipo, supabase, form, loading, ricavaTitolo, generaPDF, dop
             mostraStato(`📝 Bozza in lavorazione (creata il ${new Date(data.created_at || data.updated_at).toLocaleDateString('it-IT')} · ultima modifica: ${new Date(data.updated_at).toLocaleString('it-IT')})`);
         }
         window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (scaricaSubito) form.requestSubmit();
     }
 
     async function salvaBozza(showAlert = true) {
@@ -376,7 +406,7 @@ function initBozze({ tipo, supabase, form, loading, ricavaTitolo, generaPDF, dop
             return true;
         }
 
-        const formData = Object.fromEntries(new FormData(form));
+        const formData = leggiDatiForm();
         const nowIso = new Date().toISOString();
 
         // Preserva i metadati interni precedenti
@@ -405,13 +435,17 @@ function initBozze({ tipo, supabase, form, loading, ricavaTitolo, generaPDF, dop
         }
 
         if (loadedDocState) {
-            const differenze = calcolaDifferenzeDati(loadedDocState, dati);
-            if (differenze.length > 0) {
+            const modifiche = calcolaModificheStrutturate(loadedDocState, dati);
+            if (modifiche.length > 0) {
+                const differenze = calcolaDifferenzeDati(loadedDocState, dati);
                 history.push({
                     timestamp: nowIso,
                     action: 'modifica',
-                    summary: differenze.slice(0, 3).join('; ') + (differenze.length > 3 ? ` (+${differenze.length - 3} altre modifiche)` : ''),
-                    details: differenze
+                    summary: modifiche.length === 1
+                        ? `Modificato ${modifiche[0].label}`
+                        : `${modifiche.length} campi modificati`,
+                    details: differenze,
+                    changes: modifiche
                 });
             }
         }
@@ -495,7 +529,7 @@ function initBozze({ tipo, supabase, form, loading, ricavaTitolo, generaPDF, dop
         loading.classList.add('active');
 
         try {
-            const formData = Object.fromEntries(new FormData(form));
+            const formData = leggiDatiForm();
             generaPDF(formData);
             if (!isViewMode) {
                 await salvaBozza(false);

@@ -1462,6 +1462,75 @@
     .btn-mini.danger { color: var(--crit); }
     .btn-mini.danger:hover { background: var(--crit-bg); border-color: var(--crit); }
 
+    /* ---------- MODAL DOCUMENTO: dettagli + storico modifiche ---------- */
+    .vd-modal { max-width: 700px; max-height: 88vh; display: flex; flex-direction: column; padding: 0; overflow: hidden; }
+    .vd-head { padding: 1.1rem 1.5rem .9rem; border-bottom: 1px solid var(--line); margin: 0; align-items: flex-start; gap: 12px; }
+    .vd-badges { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
+    .vd-title { margin: 0; font-size: 17px; white-space: normal; overflow-wrap: anywhere; }
+    .vd-body { flex: 1; overflow-y: auto; padding: 1.25rem 1.5rem; overscroll-behavior: contain; }
+    .vd-section + .vd-section { margin-top: 1.5rem; }
+    .vd-h4 { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-2); margin: 0 0 10px; display: flex; align-items: center; gap: 6px; font-weight: 700; }
+    .vd-details { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px 14px; background: var(--surface-2); padding: 12px 14px; border-radius: 10px; border: 1px solid var(--line); }
+    .vd-details > div { min-width: 0; overflow-wrap: anywhere; }
+    .vd-foot { padding: .9rem 1.5rem; border-top: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: var(--surface); }
+    .vd-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .vd-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 13px; font-weight: 600; text-decoration: none; }
+    .vd-close { padding: 7px 16px; margin: 0; }
+
+    /* riepilogo sopra la timeline */
+    .vd-meta { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
+    .vd-meta-item { background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; padding: 9px 12px; min-width: 0; }
+    .vd-meta-item span { display: block; font-size: 10.5px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-3); font-weight: 600; }
+    .vd-meta-item b { display: block; margin-top: 2px; font-size: 13px; color: var(--ink); font-weight: 650; }
+
+    /* timeline */
+    .vd-day { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-3); margin: 14px 0 8px 40px; }
+    .vd-meta + .vd-day { margin-top: 0; }
+    .vd-entry { position: relative; padding: 0 0 14px 40px; }
+    .vd-entry::before { content: ''; position: absolute; left: 13px; top: 28px; bottom: 0; width: 2px; background: var(--line); }
+    .vd-entry:last-child { padding-bottom: 0; }
+    .vd-entry:last-child::before { display: none; }
+    .vd-dot { position: absolute; left: 0; top: 0; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; background: var(--surface-2); border: 1px solid var(--line); }
+    .vd-dot.is-creazione { background: var(--accent-soft); border-color: var(--accent); }
+    .vd-dot.is-modifica { background: var(--warn-bg); border-color: var(--warn); }
+    .vd-dot.is-stato { background: var(--good-bg); border-color: var(--good); }
+    .vd-card { background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; padding: 9px 12px; min-width: 0; }
+    .vd-card-head { display: flex; justify-content: space-between; align-items: baseline; gap: 4px 10px; flex-wrap: wrap; }
+    .vd-card-title { font-size: 13px; font-weight: 650; color: var(--ink); min-width: 0; overflow-wrap: anywhere; }
+    .vd-card-time { font-size: 11.5px; color: var(--ink-3); white-space: nowrap; font-variant-numeric: tabular-nums; }
+    .vd-changes { margin-top: 8px; display: flex; flex-direction: column; gap: 7px; }
+    .vd-change { display: grid; grid-template-columns: minmax(96px, 150px) 1fr; gap: 3px 10px; align-items: baseline; font-size: 12.5px; padding-top: 7px; border-top: 1px dashed var(--line); }
+    .vd-change:first-child { border-top: 0; padding-top: 0; }
+    .vd-change-label { color: var(--ink-2); font-weight: 600; font-size: 12px; }
+    .vd-change-vals { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 6px; min-width: 0; color: var(--ink); }
+    .vd-old, .vd-new { padding: 1px 7px; border-radius: 6px; overflow-wrap: anywhere; max-width: 100%; white-space: pre-wrap; }
+    .vd-old { background: var(--crit-bg); color: var(--crit); text-decoration: line-through; text-decoration-thickness: 1px; }
+    .vd-new { background: var(--good-bg); color: var(--good); font-weight: 600; }
+    .vd-arrow { color: var(--ink-3); }
+    .vd-tag { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-3); }
+    .vd-note { color: var(--ink-3); font-style: italic; font-size: 12px; }
+    .vd-more { margin-top: 7px; }
+    .vd-more summary { cursor: pointer; font-size: 12px; font-weight: 600; color: var(--accent); list-style: none; padding: 2px 0; }
+    .vd-more summary::-webkit-details-marker { display: none; }
+    .vd-more[open] summary { margin-bottom: 7px; }
+    .vd-more[open] .vd-more-closed, .vd-more:not([open]) .vd-more-open { display: none; }
+
+    @media (max-width: 640px) {
+      .vd-modal { max-height: 94vh; border-radius: 16px; }
+      .vd-head { padding: 1rem 1rem .8rem; }
+      .vd-body { padding: 1rem; }
+      .vd-meta { grid-template-columns: 1fr 1fr; }
+      .vd-meta-item:last-child { grid-column: 1 / -1; }
+      .vd-day { margin-left: 38px; }
+      .vd-entry { padding-left: 38px; }
+      .vd-change { grid-template-columns: 1fr; }
+      .vd-foot { padding: .8rem 1rem calc(.8rem + env(safe-area-inset-bottom)); flex-direction: column; align-items: stretch; }
+      .vd-actions { display: grid; grid-template-columns: 1fr 1fr; }
+      .vd-btn { padding: 11px 10px; }
+      .vd-btn-main { grid-column: 1 / -1; }
+      .vd-close { width: 100%; padding: 11px; }
+    }
+
     /* ---------- ESPORTAZIONE ---------- */
     .export-grid { display: flex; flex-direction: column; gap: 9px; }
     .export-row {
@@ -3629,53 +3698,54 @@
 
   <!-- Modal Visualizza Documento & Storico Modifiche -->
   <div id="modal-view-doc" class="modal-overlay">
-    <div class="modal-content" style="max-width:680px; max-height:85vh; display:flex; flex-direction:column; padding:0; overflow:hidden;">
-      <div class="modal-header" style="padding:1.25rem 1.5rem 1rem; border-bottom:1px solid var(--line); margin:0;">
+    <div class="modal-content vd-modal">
+      <div class="modal-header vd-head">
         <div style="min-width:0;">
-          <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px; flex-wrap:wrap;">
+          <div class="vd-badges">
             <span id="view-doc-tipo-badge" class="status-badge"></span>
             <span id="view-doc-status-badge"></span>
           </div>
-          <h3 class="panel-title" id="view-doc-title" style="margin:0; font-size:17px; white-space:normal;"></h3>
+          <h3 class="panel-title vd-title" id="view-doc-title"></h3>
         </div>
-        <button type="button" class="btn-close-modal" onclick="closeModals()">✕</button>
+        <button type="button" class="btn-close-modal" onclick="closeModals()" aria-label="Chiudi">✕</button>
       </div>
 
-      <div style="flex:1; overflow-y:auto; padding:1.25rem 1.5rem;">
+      <div class="vd-body">
         <!-- Sezione 1: Scheda Dati Atto -->
-        <div style="margin-bottom:1.5rem;">
-          <h4 style="font-size:12.5px; text-transform:uppercase; letter-spacing:0.05em; color:var(--ink-2); margin-bottom:10px; display:flex; align-items:center; gap:6px; font-weight:700;">
+        <section class="vd-section">
+          <h4 class="vd-h4">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-            Dati Principali dell'Atto
+            Dati principali dell'atto
           </h4>
-          <div id="view-doc-details-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:10px; background:var(--surface-2); padding:12px 14px; border-radius:10px; border:1px solid var(--line);">
-          </div>
-        </div>
+          <div id="view-doc-details-grid" class="vd-details"></div>
+        </section>
 
         <!-- Sezione 2: Storico e Timeline Modifiche (Audit Log) -->
-        <div>
-          <h4 style="font-size:12.5px; text-transform:uppercase; letter-spacing:0.05em; color:var(--ink-2); margin-bottom:10px; display:flex; align-items:center; gap:6px; font-weight:700;">
+        <section class="vd-section">
+          <h4 class="vd-h4">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-            Storico Modifiche & Revisioni
+            Storico modifiche
           </h4>
-          <div id="view-doc-history-timeline" style="background:var(--surface-2); padding:14px; border-radius:10px; border:1px solid var(--line);">
-          </div>
-        </div>
+          <div id="view-doc-history-timeline"></div>
+        </section>
       </div>
 
-      <div class="modal-footer" style="padding:1rem 1.5rem; border-top:1px solid var(--line); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; background:var(--surface-1);">
-        <div style="display:flex; gap:8px; flex-wrap:wrap;">
-          <a id="view-doc-pdf-btn" href="#" target="_blank" class="btn-mini primary" style="padding:7px 12px; display:inline-flex; align-items:center; gap:6px; font-weight:600; text-decoration:none;">
-            🖨️ Scarica PDF
+      <div class="modal-footer vd-foot">
+        <div class="vd-actions">
+          <a id="view-doc-open-btn" href="#" class="btn-mini primary vd-btn vd-btn-main" title="Apre l'atto compilato in sola lettura">
+            👁️ Visualizza documento
           </a>
-          <a id="view-doc-edit-btn" href="#" class="btn-mini" style="padding:7px 12px; display:inline-flex; align-items:center; gap:6px; font-weight:600; text-decoration:none;">
+          <a id="view-doc-pdf-btn" href="#" class="btn-mini vd-btn" title="Scarica subito il PDF dell'atto">
+            ⬇️ Scarica PDF
+          </a>
+          <a id="view-doc-edit-btn" href="#" class="btn-mini vd-btn">
             ✏️ Modifica
           </a>
-          <button type="button" id="view-doc-status-btn" class="btn-mini" style="padding:7px 12px;">
-            🏷️ Cambia Stato
+          <button type="button" id="view-doc-status-btn" class="btn-mini vd-btn">
+            🏷️ Cambia stato
           </button>
         </div>
-        <button type="button" onclick="closeModals()" class="btn-submit btn-quiet" style="padding:6px 14px; margin:0;">Chiudi</button>
+        <button type="button" onclick="closeModals()" class="btn-submit btn-quiet vd-close">Chiudi</button>
       </div>
     </div>
   </div>
@@ -7638,6 +7708,156 @@
         }).join('');
     }
 
+    /* ---------- STORICO MODIFICHE DEL DOCUMENTO ---------- */
+    // Le voci nuove salvano le modifiche campo per campo (h.changes). Quelle
+    // vecchie hanno solo testo ("Modificato X: da "a" a "b""): lo si rilegge
+    // qui per mostrare anche loro come "prima -> dopo".
+    const STORICO_MESI = ['gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott', 'nov', 'dic'];
+    const STORICO_MAX_RIGHE = 3;
+
+    function storicoOra(iso) {
+        return new Date(iso).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function storicoDataBreve(iso) {
+        const dt = new Date(iso);
+        return `${dt.getDate()} ${STORICO_MESI[dt.getMonth()]} ${dt.getFullYear()}`;
+    }
+
+    function storicoDataOra(iso) {
+        return iso ? `${storicoDataBreve(iso)}, ${storicoOra(iso)}` : '—';
+    }
+
+    function storicoGiorno(iso) {
+        const dt = new Date(iso);
+        const oggi = new Date();
+        const diffGiorni = Math.round((new Date(oggi.getFullYear(), oggi.getMonth(), oggi.getDate()) - new Date(dt.getFullYear(), dt.getMonth(), dt.getDate())) / 86400000);
+        if (diffGiorni === 0) return 'Oggi';
+        if (diffGiorni === 1) return 'Ieri';
+        return storicoDataBreve(iso);
+    }
+
+    // Rende leggibile un valore salvato: importi in euro, date in italiano, stati con la maiuscola
+    function storicoValore(label, v) {
+        const t = String(v ?? '').trim();
+        if (!t) return '';
+        if (/prezzo|caparra|saldo|provvigione \(€\)|integrazione|finanziamento/i.test(label) && /^\d+([.,]\d+)?$/.test(t)) {
+            return '€ ' + Number(t.replace(',', '.')).toLocaleString('it-IT');
+        }
+        if (/^\d{4}-\d{2}-\d{2}$/.test(t)) return new Date(t).toLocaleDateString('it-IT');
+        if (/^stato/i.test(label)) return t.charAt(0).toUpperCase() + t.slice(1);
+        return t;
+    }
+
+    // "noteAggiuntive" (nome grezzo del campo, nelle voci vecchie) -> "Note aggiuntive"
+    function storicoEtichetta(label) {
+        const t = String(label || '').replace(/([a-z0-9])([A-Z])/g, '$1 $2').toLowerCase();
+        return t.charAt(0).toUpperCase() + t.slice(1);
+    }
+
+    // Una voce dello storico -> elenco di righe { tipo, label, da, a, testo }
+    function righeStorico(h) {
+        if (Array.isArray(h.changes) && h.changes.length > 0) {
+            return h.changes.map(c => ({
+                tipo: !c.da ? 'nuovo' : (!c.a ? 'rimosso' : 'cambio'),
+                label: c.label, da: c.da, a: c.a
+            }));
+        }
+        const dettagli = Array.isArray(h.details) ? h.details : [];
+        return dettagli.map(det => {
+            let m = det.match(/^Modificato (.+?): da "([\s\S]*)" a "([\s\S]*)"$/);
+            if (m) {
+                // Il vecchio formato tagliava i testi a 20 caratteri: se l'inizio
+                // coincide non c'e' modo di mostrare cosa e' cambiato davvero.
+                if (m[2] === m[3]) return { tipo: 'testo-modificato', label: storicoEtichetta(m[1]) };
+                return { tipo: 'cambio', label: storicoEtichetta(m[1]), da: m[2], a: m[3] };
+            }
+            m = det.match(/^Impostato (.+?): "([\s\S]*)"$/);
+            if (m) return { tipo: 'nuovo', label: storicoEtichetta(m[1]), a: m[2] };
+            m = det.match(/^Cancellato (.+)$/);
+            if (m) return { tipo: 'rimosso', label: storicoEtichetta(m[1]) };
+            m = det.match(/^(Stato|Data atto): (.+)$/);
+            if (m) return { tipo: 'nuovo', label: m[1], a: m[2] };
+            return { tipo: 'testo', testo: det };
+        });
+    }
+
+    function titoloStorico(h, righe) {
+        const campi = righe.filter(r => r.tipo !== 'testo');
+        if (h.action === 'creazione') return 'Documento creato';
+        if (h.action === 'modifica' && campi.length === 1) return `Modificato: ${campi[0].label}`;
+        if (h.action === 'modifica' && campi.length > 1) return `${campi.length} campi modificati`;
+        if (h.action === 'stato' && (righe.length > 1 || /^Aggiornato:/.test(h.summary || ''))) return 'Stato e dati aggiornati';
+        return h.summary || 'Modifica';
+    }
+
+    function rigaStoricoHtml(r) {
+        if (r.tipo === 'testo') return `<div class="vd-change"><div class="vd-change-vals" style="grid-column:1/-1;">${escapeHtml(r.testo)}</div></div>`;
+        const vecchio = storicoValore(r.label, r.da);
+        const nuovo = storicoValore(r.label, r.a);
+        let valori;
+        if (r.tipo === 'testo-modificato') valori = '<span class="vd-note">Testo modificato</span>';
+        else if (r.tipo === 'rimosso') valori = '<span class="vd-tag">Rimosso</span>' + (vecchio ? `<span class="vd-old">${escapeHtml(vecchio)}</span>` : '');
+        else if (r.tipo === 'nuovo') valori = '<span class="vd-tag">Impostato</span>' + `<span class="vd-new">${escapeHtml(nuovo)}</span>`;
+        else valori = `<span class="vd-old">${escapeHtml(vecchio)}</span><span class="vd-arrow" aria-hidden="true">→</span><span class="vd-new">${escapeHtml(nuovo)}</span>`;
+        return `<div class="vd-change"><div class="vd-change-label">${escapeHtml(r.label)}</div><div class="vd-change-vals">${valori}</div></div>`;
+    }
+
+    function renderStoricoDocumento(d) {
+        const history = Array.isArray(d.dati?._history) ? d.dati._history : [];
+        const creazIso = d.created_at || history.find(h => h.action === 'creazione')?.timestamp || d.updated_at;
+        const revisioni = history.filter(h => h.action !== 'creazione').length;
+
+        let html = `
+            <div class="vd-meta">
+              <div class="vd-meta-item"><span>Creato</span><b>${storicoDataOra(creazIso)}</b></div>
+              <div class="vd-meta-item"><span>Ultima modifica</span><b>${storicoDataOra(d.updated_at)}</b></div>
+              <div class="vd-meta-item"><span>Revisioni</span><b>${revisioni === 0 ? 'Nessuna' : revisioni}</b></div>
+            </div>`;
+
+        // Senza storico salvato resta almeno la voce di creazione
+        const voci = history.length > 0
+            ? history
+            : [{ timestamp: creazIso, action: 'creazione', summary: 'Documento salvato nel gestionale', details: [] }];
+
+        const ICONE = { creazione: '✨', modifica: '✏️', stato: '✍️', duplicazione: '📑' };
+        let giornoPrec = null;
+        [...voci].reverse().forEach(h => {
+            if (h.timestamp) {
+                const giorno = storicoGiorno(h.timestamp);
+                if (giorno !== giornoPrec) {
+                    html += `<div class="vd-day">${giorno}</div>`;
+                    giornoPrec = giorno;
+                }
+            }
+            let righe = righeStorico(h);
+            // Il riepilogo di una firma/ritorno a bozza dice gia' tutto: la riga di
+            // dettaglio ripeterebbe lo stesso concetto. Gli "Aggiornato: ..." no.
+            if (h.action === 'stato' && righe.length <= 1 && !/^Aggiornato:/.test(h.summary || '')) righe = [];
+            const titolo = titoloStorico(h, righe);
+            const visibili = righe.slice(0, STORICO_MAX_RIGHE);
+            const nascoste = righe.slice(STORICO_MAX_RIGHE);
+
+            html += `
+            <div class="vd-entry">
+              <div class="vd-dot is-${escapeHtml(h.action || 'modifica')}">${ICONE[h.action] || '✏️'}</div>
+              <div class="vd-card">
+                <div class="vd-card-head">
+                  <span class="vd-card-title">${escapeHtml(titolo)}</span>
+                  <span class="vd-card-time">${h.timestamp ? storicoOra(h.timestamp) : ''}</span>
+                </div>
+                ${visibili.length ? `<div class="vd-changes">${visibili.map(rigaStoricoHtml).join('')}</div>` : ''}
+                ${nascoste.length ? `
+                <details class="vd-more">
+                  <summary><span class="vd-more-closed">Mostra altre ${nascoste.length} modifiche</span><span class="vd-more-open">Nascondi</span></summary>
+                  <div class="vd-changes">${nascoste.map(rigaStoricoHtml).join('')}</div>
+                </details>` : ''}
+              </div>
+            </div>`;
+        });
+        return html;
+    }
+
     function openViewDocModal(id) {
         const d = documenti.find(x => x.id == id);
         if (!d) return;
@@ -7693,67 +7913,13 @@
         detailsGrid.innerHTML = items.join('');
 
         // Timeline Storico Modifiche (Audit Log)
-        const historyTimeline = document.getElementById('view-doc-history-timeline');
-        const history = Array.isArray(dati._history) ? dati._history : [];
-
-        const creazIso = d.created_at || (history.find(h => h.action === 'creazione')?.timestamp) || d.updated_at;
-        const creazStr = creazIso ? new Date(creazIso).toLocaleString('it-IT', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—';
-        const updStr = d.updated_at ? new Date(d.updated_at).toLocaleString('it-IT', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—';
-
-        let timelineHtml = `
-            <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:12px; padding-bottom:10px; border-bottom:1px dashed var(--line); font-size:12px;">
-                <div>📅 <b>Creazione:</b> <span style="color:var(--ink); font-weight:600;">${creazStr}</span></div>
-                <div>🕒 <b>Ultima modifica:</b> <span style="color:var(--ink); font-weight:600;">${updStr}</span></div>
-            </div>
-        `;
-
-        if (history.length === 0) {
-            timelineHtml += `
-                <div style="display:flex; gap:10px; align-items:flex-start;">
-                    <div style="background:#dbeafe; color:#1d4ed8; width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; flex-shrink:0;">✨</div>
-                    <div>
-                        <div style="font-size:12.5px; font-weight:600; color:var(--ink);">Documento salvato nel gestionale</div>
-                        <div style="font-size:11px; color:var(--ink-2);">${creazStr}</div>
-                    </div>
-                </div>
-            `;
-        } else {
-            timelineHtml += '<div style="display:flex; flex-direction:column; gap:12px;">';
-            const reversedHistory = [...history].slice().reverse();
-            reversedHistory.forEach((h) => {
-                const hTime = h.timestamp ? new Date(h.timestamp).toLocaleString('it-IT', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—';
-                let icon = '✏️';
-                let iconBg = '#f1f5f9';
-                let iconColor = '#475569';
-                if (h.action === 'creazione') { icon = '✨'; iconBg = '#dbeafe'; iconColor = '#1d4ed8'; }
-                else if (h.action === 'stato') { icon = '✍️'; iconBg = '#dcfce7'; iconColor = '#15803d'; }
-                else if (h.action === 'duplicazione') { icon = '📑'; iconBg = '#fef3c7'; iconColor = '#b45309'; }
-
-                timelineHtml += `
-                    <div style="display:flex; gap:10px; align-items:flex-start;">
-                        <div style="background:${iconBg}; color:${iconColor}; width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; flex-shrink:0; margin-top:2px;">${icon}</div>
-                        <div style="flex:1;">
-                            <div style="display:flex; justify-content:space-between; align-items:baseline; gap:8px;">
-                                <span style="font-size:12.5px; font-weight:600; color:var(--ink);">${escapeHtml(h.summary || 'Modifica')}</span>
-                                <span style="font-size:11px; color:var(--ink-2); white-space:nowrap;">${hTime}</span>
-                            </div>
-                            ${(Array.isArray(h.details) && h.details.length > 0) ? `
-                                <ul style="margin:4px 0 0; padding-left:16px; font-size:11.5px; color:var(--ink-2);">
-                                    ${h.details.map(det => `<li>${escapeHtml(det)}</li>`).join('')}
-                                </ul>
-                            ` : ''}
-                        </div>
-                    </div>
-                `;
-            });
-            timelineHtml += '</div>';
-        }
-
-        historyTimeline.innerHTML = timelineHtml;
+        document.getElementById('view-doc-history-timeline').innerHTML = renderStoricoDocumento(d);
 
         // Buttons
-        document.getElementById('view-doc-pdf-btn').href = `${d.tipo}.html?id=${encodeURIComponent(d.id)}&mode=view`;
-        document.getElementById('view-doc-edit-btn').href = `${d.tipo}.html?id=${encodeURIComponent(d.id)}`;
+        const docUrl = `${d.tipo}.html?id=${encodeURIComponent(d.id)}`;
+        document.getElementById('view-doc-open-btn').href = `${docUrl}&mode=view`;
+        document.getElementById('view-doc-pdf-btn').href = `${docUrl}&mode=view&pdf=1`;
+        document.getElementById('view-doc-edit-btn').href = docUrl;
         document.getElementById('view-doc-status-btn').onclick = () => {
             closeModals();
             openStatoDocModal(d.id);
