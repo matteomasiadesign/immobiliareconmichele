@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /admin.html
+Disallow: /incarico.html
+Disallow: /proposta.html
+
+Sitemap: https://www.immobiliareconmichele.it/sitemap.xml
