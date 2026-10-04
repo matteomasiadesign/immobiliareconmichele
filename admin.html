@@ -7899,6 +7899,18 @@
             items.push(`<div><span style="font-size:11px; color:var(--ink-2); display:block;">Proponente (Acquirente)</span><b>${formatVal(dati.proponenteNome)}</b></div>`);
             items.push(`<div><span style="font-size:11px; color:var(--ink-2); display:block;">Venditore</span><b>${formatVal(dati.venditoreNome)}</b></div>`);
             items.push(`<div><span style="font-size:11px; color:var(--ink-2); display:block;">Prezzo Offerto</span><b style="color:var(--brand-blue);">${formatEuro(dati.prezzoTotale)}</b></div>`);
+            // Acquirente: e' un campo della proposta. Venditore: sta nell'incarico
+            // piu' recente dello stesso immobile, se c'e'.
+            items.push(`<div><span style="font-size:11px; color:var(--ink-2); display:block;">Provvigione Acquirente</span><b>${formatEuro(dati.provvigione)}</b></div>`);
+            const incaricoImmobile = d.property_id
+                ? documenti.filter(x => x.tipo === 'incarico' && x.property_id == d.property_id)
+                    .sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))[0]
+                : null;
+            const provvVend = incaricoImmobile?.dati || {};
+            const provvVendTesto = provvVend.provvigioneEuro && Number(provvVend.provvigioneEuro) > 0
+                ? `${formatEuro(provvVend.provvigioneEuro)}${provvVend.provvigionePerc ? ` (${provvVend.provvigionePerc}%)` : ''}`
+                : (provvVend.provvigionePerc ? `${provvVend.provvigionePerc}%` : '—');
+            items.push(`<div><span style="font-size:11px; color:var(--ink-2); display:block;">Provvigione Venditore</span><b>${provvVendTesto}</b>${incaricoImmobile ? '' : '<span style="display:block; font-size:10.5px; color:var(--ink-3); margin-top:1px;">nessun incarico collegato</span>'}</div>`);
             if (dati.caparra1) items.push(`<div><span style="font-size:11px; color:var(--ink-2); display:block;">Caparra</span><b>${formatEuro(dati.caparra1)}</b></div>`);
             if (dati.rogitoData) items.push(`<div><span style="font-size:11px; color:var(--ink-2); display:block;">Rogito Previsto</span><b>${formatDataAtto(dati.rogitoData)}</b></div>`);
         }
