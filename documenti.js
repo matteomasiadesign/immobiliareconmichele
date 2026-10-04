@@ -210,6 +210,8 @@ function descriviCampoDoc(name) {
         venditoreNome: 'Nome venditore',
         venditoreTel: 'Telefono venditore',
         prezzoTotale: 'Prezzo offerto',
+        provvigione: 'Provvigione acquirente',
+        provvigioneVenditore: 'Provvigione venditore',
         caparra1: 'Caparra confirmatoria',
         caparra2: 'Integrazione caparra',
         saldo: 'Saldo prezzo',
@@ -302,6 +304,24 @@ function initBozze({ tipo, supabase, form, loading, ricavaTitolo, generaPDF, dop
         return dati;
     }
 
+    // Modifiche non salvate: si tiene una "fotografia" del form all'ultimo
+    // caricamento/salvataggio e, se si chiude la pagina con il form diverso,
+    // il browser chiede conferma. Niente avviso in sola lettura.
+    let fotografiaSalvata = null;
+    const fotografaForm = () => JSON.stringify(Object.fromEntries(new FormData(form)));
+    function segnaSalvato() {
+        if (!isViewMode) fotografiaSalvata = fotografaForm();
+    }
+    window.addEventListener('load', () => {
+        // Per un documento nuovo (o gia' caricato) il form di partenza e' questo
+        if (fotografiaSalvata === null) segnaSalvato();
+    });
+    window.addEventListener('beforeunload', (e) => {
+        if (isViewMode || fotografiaSalvata === null || fotografaForm() === fotografiaSalvata) return;
+        e.preventDefault();
+        e.returnValue = '';
+    });
+
     let collegamenti = {
         property_id: parametri.get('property_id') || null,
         buyer_id: parametri.get('buyer_id') || null
@@ -362,7 +382,7 @@ function initBozze({ tipo, supabase, form, loading, ricavaTitolo, generaPDF, dop
                 <span><b>Modalità Sola Lettura:</b> puoi consultare l'atto o scaricare il PDF, senza modificare nulla.</span>
             </div>
             <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                <a href="admin.html" class="btn-mini" style="background:#fff; color:#0369a1; border:1px solid #7dd3fc; padding:6px 12px; border-radius:6px; text-decoration:none; font-weight:600;">← Torna ai documenti</a>
+                <a href="admin.html#documenti" class="btn-mini" style="background:#fff; color:#0369a1; border:1px solid #7dd3fc; padding:6px 12px; border-radius:6px; text-decoration:none; font-weight:600;">← Torna ai documenti</a>
                 <a href="${tipo}.html?id=${encodeURIComponent(currentDraftId)}" class="btn-mini" style="background:#0284c7; color:#fff; padding:6px 12px; border-radius:6px; text-decoration:none; font-weight:600;">✏️ Passa a Modifica</a>
             </div>
         `;
@@ -396,6 +416,7 @@ function initBozze({ tipo, supabase, form, loading, ricavaTitolo, generaPDF, dop
         } else {
             mostraStato(`📝 Bozza in lavorazione (creata il ${new Date(data.created_at || data.updated_at).toLocaleDateString('it-IT')} · ultima modifica: ${new Date(data.updated_at).toLocaleString('it-IT')})`);
         }
+        segnaSalvato();
         window.scrollTo({ top: 0, behavior: 'smooth' });
         if (scaricaSubito) form.requestSubmit();
     }
@@ -492,6 +513,7 @@ function initBozze({ tipo, supabase, form, loading, ricavaTitolo, generaPDF, dop
                 window.history.replaceState({}, '', url);
             }
             loadedDocState = dati;
+            segnaSalvato();
             mostraStato(`Salvataggio completato (${new Date().toLocaleTimeString('it-IT')})`);
             if (showAlert) alert('Documento salvato con successo!');
             return true;

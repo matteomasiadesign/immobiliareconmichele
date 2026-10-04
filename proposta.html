@@ -87,7 +87,7 @@
             </div>
         </a>
         <div class="app-nav-actions">
-            <a href="admin.html" class="app-nav-btn" title="Torna alla Dashboard">
+            <a href="admin.html#documenti" class="app-nav-btn" title="Torna ai documenti">
                 <svg style="width:14px;height:14px;flex-shrink:0;" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                 <span class="lbl">Dashboard</span>
             </a>
@@ -496,6 +496,14 @@
                                 <input type="number" name="provvigione" required>
                                 <span class="currency">€</span>
                             </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Provvigione richiesta al Venditore</label>
+                            <div class="amount-row">
+                                <input type="number" name="provvigioneVenditore">
+                                <span class="currency">€</span>
+                            </div>
+                            <small style="display:block; margin-top:4px; font-size:11px; color:#64748b;">Solo gestionale: non compare nel PDF.</small>
                         </div>
                     </div>
                     <div class="form-row full">

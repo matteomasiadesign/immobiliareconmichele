@@ -1227,6 +1227,14 @@
       gap: 5px;
       flex-wrap: nowrap;
     }
+    /* Il "⋮" ha la stessa misura e cornice delle altre icone della riga */
+    .data-table .doc-actions-box .kebab-btn {
+      width: 34px; height: 34px; min-height: 0; padding: 0; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--ink-2);
+      font-size: 19px; line-height: 1;
+    }
+    .data-table .doc-actions-box .kebab-btn:hover { background: var(--surface-3); color: var(--ink); }
 
     /* Box / Checkbox rapida per Segna come Firmato */
     .doc-flag-label {
@@ -3462,6 +3470,22 @@
                 <option value="bozza">📝 Bozze</option>
                 <option value="annullato">🚫 Annullati</option>
               </select>
+              <select id="doc-filter-periodo" onchange="renderDocumentiList()" class="form-select" title="Periodo della data atto" style="width: auto; min-width: 130px; padding: 8px 12px;">
+                <option value="">Qualsiasi data</option>
+                <option value="mese">Questo mese</option>
+                <option value="3mesi">Ultimi 3 mesi</option>
+                <option value="anno">Quest'anno</option>
+                <option value="annoPrec">Anno scorso</option>
+              </select>
+              <select id="doc-filter-immobile" onchange="renderDocumentiList()" class="form-select" title="Documenti collegati a un immobile" style="width: auto; min-width: 140px; max-width: 220px; padding: 8px 12px;">
+                <option value="">Tutti gli immobili</option>
+              </select>
+              <select id="doc-sort" onchange="renderDocumentiList()" class="form-select" title="Ordinamento" style="width: auto; min-width: 150px; padding: 8px 12px;">
+                <option value="salvataggio">Ultimi salvati</option>
+                <option value="data_atto">Data atto</option>
+                <option value="prezzo">Prezzo più alto</option>
+                <option value="titolo">Titolo (A-Z)</option>
+              </select>
               <button type="button" onclick="resetDocFilters()" class="btn-action" title="Azzera filtri" style="height:36px; padding:0 12px; font-size:12px;">
                 Azzera
               </button>
@@ -3826,6 +3850,19 @@
     </div>
   </div>
 
+  <!-- Documenti: duplicazione -->
+  <div id="modal-duplica-doc" class="modal-overlay">
+    <div class="modal-content confirm-card" style="max-width:400px; text-align:center;">
+      <div style="font-size:30px; margin-bottom:6px;">📑</div>
+      <h3 class="modal-title-sm">Duplica come nuova bozza</h3>
+      <p class="modal-text-sm">Vuoi creare una nuova bozza separata partendo da <span class="confirm-name" id="dup-doc-name"></span>? L'atto originale resta intatto, con tutta la sua cronologia.</p>
+      <div style="display:flex; gap:10px; margin-top:14px;">
+        <button type="button" onclick="closeModals()" class="btn-submit btn-quiet" style="flex:1;">Annulla</button>
+        <button type="button" onclick="eseguiDuplicazione()" class="btn-submit" style="flex:1;">Sì, duplica</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Documenti: eliminazione protetta e informativa -->
   <div id="modal-delete-doc" class="modal-overlay">
     <div id="confirm-delete-doc" class="modal-content confirm-card" style="max-width:420px; text-align:center;">
@@ -3878,10 +3915,13 @@
       <button type="button" onclick="closeCestino()" class="btn-close-modal" style="font-size:26px;">✕</button>
     </div>
     <div class="fullscreen-modal-body">
-      <p class="modal-text-sm" style="margin-bottom:1.25rem;">
-        Gli elementi eliminati restano qui <b>30 giorni</b>, poi vengono cancellati per sempre.
-        Fino ad allora puoi rimetterli al loro posto.
-      </p>
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap; margin-bottom:1.25rem;">
+        <p class="modal-text-sm" style="margin:0; flex:1; min-width:220px;">
+          Gli elementi eliminati restano qui <b>30 giorni</b>, poi vengono cancellati per sempre.
+          Fino ad allora puoi rimetterli al loro posto.
+        </p>
+        <button type="button" id="cestino-svuota" class="btn-mini danger" onclick="svuotaCestino()" style="display:none;">Svuota cestino</button>
+      </div>
       <div id="cestino-list" class="list-wrapper panel-card" style="padding:0; overflow:hidden;"></div>
     </div>
   </div>
@@ -4193,6 +4233,10 @@
         <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"/></svg>
         Modifica
       </button>
+      <button id="global-kebab-dup" class="dropdown-item" style="display:none;">
+        <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75"/></svg>
+        Duplica
+      </button>
       <button id="global-kebab-delete" class="dropdown-item delete">
         <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/></svg>
         Elimina
@@ -4261,15 +4305,27 @@
        currentDropdownContext = { type, id };
        
        // Assegno le funzioni dinamiche ai pulsanti del menu globale
+       // Per i documenti "Modifica" e' gia' un'icona della riga: il menu offre
+       // Duplica ed Elimina.
+       const isDoc = type === 'doc';
+       document.getElementById('global-kebab-edit').style.display = isDoc ? 'none' : '';
+       document.getElementById('global-kebab-dup').style.display = isDoc ? '' : 'none';
        document.getElementById('global-kebab-edit').onclick = (e) => {
            e.stopPropagation();
            closeAllDropdowns();
            type === 'trans' ? editTransaction(id) : editBuyer(id);
        };
+       document.getElementById('global-kebab-dup').onclick = (e) => {
+           e.stopPropagation();
+           closeAllDropdowns();
+           duplicaDocumento(id);
+       };
        document.getElementById('global-kebab-delete').onclick = (e) => {
            e.stopPropagation();
            closeAllDropdowns();
-           type === 'trans' ? openDeleteTransModal(id) : openDeleteBuyerModal(id);
+           if (type === 'trans') openDeleteTransModal(id);
+           else if (isDoc) openDeleteDocModal(id);
+           else openDeleteBuyerModal(id);
        };
 
        // Mostro il menu (prima di misurarlo, cosi' offsetHeight e' quello vero)
@@ -4440,7 +4496,20 @@
       'tab-documenti': 'tab-documenti'
     };
 
+    // La scheda aperta sta nell'indirizzo (#documenti): tornando indietro da
+    // un documento, o ricaricando, si riapre quella e non la Panoramica.
+    const TAB_HASH = {
+      'tab-overview': 'panoramica', 'tab-stats': 'statistiche', 'tab-agenda': 'agenda',
+      'tab-crm': 'clienti', 'tab-vetrina': 'immobili', 'tab-documenti': 'documenti'
+    };
+
+    function tabDaHash() {
+      const nome = decodeURIComponent((window.location.hash || '').replace('#', ''));
+      return Object.keys(TAB_HASH).find(k => TAB_HASH[k] === nome) || null;
+    }
+
     function switchTab(tabId) {
+      try { history.replaceState(null, '', '#' + TAB_HASH[tabId]); } catch (e) {}
       document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
       document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
       document.getElementById(tabId).classList.add('active');
@@ -4570,6 +4639,8 @@
         await _supabase.auth.signOut(); 
     }
 
+    let tabIniziale = false;
+
     async function handleAuthSuccess() {
         document.getElementById('login-screen').style.display = 'none';
         document.getElementById('admin-dashboard').style.display = '';
@@ -4579,6 +4650,13 @@
         // il contenuto invece di fissare uno schermo scuro.
         showSkeletons();
         hideLoader();
+        // Solo al primo accesso: un nuovo evento di login (es. rinnovo della
+        // sessione) non deve strappare l'utente dalla scheda in cui si trova.
+        if (!tabIniziale) {
+          tabIniziale = true;
+          const daAprire = tabDaHash();
+          if (daAprire && daAprire !== 'tab-overview') switchTab(daAprire);
+        }
         await Promise.all([loadProperties(), loadTransactions(), loadBuyers(), loadDocumenti(), loadAppuntamenti()]);
         renderOverviewStats();
         // I quattro caricamenti corrono in parallelo: se l'agenda arriva
@@ -7578,10 +7656,58 @@
         renderBuyersList();
     }
 
+    // Il prezzo che conta di un documento: l'offerta per una proposta, il prezzo richiesto per un incarico
+    function prezzoDocumento(d) {
+        const dati = d.dati || {};
+        return Number(d.tipo === 'incarico' ? dati.prezzo : dati.prezzoTotale) || 0;
+    }
+
+    // La data atto cade nel periodo scelto? (confronto sulle date, non sull'ora)
+    function dataAttoNelPeriodo(d, periodo) {
+        const iso = dataAttoDocumento(d);
+        if (!iso) return false;
+        const [anno, mese, giorno] = iso.split('T')[0].split('-').map(Number);
+        if (!anno || !mese || !giorno) return false;
+        const data = new Date(anno, mese - 1, giorno);
+        const oggi = new Date();
+        if (periodo === 'mese') return anno === oggi.getFullYear() && mese === oggi.getMonth() + 1;
+        if (periodo === '3mesi') {
+            const da = new Date(oggi.getFullYear(), oggi.getMonth() - 2, 1);
+            return data >= da;
+        }
+        if (periodo === 'anno') return anno === oggi.getFullYear();
+        if (periodo === 'annoPrec') return anno === oggi.getFullYear() - 1;
+        return true;
+    }
+
+    // L'elenco immobili del filtro contiene solo quelli che hanno almeno un
+    // documento, e si ricostruisce solo se cambia: il select non deve
+    // richiudersi mentre lo si usa.
+    let firmaFiltroImmobili = '';
+    function popolaFiltroImmobiliDoc() {
+        const sel = document.getElementById('doc-filter-immobile');
+        if (!sel) return;
+        const usati = [...new Set(documenti.map(d => d.property_id).filter(Boolean))];
+        const voci = usati
+            .map(id => properties.find(p => p.id == id))
+            .filter(Boolean)
+            .sort((a, b) => (a.title || '').localeCompare(b.title || '', 'it', { sensitivity: 'base' }));
+        const firma = voci.map(p => p.id + ':' + p.title).join('|');
+        if (firma === firmaFiltroImmobili) return;
+        firmaFiltroImmobili = firma;
+        const scelto = sel.value;
+        sel.innerHTML = '<option value="">Tutti gli immobili</option>' +
+            voci.map(p => `<option value="${escapeHtml(p.id)}">${escapeHtml(p.title || 'Senza titolo')}</option>`).join('');
+        sel.value = voci.some(p => p.id == scelto) ? scelto : '';
+    }
+
     function resetDocFilters() {
         document.getElementById('doc-search').value = '';
         document.getElementById('doc-filter-tipo').value = '';
         document.getElementById('doc-filter-stato').value = '';
+        document.getElementById('doc-filter-periodo').value = '';
+        document.getElementById('doc-filter-immobile').value = '';
+        document.getElementById('doc-sort').value = 'salvataggio';
         docFilterStatoAttivo = '';
         renderDocumentiKPIs();
         renderDocumentiList();
@@ -7629,11 +7755,17 @@
         const list = document.getElementById('documenti-list');
 
         renderDocumentiKPIs();
+        popolaFiltroImmobiliDoc();
+        const periodoFilter = document.getElementById('doc-filter-periodo')?.value || '';
+        const immobileFilter = document.getElementById('doc-filter-immobile')?.value || '';
+        const ordine = document.getElementById('doc-sort')?.value || 'salvataggio';
 
         const filtered = documenti.filter(d => {
             if (tipoFilter && d.tipo !== tipoFilter) return false;
             const st = statoDiDocumento(d);
             if (statoFilter && st !== statoFilter) return false;
+            if (immobileFilter && d.property_id != immobileFilter) return false;
+            if (periodoFilter && !dataAttoNelPeriodo(d, periodoFilter)) return false;
             if (!s) return true;
 
             const p = d.property_id ? properties.find(x => x.id == d.property_id) : null;
@@ -7646,9 +7778,18 @@
             return matching;
         });
 
+        // "salvataggio" e' l'ordine in cui arrivano dal database: l'ultimo modificato in alto
+        if (ordine === 'data_atto') {
+            filtered.sort((a, b) => (dataAttoDocumento(b) || '').localeCompare(dataAttoDocumento(a) || ''));
+        } else if (ordine === 'prezzo') {
+            filtered.sort((a, b) => prezzoDocumento(b) - prezzoDocumento(a));
+        } else if (ordine === 'titolo') {
+            filtered.sort((a, b) => (a.titolo || '').localeCompare(b.titolo || '', 'it', { sensitivity: 'base' }));
+        }
+
         if (filtered.length === 0) {
-            list.innerHTML = (s || tipoFilter || statoFilter)
-                ? emptyState({ titolo: 'Nessun documento con questi filtri', testo: 'Prova a cercare un altro termine o a selezionare tutti i tipi e stati.', azione: 'Azzera i filtri', onAzione: 'resetDocFilters()', colspan: 5 })
+            list.innerHTML = (s || tipoFilter || statoFilter || periodoFilter || immobileFilter)
+                ? emptyState({ titolo: 'Nessun documento con questi filtri', testo: 'Prova a cercare un altro termine o ad allargare i filtri.', azione: 'Azzera i filtri', onAzione: 'resetDocFilters()', colspan: 5 })
                 : emptyState({ titolo: 'Nessun documento salvato', testo: 'Compila un incarico o una proposta: ogni documento salvato comparirà qui.', colspan: 5 });
             return;
         }
@@ -7693,15 +7834,13 @@
                   <a href="${d.tipo}.html?id=${encodeURIComponent(d.id)}" class="btn-action edit" title="Modifica documento">
                     <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"/></svg>
                   </a>
+                  <a href="${d.tipo}.html?id=${encodeURIComponent(d.id)}&mode=view&pdf=1" class="btn-action" title="Scarica PDF">
+                    <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+                  </a>
                   <button onclick="openStatoDocModal('${d.id}')" class="btn-action" title="Cambia stato (Firmato/Consegnato/Bozza) e note">
                     <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z"/></svg>
                   </button>
-                  <button onclick="duplicaDocumento('${d.id}')" class="btn-action" title="Duplica come nuova bozza/revisione">
-                    <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75"/></svg>
-                  </button>
-                  <button onclick="openDeleteDocModal('${d.id}')" class="btn-action delete" title="Elimina nel cestino">
-                    <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/></svg>
-                  </button>
+                  <button onclick="toggleDropdown(event, 'doc', '${d.id}')" class="kebab-btn" title="Altre azioni: duplica, elimina" aria-label="Altre azioni">⋮</button>
                 </div>
               </td>
             </tr>`;
@@ -7741,7 +7880,7 @@
     function storicoValore(label, v) {
         const t = String(v ?? '').trim();
         if (!t) return '';
-        if (/prezzo|caparra|saldo|provvigione \(€\)|integrazione|finanziamento/i.test(label) && /^\d+([.,]\d+)?$/.test(t)) {
+        if (/prezzo|caparra|saldo|provvigione|integrazione|finanziamento/i.test(label) && !/%/.test(label) && /^\d+([.,]\d+)?$/.test(t)) {
             return '€ ' + Number(t.replace(',', '.')).toLocaleString('it-IT');
         }
         if (/^\d{4}-\d{2}-\d{2}$/.test(t)) return new Date(t).toLocaleDateString('it-IT');
@@ -7899,18 +8038,31 @@
             items.push(`<div><span style="font-size:11px; color:var(--ink-2); display:block;">Proponente (Acquirente)</span><b>${formatVal(dati.proponenteNome)}</b></div>`);
             items.push(`<div><span style="font-size:11px; color:var(--ink-2); display:block;">Venditore</span><b>${formatVal(dati.venditoreNome)}</b></div>`);
             items.push(`<div><span style="font-size:11px; color:var(--ink-2); display:block;">Prezzo Offerto</span><b style="color:var(--brand-blue);">${formatEuro(dati.prezzoTotale)}</b></div>`);
-            // Acquirente: e' un campo della proposta. Venditore: sta nell'incarico
-            // piu' recente dello stesso immobile, se c'e'.
+            // Acquirente: campo della proposta. Venditore: se compilato nella
+            // proposta vale quello, altrimenti si guarda l'incarico piu'
+            // recente dello stesso immobile.
             items.push(`<div><span style="font-size:11px; color:var(--ink-2); display:block;">Provvigione Acquirente</span><b>${formatEuro(dati.provvigione)}</b></div>`);
-            const incaricoImmobile = d.property_id
-                ? documenti.filter(x => x.tipo === 'incarico' && x.property_id == d.property_id)
-                    .sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))[0]
-                : null;
-            const provvVend = incaricoImmobile?.dati || {};
-            const provvVendTesto = provvVend.provvigioneEuro && Number(provvVend.provvigioneEuro) > 0
-                ? `${formatEuro(provvVend.provvigioneEuro)}${provvVend.provvigionePerc ? ` (${provvVend.provvigionePerc}%)` : ''}`
-                : (provvVend.provvigionePerc ? `${provvVend.provvigionePerc}%` : '—');
-            items.push(`<div><span style="font-size:11px; color:var(--ink-2); display:block;">Provvigione Venditore</span><b>${provvVendTesto}</b>${incaricoImmobile ? '' : '<span style="display:block; font-size:10.5px; color:var(--ink-3); margin-top:1px;">nessun incarico collegato</span>'}</div>`);
+            let provvVendTesto = '—';
+            let provvVendNota = '';
+            if (Number(dati.provvigioneVenditore) > 0) {
+                provvVendTesto = formatEuro(dati.provvigioneVenditore);
+            } else {
+                const incaricoImmobile = d.property_id
+                    ? documenti.filter(x => x.tipo === 'incarico' && x.property_id == d.property_id)
+                        .sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))[0]
+                    : null;
+                const provvVend = incaricoImmobile?.dati || {};
+                if (Number(provvVend.provvigioneEuro) > 0) {
+                    provvVendTesto = `${formatEuro(provvVend.provvigioneEuro)}${provvVend.provvigionePerc ? ` (${provvVend.provvigionePerc}%)` : ''}`;
+                    provvVendNota = 'dall\'incarico dell\'immobile';
+                } else if (provvVend.provvigionePerc) {
+                    provvVendTesto = `${provvVend.provvigionePerc}%`;
+                    provvVendNota = 'dall\'incarico dell\'immobile';
+                } else if (!incaricoImmobile) {
+                    provvVendNota = 'non indicata';
+                }
+            }
+            items.push(`<div><span style="font-size:11px; color:var(--ink-2); display:block;">Provvigione Venditore</span><b>${provvVendTesto}</b>${provvVendNota ? `<span style="display:block; font-size:10.5px; color:var(--ink-3); margin-top:1px;">${provvVendNota}</span>` : ''}</div>`);
             if (dati.caparra1) items.push(`<div><span style="font-size:11px; color:var(--ink-2); display:block;">Caparra</span><b>${formatEuro(dati.caparra1)}</b></div>`);
             if (dati.rogitoData) items.push(`<div><span style="font-size:11px; color:var(--ink-2); display:block;">Rogito Previsto</span><b>${formatDataAtto(dati.rogitoData)}</b></div>`);
         }
@@ -8125,15 +8277,23 @@
         await loadDocumenti();
     }
 
-    async function duplicaDocumento(id) {
+    // La duplicazione chiede conferma con lo stesso riquadro di firma ed
+    // eliminazione, non con il confirm() del browser.
+    let docToDuplicate = null;
+
+    function duplicaDocumento(id) {
         const orig = documenti.find(x => x.id == id);
         if (!orig) return;
+        docToDuplicate = id;
+        document.getElementById('dup-doc-name').innerText = `«${orig.titolo || 'questo documento'}»`;
+        document.getElementById('modal-duplica-doc').style.display = 'flex';
+    }
 
-        const conf = confirm(
-            `Vuoi creare una NUOVA bozza separata duplicando «${orig.titolo || 'questo documento'}»?\n\n` +
-            `L'atto originale rimarrà intatto nello storico con tutta la sua cronologia.`
-        );
-        if (!conf) return;
+    async function eseguiDuplicazione() {
+        const orig = documenti.find(x => x.id == docToDuplicate);
+        docToDuplicate = null;
+        closeModals();
+        if (!orig) return;
 
         showLoader("Duplicazione documento...");
 
@@ -8169,7 +8329,9 @@
         }
 
         await loadDocumenti();
-        window.open(`${data.tipo}.html?id=${encodeURIComponent(data.id)}`, '_blank');
+        // Stessa scheda: aprire una nuova scheda dopo un'attesa viene spesso
+        // bloccato dal browser, e il tab Documenti ora si riapre da solo.
+        window.location.href = `${data.tipo}.html?id=${encodeURIComponent(data.id)}`;
     }
 
     function openDeleteDocModal(id) {
@@ -8317,23 +8479,6 @@
               : '');
 
         document.getElementById('modal-abbinamenti').style.display = 'flex';
-    }
-
-    function openDeleteDocModal(id) {
-        docToDelete = id;
-        const d = documenti.find(x => x.id == id);
-        // Il nome del documento compare in tutti e due i passi: la conferma
-        // deve dire QUALE bozza sta per sparire, non "questa".
-        const nome = `«${d && d.titolo ? d.titolo : 'Senza titolo'}»`;
-        document.getElementById('del-doc-name').innerText = nome;
-        document.getElementById('del-doc-name-2').innerText = nome;
-        document.getElementById('confirm-delete-doc').classList.remove('step-2');
-        document.getElementById('modal-delete-doc').style.display = 'flex';
-    }
-
-    // Primo passo: non elimina, porta alla conferma definitiva.
-    function proceedDeleteDoc() {
-        document.getElementById('confirm-delete-doc').classList.add('step-2');
     }
 
     /* =======================================================
@@ -8559,8 +8704,24 @@
         document.body.style.overflow = '';
     }
 
+    async function svuotaCestino() {
+        if (cestino.length === 0) return;
+        if (!confirm(`Eliminare definitivamente tutti i ${cestino.length} elementi del cestino?\n\nDopo non saranno più recuperabili in nessun modo.`)) return;
+        showLoader("Svuotamento del cestino...");
+        // Copia: eliminaDavvero cerca nell'elenco corrente le foto degli immobili
+        for (const r of [...cestino]) {
+            await eliminaDavvero(r._tipo.tabella, r.id);
+        }
+        await loadCestino();
+        renderCestino();
+        await aggiornaContatoreCestino();
+        hideLoader();
+    }
+
     function renderCestino() {
         const list = document.getElementById('cestino-list');
+        const btnSvuota = document.getElementById('cestino-svuota');
+        if (btnSvuota) btnSvuota.style.display = cestino.length > 0 ? '' : 'none';
         if (cestino.length === 0) {
             list.innerHTML = emptyState({
                 titolo: 'Il cestino è vuoto',
