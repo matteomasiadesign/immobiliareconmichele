@@ -2216,10 +2216,22 @@
     .btn-primary-action:hover { background: var(--accent-ink) !important; transform: translateY(-1px) !important; }
     
     /* Modals & Backdrop */
-    .modal-overlay, .fullscreen-modal {
+    .modal-overlay {
       backdrop-filter: blur(8px) !important;
       background: rgba(15, 23, 42, 0.4) !important;
     }
+    /* Le schede a schermo intero (form immobile, cestino) sono pagine da
+       leggere e compilare, non dialoghi: lo sfondo e' coperto all'85% e molto
+       sfocato, cosi' il vetro si intuisce ma non disturba. */
+    .fullscreen-modal {
+      background: var(--ground) !important;
+      background: color-mix(in srgb, var(--ground) 85%, transparent) !important;
+      backdrop-filter: blur(28px) saturate(1.2) !important;
+      -webkit-backdrop-filter: blur(28px) saturate(1.2) !important;
+    }
+    /* Etichette piu' leggibili sul fondo scuro: erano il grigio piu' tenue della palette a 10px */
+    .fullscreen-modal .form-label,
+    .fullscreen-modal .form-section-label { color: var(--ink-2); }
     .modal-box {
       border: 1px solid var(--line) !important;
       box-shadow: var(--shadow-3) !important;
